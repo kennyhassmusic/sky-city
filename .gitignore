@@ -1,0 +1,90 @@
+# Sky City .gitignore
+# Several of these folders are symlinks to an external drive on the maintainer's Mac, so the rules
+# have no trailing slash (a "folder/" rule does not match a symlink).
+
+# --- Unreal build products and caches ---
+/Binaries
+/Build
+/DerivedDataCache
+/Intermediate
+/Plugins/*/Binaries
+/Plugins/*/Intermediate
+*.xcworkspace
+*.xcodeproj
+*.sln
+*.VC.db
+*.opensdf
+*.sdf
+*.suo
+.vs/
+.vscode/
+.idea/
+waveletNoiseTile.bin
+
+# --- Saved/ is local, except the small generated map data the city scripts read ---
+/Saved/*
+!/Saved/Mashup/
+!/Saved/Roads/
+!/Saved/Streets/
+!/Saved/McGregor/
+!/Saved/Expressway/
+!/Saved/Rail/
+/Saved/Mashup/*
+/Saved/Roads/*
+/Saved/Streets/*
+/Saved/McGregor/*
+/Saved/Expressway/*
+/Saved/Rail/*
+!/Saved/Mashup/*.json
+!/Saved/Roads/*.json
+!/Saved/Streets/*.json
+!/Saved/McGregor/*.json
+!/Saved/McGregor/terrain_*.f32
+!/Saved/Expressway/*.json
+!/Saved/Rail/*.json
+
+# --- Epic City Sample (Fab Standard licence: never in this repo; see docs/SETUP_CITY_SAMPLE.md) ---
+/Plugins/CitySamplePCG
+/Content/Building
+/Content/Prop
+/Content/Material
+/Content/Megascans
+/Content/MSPresets
+/Content/Textures
+/Content/Environment
+
+# --- Licensed vehicle models (personal builds only; the repo uses the stand-ins in Placeholder) ---
+/Content/Vehicles/Tesla
+/SourceArt/Vehicles/*
+!/SourceArt/Vehicles/Placeholder/
+
+# --- Reference photos: kept for research, not cleared for redistribution ---
+/SourceArt/Reference/**/*.jpg
+/SourceArt/Reference/**/*.jpeg
+/SourceArt/Reference/**/*.png
+/SourceArt/Reference/**/*.webp
+/SourceArt/Reference/**/*.gif
+/SourceArt/Reference/**/*.heic
+/SourceArt/Reference/**/*.tif
+/SourceArt/Reference/**/*.tiff
+/SourceArt/Reference/**/*.pdf
+
+# --- Engine sample files and per-user folders ---
+/Samples
+/Content/Developers
+/Content/Collections
+
+# --- Personal notes and tools ---
+CLAUDE.local.md
+.claude/settings.local.json
+SKYCITY_AUDIT_REPORT.md
+
+# --- OS and editor clutter ---
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+*.blend1
+*.blend2
+*.tmp
+*.log

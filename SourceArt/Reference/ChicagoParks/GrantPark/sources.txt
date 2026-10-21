@@ -1,0 +1,32 @@
+photo_bowman_spearman_01_The_Bowman_and_The_Spearman.jpg
+    https://commons.wikimedia.org/wiki/File:The_Bowman_and_The_Spearman.jpg
+    TRUsmith | CC BY-SA 4.0 | original 3757x1391, saved 900x333 thumbnail
+photo_bowman_spearman_02_The_Spearman_Grant_Park_Chicago_Illinois_9181744960.jpg
+    https://commons.wikimedia.org/wiki/File:The_Spearman,_Grant_Park,_Chicago,_Illinois_(9181744960).jpg
+    Ken Lund from Reno, Nevada, USA | CC BY-SA 2.0 | original 4000x3000, saved 900x675 thumbnail
+photo_bowman_spearman_03_The_Bowman_Grant_Park_Chicago_Illinois_9181732528.jpg
+    https://commons.wikimedia.org/wiki/File:The_Bowman,_Grant_Park,_Chicago,_Illinois_(9181732528).jpg
+    Ken Lund from Reno, Nevada, USA | CC BY-SA 2.0 | original 4000x3000, saved 900x675 thumbnail
+photo_lincoln_01_Abraham_Lincoln_The_Head_of_State_7367772952.jpg
+    https://commons.wikimedia.org/wiki/File:Abraham_Lincoln,_The_Head_of_State_(7367772952).jpg
+    Teemu008 from Palatine, Illinois | CC BY-SA 2.0 | original 2440x993, saved 900x367 thumbnail
+photo_lincoln_02_Seated_Lincoln_Grant_Park.jpg
+    https://commons.wikimedia.org/wiki/File:Seated_Lincoln_Grant_Park.jpg
+    Micki L. Katz | CC BY-SA 4.0 | original 3343x2388, saved 900x643 thumbnail
+photo_petrillo_01_20080913_Petrillo_Music_Shell_at_Chicago_Celtic_Music_Festiv.jpg
+    https://commons.wikimedia.org/wiki/File:20080913_Petrillo_Music_Shell_at_Chicago_Celtic_Music_Festival.jpg
+    Flickr user debstromquist | CC BY-SA 2.0 | original 2048x1536, saved 900x675 thumbnail
+photo_petrillo_02_200807_Petrillo_Music_Shell.jpg
+    https://commons.wikimedia.org/wiki/File:200807_Petrillo_Music_Shell.jpg
+    flickr user Antre | CC BY-SA 2.0 | original 2592x3888, saved 600x900 thumbnail
+photo_spirit_01_Spirit_of_Music.jpg
+    https://commons.wikimedia.org/wiki/File:Spirit_of_Music.JPG
+    Alanscottwalker | Public domain | original 2303x3465, saved 598x900 thumbnail
+osm_paths.json
+    OpenStreetMap (c) OpenStreetMap contributors, ODbL. Overpass (overpass.kumi.systems) extract 20 Oct 2026: footways/paths/pedestrian/cycleway/steps around Grant Park, projected to plan metres.
+photo_logan_01_General_John_Logan_Monument.jpg
+    https://commons.wikimedia.org/wiki/File:General_John_Logan_Monument.jpg
+    Milana.mees | CC BY 4.0 | original 3024x4032, saved 675x900 thumbnail
+photo_arch_01_Chicago_Stock_Exchange_Arch_2020_2448.jpg
+    https://commons.wikimedia.org/wiki/File:Chicago_Stock_Exchange_Arch_2020-2448.jpg
+    Paul R. Burley | CC BY-SA 4.0 | original 5200x4160, saved 900x720 thumbnail

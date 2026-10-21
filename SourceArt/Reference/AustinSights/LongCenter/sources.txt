@@ -1,0 +1,9 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+front_from_north_ring_columns_glass_flytower.jpg	https://commons.wikimedia.org/wiki/File:Austin_August_2019_12_(Long_Center_for_the_Performing_Arts).jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Austin_August_2019_12_%28Long_Center_for_the_Performing_Arts%29.jpg/960px-Austin_August_2019_12_%28Long_Center_for_the_Performing_Arts%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Michael Barera	CC BY-SA 4.0
+panorama_with_palmer_events_center.jpg	https://commons.wikimedia.org/wiki/File:Long_Center_for_the_Performing_Arts_2016.JPG	https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Long_Center_for_the_Performing_Arts_2016.JPG/1280px-Long_Center_for_the_Performing_Arts_2016.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Fredlyfish4	CC BY-SA 4.0
+from_lake_trail_shorewall.jpg	https://commons.wikimedia.org/wiki/File:LongCenter-2010a.JPG	https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/LongCenter-2010a.JPG/960px-LongCenter-2010a.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	LoneStarMike	CC BY-SA 3.0
+ring_beam_columns_terrace_detail.jpg	https://commons.wikimedia.org/wiki/File:LongCenter-2010c.JPG	https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/LongCenter-2010c.JPG/960px-LongCenter-2010c.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	LoneStarMike	CC BY-SA 3.0

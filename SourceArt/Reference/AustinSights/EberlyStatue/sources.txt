@@ -1,0 +1,7 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+front_cannon_muzzle_view.jpg	https://www.flickr.com/photos/36813683@N03/4991006444	https://live.staticflickr.com/4091/4991006444_30bf3a483a_b.jpg	Todd Dwyer	CC BY-SA 2.0 (Flickr)
+side_full_cannon_carriage_base_plaque.jpg	https://www.flickr.com/photos/7831824@N04/25613114827	https://live.staticflickr.com/4659/25613114827_973138c627_b.jpg	Bex.Walton	CC BY 2.0 (Flickr)

@@ -1,0 +1,9 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+full_tree_2015_chain_fence.jpg	https://commons.wikimedia.org/wiki/File:Treaty_oak_austin_2015.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Treaty_oak_austin_2015.jpg/960px-Treaty_oak_austin_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Larry D. Moore	CC BY 4.0	re-encoded smaller with Pillow
+post_poisoning_marker_fence_baylor_st.jpg	https://commons.wikimedia.org/wiki/File:TreatyOak.jpeg	https://upload.wikimedia.org/wikipedia/commons/f/ff/TreatyOak.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled	Hephaestos	CC BY-SA 3.0
+trunk_and_limbs_bw.jpg	https://www.flickr.com/photos/187543158@N07/51741965722	https://live.staticflickr.com/65535/51741965722_2a790f8b0c_b.jpg	Night Photo	CC BY 2.0 (Flickr)	re-encoded smaller with Pillow
+limb_structure_canopy.jpg	https://www.flickr.com/photos/26809429@N02/3422206407	https://live.staticflickr.com/3330/3422206407_2f9b329593_b.jpg	rutlo	CC BY 2.0 (Flickr)	re-encoded smaller with Pillow

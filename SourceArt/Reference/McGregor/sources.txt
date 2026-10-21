@@ -1,0 +1,36 @@
+McGregor test site references (reference only: never textures in the game, never in Content/). Saved 20 Oct 2026.
+
+From Kenny (sent in chat, 20 Oct 2026):
+  aerial_test_stands.jpg        low aerial of the FIRST-STAGE TEST STAND AREA: white water tower, white stage in its
+                                stand beside a red crawler crane, the deep concrete flame trench in front of it, the blue
+                                lattice structural stand, the old tripod stand with its blue tower, the hangar.
+                                Kenny's correction (20 Oct): "the pic of the water tower and the rocket is the first
+                                stage test stand location, not the roadster test site". Nothing in it belongs to the
+                                demo area (unveil lot, ramp, stage, line-up). Facility frame: camera SW of (-137, -615)
+                                looking NNE (bearing ~29 deg) at the stands around (-80, -520).
+  solid_rocket_division_map.jpg historic site plan of the earlier solid-rocket plant on the same land, areas A to S
+  aerial_labelled.webp          wide aerial from the south with labels (current first stage stand, Raptor(?) stand,
+                                former tripod first-stage stand built by Beal Aerospace, structural stand, Dragon
+                                deconstruction / SuperDraco stand, M1D stand, stage 2 stand, blockhouse, offices/shops,
+                                old and new core storage hangars, bone yard)
+  aerial_numbered.jpg           the same view numbered 1-16 (credited on the image to a Reddit r/spacex user)
+  reveal_ramp.jpg               the reveal ramp (the kit's MG_Ramp already follows Kenny's reveal photos)
+  Full-resolution originals of these were not found in a quick search (the labelled/numbered aerials circulate as
+  reposts without a primary source); the research agent's photos below are the better references.
+
+Research agent (Kenny asked for a research session on the campus, 20 Oct 2026):
+  SourceArt/Reference/McGregor/research/ (its own sources.txt / _sources.json list every URL), e.g.
+  research/tripod_raptor_vertical/nsf_2019-10_header.jpg  Gary Blair for NASASpaceflight.com, Oct 2019:
+      the tripod close up (three banded concrete columns, triangular cap, rusty steel deflector), the hangar beside it
+      (white walls, grey roof, blue trim), long horizontal tanks, tall vertical tanks, tube-trailer banks
+      https://www.nasaspaceflight.com/2019/10/spacex-renovating-falcon-stand-mcgregor/
+  research/raptor_horizontal_stands, raptor_north_stand, stage2_stand_new, hls_rig_2025 (NSF 2019 / 2025 articles)
+
+Facts used for the models (site-features agent):
+  Tripod height: Beal Aerospace was building "a 220-foot-tall vertical-fire stand for larger engines" at McGregor in
+      March 2000 -> SK_Tripod tops out at 67 m.  https://www.spaceflightnow.com/news/0003/06bealtest/index.html
+  Site history (Bluebonnet Ordnance Plant, Beal Aerospace, SpaceX since 2003, test-stand counts):
+      https://en.wikipedia.org/wiki/SpaceX_Rocket_Development_and_Test_Facility
+  Positions and footprints: OpenStreetMap ((c) OpenStreetMap contributors, ODbL), SourceArt/osm/mcgregor.json
+  Aerial photo: USDA NAIP (public domain), on the terrain (fetch_rasters.py)
+  Heights / the first-stage trench pit: USGS 3DEP 2 m DEM (public domain)

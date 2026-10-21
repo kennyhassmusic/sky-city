@@ -1,0 +1,8 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+intake_structures_on_lake_2023.jpg	https://commons.wikimedia.org/wiki/File:Seaholm_Power_Plant_Austin_Water_Intake_Structures_2023.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Seaholm_Power_Plant_Austin_Water_Intake_Structures_2023.jpg/960px-Seaholm_Power_Plant_Austin_Water_Intake_Structures_2023.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Larry D. Moore	CC BY 4.0
+south_facade_stacks_rail_bridge.jpg	https://commons.wikimedia.org/wiki/File:Seaholm_power_plant_austin_2013.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Seaholm_power_plant_austin_2013.jpg/960px-Seaholm_power_plant_austin_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Larry D. Moore	CC BY 4.0
+entrance_facade_west_ave.jpg	https://commons.wikimedia.org/wiki/File:City_of_Austin_TX_Power_Plant.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/City_of_Austin_TX_Power_Plant.jpg/960px-City_of_Austin_TX_Power_Plant.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Vuemobi Media	CC BY-SA 4.0

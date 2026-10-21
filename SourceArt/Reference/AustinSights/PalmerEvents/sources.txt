@@ -1,0 +1,7 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+view_north_from_palmer_terrace_pond_fence.jpg	https://commons.wikimedia.org/wiki/File:Skyline_Austin.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Skyline_Austin.jpg/960px-Skyline_Austin.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Justraveling.com	CC BY-SA 4.0
+wraparound_porch_roof_trusses_stone_columns.jpg	https://www.flickr.com/photos/142289055@N04/28862972915	https://live.staticflickr.com/8705/28862972915_38c0f6ec26_b.jpg	sbmeaper1	CC0 1.0 (Flickr)

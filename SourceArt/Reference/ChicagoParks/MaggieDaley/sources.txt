@@ -1,0 +1,2 @@
+aerial_naip_320m.jpg
+    USGS NAIP Plus orthoimagery (public domain), imagery.nationalmap.gov ImageServer exportImage, crop in the plan frame of Saved/Mashup/plan_v3.json (see the file name for the width)

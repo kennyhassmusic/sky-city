@@ -1,0 +1,51 @@
+# pr-guard: blocks opaque or self-running files in pull requests (see SECURITY.md).
+# It reads only the list of changed files through the GitHub API: it never checks out or runs pull-request code,
+# and it has read-only permissions and no secrets.
+name: pr-guard
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check changed files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          set -euo pipefail
+          files=$(gh api "repos/$REPO/pulls/$PR/files" --paginate --jq '.[] | select(.status != "removed") | .filename')
+          bad=""; held=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            lower=$(printf '%s' "$f" | tr '[:upper:]' '[:lower:]')
+            case "$lower" in
+              content/*|sourceart/*) art=1 ;;
+              *) art=0 ;;
+            esac
+            # executables, compiled code and archives: never outside the art folders
+            case "$lower" in
+              *.exe|*.dll|*.dylib|*.so|*.a|*.o|*.bin|*.jar|*.class|*.pyc|*.whl|*.pkg|*.dmg|*.app/*|*.msi|*.deb|*.rpm|*.zip|*.7z|*.rar|*.tar|*.gz|*.tgz|*.xz|*.bz2|*.zst|*.lz|*.lzma)
+                [ "$art" = 0 ] && bad="$bad\n  $f" ;;
+            esac
+            # anything the editor runs by itself, and the build/CI machinery: needs a maintainer's label
+            case "$lower" in
+              */init_unreal.py|init_unreal.py|content/python/*|.github/*|scripts/build/*|*.build.cs|*.target.cs|plugins/*|launch.sh)
+                held="$held\n  $f" ;;
+            esac
+          done <<< "$files"
+          if [ -n "$bad" ]; then
+            printf 'Blocked: binaries, archives or executables outside Content/ and SourceArt/:%b\n' "$bad"
+            exit 1
+          fi
+          if [ -n "$held" ] && ! printf '%s' "$LABELS" | grep -q 'maintainer-approved'; then
+            printf 'Needs a maintainer: these files run code or change the build. A maintainer adds the "maintainer-approved" label after review:%b\n' "$held"
+            exit 1
+          fi
+          echo "pr-guard: ok"

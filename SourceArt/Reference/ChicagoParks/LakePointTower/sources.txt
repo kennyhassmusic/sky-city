@@ -1,0 +1,8 @@
+photo_01_Lake_Point_Tower.jpg
+    https://commons.wikimedia.org/wiki/File:Lake_Point_Tower.jpg
+    Daniel Schwen | CC BY-SA 4.0 | original 2000x3222, saved 559x900 thumbnail
+photo_02_20220909_Lake_Point_Tower_from_St_Regis_Chicago.jpg
+    https://commons.wikimedia.org/wiki/File:20220909_Lake_Point_Tower_from_St._Regis_Chicago.jpg
+    TonyTheTiger | CC BY-SA 4.0 | original 3024x4032, saved 675x900 thumbnail
+aerial_naip_200m.jpg
+    USGS NAIP Plus orthoimagery (public domain), imagery.nationalmap.gov ImageServer exportImage, crop in the plan frame of Saved/Mashup/plan_v3.json (see the file name for the width)

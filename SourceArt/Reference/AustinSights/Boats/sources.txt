@@ -1,0 +1,12 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+lone_star_riverboat_paddlewheeler.jpg	https://www.flickr.com/photos/36521958135@N01/4438606355	https://live.staticflickr.com/4062/4438606355_01976eb1a5_b.jpg	jdlasica	CC BY 2.0 (Flickr)
+capital_cruises_covered_pontoon_at_hyatt.jpg	https://www.flickr.com/photos/34825346@N02/49281323957	https://live.staticflickr.com/65535/49281323957_8f611310a3_b.jpg	Jim_Nix	CC BY-NC-SA 2.0 (Flickr) - reference only
+kayak_tandem_sit_on_top.jpg	https://www.flickr.com/photos/94303049@N07/8603495407	https://live.staticflickr.com/8381/8603495407_45e51773df.jpg	River Siren	CC BY-SA 2.0 (Flickr)
+rowing_dock_rental_north_shore_canoes.jpg	https://www.flickr.com/photos/75062596@N00/35671401535	https://live.staticflickr.com/4058/35671401535_92ae26b079_b.jpg	Lars Plougmann	CC BY-SA 2.0 (Flickr)	re-encoded smaller with Pillow
+texas_rowing_center_floating_dock_sup_kayaks.jpg	https://www.flickr.com/photos/90793868@N00/5931866145	https://live.staticflickr.com/6012/5931866145_b758b52e77_b.jpg	sisterbeer	CC BY-NC-SA 2.0 (Flickr) - reference only
+rowing_eight_generic.jpg	https://commons.wikimedia.org/wiki/File:Aiguebelette_2015_-_09-06_Britanniques.JPG	https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Aiguebelette_2015_-_09-06_Britanniques.JPG/960px-Aiguebelette_2015_-_09-06_Britanniques.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Florian Pépellin	CC BY-SA 3.0	generic (not Austin): coxed eight for proportions
+single_scull_generic.jpg	https://commons.wikimedia.org/wiki/File:2010_World_Rowing_Championships,_ASM1x_final.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/2010_World_Rowing_Championships%2C_ASM1x_final.jpg/960px-2010_World_Rowing_Championships%2C_ASM1x_final.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Joanne from London, UK	CC BY-SA 2.0	generic (not Austin): single sculls for proportions

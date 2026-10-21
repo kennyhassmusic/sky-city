@@ -1,0 +1,75 @@
+{
+ "image": "T_Expwy_SignAtlas.png",
+ "cols": 2,
+ "rows": 8,
+ "cell_px": [
+  1024,
+  512
+ ],
+ "cells": {
+  "I35N_DALLAS": {
+   "col": 0,
+   "row": 0
+  },
+  "UPPER_THRU": {
+   "col": 1,
+   "row": 0
+  },
+  "I35N_GEORGETOWN": {
+   "col": 0,
+   "row": 1
+  },
+  "MILEAGE_N": {
+   "col": 1,
+   "row": 1
+  },
+  "I35S_SANANTONIO": {
+   "col": 0,
+   "row": 2
+  },
+  "TO290E_CHICAGO": {
+   "col": 1,
+   "row": 2
+  },
+  "CAPITOL_CONGRESS": {
+   "col": 0,
+   "row": 3
+  },
+  "MILEAGE_S": {
+   "col": 1,
+   "row": 3
+  },
+  "WCX_N_CROSSTOWN": {
+   "col": 0,
+   "row": 4
+  },
+  "WCX_N_6TH": {
+   "col": 1,
+   "row": 4
+  },
+  "WCX_N_LAKE": {
+   "col": 0,
+   "row": 5
+  },
+  "WCX_N_PKWY": {
+   "col": 1,
+   "row": 5
+  },
+  "WCX_S_LOOP": {
+   "col": 0,
+   "row": 6
+  },
+  "WCX_S_290": {
+   "col": 1,
+   "row": 6
+  },
+  "WCX_S_WILLIS": {
+   "col": 0,
+   "row": 7
+  },
+  "WCX_S_ADAMS": {
+   "col": 1,
+   "row": 7
+  }
+ }
+}

@@ -1,0 +1,818 @@
+{
+ "assets": {
+  "WT_Base": {
+   "file": "SourceArt/Landmarks/willis/WT_Base.glb",
+   "tris": 1382,
+   "bbox_min_m": [
+    -76.805,
+    -42.216,
+    0.0
+   ],
+   "bbox_max_m": [
+    43.663,
+    56.199,
+    25.0
+   ],
+   "materials": [
+    "M_WT_Podium",
+    "M_WT_Alu",
+    "M_WT_PodiumRoofDark",
+    "M_WT_PodiumRoof",
+    "M_WT_Lawn",
+    "M_WT_Skylight",
+    "M_WT_Granite"
+   ],
+   "what": "Catalog podium and wings (OSM building:part, simplified), roof terrace and garden, atrium skylight, forecourts, canopies; NO collision"
+  },
+  "WT_ColLedge": {
+   "file": "SourceArt/Landmarks/willis/WT_ColLedge.glb",
+   "tris": 192,
+   "bbox_min_m": [
+    -11.692,
+    34.688,
+    412.1
+   ],
+   "bbox_max_m": [
+    10.286,
+    40.099,
+    415.4
+   ],
+   "materials": [
+    "M_WT_Col"
+   ],
+   "what": "hidden collider: Ledge box floors and side/front panes (open top)"
+  },
+  "WT_ColRoofs": {
+   "file": "SourceArt/Landmarks/willis/WT_ColRoofs.glb",
+   "tris": 120,
+   "bbox_min_m": [
+    -73.004,
+    -37.192,
+    5.0
+   ],
+   "bbox_max_m": [
+    40.559,
+    49.097,
+    442.1
+   ],
+   "materials": [
+    "M_WT_Col"
+   ],
+   "what": "hidden collider: flat tops (setbacks, 442 m roof, podium terraces, drum tops, atrium skylight)"
+  },
+  "WT_ColWalls": {
+   "file": "SourceArt/Landmarks/willis/WT_ColWalls.glb",
+   "tris": 3574,
+   "bbox_min_m": [
+    -76.449,
+    -42.216,
+    0.0
+   ],
+   "bbox_max_m": [
+    43.559,
+    52.097,
+    527.3
+   ],
+   "materials": [
+    "M_WT_Col"
+   ],
+   "what": "hidden collider: every wall face of the tower and podium + rounded lips at exposed roof edges + drum sides + masts"
+  },
+  "WT_Ledge": {
+   "file": "SourceArt/Landmarks/willis/WT_Ledge.glb",
+   "tris": 608,
+   "bbox_min_m": [
+    -11.755,
+    34.387,
+    411.95
+   ],
+   "bbox_max_m": [
+    10.441,
+    40.15,
+    415.45
+   ],
+   "materials": [
+    "M_WT_LedgeGlass",
+    "M_WT_LedgeFrame"
+   ],
+   "what": "four glass Ledge boxes, 103rd floor (412.4 m), west face of the west tube, bays 1 2 4 5; 3.6 wide x 5.0 deep x 3.0 m; NO collision (WT_ColLedge)"
+  },
+  "WT_Top": {
+   "file": "SourceArt/Landmarks/willis/WT_Top.glb",
+   "tris": 2032,
+   "bbox_min_m": [
+    -6.702,
+    -5.607,
+    442.1
+   ],
+   "bbox_max_m": [
+    7.389,
+    28.037,
+    527.7
+   ],
+   "materials": [
+    "M_WT_MastWhite",
+    "M_WT_Beacon",
+    "M_WT_DrumMetal"
+   ],
+   "what": "the two masts (west 527.3 m, east 521.2 m), six smaller masts, base frames, red beacons; NO collision"
+  },
+  "WT_Tower": {
+   "file": "SourceArt/Landmarks/willis/WT_Tower.glb",
+   "tris": 4518,
+   "bbox_min_m": [
+    -35.56,
+    -35.56,
+    5.0
+   ],
+   "bbox_max_m": [
+    35.56,
+    35.56,
+    442.14
+   ],
+   "materials": [
+    "M_WT_CurtainWall",
+    "M_WT_Louvre",
+    "M_WT_SkydeckGlass",
+    "M_WT_Alu",
+    "M_WT_RoofGrey",
+    "M_WT_RoofWhite",
+    "M_WT_DrumMetal"
+   ],
+   "what": "nine bundled tubes: curtain wall (UV bays x floors), louvre bands, column covers, copings, setback roofs, rooftop drums; NO collision (WT_Col* carry it)"
+  }
+ },
+ "collision_report": {
+  "tower": {
+   "top": {
+    "H": 442.1,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": true,
+     "W": true
+    },
+    "lip_D": 9.8,
+    "lip_Lz": 8.09
+   },
+   "SW": {
+    "H": 270.4,
+    "exposed": {
+     "S": true,
+     "E": false,
+     "N": false,
+     "W": true
+    },
+    "lip_D": 9.8,
+    "lip_Lz": 8.09
+   },
+   "S": {
+    "H": 365.4,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": false,
+     "W": true
+    },
+    "lip_D": 9.8,
+    "lip_Lz": 8.09
+   },
+   "SE": {
+    "H": 204.7,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": false,
+     "W": false
+    },
+    "lip_D": 9.8,
+    "lip_Lz": 8.09
+   },
+   "E": {
+    "H": 365.4,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": true,
+     "W": false
+    },
+    "lip_D": 9.8,
+    "lip_Lz": 8.09
+   },
+   "NW": {
+    "H": 204.7,
+    "exposed": {
+     "S": false,
+     "E": false,
+     "N": true,
+     "W": true
+    },
+    "lip_D": 9.8,
+    "lip_Lz": 8.09
+   },
+   "N": {
+    "H": 365.4,
+    "exposed": {
+     "S": false,
+     "E": true,
+     "N": true,
+     "W": true
+    },
+    "lip_D": 9.8,
+    "lip_Lz": 8.09
+   },
+   "NE": {
+    "H": 270.4,
+    "exposed": {
+     "S": false,
+     "E": true,
+     "N": true,
+     "W": false
+    },
+    "lip_D": 9.8,
+    "lip_Lz": 8.09
+   }
+  },
+  "podium": {
+   "AdamsCanopy": {
+    "H": 5.0,
+    "exposed": {
+     "S": false,
+     "E": false,
+     "N": true,
+     "W": false
+    },
+    "profile": "small",
+    "min_step": 5.0
+   },
+   "NE_North": {
+    "H": 10.0,
+    "exposed": {
+     "S": false,
+     "E": true,
+     "N": true,
+     "W": true
+    },
+    "profile": "small",
+    "min_step": 5.0
+   },
+   "NE_East": {
+    "H": 10.0,
+    "exposed": {
+     "S": false,
+     "E": true,
+     "N": false,
+     "W": false
+    },
+    "profile": "pod",
+    "min_step": 10.0
+   },
+   "FranklinEntrance": {
+    "H": 10.0,
+    "exposed": {
+     "S": false,
+     "E": true,
+     "N": false,
+     "W": false
+    },
+    "profile": "pod",
+    "min_step": 10.0
+   },
+   "SE_East": {
+    "H": 10.0,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": false,
+     "W": false
+    },
+    "profile": "pod",
+    "min_step": 10.0
+   },
+   "SE_SouthA": {
+    "H": 10.0,
+    "exposed": {
+     "S": true,
+     "E": false,
+     "N": false,
+     "W": true
+    },
+    "profile": "small",
+    "min_step": 10.0
+   },
+   "SE_SouthB": {
+    "H": 10.0,
+    "exposed": {
+     "S": false,
+     "E": false,
+     "N": false,
+     "W": false
+    },
+    "profile": "big",
+    "min_step": 99
+   },
+   "CatalogW1": {
+    "H": 20.0,
+    "exposed": {
+     "S": true,
+     "E": false,
+     "N": true,
+     "W": true
+    },
+    "profile": "pod",
+    "min_step": 10.0
+   },
+   "CatalogW2": {
+    "H": 20.0,
+    "exposed": {
+     "S": false,
+     "E": false,
+     "N": false,
+     "W": false
+    },
+    "profile": "big",
+    "min_step": 99
+   },
+   "CatalogS1": {
+    "H": 20.0,
+    "exposed": {
+     "S": false,
+     "E": false,
+     "N": false,
+     "W": false
+    },
+    "profile": "big",
+    "min_step": 99
+   },
+   "CatalogS2": {
+    "H": 20.0,
+    "exposed": {
+     "S": true,
+     "E": false,
+     "N": false,
+     "W": false
+    },
+    "profile": "big",
+    "min_step": 10.0
+   },
+   "CatalogGarden": {
+    "H": 20.0,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": false,
+     "W": false
+    },
+    "profile": "big",
+    "min_step": 10.0
+   },
+   "CatalogSouthA": {
+    "H": 20.0,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": false,
+     "W": true
+    },
+    "profile": "small",
+    "min_step": 10.0
+   },
+   "CatalogSouthB": {
+    "H": 20.0,
+    "exposed": {
+     "S": false,
+     "E": false,
+     "N": false,
+     "W": false
+    },
+    "profile": "big",
+    "min_step": 99
+   },
+   "CatalogHigh": {
+    "H": 25.0,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": true,
+     "W": true
+    },
+    "profile": "small",
+    "min_step": 5.0
+   },
+   "JacksonRow": {
+    "H": 20.0,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": false,
+     "W": true
+    },
+    "profile": "pod",
+    "min_step": 10.0
+   },
+   "JacksonW": {
+    "H": 10.0,
+    "exposed": {
+     "S": true,
+     "E": false,
+     "N": false,
+     "W": true
+    },
+    "profile": "pod",
+    "min_step": 10.0
+   },
+   "JacksonE_A": {
+    "H": 10.0,
+    "exposed": {
+     "S": true,
+     "E": true,
+     "N": false,
+     "W": false
+    },
+    "profile": "small",
+    "min_step": 10.0
+   },
+   "JacksonE_B": {
+    "H": 10.0,
+    "exposed": {
+     "S": false,
+     "E": false,
+     "N": false,
+     "W": false
+    },
+    "profile": "big",
+    "min_step": 99
+   },
+   "WackerPavilion": {
+    "H": 20.0,
+    "exposed": {
+     "S": false,
+     "E": false,
+     "N": false,
+     "W": true
+    },
+    "profile": "pod",
+    "min_step": 20.0
+   },
+   "WackerN_A": {
+    "H": 20.0,
+    "exposed": {
+     "S": true,
+     "E": false,
+     "N": true,
+     "W": true
+    },
+    "profile": "pod",
+    "min_step": 10.0
+   },
+   "WackerN_B": {
+    "H": 20.0,
+    "exposed": {
+     "S": false,
+     "E": false,
+     "N": true,
+     "W": false
+    },
+    "profile": "big",
+    "min_step": 10.0
+   },
+   "AdamsW": {
+    "H": 10.0,
+    "exposed": {
+     "S": false,
+     "E": true,
+     "N": true,
+     "W": true
+    },
+    "profile": "small",
+    "min_step": 5.0
+   }
+  }
+ },
+ "frame": {
+  "origin_plan_m": [
+   -671.4473,
+   -959.3803
+  ],
+  "theta_deg": 1.0771,
+  "note": "tower frame (x east, y north along the tower grid) -> plan: rotate by theta CCW, add origin; Unreal X = plan y*100, Y = plan x*100; the GLBs are already turned: place them at the origin with no rotation"
+ },
+ "heights_m": {
+  "roof_442": 442.1,
+  "setback_90": 365.4,
+  "setback_66": 270.4,
+  "setback_50": 204.7,
+  "skydeck_103": 412.4,
+  "mast_west": 527.3,
+  "mast_east": 521.2,
+  "floor_levels": [
+   [
+    1,
+    0.0
+   ],
+   [
+    50,
+    200.6
+   ],
+   [
+    51,
+    204.7
+   ],
+   [
+    66,
+    266.4
+   ],
+   [
+    67,
+    270.4
+   ],
+   [
+    90,
+    361.5
+   ],
+   [
+    91,
+    365.4
+   ],
+   [
+    103,
+    412.4
+   ],
+   [
+    109,
+    442.1
+   ]
+  ],
+  "louvre_bands_floors": [
+   [
+    29,
+    33
+   ],
+   [
+    64,
+    66
+   ],
+   [
+    88,
+    90
+   ],
+   [
+    106,
+    109
+   ]
+  ]
+ },
+ "lips": {
+  "big": {
+   "R1": 0.8,
+   "R2": 10.0,
+   "R1_end_deg": 12.0,
+   "D": 9.8,
+   "Lz": 8.09
+  },
+  "pod": {
+   "R1": 0.6,
+   "R2": 6.0,
+   "R1_end_deg": 12.0,
+   "D": 5.88,
+   "Lz": 4.88
+  },
+  "small": {
+   "R1": 0.5,
+   "R2": 3.0,
+   "R1_end_deg": 12.0,
+   "D": 2.95,
+   "Lz": 2.48
+  }
+ },
+ "zone_plan": [
+  [
+   -721.3152395079221,
+   -1036.031253087579
+  ],
+  [
+   -629.2315131077164,
+   -1034.2999725637885
+  ],
+  [
+   -631.4609362360719,
+   -915.7209285782902
+  ],
+  [
+   -723.5446626362776,
+   -917.4522091020807
+  ]
+ ],
+ "tower_outline_plan": [
+  [
+   -705.6850889368827,
+   -994.930177759473
+  ],
+  [
+   -635.897422240527,
+   -993.6180889368827
+  ],
+  [
+   -637.2095110631174,
+   -923.830422240527
+  ],
+  [
+   -706.9971777594731,
+   -925.1425110631174
+  ]
+ ],
+ "test_points": {
+  "wacker_start": {
+   "local": [
+    -62.5,
+    0.0
+   ],
+   "plan": [
+    -733.94,
+    -960.56
+   ],
+   "ue_cm": [
+    -96056,
+    -73394,
+    100
+   ],
+   "yaw": 88.92
+  },
+  "forecourt": {
+   "local": [
+    -49.0,
+    0.0
+   ],
+   "plan": [
+    -720.44,
+    -960.3
+   ],
+   "ue_cm": [
+    -96030,
+    -72044,
+    100
+   ],
+   "yaw": 88.92
+  },
+  "adams_start": {
+   "local": [
+    0.0,
+    62.0
+   ],
+   "plan": [
+    -672.61,
+    -897.39
+   ],
+   "ue_cm": [
+    -89739,
+    -67261,
+    100
+   ],
+   "yaw": 178.92
+  },
+  "roof_west_bay2": {
+   "local": [
+    -21.5,
+    -4.572
+   ],
+   "plan": [
+    -692.86,
+    -964.36
+   ],
+   "ue_cm": [
+    -96436,
+    -69286,
+    44310
+   ],
+   "yaw": 268.92
+  },
+  "roof_centre": {
+   "local": [
+    -11.0,
+    -4.0
+   ],
+   "plan": [
+    -682.37,
+    -963.59
+   ],
+   "ue_cm": [
+    -96359,
+    -68237,
+    44310
+   ],
+   "yaw": 88.92
+  },
+  "ledge_box2": {
+   "local": [
+    -37.5,
+    -4.572
+   ],
+   "plan": [
+    -708.85,
+    -964.66
+   ],
+   "ue_cm": [
+    -96466,
+    -70885,
+    41340
+   ],
+   "yaw": 268.92
+  },
+  "setback_N": {
+   "local": [
+    0.0,
+    20.0
+   ],
+   "plan": [
+    -671.82,
+    -939.38
+   ],
+   "ue_cm": [
+    -93938,
+    -67182,
+    36640
+   ],
+   "yaw": 178.92
+  },
+  "setback_NW": {
+   "local": [
+    -20.0,
+    26.0
+   ],
+   "plan": [
+    -691.93,
+    -933.76
+   ],
+   "ue_cm": [
+    -93376,
+    -69193,
+    20570
+   ],
+   "yaw": 178.92
+  },
+  "rocket_addon": {
+   "local": [
+    -11.0,
+    4.0
+   ],
+   "plan": [
+    -682.52,
+    -955.59
+   ],
+   "ue_cm": [
+    -95559,
+    -68252,
+    44330
+   ],
+   "yaw": 358.92
+  }
+ },
+ "ledge_boxes": [
+  {
+   "centre_plan": [
+    -708.54,
+    -969.22
+   ],
+   "floor_z_m": 412.4,
+   "w": 3.6,
+   "d": 5.0,
+   "h": 3.0
+  },
+  {
+   "centre_plan": [
+    -708.63,
+    -964.65
+   ],
+   "floor_z_m": 412.4,
+   "w": 3.6,
+   "d": 5.0,
+   "h": 3.0
+  },
+  {
+   "centre_plan": [
+    -708.8,
+    -955.51
+   ],
+   "floor_z_m": 412.4,
+   "w": 3.6,
+   "d": 5.0,
+   "h": 3.0
+  },
+  {
+   "centre_plan": [
+    -708.89,
+    -950.94
+   ],
+   "floor_z_m": 412.4,
+   "w": 3.6,
+   "d": 5.0,
+   "h": 3.0
+  }
+ ],
+ "climbing_lane": "west face of the west tube, middle bay (tower-frame y = -2.3..2.3): street/Wacker forecourt -> 20 m pavilion -> 442 m roof with no Ledge box in the way; steer 4-5 m sideways near the top to miss the west mast",
+ "conventions": {
+  "units": "metres in Blender/GLB; Unreal imports as centimetres",
+  "generator": "Scripts/landmarks/blender_willis.py",
+  "facade_uv": "u = bays (4.572 m, integer at column lines), v = floors (integer at floor lines, real levels)"
+ }
+}

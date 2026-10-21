@@ -1,0 +1,6 @@
+osm_water.json  OpenStreetMap extract via the Overpass API (https://overpass-api.de), 20 Oct 2026, bbox 41.855,-87.640,41.905,-87.575:
+  man_made pier/breakwater/groyne/lighthouse/quay/jetty/dolphin/bollard/crane/embankment, waterway lock_gate/dock/boatyard,
+  lock=yes, leisure marina/slipway, mooring, seamark:type, amenity ferry_terminal/boat_rental, natural beach/water/coastline,
+  water=*, names (Riverwalk|Harbor|Lock|Slip|Lighthouse|Breakwater|Marina|Yacht|Dock|Jetty|Fountain), buildings near the lock.
+  Data (c) OpenStreetMap contributors, ODbL 1.0. Processed into SourceArt/Landmarks/water/water_features.json by
+  Scripts/landmarks/chicago_water_osm.py.

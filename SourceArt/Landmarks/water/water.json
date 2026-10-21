@@ -1,0 +1,965 @@
+{
+ "assets": {
+  "CW_Abegweit": {
+   "file": "SourceArt/Landmarks/water/CW_Abegweit.glb",
+   "tris": 7458,
+   "bbox_min_m": [
+    -55.49,
+    -9.388,
+    -2.0
+   ],
+   "bbox_max_m": [
+    58.2,
+    9.388,
+    23.878
+   ],
+   "size_m": [
+    113.69,
+    18.776,
+    25.878
+   ],
+   "materials": [
+    "M_CW_ShipWhite",
+    "M_CW_ShipBlack",
+    "M_CW_ShipRed",
+    "M_CW_DockDeck",
+    "M_GlassDark",
+    "M_Railing",
+    "M_CWB_Orange"
+   ],
+   "pivot": "waterline, mid-length; bow +X",
+   "loa_m": 113.7,
+   "beam_m": 18.7,
+   "main_deck_above_water_m": 5.89
+  },
+  "CW_Bollard": {
+   "file": "SourceArt/Landmarks/water/CW_Bollard.glb",
+   "tris": 90,
+   "bbox_min_m": [
+    -0.2,
+    -0.19,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.2,
+    0.19,
+    0.47
+   ],
+   "size_m": [
+    0.4,
+    0.38,
+    0.47
+   ],
+   "materials": [
+    "M_Railing"
+   ],
+   "pivot": "base centre",
+   "desc": "cast-iron mooring bollard 0.47 m"
+  },
+  "CW_ChicagoLock": {
+   "file": "SourceArt/Landmarks/water/CW_ChicagoLock.glb",
+   "tris": 17825,
+   "bbox_min_m": [
+    -50.23,
+    -330.73,
+    -8.0
+   ],
+   "bbox_max_m": [
+    109.93,
+    297.536,
+    20.06
+   ],
+   "size_m": [
+    160.16,
+    628.266,
+    28.06
+   ],
+   "materials": [
+    "M_CW_LockConcrete",
+    "M_CW_WallDark",
+    "M_CW_Fender",
+    "M_Railing",
+    "M_CW_GateSteel",
+    "M_CW_SafetyYellow",
+    "M_Light",
+    "M_Hedge",
+    "M_CW_WhiteWall",
+    "M_GlassDark",
+    "M_RoofFlat",
+    "M_CW_SignalRed",
+    "M_CW_SignalGreen"
+   ],
+   "pivot": "plan (1768.0, 96.0) (chamber middle), plan ground",
+   "osm_ways": {
+    "925460353": "south lock wall",
+    "925740530": "north lock wall + north pier",
+    "925740529": "north wall east end",
+    "1491876770": "north pier head",
+    "925460323": "south approach wall (west)",
+    "925736498": "south guide wall (east)"
+   },
+   "chamber": "OSM water=lock polygon w762092241 (x 1664-1871), gates at x 1673 / 1871",
+   "top_m": 0.06,
+   "bed_m": -8.0,
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_CruiseShip": {
+   "file": "SourceArt/Landmarks/water/CW_CruiseShip.glb",
+   "tris": 4652,
+   "bbox_min_m": [
+    -28.0,
+    -6.197,
+    -1.8
+   ],
+   "bbox_max_m": [
+    32.185,
+    6.197,
+    16.371
+   ],
+   "size_m": [
+    60.185,
+    12.395,
+    18.171
+   ],
+   "materials": [
+    "M_CWB_HullWhite",
+    "M_CWB_Stripe",
+    "M_CWB_HullBlack",
+    "M_CWB_DeckGrey",
+    "M_CWB_GlassBlue",
+    "M_CWB_Steel"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "lakefront dinner cruise ship, 61 m",
+   "loa_m": 59.44,
+   "beam_m": 12.4
+  },
+  "CW_DimePier": {
+   "file": "SourceArt/Landmarks/water/CW_DimePier.glb",
+   "tris": 13730,
+   "bbox_min_m": [
+    -15.336,
+    -359.064,
+    -8.0
+   ],
+   "bbox_max_m": [
+    15.222,
+    359.636,
+    -3.491
+   ],
+   "size_m": [
+    30.558,
+    718.7,
+    4.509
+   ],
+   "materials": [
+    "M_CW_Riprap",
+    "M_Hedge"
+   ],
+   "pivot": "plan (1977.0, 246.0), plan ground",
+   "osm": "w157657596",
+   "crest_m": -4.2,
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_Docks_Dusable": {
+   "file": "SourceArt/Landmarks/water/CW_Docks_Dusable.glb",
+   "tris": 15925,
+   "bbox_min_m": [
+    -177.57,
+    -108.659,
+    -8.0
+   ],
+   "bbox_max_m": [
+    181.67,
+    110.508,
+    1.064
+   ],
+   "size_m": [
+    359.24,
+    219.166,
+    9.064
+   ],
+   "materials": [
+    "M_CW_DockDeck",
+    "M_CW_Piling",
+    "M_CW_Float",
+    "M_CW_Buoy",
+    "M_CW_WhiteWall",
+    "M_Light",
+    "M_CW_GateSteel",
+    "M_Railing"
+   ],
+   "pivot": "plan (1356.0, -212.0), plan ground",
+   "osm_area": "dusable",
+   "mains": 9,
+   "fingers": 133,
+   "boat_slots": 319,
+   "deck_m": -5.0,
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_Docks_Lock": {
+   "file": "SourceArt/Landmarks/water/CW_Docks_Lock.glb",
+   "tris": 302,
+   "bbox_min_m": [
+    -12.98,
+    -13.133,
+    -8.0
+   ],
+   "bbox_max_m": [
+    38.66,
+    115.764,
+    3.2
+   ],
+   "size_m": [
+    51.64,
+    128.898,
+    11.2
+   ],
+   "materials": [
+    "M_CW_Piling",
+    "M_CW_DockDeck",
+    "M_CW_Float"
+   ],
+   "pivot": "plan (1426.0, 6.0), plan ground",
+   "osm_area": "lock",
+   "mains": 0,
+   "fingers": 7,
+   "boat_slots": 0,
+   "deck_m": -5.0,
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_Docks_Monroe": {
+   "file": "SourceArt/Landmarks/water/CW_Docks_Monroe.glb",
+   "tris": 2807,
+   "bbox_min_m": [
+    -278.91,
+    -271.86,
+    -8.0
+   ],
+   "bbox_max_m": [
+    291.36,
+    160.27,
+    1.064
+   ],
+   "size_m": [
+    570.27,
+    432.13,
+    9.064
+   ],
+   "materials": [
+    "M_CW_DockDeck",
+    "M_CW_Float",
+    "M_CW_Piling",
+    "M_CW_Buoy",
+    "M_CW_WhiteWall",
+    "M_Light",
+    "M_CW_GateSteel",
+    "M_Railing"
+   ],
+   "pivot": "plan (1100.0, -700.0), plan ground",
+   "osm_area": "monroe",
+   "mains": 2,
+   "fingers": 13,
+   "boat_slots": 16,
+   "deck_m": -5.0,
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_Docks_NavypierMarina": {
+   "file": "SourceArt/Landmarks/water/CW_Docks_NavypierMarina.glb",
+   "tris": 4017,
+   "bbox_min_m": [
+    -43.398,
+    -363.91,
+    -8.0
+   ],
+   "bbox_max_m": [
+    76.7,
+    362.83,
+    1.063
+   ],
+   "size_m": [
+    120.098,
+    726.74,
+    9.063
+   ],
+   "materials": [
+    "M_CW_DockDeck",
+    "M_CW_Piling",
+    "M_CW_Float",
+    "M_CW_Buoy",
+    "M_CW_WhiteWall",
+    "M_Light",
+    "M_CW_GateSteel",
+    "M_Railing"
+   ],
+   "pivot": "plan (1860.0, 560.0), plan ground",
+   "osm_area": "navypier_marina",
+   "mains": 2,
+   "fingers": 29,
+   "boat_slots": 26,
+   "deck_m": -5.0,
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_Docks_River": {
+   "file": "SourceArt/Landmarks/water/CW_Docks_River.glb",
+   "tris": 4957,
+   "bbox_min_m": [
+    -169.601,
+    -406.93,
+    -8.0
+   ],
+   "bbox_max_m": [
+    150.47,
+    696.379,
+    3.2
+   ],
+   "size_m": [
+    320.07,
+    1103.309,
+    11.2
+   ],
+   "materials": [
+    "M_CW_DockDeck",
+    "M_CW_Float",
+    "M_CW_Piling",
+    "M_CW_GateSteel",
+    "M_Railing"
+   ],
+   "pivot": "plan (950.0, 190.0), plan ground",
+   "osm_area": "river",
+   "mains": 0,
+   "fingers": 0,
+   "boat_slots": 0,
+   "deck_m": -5.0,
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_Kayak": {
+   "file": "SourceArt/Landmarks/water/CW_Kayak.glb",
+   "tris": 180,
+   "bbox_min_m": [
+    -2.1,
+    -0.322,
+    -0.15
+   ],
+   "bbox_max_m": [
+    2.1,
+    0.322,
+    0.26
+   ],
+   "size_m": [
+    4.2,
+    0.643,
+    0.41
+   ],
+   "materials": [
+    "M_CWB_Orange",
+    "M_CWB_HullBlack"
+   ],
+   "pivot": "waterline centre",
+   "desc": "sit-in kayak 4.2 m"
+  },
+  "CW_LockGateL": {
+   "file": "SourceArt/Landmarks/water/CW_LockGateL.glb",
+   "tris": 2644,
+   "bbox_min_m": [
+    -0.7,
+    -15.6,
+    -8.0
+   ],
+   "bbox_max_m": [
+    12.779,
+    0.7,
+    1.45
+   ],
+   "size_m": [
+    13.479,
+    16.3,
+    9.45
+   ],
+   "materials": [
+    "M_CW_GateSteel",
+    "M_Railing"
+   ],
+   "pivot": "the leaf's vertical pivot axis, plan ground; closing arm along plan +x",
+   "radius_m": 15.6,
+   "sweep_deg": 55.0,
+   "sweep_dir": "CCW (north leaves)",
+   "unreal_yaw": "-(plan angle of the closing arm), see water_layout.json lock_gates",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_LockGateR": {
+   "file": "SourceArt/Landmarks/water/CW_LockGateR.glb",
+   "tris": 2644,
+   "bbox_min_m": [
+    -12.779,
+    -15.6,
+    -8.0
+   ],
+   "bbox_max_m": [
+    0.7,
+    0.7,
+    1.45
+   ],
+   "size_m": [
+    13.479,
+    16.3,
+    9.45
+   ],
+   "materials": [
+    "M_CW_GateSteel",
+    "M_Railing"
+   ],
+   "pivot": "the leaf's vertical pivot axis, plan ground; closing arm along plan +x",
+   "radius_m": 15.6,
+   "sweep_deg": 55.0,
+   "sweep_dir": "CW (south leaves)",
+   "unreal_yaw": "-(plan angle of the closing arm), see water_layout.json lock_gates",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_MarinaBoathouse": {
+   "file": "SourceArt/Landmarks/water/CW_MarinaBoathouse.glb",
+   "tris": 64,
+   "bbox_min_m": [
+    -6.726,
+    -8.457,
+    -5.0
+   ],
+   "bbox_max_m": [
+    6.526,
+    8.367,
+    1.5
+   ],
+   "size_m": [
+    13.253,
+    16.824,
+    6.5
+   ],
+   "materials": [
+    "M_CW_WhiteWall",
+    "M_GlassDark",
+    "M_RoofFlat",
+    "M_CW_DockDeck"
+   ],
+   "pivot": "plan (1781.3, 533.9), plan ground",
+   "osm": "Navy Pier Marina Boat House",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_MooringBuoy": {
+   "file": "SourceArt/Landmarks/water/CW_MooringBuoy.glb",
+   "tris": 160,
+   "bbox_min_m": [
+    -0.47,
+    -0.47,
+    -0.25
+   ],
+   "bbox_max_m": [
+    0.47,
+    0.47,
+    0.645
+   ],
+   "size_m": [
+    0.94,
+    0.94,
+    0.895
+   ],
+   "materials": [
+    "M_CWB_HullWhite",
+    "M_CWB_Steel",
+    "M_CWB_Seat"
+   ],
+   "pivot": "waterline centre",
+   "desc": "mooring buoy"
+  },
+  "CW_MotorYacht": {
+   "file": "SourceArt/Landmarks/water/CW_MotorYacht.glb",
+   "tris": 1840,
+   "bbox_min_m": [
+    -7.7,
+    -2.2,
+    -0.85
+   ],
+   "bbox_max_m": [
+    8.648,
+    2.2,
+    6.664
+   ],
+   "size_m": [
+    16.347,
+    4.399,
+    7.514
+   ],
+   "materials": [
+    "M_CWB_HullWhite",
+    "M_CWB_Boot",
+    "M_CWB_Stripe",
+    "M_CWB_Bottom",
+    "M_CWB_Teak",
+    "M_CWB_Glass",
+    "M_CWB_Steel",
+    "M_CWB_Canvas"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "45 ft flybridge motor yacht",
+   "loa_m": 15.25,
+   "beam_m": 4.4
+  },
+  "CW_NavLightGreen": {
+   "file": "SourceArt/Landmarks/water/CW_NavLightGreen.glb",
+   "tris": 404,
+   "bbox_min_m": [
+    -1.2,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    1.2,
+    1.2,
+    7.1
+   ],
+   "size_m": [
+    2.4,
+    2.4,
+    7.1
+   ],
+   "materials": [
+    "M_CW_LockConcrete",
+    "M_CW_WhiteWall",
+    "M_CW_SignalGreen",
+    "M_CW_GateSteel",
+    "M_Railing",
+    "M_Glass"
+   ],
+   "pivot": "base centre",
+   "desc": "harbour light, green band, 7 m"
+  },
+  "CW_NavLightRed": {
+   "file": "SourceArt/Landmarks/water/CW_NavLightRed.glb",
+   "tris": 404,
+   "bbox_min_m": [
+    -1.2,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    1.2,
+    1.2,
+    7.1
+   ],
+   "size_m": [
+    2.4,
+    2.4,
+    7.1
+   ],
+   "materials": [
+    "M_CW_LockConcrete",
+    "M_CW_WhiteWall",
+    "M_CW_SignalRed",
+    "M_CW_GateSteel",
+    "M_Railing",
+    "M_Glass"
+   ],
+   "pivot": "base centre",
+   "desc": "harbour light, red band, 7 m"
+  },
+  "CW_RiverWalls": {
+   "file": "SourceArt/Landmarks/water/CW_RiverWalls.glb",
+   "tris": 27212,
+   "bbox_min_m": [
+    -223.02,
+    -706.02,
+    -8.0
+   ],
+   "bbox_max_m": [
+    150.02,
+    728.067,
+    0.03
+   ],
+   "size_m": [
+    373.04,
+    1434.087,
+    8.03
+   ],
+   "materials": [
+    "M_CW_WallDark",
+    "M_CW_LockConcrete",
+    "M_CW_GateSteel",
+    "M_CW_Fender"
+   ],
+   "pivot": "plan (950.0, 190.0), plan ground",
+   "segments": 71,
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_Riverwalk": {
+   "file": "SourceArt/Landmarks/water/CW_Riverwalk.glb",
+   "tris": 13108,
+   "bbox_min_m": [
+    -53.996,
+    -386.803,
+    -5.9
+   ],
+   "bbox_max_m": [
+    55.435,
+    384.111,
+    5.1
+   ],
+   "size_m": [
+    109.432,
+    770.914,
+    11.0
+   ],
+   "materials": [
+    "M_DeckPaving",
+    "M_CW_LockConcrete",
+    "M_Railing",
+    "M_Hedge",
+    "M_Timber",
+    "M_Light"
+   ],
+   "pivot": "plan (700.0, 80.0), plan ground",
+   "runs": 2,
+   "terraces": [
+    [
+     521.5,
+     94.8
+    ],
+    [
+     769.2,
+     59.4
+    ],
+    [
+     979.2,
+     51.1
+    ]
+   ],
+   "trees": 22,
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  },
+  "CW_Sloop": {
+   "file": "SourceArt/Landmarks/water/CW_Sloop.glb",
+   "tris": 1818,
+   "bbox_min_m": [
+    -4.4,
+    -1.65,
+    -0.45
+   ],
+   "bbox_max_m": [
+    5.378,
+    1.65,
+    14.55
+   ],
+   "size_m": [
+    9.778,
+    3.299,
+    15.0
+   ],
+   "materials": [
+    "M_CWB_HullWhite",
+    "M_CWB_Stripe",
+    "M_CWB_Boot",
+    "M_CWB_Bottom",
+    "M_CWB_DeckGrey",
+    "M_CWB_Glass",
+    "M_CWB_Teak",
+    "M_CWB_Steel",
+    "M_CWB_Spar",
+    "M_CWB_Canvas"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "33 ft cruising sloop, sails furled (white hull)",
+   "loa_m": 9.48,
+   "beam_m": 3.3
+  },
+  "CW_SloopNavy": {
+   "file": "SourceArt/Landmarks/water/CW_SloopNavy.glb",
+   "tris": 1818,
+   "bbox_min_m": [
+    -4.4,
+    -1.65,
+    -0.45
+   ],
+   "bbox_max_m": [
+    5.378,
+    1.65,
+    14.55
+   ],
+   "size_m": [
+    9.778,
+    3.299,
+    15.0
+   ],
+   "materials": [
+    "M_CWB_HullNavy",
+    "M_CWB_HullWhite",
+    "M_CWB_Boot",
+    "M_CWB_Bottom",
+    "M_CWB_DeckGrey",
+    "M_CWB_Glass",
+    "M_CWB_Teak",
+    "M_CWB_Steel",
+    "M_CWB_Spar",
+    "M_CWB_Canvas"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "33 ft sloop, navy hull",
+   "loa_m": 9.48,
+   "beam_m": 3.3
+  },
+  "CW_SloopSailing": {
+   "file": "SourceArt/Landmarks/water/CW_SloopSailing.glb",
+   "tris": 1751,
+   "bbox_min_m": [
+    -4.4,
+    -1.48,
+    -0.506
+   ],
+   "bbox_max_m": [
+    5.378,
+    3.248,
+    14.241
+   ],
+   "size_m": [
+    9.778,
+    4.728,
+    14.748
+   ],
+   "materials": [
+    "M_CWB_HullWhite",
+    "M_CWB_Stripe",
+    "M_CWB_Boot",
+    "M_CWB_Bottom",
+    "M_CWB_DeckGrey",
+    "M_CWB_Glass",
+    "M_CWB_Teak",
+    "M_CWB_Steel",
+    "M_CWB_Spar",
+    "M_CWB_Sail"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "33 ft sloop under sail (main + jib set)",
+   "loa_m": 9.48,
+   "beam_m": 3.3
+  },
+  "CW_Speedboat": {
+   "file": "SourceArt/Landmarks/water/CW_Speedboat.glb",
+   "tris": 1914,
+   "bbox_min_m": [
+    -9.5,
+    -2.7,
+    -0.7
+   ],
+   "bbox_max_m": [
+    12.125,
+    2.7,
+    3.949
+   ],
+   "size_m": [
+    21.625,
+    5.4,
+    4.649
+   ],
+   "materials": [
+    "M_CWB_HullWhite",
+    "M_CWB_Seat",
+    "M_CWB_HullYellow",
+    "M_CWB_Boot",
+    "M_CWB_DeckGrey",
+    "M_CWB_Glass",
+    "M_CWB_Steel"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "Navy Pier thrill-ride speedboat, 21 m",
+   "loa_m": 21.62,
+   "beam_m": 5.4
+  },
+  "CW_TallShip": {
+   "file": "SourceArt/Landmarks/water/CW_TallShip.glb",
+   "tris": 2244,
+   "bbox_min_m": [
+    -20.304,
+    -4.064,
+    -2.0
+   ],
+   "bbox_max_m": [
+    28.294,
+    4.056,
+    28.751
+   ],
+   "size_m": [
+    48.598,
+    8.12,
+    30.751
+   ],
+   "materials": [
+    "M_CWB_HullWhite",
+    "M_CWB_Maroon",
+    "M_CWB_HullBlack",
+    "M_CWB_Teak",
+    "M_CWB_WoodSpar",
+    "M_CWB_Sail",
+    "M_CWB_Rope",
+    "M_CWB_Seat"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "four-masted schooner, sails furled, 45 m",
+   "loa_m": 37.51,
+   "beam_m": 7.6
+  },
+  "CW_TallShipSailing": {
+   "file": "SourceArt/Landmarks/water/CW_TallShipSailing.glb",
+   "tris": 2107,
+   "bbox_min_m": [
+    -19.887,
+    -4.064,
+    -2.0
+   ],
+   "bbox_max_m": [
+    28.294,
+    4.056,
+    28.751
+   ],
+   "size_m": [
+    48.181,
+    8.12,
+    30.751
+   ],
+   "materials": [
+    "M_CWB_HullWhite",
+    "M_CWB_Maroon",
+    "M_CWB_HullBlack",
+    "M_CWB_Teak",
+    "M_CWB_WoodSpar",
+    "M_CWB_Rope",
+    "M_CWB_Seat",
+    "M_CWB_Sail"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "four-masted schooner under sail",
+   "loa_m": 37.51,
+   "beam_m": 7.6
+  },
+  "CW_TikiBoat": {
+   "file": "SourceArt/Landmarks/water/CW_TikiBoat.glb",
+   "tris": 968,
+   "bbox_min_m": [
+    -2.9,
+    -2.9,
+    -0.3
+   ],
+   "bbox_max_m": [
+    2.9,
+    2.9,
+    3.45
+   ],
+   "size_m": [
+    5.8,
+    5.8,
+    3.75
+   ],
+   "materials": [
+    "M_CWB_HullWhite",
+    "M_CWB_Teak",
+    "M_CWB_Thatch",
+    "M_CWB_Steel"
+   ],
+   "pivot": "waterline centre",
+   "desc": "round tiki pontoon boat, 5 m"
+  },
+  "CW_TourBoat": {
+   "file": "SourceArt/Landmarks/water/CW_TourBoat.glb",
+   "tris": 3290,
+   "bbox_min_m": [
+    -14.3,
+    -3.95,
+    -1.0
+   ],
+   "bbox_max_m": [
+    14.988,
+    3.95,
+    5.948
+   ],
+   "size_m": [
+    29.288,
+    7.9,
+    6.948
+   ],
+   "materials": [
+    "M_CWB_Green",
+    "M_CWB_HullWhite",
+    "M_CWB_HullBlack",
+    "M_CWB_DeckGrey",
+    "M_CWB_Glass",
+    "M_CWB_Teak",
+    "M_CWB_Steel"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "river architecture tour boat, 30 m",
+   "loa_m": 29.08,
+   "beam_m": 7.9
+  },
+  "CW_WaterTaxi": {
+   "file": "SourceArt/Landmarks/water/CW_WaterTaxi.glb",
+   "tris": 1512,
+   "bbox_min_m": [
+    -9.4,
+    -2.9,
+    -0.8
+   ],
+   "bbox_max_m": [
+    10.025,
+    2.9,
+    4.578
+   ],
+   "size_m": [
+    19.425,
+    5.799,
+    5.378
+   ],
+   "materials": [
+    "M_CWB_HullBlack",
+    "M_CWB_HullYellow",
+    "M_CWB_DeckGrey",
+    "M_CWB_Glass",
+    "M_CWB_HullWhite"
+   ],
+   "pivot": "waterline, mid-length; bow toward +X",
+   "desc": "yellow river water taxi, 20 m",
+   "loa_m": 19.43,
+   "beam_m": 5.8
+  },
+  "CW_YachtClubMonroe": {
+   "file": "SourceArt/Landmarks/water/CW_YachtClubMonroe.glb",
+   "tris": 692,
+   "bbox_min_m": [
+    -36.217,
+    -25.81,
+    -0.002
+   ],
+   "bbox_max_m": [
+    30.703,
+    19.7,
+    16.0
+   ],
+   "size_m": [
+    66.921,
+    45.51,
+    16.002
+   ],
+   "materials": [
+    "M_CW_WhiteWall",
+    "M_GlassDark",
+    "M_RoofFlat",
+    "M_CW_DockDeck",
+    "M_CWB_Steel"
+   ],
+   "pivot": "plan (972.0, -712.0), plan ground",
+   "osm": "Chicago Yacht Club - Monroe Station",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+  }
+ },
+ "conventions": {
+  "units": "metres in Blender/GLB; Unreal imports as centimetres",
+  "axes": "Blender (x, y, z) -> Unreal (x, -y, z); boats bow +X, origin on the waterline; site assets plan-frame, placed unrotated",
+  "water_surface_m": -5.5,
+  "generator": "Scripts/landmarks/blender_chicago_water.py"
+ }
+}

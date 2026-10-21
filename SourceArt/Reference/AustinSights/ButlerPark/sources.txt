@@ -1,0 +1,9 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+liz_carpenter_fountain_plaza_doug_sahm_hill.jpg	https://commons.wikimedia.org/wiki/File:Butler_Metro_Park_Austin_View.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Butler_Metro_Park_Austin_View.jpg/960px-Butler_Metro_Park_Austin_View.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Larry D. Moore	CC BY 4.0
+doug_sahm_hill_summit_texas_map_bench.jpg	https://commons.wikimedia.org/wiki/File:Texas_Map_Doug_Sahm_Hill_Austin.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Texas_Map_Doug_Sahm_Hill_Austin.jpg/960px-Texas_Map_Doug_Sahm_Hill_Austin.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Larry D. Moore	CC BY 4.0
+butler_park_pond_overlook_stone_piers.jpg	https://commons.wikimedia.org/wiki/File:Butler_Park_Austin.JPG	https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Butler_Park_Austin.JPG/960px-Butler_Park_Austin.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Fredlyfish4	CC BY-SA 4.0
+fannie_davis_town_lake_gazebo.jpg	https://commons.wikimedia.org/wiki/File:Austin_August_2019_22_(Fannie_Davis_Town_Lake_Gazebo).jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Austin_August_2019_22_%28Fannie_Davis_Town_Lake_Gazebo%29.jpg/960px-Austin_August_2019_22_%28Fannie_Davis_Town_Lake_Gazebo%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Michael Barera	CC BY-SA 4.0

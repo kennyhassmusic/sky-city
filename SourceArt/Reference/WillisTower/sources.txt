@@ -1,0 +1,86 @@
+Willis Tower references (willis-tower agent, 20 Oct 2026). Reference only: never textures in the game, never in Content/.
+Photos: Wikimedia Commons thumbnails (<= 900 px). Data: OpenStreetMap (c) OpenStreetMap contributors, ODbL.
+
+photo_00_aerial_west_PD.jpg
+    https://commons.wikimedia.org/wiki/File:Aerial_view_of_Chicago,_Illinois,_with_a_focus_on_Willis_Tower,_long_known_as_Sears_Tower_LCCN2011636147.tif
+    Carol M. Highsmith | Public domain | original 6595x5145, saved as a <=900 px thumbnail
+    Title: Aerial view of Chicago, Illinois, with a focus on Willis Tower, long known as Sears Tower Physical description: 1 transparency : color ; 4 x 5 
+photo_01_1974_from_NE.jpg
+    https://commons.wikimedia.org/wiki/File:Chicago_(ILL)_Willis_Tower_(_Ex._SEARS_Tower_)_1974,_N-E_side_%22_the_loop_%22_%2B_notes_(4800249673).jpg
+    (vincent desjardins) from Paris, France | CC BY 2.0 | original 4368x2912, saved as a <=900 px thumbnail
+    John Hancock Center gratte-ciel situé au 875 N. Michigan Ave. Il atteint 344 mètres de hauteur (100 étages) et fut dessiné par Bruce Graham. La flèche
+photo_03_skydeck_ledge_inside.jpg
+    https://commons.wikimedia.org/wiki/File:Chicago_-_Willis_Tower_-_Skydeck_Ledge.jpg
+    HaSt | CC BY-SA 4.0 | original 3456x5184, saved as a <=900 px thumbnail
+    Glasbalkon in 412 m Höhe
+photo_04_top_west_face_ledge_2022.jpg
+    https://commons.wikimedia.org/wiki/File:Chicago_in_2022_Top_of_the_Willis_Tower_(52049406730).jpg
+    Chris Rycroft from Madison, Wisconsin, United States | CC BY 2.0 | original 6240x4160, saved as a <=900 px thumbnail
+    With the glass-floored observation decks visible. Taken from near West Adams Street and the Chicago River, Chicago, IL  Chicago in 2022
+photo_05_catalog_podium_wacker_jackson.jpg
+    https://commons.wikimedia.org/wiki/File:Podium,_Sears_Tower,_Wacker_Drive_and_Jackson_Boulevard,_Chicago,_IL.jpg
+    w_lemay | CC BY-SA 2.0 | original 5472x4104, saved as a <=900 px thumbnail
+    Built in 1970-1974, this Modern International-style skyscraper was designed by Skidmore, Owings and Merrill and Fazlur Rahman Khan for Sears, Roebuck 
+photo_06_catalog_podium_2.jpg
+    https://commons.wikimedia.org/wiki/File:Podium,_Sears_Tower,_Wacker_Drive_and_Jackson_Boulevard,_Chicago,_IL_-_54189880849.jpg
+    w_lemay | CC BY-SA 2.0 | original 4284x5712, saved as a <=900 px thumbnail
+    Built in 1970-1974, this Modern International-style skyscraper was designed by Skidmore, Owings and Merrill and Fazlur Rahman Khan for Sears, Roebuck 
+photo_07_west_face_bands_ledge_2024.jpg
+    https://commons.wikimedia.org/wiki/File:Sears_Tower,_Wacker_Drive_and_Jackson_Boulevard,_Chicago,_IL.jpg
+    w_lemay | CC BY-SA 2.0 | original 3024x4032, saved as a <=900 px thumbnail
+    Built in 1970-1974, this Modern International-style skyscraper was designed by Skidmore, Owings and Merrill and Fazlur Rahman Khan for Sears, Roebuck 
+photo_08_from_wacker_jackson.jpg
+    https://commons.wikimedia.org/wiki/File:Sears_Tower,_Wacker_Drive_and_Jackson_Boulevard,_Chicago,_IL_-_54189861428.jpg
+    w_lemay | CC BY-SA 2.0 | original 4284x5712, saved as a <=900 px thumbnail
+    Built in 1970-1974, this Modern International-style skyscraper was designed by Skidmore, Owings and Merrill and Fazlur Rahman Khan for Sears, Roebuck 
+photo_09_from_river_CC0.jpg
+    https://commons.wikimedia.org/wiki/File:Sears_Tower_from_the_Chicago_River,_Chicago,_IL.jpg
+    w_lemay | CC0 | original 2446x2772, saved as a <=900 px thumbnail
+    Built in 1970-1974, this Modern International-style skyscraper was designed by Skidmore, Owings and Merrill and Fazlur Rahman Khan for Sears, Roebuck 
+photo_10_ledge_inside_2.jpg
+    https://commons.wikimedia.org/wiki/File:The_Ledge,_Willis_Tower_Skydeck,_Chicago,_Illinois_(42675297114).jpg
+    Ken Lund from Reno, Nevada, USA | CC BY-SA 2.0 | original 4000x2389, saved as a <=900 px thumbnail
+    The Willis Tower observation deck, called the Skydeck, opened on June 22, 1974. Located on the 103rd floor at an elevation of 1,353 feet (412.4 m), it
+photo_11_antennas_PD.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_Tower,_long_known_as_Sears_Tower,_Chicago,_Illinois_LCCN2011634494_(antennas).tif
+    Carol M. Highsmith | Public domain | original 631x1286, saved as a <=900 px thumbnail
+    Title: Willis Tower, long known as Sears Tower, Chicago, Illinois Physical description: 1 transparency : color ; 4 x 5 in. or smaller.  Notes: Title, 
+photo_12_street_view.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_Tower_Chicago_07.jpg
+    Zakarie Faibis | CC BY-SA 4.0 | original 1536x2048, saved as a <=900 px thumbnail
+    Willis Tower Chicago
+photo_13_night_from_river_PD.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_Tower_Night_View.jpg
+    Matt Kieffer | Public domain | original 4000x6000, saved as a <=900 px thumbnail
+    Night View of Willis Tower
+photo_14_night_adams_wells.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_Tower_night.jpg
+    Daniel Schwen | CC BY-SA 3.0 | original 3000x4370, saved as a <=900 px thumbnail
+    Willis Tower at night in Chicago from the corner of adams and Wells
+photo_16_skyboxes_from_street.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_Tower_skyboxes.jpg
+    Daniel Schwen | CC BY-SA 4.0 | original 2546x1617, saved as a <=900 px thumbnail
+    Glass bottom skyboxes on the west facade of the Willis Tower at the 103rd floor seen from street level.
+photo_17_skyboxes_CC0.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_tower_skyboxes.jpg
+    Abequinn14 | CC0 | original 5184x3456, saved as a <=900 px thumbnail
+    4 skyboxes on the Willis Tower
+
+osm/osm_willis.json
+    Overpass API extract (bbox 41.8775,-87.6375,41.8800,-87.6345): buildings, building:part (tube heights 200/260/355/442 m,
+    Catalog podium parts 5-25 m, rooftop drums), masts (Willis West/East Tower, height 527) and antennas, footways.
+    https://overpass-api.de/api/interpreter  (c) OpenStreetMap contributors, ODbL
+
+Also used (not copied here): SourceArt/Reference/ChicagoParks/WillisTower/ (chicago-parks agent: NAIP aerial, 5 Commons photos incl.
+the CC0 'Willis Tower scheme' with the technical floors 29-32, 64-65, 88-89, 104-108).
+
+Facts (web pages viewed, not saved):
+    https://en.wikipedia.org/wiki/Willis_Tower  - 108 storeys, roof 442 m (1,451 ft), top floor 413 m, Skydeck 103rd floor 412.4 m;
+      nine 75 ft (22.86 m) tubes, 225 ft (68.6 m) square; NW+SE end at floor 50, NE+SW at 66, N+E+S at 90, W+C to 108;
+      antennas 1982, west antenna extended 2000 to 527 m (1,729 ft); black anodised aluminium and bronze-tinted glass,
+      16,000 windows 5 x 8 ft, columns 15 ft (4.57 m) on centre; black louvre bands at floors 29-32, 64-65, 88-89, 104-108;
+      The Ledge: glass boxes ~4 ft (1.2-1.3 m) out from the 103rd-floor west facade over Wacker Drive (4 in 2009, a 5th in 2022);
+      Catalog (Gensler, 2017-22): 3-storey annex on the south and west replacing the plaza, roof garden ~30,000 sq ft.
+    https://skyscraperpage.com/b5  - floor levels (Chicago Building Dept.): 50th 658 ft, 66th 874 ft, 90th 1,186 ft,
+      103rd deck 1,353 ft; main roof deck 1,432 ft (blueprints), roof 1,451 ft; 225 ft between column lines, 229 ft at the outside faces;
+      west antenna 1,730 ft, east antenna 1,710 ft; Franklin St entrance 4 ft below Wacker.

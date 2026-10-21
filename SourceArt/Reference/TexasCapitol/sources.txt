@@ -1,0 +1,51 @@
+Texas State Capitol (Austin) - reference images for Sky City (reference only: never textures in the game, never in Content/)
+Collected 20 Oct 2026 by the austin-capitol agent for Scripts/landmarks/blender_capitol.py.
+
+HABS measured drawings (public domain, US government work): Historic American Buildings Survey, National Park Service,
+HABS TX-3326, "Texas State Capitol, Eleventh Street at Congress Avenue, Austin, Travis County, TX", 79 sheets, 1986-88
+(J. P. White, R. C. Giebner, R. M. Long et al.). Library of Congress record: https://www.loc.gov/pictures/item/tx0398/
+Previews saved here are the LOC 1024 px service images:
+  https://tile.loc.gov/storage-services/service/pnp/habshaer/tx/tx0300/tx0398/sheet/000NNv.jpg   (NN = sheet number)
+Measured at 4000 px from the Wikimedia Commons copies (same scans):
+  https://commons.wikimedia.org/wiki/File:Texas_State_Capitol,_Eleventh_Street_at_Congress_Avenue,_Austin,_Travis_County,_TX_HABS_TEX,227-AUST,13-_(sheet_NN_of_79).tif
+habs/habs_tx3326_sheet01.jpg  title sheet (history: granite change deleted the east and west porticoes)
+habs/habs_tx3326_sheet02.jpg  site plan 1:720 (grounds, Great Walk, drives, monuments, trees, 1986)
+habs/habs_tx3326_sheet10.jpg  first floor plan 1:240 with overall dimensions (537'-11", 172'-1 5/8", 140'-2 1/2", 114'-3 7/8")
+habs/habs_tx3326_sheet42.jpg  dome plans (20 ribs / lucarnes)
+habs/habs_tx3326_sheet43.jpg  roof plan 1:240 (20 peristyle columns, roof forms)
+habs/habs_tx3326_sheet44.jpg  north elevation
+habs/habs_tx3326_sheet46.jpg  north wing, north elevation 1:96 (porch, frontispiece with oculi, pediment)
+habs/habs_tx3326_sheet50.jpg  east elevation
+habs/habs_tx3326_sheet54.jpg  south elevation 1:240 (the main elevation measured on a metre grid)
+habs/habs_tx3326_sheet56.jpg  south wing, south elevation (the great arch)
+habs/habs_tx3326_sheet61.jpg  dome elevation, south
+habs/habs_tx3326_sheet69.jpg  dome and rotunda section looking north, with levels (0'-0" first floor ... 292'-2" top of star)
+habs/habs_tx3326_sheet76.jpg  roof vent towers
+
+Photographs (Wikimedia Commons, 1024 px copies; file, source page, licence, author):
+photos/entrance_lawn_11th.jpg	https://commons.wikimedia.org/wiki/File:Entrance_Lawn.jpg	CC BY-SA 3.0	Curivity
+photos/fence_and_lawn.jpg	https://commons.wikimedia.org/wiki/File:Fence,_Texas_State_Capitol_grounds_-_Austin,_Texas_-_DSC08666.jpg	CC0	Daderot
+photos/pedestrian_gate.jpg	https://commons.wikimedia.org/wiki/File:Texas_Capitol_grounds_02.jpg	CC BY-SA 4.0	Farragutful
+photos/fence_star_pickets.jpg	https://commons.wikimedia.org/wiki/File:Texas_Capitol_grounds_03.jpg	CC BY-SA 4.0	Farragutful
+photos/great_walk_paving.jpg	https://commons.wikimedia.org/wiki/File:Texas_capitol_walk.jpg	CC BY 4.0	Larry D. Moore
+photos/dome_drum.jpg	https://commons.wikimedia.org/wiki/File:Texas_State_Capitol_-_Austin,_Texas_(47556566391).jpg	CC BY-SA 2.0	Tony Webster
+photos/great_walk_view_2020.jpg	https://commons.wikimedia.org/wiki/File:Texas_State_Capitol_from_The_Great_Walk_2020.jpg	CC BY 4.0	Larry D. Moore
+photos/south_front_2025_a.jpg	https://commons.wikimedia.org/wiki/File:2025_Texas_State_Capitol_01.jpg	CC BY-SA 4.0	Farragutful
+photos/south_front_2025_b.jpg	https://commons.wikimedia.org/wiki/File:2025_Texas_State_Capitol_02.jpg	CC BY-SA 4.0	Farragutful
+photos/wing_facade_granite.jpg	https://commons.wikimedia.org/wiki/File:2026-05-26_-_Texas_State_Capitol_-_01.jpg	CC BY-SA 4.0	Oleg Yunakov
+photos/aerial_city.jpg	https://commons.wikimedia.org/wiki/File:TexasStateCapitolAerial.JPG	CC BY-SA 3.0	LoneStarMike
+photos/south_gate_steps.jpg	https://commons.wikimedia.org/wiki/File:Texas_State_Capitol,_Austin,_Texas,_USA_-_20130913.jpg	CC BY-SA 4.0	Jacklee.
+photos/lantern_goddess.jpg	https://commons.wikimedia.org/wiki/File:Texas_State_Capitol_dome_lantern.jpg	CC BY-SA 3.0	Niagara
+photos/aerial_north_extension.jpg	https://commons.wikimedia.org/wiki/File:Texas_state_capitol_extension_aerial.jpg	CC BY-SA 4.0	Toniklemm
+
+Facts used (web, 20 Oct 2026):
+  https://en.wikipedia.org/wiki/Texas_State_Capitol  height 302.64 ft (92.24 m); sunset-red granite from Granite Mountain
+     near Marble Falls; four-storey central block; Goddess of Liberty aluminium replica (1986) of the 1888 zinc statue
+  https://senate.texas.gov/Kids/Tour4.htm  the Goddess stands 15 ft 7 1/2 in
+  https://tspb.texas.gov/prop/tcg/tcg-history/index.html  W. M. Johnson's 1888 grounds: Great Walk of black-and-white
+     diamond-patterned pavement, curving stone-edged carriage drives, 1890 iron fence on granite bases (Mast, Foos & Co.),
+     pedestrian gates at the drives and the Great Walk; 1995-97 restoration of the Great Walk, Oval Walk, fences, gates
+  https://www.tclf.org/landscapes/texas-capitol  fence pickets capped with five-pointed stars; oak-lined Great Walk
+
+Dimensions built to: see the docstring of Scripts/landmarks/blender_capitol.py and the hand-over note
+side-session-notes/.../austin-capitol-2026-10-20.md.

@@ -1,0 +1,51 @@
+McGregor test stands: trenches, aprons, scorch, hardware (mcgregor-tests agent, 20 Oct 2026). REFERENCE ONLY: never
+textures in the game, never in Content/, no logos reproduced. Site frame on the *_grid crops: metres, x east, y north
+(yellow = x, cyan = y), origin lat 31.40375 lon -97.4621 (same as Saved/McGregor/site_research.json).
+
+Satellite / aerial imagery
+esri_2025-04-13_*_grid.jpg        Esri World Imagery (MapServer export), source Vantor WorldView-3 2025-04-13, 0.31 m
+                                  (metadata layer 3: SRC_DATE 20250413, release Raster Basemaps 2026.R02), 0.3-1 m/px crops
+                                  with the site grid drawn on. "Source: Esri, Vantor, Earthstar Geographics, and the GIS User
+                                  Community". https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer
+                                  Made with make_crops.py (esri x0 x1 y0 y1 m_per_px out.jpg grid_m).
+  _raptor_north / _raptor_south   the 2025 stands: vertical cells at the east end, triangular trenches opening WEST
+  _raptor_vertical_2021           the 2021 vertical stand's trench (opens S), ~20 m west of its OSM outline
+  _stage2_stand                   second-stage stand trench (opens S)
+  _first_stage_trench             the existing first-stage trench (no apron yet in April 2025)
+  _merlin_exhaust_fan             the dark exhaust fan east of the Merlin stands
+  _raptor_horizontal_fans         the horizontal bays' scoured exhaust fans (north)
+  _rdh_circle                     the round plaza in front of the Rocket Development Hangar, still empty in April 2025
+  _overview_stands_to_unveil      the two 2025 stands and the unveil field / hangar east of them
+naip_2022_raptor_vertical_2021_grid.jpg   USDA NAIP 2022-07-11 (public domain) via TxGIO NAIP22_NCCIR_60cm: the in-game
+                                  ground photo agrees with Esri on this trench's position.
+layout_over_esri_RN|RS|RV|S2|FS.jpg   this agent's layout (Saved/McGregor/site_features.json "tests") drawn over the Esri
+                                  crops: red = trench rims (terrain cuts), blue = aprons, yellow = pads, white->orange =
+                                  nozzle -> exhaust bay of each timed test, green = stands / tanks. draw_layout.py redraws them.
+apple_*.jpg                       Apple Maps satellite (maps.apple.com, viewed in the built-in browser 20 Oct 2026; winter,
+                                  leaf-off imagery, newer than Esri's): screenshots of
+  _raptor_north_south_overview    both stands with concrete blast aprons west of the trenches (built after April 2025)
+  _raptor_north_trench_apron      Raptor North: trench shadow (deep head), apron 108 x 75 m
+  _raptor_south_scorched_apron    Raptor South: the apron streaked dark with exhaust soot (Kenny's "scorched ground")
+  _first_stage_stand_area / _first_stage_trench_new_apron   the sooty first-stage trench and its new apron to the south
+  _rdh_display_booster_shadow     a tall upright object's long shadow on the circle in front of the RDH: the display
+                                  booster (the upright stage in Kenny's photo unveil/06_building_light_tower_booster.webp)
+google_2026_*.jpg                 Google Maps satellite ("Imagery (c)2026 Airbus, Maxar Technologies"), viewed in the
+                                  built-in browser 20 Oct 2026: the same aprons (dusty exhaust fans on them).
+
+Photos
+nsf_2025-08_raptor_north_south_flyover.jpg   Gary Blair for NASASpaceFlight, published 2025-08-12, "The new McGregor Raptor
+                                  test stands": both 2025 stands with black box cells over dark trenches running toward the
+                                  camera (west), aprons still dirt, tall white tanks at the south stand.
+                                  https://www.nasaspaceflight.com/wp-content/uploads/2025/08/NSF-2025-08-12-02-45-25-156-wmarked-scaled.jpg
+                                  page https://www.nasaspaceflight.com/2025/08/raptor-3-ramps-spacex-mcgregor/
+nsf_2025-08_rvac_trailer_raptor_south_cell.jpg   NSF McGregor Live (Aug 2025): a vacuum engine on a trailer in front of a
+                                  black test cell with two tall white tanks (the south stand).
+                                  https://www.nasaspaceflight.com/wp-content/uploads/2025/08/NSF-2025-08-12-02-40-47-269.jpg
+nsf_2025-08_raptor3_vac_trailer.jpg  NSF McGregor Live (Aug 2025): a newer vacuum engine on its trailer cradle.
+                                  https://www.nasaspaceflight.com/wp-content/uploads/2025/08/NSF-2025-08-12-00-07-16-499-1170x706.jpg
+(also used, already in ../research: nsf_2025-08_raptor_north_bay_r3.jpg, the engine hanging in an open bay of a cell)
+
+Text
+NSF 2025-08-11 "Raptor 3 testing ramps up at SpaceX McGregor": Raptor North's second firing 19 s; Raptor South records 152,
+180, 201 s; 13 firings in a row on the vertical stand; "horizontal and vertical test bays".
+https://www.nasaspaceflight.com/2025/08/raptor-3-ramps-spacex-mcgregor/

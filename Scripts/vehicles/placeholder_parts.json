@@ -1,0 +1,454 @@
+{
+ "Robotaxi": {
+  "size_m": [
+   4.339,
+   1.754,
+   1.245
+  ],
+  "paint": "Paint_Gold",
+  "parts": {
+   "Body": {
+    "pivot_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "file": "TV_Robotaxi_Body.glb"
+   },
+   "Wheel_FL": {
+    "pivot_m": [
+     1.369,
+     0.738,
+     0.3646
+    ],
+    "radius": 0.3646,
+    "width": 0.2865,
+    "steer": true,
+    "file": "TV_Robotaxi_Wheel_FL.glb"
+   },
+   "Wheel_FR": {
+    "pivot_m": [
+     1.369,
+     -0.738,
+     0.3646
+    ],
+    "radius": 0.3646,
+    "width": 0.2865,
+    "steer": true,
+    "file": "TV_Robotaxi_Wheel_FR.glb"
+   },
+   "Wheel_RL": {
+    "pivot_m": [
+     -1.3114,
+     0.738,
+     0.3646
+    ],
+    "radius": 0.3646,
+    "width": 0.2865,
+    "steer": false,
+    "file": "TV_Robotaxi_Wheel_RL.glb"
+   },
+   "Wheel_RR": {
+    "pivot_m": [
+     -1.3114,
+     -0.738,
+     0.3646
+    ],
+    "radius": 0.3646,
+    "width": 0.2865,
+    "steer": false,
+    "file": "TV_Robotaxi_Wheel_RR.glb"
+   }
+  },
+  "lights": {
+   "sockets": {
+    "Headlight_L": [
+     2.0083,
+     0.4664,
+     0.6244
+    ],
+    "Headlight_R": [
+     2.0083,
+     -0.4664,
+     0.6244
+    ],
+    "Taillight_L": [
+     -2.0801,
+     0.3676,
+     0.8052
+    ],
+    "Taillight_R": [
+     -2.08,
+     -0.3692,
+     0.8056
+    ]
+   }
+  }
+ },
+ "Model3": {
+  "size_m": [
+   4.719,
+   2.088,
+   1.315
+  ],
+  "paint": "Paint_BlueGloss",
+  "parts": {
+   "Body": {
+    "pivot_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "file": "TV_Model3_Body.glb"
+   },
+   "Wheel_FL": {
+    "pivot_m": [
+     1.4817,
+     0.7983,
+     0.3324
+    ],
+    "radius": 0.3318,
+    "width": 0.2488,
+    "steer": true,
+    "file": "TV_Model3_Wheel_FL.glb"
+   },
+   "Wheel_FR": {
+    "pivot_m": [
+     1.4817,
+     -0.7983,
+     0.3324
+    ],
+    "radius": 0.3318,
+    "width": 0.2488,
+    "steer": true,
+    "file": "TV_Model3_Wheel_FR.glb"
+   },
+   "Wheel_RL": {
+    "pivot_m": [
+     -1.3933,
+     0.7983,
+     0.3324
+    ],
+    "radius": 0.3324,
+    "width": 0.2526,
+    "steer": false,
+    "file": "TV_Model3_Wheel_RL.glb"
+   },
+   "Wheel_RR": {
+    "pivot_m": [
+     -1.3933,
+     -0.7983,
+     0.3324
+    ],
+    "radius": 0.3324,
+    "width": 0.2526,
+    "steer": false,
+    "file": "TV_Model3_Wheel_RR.glb"
+   }
+  },
+  "lights": {
+   "sockets": {
+    "Headlight_L": [
+     2.0015,
+     0.6847,
+     0.6828
+    ],
+    "Headlight_R": [
+     2.0015,
+     -0.6847,
+     0.6828
+    ],
+    "Taillight_L": [
+     -2.0957,
+     0.6791,
+     0.9012
+    ],
+    "Taillight_R": [
+     -2.0957,
+     -0.6791,
+     0.9012
+    ]
+   }
+  }
+ },
+ "ModelY": {
+  "size_m": [
+   4.789,
+   2.124,
+   1.486
+  ],
+  "paint": "Paint_RedGloss",
+  "parts": {
+   "Body": {
+    "pivot_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "file": "TV_ModelY_Body.glb"
+   },
+   "Wheel_FL": {
+    "pivot_m": [
+     1.4838,
+     0.8053,
+     0.3686
+    ],
+    "radius": 0.3686,
+    "width": 0.2944,
+    "steer": true,
+    "file": "TV_ModelY_Wheel_FL.glb"
+   },
+   "Wheel_FR": {
+    "pivot_m": [
+     1.4838,
+     -0.8053,
+     0.3686
+    ],
+    "radius": 0.3686,
+    "width": 0.2944,
+    "steer": true,
+    "file": "TV_ModelY_Wheel_FR.glb"
+   },
+   "Wheel_RL": {
+    "pivot_m": [
+     -1.4178,
+     0.8053,
+     0.3686
+    ],
+    "radius": 0.3686,
+    "width": 0.2944,
+    "steer": false,
+    "file": "TV_ModelY_Wheel_RL.glb"
+   },
+   "Wheel_RR": {
+    "pivot_m": [
+     -1.4178,
+     -0.8053,
+     0.3686
+    ],
+    "radius": 0.3686,
+    "width": 0.2944,
+    "steer": false,
+    "file": "TV_ModelY_Wheel_RR.glb"
+   }
+  },
+  "lights": {
+   "sockets": {
+    "Headlight_L": [
+     2.1628,
+     0.5912,
+     0.746
+    ],
+    "Headlight_R": [
+     2.1628,
+     -0.5911,
+     0.746
+    ],
+    "Taillight_L": [
+     -2.1557,
+     0.4569,
+     1.0977
+    ],
+    "Taillight_R": [
+     -2.1557,
+     -0.4569,
+     1.0977
+    ]
+   }
+  }
+ },
+ "Cybertruck": {
+  "size_m": [
+   5.98,
+   2.28,
+   1.9
+  ],
+  "paint": null,
+  "parts": {
+   "Body": {
+    "pivot_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "file": "TV_Cybertruck_Body.glb"
+   },
+   "Wheel_FL": {
+    "pivot_m": [
+     2.1,
+     0.996,
+     0.461
+    ],
+    "radius": 0.46,
+    "width": 0.355,
+    "steer": true,
+    "file": "TV_Cybertruck_Wheel_FL.glb"
+   },
+   "Wheel_FR": {
+    "pivot_m": [
+     2.1,
+     -0.996,
+     0.461
+    ],
+    "radius": 0.46,
+    "width": 0.355,
+    "steer": true,
+    "file": "TV_Cybertruck_Wheel_FR.glb"
+   },
+   "Wheel_RL": {
+    "pivot_m": [
+     -1.8,
+     0.996,
+     0.461
+    ],
+    "radius": 0.46,
+    "width": 0.355,
+    "steer": false,
+    "file": "TV_Cybertruck_Wheel_RL.glb"
+   },
+   "Wheel_RR": {
+    "pivot_m": [
+     -1.8,
+     -0.996,
+     0.461
+    ],
+    "radius": 0.46,
+    "width": 0.355,
+    "steer": false,
+    "file": "TV_Cybertruck_Wheel_RR.glb"
+   }
+  },
+  "lights": {
+   "sockets": {
+    "Headlight_L": [
+     2.8066,
+     0.6369,
+     0.9693
+    ],
+    "Headlight_R": [
+     2.8066,
+     -0.6369,
+     0.9693
+    ],
+    "Taillight_L": [
+     -2.9138,
+     0.5791,
+     1.1751
+    ],
+    "Taillight_R": [
+     -2.9138,
+     -0.5791,
+     1.1751
+    ]
+   }
+  }
+ },
+ "Semi": {
+  "size_m": [
+   7.34,
+   2.775,
+   3.732
+  ],
+  "paint": "Paint_Silver",
+  "parts": {
+   "Body": {
+    "pivot_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "file": "TV_Semi_Body.glb"
+   },
+   "Wheel_A1L": {
+    "pivot_m": [
+     2.2525,
+     1.1151,
+     0.5186
+    ],
+    "radius": 0.5186,
+    "width": 0.3477,
+    "steer": true,
+    "file": "TV_Semi_Wheel_A1L.glb"
+   },
+   "Wheel_A1R": {
+    "pivot_m": [
+     2.2525,
+     -1.1126,
+     0.5186
+    ],
+    "radius": 0.5186,
+    "width": 0.3477,
+    "steer": true,
+    "file": "TV_Semi_Wheel_A1R.glb"
+   },
+   "Wheel_A2L": {
+    "pivot_m": [
+     -0.8099,
+     1.0169,
+     0.5186
+    ],
+    "radius": 0.5186,
+    "width": 0.3325,
+    "steer": false,
+    "file": "TV_Semi_Wheel_A2L.glb"
+   },
+   "Wheel_A2R": {
+    "pivot_m": [
+     -0.8099,
+     -1.0169,
+     0.5186
+    ],
+    "radius": 0.5186,
+    "width": 0.3325,
+    "steer": false,
+    "file": "TV_Semi_Wheel_A2R.glb"
+   },
+   "Wheel_A3L": {
+    "pivot_m": [
+     -1.9121,
+     1.0169,
+     0.5186
+    ],
+    "radius": 0.5186,
+    "width": 0.3325,
+    "steer": false,
+    "file": "TV_Semi_Wheel_A3L.glb"
+   },
+   "Wheel_A3R": {
+    "pivot_m": [
+     -1.9121,
+     -1.0169,
+     0.5186
+    ],
+    "radius": 0.5186,
+    "width": 0.3325,
+    "steer": false,
+    "file": "TV_Semi_Wheel_A3R.glb"
+   }
+  },
+  "lights": {
+   "sockets": {
+    "Headlight_L": [
+     3.38,
+     1.05,
+     0.93
+    ],
+    "Headlight_R": [
+     3.38,
+     -1.05,
+     0.93
+    ],
+    "Taillight_L": [
+     -2.5876,
+     0.5592,
+     0.7216
+    ],
+    "Taillight_R": [
+     -2.5887,
+     -0.5598,
+     0.7178
+    ]
+   }
+  }
+ }
+}

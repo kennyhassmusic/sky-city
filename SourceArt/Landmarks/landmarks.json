@@ -1,0 +1,859 @@
+{
+  "assets": {
+    "LM_BridgeLeaf": {
+      "file": "SourceArt/Landmarks/meshes/LM_BridgeLeaf.glb",
+      "tris": 26134,
+      "bbox_min_m": [
+        -14.5,
+        -30.2,
+        -7.0
+      ],
+      "bbox_max_m": [
+        14.5,
+        6.0,
+        6.12
+      ],
+      "size_m": [
+        29.0,
+        36.2,
+        13.12
+      ],
+      "materials": [
+        "M_Asphalt",
+        "M_BridgeSteel",
+        "M_Limestone",
+        "M_Concrete",
+        "M_Railing",
+        "M_Light"
+      ],
+      "pivot": "ORIGIN = PIVOT (trunnion line at the heel, deck top level). Axis = Blender X = Unreal Y. Open by pitching the tip up (Unreal +pitch; Blender rotation_euler.x negative). Real DuSable leaves open to ~80 deg.",
+      "deck": {
+        "length_m": 30.0,
+        "width_m": 28.0,
+        "roadway_x_m": [
+          -9.5,
+          9.5
+        ],
+        "sidewalks_x_m": [
+          [
+            -14.0,
+            -10.0
+          ],
+          [
+            10.0,
+            14.0
+          ]
+        ],
+        "deck_top_z": 0.0,
+        "sidewalk_top_z": 0.2
+      },
+      "pair": "second leaf: same pivot height, rotated 180 deg about Z with its origin 60 m from the first along the leaf axis; tips meet at 30 m",
+      "underside_depth_m": {
+        "heel": 5.0,
+        "tip": 1.4
+      },
+      "counterweight": "y 0.4..6.0 m behind the pivot, z -1.4..-7.0 (keep it inside the abutment pit)"
+    },
+    "LM_BridgeRailing10": {
+      "file": "SourceArt/Landmarks/meshes/LM_BridgeRailing10.glb",
+      "tris": 3596,
+      "bbox_min_m": [
+        -0.18,
+        -10.18,
+        0.0
+      ],
+      "bbox_max_m": [
+        0.18,
+        0.18,
+        1.35
+      ],
+      "size_m": [
+        0.36,
+        10.36,
+        1.35
+      ],
+      "materials": [
+        "M_Railing"
+      ],
+      "pivot": "railing start, base centreline (0,0,0); runs to y = -10 (Unreal +X 1000 cm); posts at 0, 5, 10 m",
+      "key_heights_m": {
+        "top_rail": 1.12,
+        "finials": 1.35
+      },
+      "tiling": "repeat every 10 m; end posts coincide when tiled"
+    },
+    "LM_BridgeTenderHouse": {
+      "file": "SourceArt/Landmarks/meshes/LM_BridgeTenderHouse.glb",
+      "tris": 2601,
+      "bbox_min_m": [
+        -3.45,
+        -4.45,
+        0.0
+      ],
+      "bbox_max_m": [
+        3.45,
+        4.45,
+        12.0
+      ],
+      "size_m": [
+        6.9,
+        8.9,
+        12.0
+      ],
+      "materials": [
+        "M_Limestone",
+        "M_Glass",
+        "M_Bronze",
+        "M_RoofFlat"
+      ],
+      "pivot": "ground centre (0,0,0); relief faces at y = -4 / +4 (Unreal +X / -X): face them along the roadway",
+      "footprint_m": [
+        6.6,
+        8.6
+      ],
+      "key_heights_m": {
+        "plinth": 1.2,
+        "cornice": 10.6,
+        "top": 12.0
+      },
+      "placement": "one at each corner of the bridge, beside the leaf heel (outside the 28 m deck), e.g. x = +/-18 m from the road axis"
+    },
+    "LM_BuckinghamFountain": {
+      "file": "SourceArt/Landmarks/meshes/LM_BuckinghamFountain.glb",
+      "tris": 35140,
+      "bbox_min_m": [
+        -42.7,
+        -42.7,
+        0.0
+      ],
+      "bbox_max_m": [
+        42.7,
+        42.7,
+        11.3
+      ],
+      "size_m": [
+        85.4,
+        85.4,
+        11.3
+      ],
+      "materials": [
+        "M_PinkMarble",
+        "M_Water",
+        "M_Concrete",
+        "M_Verdigris"
+      ],
+      "pivot": "fountain centre on the ground (0,0,0); place at the plan point (731.6, -1300.15) with no rotation",
+      "key_heights_m": {
+        "pool_coping_top": 0.62,
+        "pool_water": 0.32,
+        "lower_basin_lip": 1.95,
+        "lower_water": 1.72,
+        "middle_basin_lip": 5.55,
+        "middle_water": 5.45,
+        "upper_basin_lip": 9.4,
+        "upper_water": 9.17,
+        "finial_top": 11.3
+      },
+      "diameters_m": {
+        "pool_across_lobes": 85.4,
+        "lower_basin": 31.4,
+        "middle_basin": 18.3,
+        "upper_basin": 7.3
+      },
+      "sea_horses": "4 pairs (8) on the diagonal bastions at radius 29.4 m (OSM artwork nodes), verdigris",
+      "notes": "pool = four lobes r 25.8 m centred 16.9 m out + square bastions at (+/-30.5, +/-30.5) (OSM); jets: LM_BuckinghamJets"
+    },
+    "LM_BuckinghamJets": {
+      "file": "SourceArt/Landmarks/meshes/LM_BuckinghamJets.glb",
+      "tris": 14560,
+      "bbox_min_m": [
+        -29.7,
+        -29.7,
+        0.243
+      ],
+      "bbox_max_m": [
+        29.7,
+        29.7,
+        46.0
+      ],
+      "size_m": [
+        59.4,
+        59.4,
+        45.757
+      ],
+      "materials": [
+        "M_WaterJet"
+      ],
+      "pivot": "same origin as LM_BuckinghamFountain: place both at the same transform and toggle this one",
+      "key_heights_m": {
+        "centre_jet_top": 46.0,
+        "centre_nozzle": 11.2
+      },
+      "notes": "translucent spray shapes on M_WaterJet (use a two-sided translucent/additive material): centre core + spray sheath, 20 lower-ring + 16 middle-ring + 8 upper jets, 8 sea-horse spouts, cascades off all three lips"
+    },
+    "LM_BuckinghamPlaza": {
+      "file": "SourceArt/Landmarks/meshes/LM_BuckinghamPlaza.glb",
+      "tris": 7594,
+      "bbox_min_m": [
+        -128.12,
+        -108.52,
+        -0.3
+      ],
+      "bbox_max_m": [
+        128.12,
+        118.72,
+        7.8
+      ],
+      "size_m": [
+        256.24,
+        227.24,
+        8.1
+      ],
+      "materials": [
+        "M_PinkPaver",
+        "M_GraniteDark",
+        "M_Lawn",
+        "M_Railing",
+        "M_PinkMarble",
+        "M_Roof",
+        "M_Glass",
+        "M_Hedge",
+        "M_Light"
+      ],
+      "pivot": "plan (731.6, -1300.15) = the fountain's centre, on the ground (LM_BuckinghamFountain / Jets go at the same point)",
+      "paving_top_m": 0.06,
+      "extent_plan_m": {
+        "x": [
+          613.0,
+          840.0
+        ],
+        "y": [
+          -1428.15,
+          -1172.15
+        ]
+      },
+      "notes": "pink paver plaza (octagon + N/S necks + arms to Columbus Dr and toward Lake Shore Dr), lawn ring and hoop fence round the pool, 4 pavilions with copper roofs, boxwood hedges, lamp standards",
+      "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+    },
+    "LM_CentennialWheel_Frame": {
+      "file": "SourceArt/Landmarks/meshes/LM_CentennialWheel_Frame.glb",
+      "tris": 1164,
+      "bbox_min_m": [
+        -18.5,
+        -9.0,
+        0.0
+      ],
+      "bbox_max_m": [
+        18.5,
+        26.0,
+        32.1
+      ],
+      "size_m": [
+        37.0,
+        35.0,
+        32.1
+      ],
+      "materials": [
+        "M_Concrete",
+        "M_Steel",
+        "M_WheelWhite",
+        "M_Railing",
+        "M_Light"
+      ],
+      "pivot": "ground point under the hub (0,0,0); hub centre at (0,0,30.8) m",
+      "key_heights_m": {
+        "hub": 30.8,
+        "platform_top": 0.6,
+        "boarding_deck": 1.0,
+        "overall_top_of_rim": 58.64
+      },
+      "notes": "wheel plane = Blender XZ (Unreal YZ); back legs rake toward Blender +Y (Unreal -X); platform 46 x 40 m"
+    },
+    "LM_CentennialWheel_Gondola": {
+      "file": "SourceArt/Landmarks/meshes/LM_CentennialWheel_Gondola.glb",
+      "tris": 844,
+      "bbox_min_m": [
+        -1.307,
+        -1.15,
+        -3.2
+      ],
+      "bbox_max_m": [
+        1.307,
+        1.15,
+        0.19
+      ],
+      "size_m": [
+        2.614,
+        2.3,
+        3.39
+      ],
+      "materials": [
+        "M_Gondola",
+        "M_Glass",
+        "M_Steel"
+      ],
+      "pivot": "HANGER PIVOT (0,0,0) = the rotor's gondola axle; cabin hangs to z = -3.2 m",
+      "size_note": "cabin 2.6 m (Blender X) x 2.0 m (Y) x 2.25 m, glass band 1.2 m",
+      "placement": "for each k: position = hub + R_rotor(angle) * attachment_k, rotation = world upright (do not inherit rotor roll)"
+    },
+    "LM_CentennialWheel_Rotor": {
+      "file": "SourceArt/Landmarks/meshes/LM_CentennialWheel_Rotor.glb",
+      "tris": 17584,
+      "bbox_min_m": [
+        -27.84,
+        -3.789,
+        -27.831
+      ],
+      "bbox_max_m": [
+        27.84,
+        3.789,
+        27.831
+      ],
+      "size_m": [
+        55.68,
+        7.578,
+        55.663
+      ],
+      "materials": [
+        "M_WheelWhite",
+        "M_Steel",
+        "M_Light"
+      ],
+      "pivot": "HUB CENTRE (0,0,0). Place at frame origin + (0,0,30.8) m (Unreal Z +3080 cm). Spins about Blender Y = Unreal X (roll).",
+      "gondola_attachment": {
+        "count": 42,
+        "radius_m": 26.6,
+        "blender_offset_from_hub_m": "(R sin(2 pi k/42), 0, -R cos(2 pi k/42)), k = 0 at the bottom",
+        "unreal_offset_from_hub_cm": "(0, -R sin(2 pi k/42), -R cos(2 pi k/42)) * 100"
+      },
+      "rim": {
+        "outer_chord_radius_m": 27.6,
+        "inner_chord_radius_m": 26.0,
+        "ring_planes_y_m": [
+          -1.75,
+          1.75
+        ]
+      },
+      "notes": "21 main spoke pairs (LED strips on M_Light) + crossing tension rods; gondola axles on M_Steel"
+    },
+    "LM_CloudGate": {
+      "file": "SourceArt/Landmarks/meshes/LM_CloudGate.glb",
+      "tris": 51264,
+      "bbox_min_m": [
+        -10.0,
+        -6.4,
+        0.0
+      ],
+      "bbox_max_m": [
+        10.0,
+        6.4,
+        10.0
+      ],
+      "size_m": [
+        20.0,
+        12.8,
+        10.0
+      ],
+      "materials": [
+        "M_MirrorSteel"
+      ],
+      "pivot": "base centre (0,0,0); stands on its two feet at x = +/-7 m",
+      "long_axis": "Blender X (Unreal Y); the long sides face -Y/+Y (Unreal +X/-X)",
+      "key_heights_m": {
+        "top": 10.0,
+        "arch_on_long_sides": 3.5,
+        "omphalos_apex": 8.15
+      },
+      "notes": "analytic smooth surface, smooth normals; M_MirrorSteel metallic 1 roughness 0.03"
+    },
+    "LM_CloudGatePlaza": {
+      "file": "SourceArt/Landmarks/meshes/LM_CloudGatePlaza.glb",
+      "tris": 20100,
+      "bbox_min_m": [
+        -71.3,
+        -43.2,
+        -0.3
+      ],
+      "bbox_max_m": [
+        64.7,
+        61.0,
+        1.47
+      ],
+      "size_m": [
+        136.0,
+        104.2,
+        1.77
+      ],
+      "materials": [
+        "M_Granite",
+        "M_GraniteDark",
+        "M_RinkSurface",
+        "M_Railing",
+        "M_Hedge",
+        "M_Limestone",
+        "M_GranitePromenade"
+      ],
+      "pivot": "plan (369.8, -538.7) = Cloud Gate's centre, on the ground; LM_CloudGate stands at (0, 0, 0.45) m on the deck",
+      "deck_top_m": 0.45,
+      "paving_top_m": 0.06,
+      "extent_plan_m": {
+        "x": [
+          308.8,
+          413.0
+        ],
+        "y": [
+          -610.0,
+          -474.0
+        ]
+      },
+      "notes": "granite plaza (3 steps up) with balustrades, real step flights and ramps, perimeter planters; street-level McCormick Tribune Plaza with the rink outline; Chase Promenade and the Washington / Madison walks",
+      "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+    },
+    "LM_CloudGatePlazaSteps": {
+      "file": "SourceArt/Landmarks/meshes/LM_CloudGatePlazaSteps.glb",
+      "tris": 144,
+      "bbox_min_m": [
+        -31.0,
+        -19.4,
+        -0.24
+      ],
+      "bbox_max_m": [
+        32.2,
+        22.0,
+        0.45
+      ],
+      "size_m": [
+        63.2,
+        41.4,
+        0.69
+      ],
+      "materials": [
+        "M_Granite"
+      ],
+      "pivot": "same as LM_CloudGatePlaza",
+      "collision": "NONE: the treads are visual; LM_CloudGatePlaza holds a hidden ramp under each flight so the car can drive up them",
+      "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+    },
+    "LM_NavyPierBallroom": {
+      "file": "SourceArt/Landmarks/meshes/LM_NavyPierBallroom.glb",
+      "tris": 11068,
+      "bbox_min_m": [
+        -7.45,
+        -888.35,
+        0.06
+      ],
+      "bbox_max_m": [
+        53.45,
+        -825.5,
+        37.068
+      ],
+      "size_m": [
+        60.9,
+        62.85,
+        37.008
+      ],
+      "materials": [
+        "M_Brick",
+        "M_Glass",
+        "M_Limestone",
+        "M_Roof",
+        "M_RoofRib",
+        "M_GlassDark"
+      ],
+      "pivot": "plan (1496.0, 451.0) on the ground (same as LM_NavyPierDeck)",
+      "drum": {
+        "centre_plan_m": [
+          2354.0,
+          474.0
+        ],
+        "radius_m": 29.75,
+        "cornice_m": 14.6
+      },
+      "dome_crown_m": 25.0,
+      "towers_top_m": 37.1,
+      "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+    },
+    "LM_NavyPierBuildings": {
+      "file": "SourceArt/Landmarks/meshes/LM_NavyPierBuildings.glb",
+      "tris": 69190,
+      "bbox_min_m": [
+        -42.9,
+        -822.4,
+        0.0
+      ],
+      "bbox_max_m": [
+        58.4,
+        2.55,
+        38.078
+      ],
+      "size_m": [
+        101.3,
+        824.95,
+        38.078
+      ],
+      "materials": [
+        "M_Brick",
+        "M_Glass",
+        "M_RoofFlat",
+        "M_Limestone",
+        "M_GlassDark",
+        "M_Roof",
+        "M_Steel",
+        "M_Carousel",
+        "M_WheelWhite",
+        "M_Lawn",
+        "M_Membrane",
+        "M_DeckConcrete",
+        "M_GarageOpening",
+        "M_HotelBrick"
+      ],
+      "pivot": "plan (1496.0, 451.0) on the ground (same as LM_NavyPierDeck)",
+      "buildings_plan_m": {
+        "headhouse_front": [
+          1496,
+          1512
+        ],
+        "twin_towers_y": [
+          427.7,
+          482.6
+        ],
+        "family_pavilion": [
+          1512,
+          1572
+        ],
+        "crystal_gardens": [
+          1572,
+          1625
+        ],
+        "pier_park": [
+          1625,
+          1800
+        ],
+        "skyline_stage": [
+          1708.7,
+          1784.2
+        ],
+        "shakespeare": [
+          1786,
+          1870
+        ],
+        "garage": [
+          1799.5,
+          1863
+        ],
+        "festival_hall": [
+          1863,
+          2220
+        ],
+        "sable_hotel": [
+          1951.1,
+          2186.4
+        ],
+        "west_terminal": [
+          2220,
+          2241
+        ],
+        "lakeview_terrace": [
+          2241,
+          2318
+        ]
+      },
+      "y_band_m": [
+        406.4,
+        496.4
+      ],
+      "notes": "buildings keep between the plan's pier roads (y 406.4..496.4); Festival Hall's real north wing (to y 514) is cut back so the north drive stays continuous",
+      "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+    },
+    "LM_NavyPierDeck": {
+      "file": "SourceArt/Landmarks/meshes/LM_NavyPierDeck.glb",
+      "tris": 21278,
+      "bbox_min_m": [
+        -68.32,
+        -927.32,
+        -7.0
+      ],
+      "bbox_max_m": [
+        90.32,
+        30.32,
+        12.5
+      ],
+      "size_m": [
+        158.64,
+        957.64,
+        19.5
+      ],
+      "materials": [
+        "M_DeckConcrete",
+        "M_DockWall",
+        "M_Asphalt",
+        "M_DockWallDark",
+        "M_Timber",
+        "M_SidewalkConcrete",
+        "M_DeckPaving",
+        "M_GraniteDark",
+        "M_Railing",
+        "M_Steel",
+        "M_Light"
+      ],
+      "pivot": "plan (1496.0, 451.0) (headhouse west facade, pier centreline) on the ground; z 0 = plan ground",
+      "deck": "real outline x 1496..2423 (929 m), y 383..521.5 (138.5 m) at the west, 91 m at the east end; dock walls to z -7.0",
+      "map_edge_plan_x": 1723.0,
+      "notes": "east of the plan edge: north drive (Grand Ave lanes) to the turning circle, south promenade with tree pits, railings, lamps, East End Plaza flagpoles; inside the plan only dock walls under the roads + central paving",
+      "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+    },
+    "LM_NavyPierHeadhouse": {
+      "file": "SourceArt/Landmarks/meshes/LM_NavyPierHeadhouse.glb",
+      "tris": 10920,
+      "bbox_min_m": [
+        -42.5,
+        -14.95,
+        0.0
+      ],
+      "bbox_max_m": [
+        42.5,
+        12.5,
+        39.15
+      ],
+      "size_m": [
+        85.0,
+        27.45,
+        39.15
+      ],
+      "materials": [
+        "M_Brick",
+        "M_Glass",
+        "M_Limestone",
+        "M_RoofFlat",
+        "M_Roof"
+      ],
+      "pivot": "ground centre (0,0,0); entrance facade at y = -14.5 (Unreal +X)",
+      "key_heights_m": {
+        "main_cornice": 15.6,
+        "pavilion": 20.0,
+        "tower_belvedere": [
+          26.9,
+          31.9
+        ],
+        "tower_top": 39.15
+      },
+      "connect": "back wall at y = +12: place LM_NavyPierShed rotated 180 deg about Z with its origin at y = +12 to run the pier toward +Y"
+    },
+    "LM_NavyPierShed": {
+      "file": "SourceArt/Landmarks/meshes/LM_NavyPierShed.glb",
+      "tris": 7182,
+      "bbox_min_m": [
+        -45.25,
+        -60.0,
+        -4.0
+      ],
+      "bbox_max_m": [
+        45.25,
+        0.0,
+        19.301
+      ],
+      "size_m": [
+        90.5,
+        60.0,
+        23.301
+      ],
+      "materials": [
+        "M_Concrete",
+        "M_Steel",
+        "M_Railing",
+        "M_Asphalt",
+        "M_Limestone",
+        "M_Light",
+        "M_Brick",
+        "M_Glass",
+        "M_Roof"
+      ],
+      "pivot": "deck top at the module's start edge, pier centreline (0,0,0); module runs to y = -60 (Unreal +X 6000 cm)",
+      "tiling": "repeat every 60 m along -Y (Unreal +X); end walls are closed and coincide back-to-back when tiled",
+      "cross_section_x_m": {
+        "edge_railings": [
+          -44.75,
+          44.75
+        ],
+        "promenade": [
+          -45,
+          -30
+        ],
+        "south_hall": [
+          -30,
+          -6
+        ],
+        "concourse": [
+          -6,
+          6
+        ],
+        "north_hall": [
+          6,
+          30
+        ],
+        "road": [
+          31,
+          41
+        ],
+        "walk": [
+          41.25,
+          44.7
+        ]
+      },
+      "key_heights_m": {
+        "deck_top": 0.0,
+        "dock_bottom": -4.0,
+        "hall_cornice": 11.5,
+        "eaves": 13.0,
+        "ridge": 16.5,
+        "vault_crown": 19.0
+      },
+      "notes": "set the lake surface ~1.5-2.5 m below the deck; lamps on M_Light"
+    },
+    "LM_PolkBrosJets": {
+      "file": "SourceArt/Landmarks/meshes/LM_PolkBrosJets.glb",
+      "tris": 3264,
+      "bbox_min_m": [
+        -6.29,
+        59.36,
+        0.025
+      ],
+      "bbox_max_m": [
+        12.79,
+        78.44,
+        5.8
+      ],
+      "size_m": [
+        19.079,
+        19.079,
+        5.775
+      ],
+      "materials": [
+        "M_WaterJet"
+      ],
+      "pivot": "plan (1496.0, 451.0) (same as LM_NavyPierDeck)",
+      "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+    },
+    "LM_PolkBrosPark": {
+      "file": "SourceArt/Landmarks/meshes/LM_PolkBrosPark.glb",
+      "tris": 1958,
+      "bbox_min_m": [
+        -44.6,
+        -0.0,
+        -0.3
+      ],
+      "bbox_max_m": [
+        45.4,
+        104.0,
+        5.4
+      ],
+      "size_m": [
+        90.0,
+        104.0,
+        5.7
+      ],
+      "materials": [
+        "M_ParkPaver",
+        "M_MosaicBlue",
+        "M_MosaicYellow",
+        "M_GraniteDark",
+        "M_Water",
+        "M_DeckPaving",
+        "M_Hedge",
+        "M_WheelWhite",
+        "M_Steel"
+      ],
+      "pivot": "plan (1496.0, 451.0) on the ground (same as LM_NavyPierDeck)",
+      "fountain_centre_plan_m": [
+        1427.1,
+        454.25
+      ],
+      "fountain_radius_m": 11.3,
+      "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the site origin with NO rotation"
+    }
+  },
+  "conventions": {
+    "units": "metres in Blender/GLB; Unreal imports as centimetres",
+    "axes": "Blender (x, y, z) -> Unreal (x, -y, z) (glTF import, verified): Blender +X = Unreal +X = plan north; site assets are plan-frame, placed unrotated",
+    "origin": "centred on the origin, standing on z = 0, except where 'pivot' says otherwise",
+    "generator": "Scripts/landmarks/blender_landmarks.py"
+  },
+  "assembly": {
+    "sites": {
+      "bean": {
+        "origin_plan_m": [
+          369.8,
+          -538.7
+        ],
+        "unreal_cm": [
+          -53870.00000000001,
+          36980.0
+        ]
+      },
+      "fountain": {
+        "origin_plan_m": [
+          731.6,
+          -1300.15
+        ],
+        "unreal_cm": [
+          -130015.00000000001,
+          73160.0
+        ]
+      },
+      "pier": {
+        "origin_plan_m": [
+          1496.0,
+          451.0
+        ],
+        "unreal_cm": [
+          45100.0,
+          149600.0
+        ]
+      }
+    },
+    "cloud_gate": "LM_CloudGatePlaza at the bean site origin (ground); LM_CloudGate at +0.45 m on its deck, no rotation (long axis north-south)",
+    "buckingham": "LM_BuckinghamPlaza, LM_BuckinghamFountain, LM_BuckinghamJets all at the fountain site origin, no rotation",
+    "centennial_wheel": {
+      "where": "plan (1684.4, 458.0) on Pier Park (OSM), wheel plane north-south (Unreal X-Z), axle east-west",
+      "frame": "LM_CentennialWheel_Frame at P (deck surface under the hub)",
+      "rotor": "LM_CentennialWheel_Rotor at P + (0, 0, 30.8) m = Unreal Z +3080 cm; animate about the Unreal Y axis (axle)",
+      "gondolas": "42 x LM_CentennialWheel_Gondola, k = 0..41: world pos = hub + (2660 sin(2 pi k/42), 0, -2660 cos(2 pi k/42)) cm (Unreal), kept upright; k = 0 hangs over the boarding deck (z 1.0 m)"
+    },
+    "navy_pier": "LM_NavyPierDeck, LM_NavyPierBuildings, LM_NavyPierBallroom, LM_PolkBrosPark, LM_PolkBrosJets all at the pier site origin (plan (1496.0, 451.0), headhouse west facade on the pier centreline), no rotation",
+    "bascule_bridge": {
+      "leaf_a": "LM_BridgeLeaf at pivot A (deck top height), spanning +X in Unreal",
+      "leaf_b": "LM_BridgeLeaf rotated 180 deg yaw, pivot 60 m from A along the bridge axis; tips meet mid-river",
+      "open": "pitch each leaf up about its own origin (0..80 deg)",
+      "tender_houses": "4 x LM_BridgeTenderHouse, about 18 m either side of the road axis, 4.5 m behind each pivot (on the abutments), relief faces along the roadway",
+      "railings": "LM_BridgeRailing10 continues the leaf railings along the approaches (x = +/-13.7 m from the axis, base on the 0.2 m sidewalk)"
+    }
+  },
+  "previews": [
+    "preview_LM_BasculeBridge.png",
+    "preview_LM_BridgeLeaf.png",
+    "preview_LM_BridgeRailing10.png",
+    "preview_LM_BridgeTenderHouse.png",
+    "preview_LM_BuckinghamFountain.png",
+    "preview_LM_BuckinghamFountain_withJets.png",
+    "preview_LM_BuckinghamJets.png",
+    "preview_LM_CentennialWheel.png",
+    "preview_LM_CentennialWheel_Frame.png",
+    "preview_LM_CentennialWheel_Gondola.png",
+    "preview_LM_CentennialWheel_Rotor.png",
+    "preview_LM_CloudGate.png",
+    "preview_LM_CloudGate_under.png",
+    "preview_LM_NavyPier.png",
+    "preview_LM_NavyPierBallroom.png",
+    "preview_LM_NavyPierHeadhouse.png",
+    "preview_LM_NavyPierShed.png",
+    "preview_Site_Buckingham.png",
+    "preview_Site_Buckingham_air.png",
+    "preview_Site_Buckingham_close.png",
+    "preview_Site_CloudGate.png",
+    "preview_Site_CloudGate_air.png",
+    "preview_Site_NavyPier_SE.png",
+    "preview_Site_NavyPier_W.png",
+    "preview_Site_NavyPier_air.png",
+    "preview_Site_NavyPier_entrance.png"
+  ]
+}

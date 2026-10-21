@@ -1,0 +1,342 @@
+{
+ "meshes": {
+  "XWK_TX_Span30": {
+   "file": "SourceArt/Expressway/meshes/XWK_TX_Span30.glb",
+   "origin_plan": [
+    25.0,
+    0.0
+   ],
+   "tris": 4348,
+   "kind": "catalog"
+  },
+  "XWK_TX_Bent": {
+   "file": "SourceArt/Expressway/meshes/XWK_TX_Bent.glb",
+   "origin_plan": [
+    10.0,
+    0.0
+   ],
+   "tris": 520,
+   "kind": "catalog"
+  },
+  "XWK_TX_LightPole": {
+   "file": "SourceArt/Expressway/meshes/XWK_TX_LightPole.glb",
+   "origin_plan": [
+    10.0,
+    6.074999999999999
+   ],
+   "tris": 128,
+   "kind": "catalog"
+  },
+  "XWK_TX_SignBridge": {
+   "file": "SourceArt/Expressway/meshes/XWK_TX_SignBridge.glb",
+   "origin_plan": [
+    21.6,
+    7.075
+   ],
+   "tris": 876,
+   "kind": "catalog"
+  },
+  "XWK_TX_RampOnFill": {
+   "file": "SourceArt/Expressway/meshes/XWK_TX_RampOnFill.glb",
+   "origin_plan": [
+    0.0,
+    0.0
+   ],
+   "tris": 4636,
+   "kind": "catalog"
+  },
+  "XWK_CHI_Span30": {
+   "file": "SourceArt/Expressway/meshes/XWK_CHI_Span30.glb",
+   "origin_plan": [
+    25.0,
+    0.0
+   ],
+   "tris": 3830,
+   "kind": "catalog"
+  },
+  "XWK_CHI_Bent": {
+   "file": "SourceArt/Expressway/meshes/XWK_CHI_Bent.glb",
+   "origin_plan": [
+    10.0,
+    0.0
+   ],
+   "tris": 284,
+   "kind": "catalog"
+  },
+  "XWK_CHI_LightPole": {
+   "file": "SourceArt/Expressway/meshes/XWK_CHI_LightPole.glb",
+   "origin_plan": [
+    10.0,
+    8.754999999999999
+   ],
+   "tris": 112,
+   "kind": "catalog"
+  },
+  "XWK_CHI_SignBridge": {
+   "file": "SourceArt/Expressway/meshes/XWK_CHI_SignBridge.glb",
+   "origin_plan": [
+    21.6,
+    0.0
+   ],
+   "tris": 916,
+   "kind": "catalog"
+  },
+  "XWK_CHI_RampOnFill": {
+   "file": "SourceArt/Expressway/meshes/XWK_CHI_RampOnFill.glb",
+   "origin_plan": [
+    0.0,
+    0.0
+   ],
+   "tris": 3312,
+   "kind": "catalog"
+  },
+  "XW_I35_Span00": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_Span00.glb",
+   "origin_plan": [
+    -937.92,
+    -1320.34
+   ],
+   "tris": 21848,
+   "kind": "deck",
+   "s": [
+    91.92,
+    228.0
+   ]
+  },
+  "XW_I35_Span01": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_Span01.glb",
+   "origin_plan": [
+    -1073.7,
+    -1322.5
+   ],
+   "tris": 20876,
+   "kind": "deck",
+   "s": [
+    228.0,
+    342.0
+   ]
+  },
+  "XW_I35_Span02": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_Span02.glb",
+   "origin_plan": [
+    -1187.32,
+    -1317.61
+   ],
+   "tris": 20092,
+   "kind": "deck",
+   "s": [
+    342.0,
+    452.0
+   ]
+  },
+  "XW_I35_Span03": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_Span03.glb",
+   "origin_plan": [
+    -1297.25,
+    -1314.21
+   ],
+   "tris": 18900,
+   "kind": "deck",
+   "s": [
+    452.0,
+    557.0
+   ]
+  },
+  "XW_I35_Span04": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_Span04.glb",
+   "origin_plan": [
+    -1402.18,
+    -1310.63
+   ],
+   "tris": 19688,
+   "kind": "deck",
+   "s": [
+    557.0,
+    670.0
+   ]
+  },
+  "XW_I35_Span05": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_Span05.glb",
+   "origin_plan": [
+    -1515.11,
+    -1306.88
+   ],
+   "tris": 21040,
+   "kind": "deck",
+   "s": [
+    670.0,
+    778.0
+   ]
+  },
+  "XW_I35_Span06": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_Span06.glb",
+   "origin_plan": [
+    -1622.77,
+    -1298.55
+   ],
+   "tris": 19556,
+   "kind": "deck",
+   "s": [
+    778.0,
+    886.0
+   ]
+  },
+  "XW_I35_Span07": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_Span07.glb",
+   "origin_plan": [
+    -1730.63,
+    -1300.39
+   ],
+   "tris": 9984,
+   "kind": "deck",
+   "s": [
+    886.0,
+    943.45
+   ]
+  },
+  "XW_I35_FillE": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_FillE.glb",
+   "origin_plan": [
+    -846.0,
+    -1320.5
+   ],
+   "tris": 3540,
+   "kind": "fill",
+   "s": [
+    0.0,
+    91.92
+   ]
+  },
+  "XW_I35_FillW": {
+   "file": "SourceArt/Expressway/meshes/XW_I35_FillW.glb",
+   "origin_plan": [
+    -1787.81,
+    -1304.85
+   ],
+   "tris": 3404,
+   "kind": "fill",
+   "s": [
+    943.45,
+    1034.26
+   ]
+  },
+  "XW_WACKER_Span00": {
+   "file": "SourceArt/Expressway/meshes/XW_WACKER_Span00.glb",
+   "origin_plan": [
+    -748.36,
+    -954.98
+   ],
+   "tris": 15718,
+   "kind": "deck",
+   "s": [
+    78.02,
+    193.0
+   ]
+  },
+  "XW_WACKER_Span01": {
+   "file": "SourceArt/Expressway/meshes/XW_WACKER_Span01.glb",
+   "origin_plan": [
+    -745.32,
+    -840.83
+   ],
+   "tris": 18694,
+   "kind": "deck",
+   "s": [
+    193.0,
+    315.0
+   ]
+  },
+  "XW_WACKER_Span02": {
+   "file": "SourceArt/Expressway/meshes/XW_WACKER_Span02.glb",
+   "origin_plan": [
+    -696.08,
+    -729.49
+   ],
+   "tris": 15476,
+   "kind": "deck",
+   "s": [
+    315.0,
+    424.0
+   ]
+  },
+  "XW_WACKER_Span03": {
+   "file": "SourceArt/Expressway/meshes/XW_WACKER_Span03.glb",
+   "origin_plan": [
+    -653.26,
+    -630.06
+   ],
+   "tris": 16390,
+   "kind": "deck",
+   "s": [
+    424.0,
+    542.0
+   ]
+  },
+  "XW_WACKER_Span04": {
+   "file": "SourceArt/Expressway/meshes/XW_WACKER_Span04.glb",
+   "origin_plan": [
+    -644.29,
+    -512.77
+   ],
+   "tris": 16882,
+   "kind": "deck",
+   "s": [
+    542.0,
+    647.0
+   ]
+  },
+  "XW_WACKER_Span05": {
+   "file": "SourceArt/Expressway/meshes/XW_WACKER_Span05.glb",
+   "origin_plan": [
+    -626.46,
+    -412.74
+   ],
+   "tris": 16008,
+   "kind": "deck",
+   "s": [
+    647.0,
+    759.0
+   ]
+  },
+  "XW_WACKER_Span06": {
+   "file": "SourceArt/Expressway/meshes/XW_WACKER_Span06.glb",
+   "origin_plan": [
+    -559.04,
+    -323.74
+   ],
+   "tris": 3626,
+   "kind": "deck",
+   "s": [
+    759.0,
+    783.59
+   ]
+  },
+  "XW_WACKER_FillS": {
+   "file": "SourceArt/Expressway/meshes/XW_WACKER_FillS.glb",
+   "origin_plan": [
+    -748.0,
+    -1033.0
+   ],
+   "tris": 2974,
+   "kind": "fill",
+   "s": [
+    0.0,
+    78.02
+   ]
+  },
+  "XW_WACKER_FillN": {
+   "file": "SourceArt/Expressway/meshes/XW_WACKER_FillN.glb",
+   "origin_plan": [
+    -543.92,
+    -304.34
+   ],
+   "tris": 164,
+   "kind": "fill",
+   "s": [
+    783.59,
+    785.62
+   ]
+  }
+ },
+ "made": "2026-10-21 08:15"
+}

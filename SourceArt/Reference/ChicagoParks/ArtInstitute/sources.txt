@@ -1,0 +1,14 @@
+photo_01_2014_Chicago_Art_Institute_02.jpg
+    https://commons.wikimedia.org/wiki/File:2014_Chicago_Art_Institute_02.jpg
+    Nicholas Hartmann | CC BY-SA 4.0 | original 3005x2253, saved 900x675 thumbnail
+photo_02_Art_Institute_of_Chicago_Lion_Statue_2_D.jpg
+    https://commons.wikimedia.org/wiki/File:Art_Institute_of_Chicago_Lion_Statue_(2-D).jpg
+    Kim Scarborough | CC BY-SA 3.0 us | original 1392x1400, saved 894x900 thumbnail
+photo_03_Art_Institute_of_Chicago_7847873314.jpg
+    https://commons.wikimedia.org/wiki/File:Art_Institute_of_Chicago._(7847873314).jpg
+    Marlin Keesler from Streamwood, IL | CC BY 2.0 | original 4608x3456, saved 900x675 thumbnail
+photo_04_The_Art_Institute_of_Chicago_1900.jpg
+    https://commons.wikimedia.org/wiki/File:The_Art_Institute_of_Chicago,_1900.JPG
+    Unknown authorUnknown author | Public domain | original 800x625, saved 800x625 thumbnail
+aerial_naip_300m.jpg
+    USGS NAIP Plus orthoimagery (public domain), imagery.nationalmap.gov ImageServer exportImage, crop in the plan frame of Saved/Mashup/plan_v3.json (see the file name for the width)

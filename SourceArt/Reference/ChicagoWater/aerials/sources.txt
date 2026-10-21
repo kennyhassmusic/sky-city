@@ -1,0 +1,13 @@
+USDA NAIP aerial imagery (National Agriculture Imagery Program), served by USGS The National Map, USGSNAIPPlus ImageServer:
+https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPPlus/ImageServer  -- US Government work, public domain.
+Requested in EPSG:4326 over plan-frame boxes and resampled to square metric pixels (row 0 = north), so a pixel maps
+linearly to plan metres (Saved/Mashup/plan_v3.json frame: x east, y north from the State St bridge,
+x = (lon + 87.6278) * 82868.6, y = (lat - 41.88756) * 110574).
+aerial_naip_lock.jpg           plan x 1600..1950, y 0..250, 0.3 m/px   Chicago Harbor Lock, Dime Pier breakwater
+aerial_naip_rivermouth.jpg     plan x 1150..1560, y -420..250, 0.5 m/px  DuSable Harbor, river mouth, Coast Guard station
+aerial_naip_monroe.jpg         plan x 900..1500, y -1500..-380, 0.8 m/px Monroe Harbor mooring field, Columbia YC (Abegweit), CYC
+aerial_naip_pier_north.jpg     plan x 1480..2260, y 500..670, 0.4 m/px  north of Navy Pier (before the Navy Pier Marina was built)
+aerial_naip_pier_south_w.jpg   plan x 1500..1860, y 330..430, 0.5 m/px  Navy Pier south dock (west)
+aerial_naip_pier_south_e.jpg   plan x 1860..2260, y 330..430, 0.5 m/px  Navy Pier south dock (east): excursion ships
+aerial_naip_river_w.jpg        plan x 150..700, y 20..240, 0.5 m/px     river main stem, Michigan Ave to Columbus Dr, Riverwalk
+aerial_naip_river_e.jpg        plan x 650..1270, y 0..350, 0.4 m/px     river main stem to Lake Shore Drive, Ogden Slip

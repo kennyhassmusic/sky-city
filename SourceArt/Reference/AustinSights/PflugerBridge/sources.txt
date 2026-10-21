@@ -1,0 +1,9 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+deck_panorama_railings_lamps.jpg	https://commons.wikimedia.org/wiki/File:Pfluger_Pedestrian_Bridge.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Pfluger_Pedestrian_Bridge.jpg/1280px-Pfluger_Pedestrian_Bridge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Sk5893	CC BY-SA 4.0
+underside_steel_girders_Y_bents.jpg	https://commons.wikimedia.org/wiki/File:Pfluger_pedestrian_bridge_substructure.JPG	https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Pfluger_pedestrian_bridge_substructure.JPG/960px-Pfluger_pedestrian_bridge_substructure.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Bryan Rutherford	CC BY-SA 4.0
+side_view_girders_piers.jpg	https://commons.wikimedia.org/wiki/File:Pfluger_pedestrian_bridge.JPG	https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Pfluger_pedestrian_bridge.JPG/960px-Pfluger_pedestrian_bridge.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Bryan Rutherford	CC BY-SA 4.0
+helical_ramp_north_end.jpg	https://commons.wikimedia.org/wiki/File:Ramp_Pfluger_Pedestrian_Bridge_Austin_Texas_2023.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Ramp_Pfluger_Pedestrian_Bridge_Austin_Texas_2023.jpg/960px-Ramp_Pfluger_Pedestrian_Bridge_Austin_Texas_2023.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Larry D. Moore	CC BY 4.0

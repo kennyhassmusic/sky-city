@@ -1,0 +1,25 @@
+From Kenny, 20 Oct 2026: daytime photos of the Roadster unveil at McGregor (stage, LED screens, light towers on
+truss masts and on cranes, the crescent ramp seen from the audience, the long white "Roadster building", the hospitality
+area with umbrellas, the water tower and an upright rocket stage in the distance) and 01: a car's navigation map
+(map heading not north-up: see its compass) with the red arrow at a semi parked by the stage and the Roadster building.
+Reference only. Don't reproduce any logos seen in them.
+
+09_kenny_layout_sketch_applemaps.webp (Kenny, 20 Oct 20:16): Apple Maps satellite, NORTH UP, with Kenny's marks:
+  black = the stage; small white rectangle = the "Roadster building"; larger white rectangle = another building
+  (both are blurred out on Apple Maps); red line = where the staging area ends and the performance area begins;
+  yellow = the lot (probably fully paved in that shape now); blue = the ramp and the ramp's run-up line;
+  green = the fleet jump and the fleet line. Road along the north: "Navel [Naval] Industrial Reserve".
+  Kenny's caveat: he may have drawn it too big. The Roadster lands under telephone lines after the ramp jump, and the
+  pole shows in the photos; he can pinpoint that pole and thinks the sketch is "off by a lot", but it is definitely the
+  place: "lets start with this!"
+10_night_drone_overview.webp: the event at night from a drone. The stage with two LED screens, the crowd in front,
+  truss light towers, the long building on the right with its facade lit red and the car's name projected on it (don't
+  reproduce the logotype), and the ramp far off at upper left with red-lit run-up lines.
+
+Made here (20 Oct 2026, mcgregor-unveil agent, Scripts/mcgregor/georef_sketch.py), reference only:
+georef_overlay.jpg       Kenny's screenshot 09 warped north-up onto the USDA NAIP 2022 aerial (public domain, via USGS
+                         The National Map) with the OSM roads ((c) OpenStreetMap contributors) and the 8 control points
+                         (residuals x5). Similarity fit 0.511 m/px, screenshot up = bearing 42.6 deg, RMS 5.3 m.
+georef_marks.jpg         Kenny's marks converted to the site frame and drawn on the NAIP aerial, with the OSM-mapped
+                         telephone line (power=minor_line, way 435741101) and the ramp landing zone.
+georef_side_by_side.jpg  the screenshot as Kenny drew it | the same area warped north-up onto the aerial.

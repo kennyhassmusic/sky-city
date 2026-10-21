@@ -1,0 +1,17 @@
+photo_01_Willis_Tower.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_Tower.jpg
+    Daniel Schwen | CC BY-SA 2.5 | original 2363x3754, saved 567x900 thumbnail
+photo_02_Willis_Tower_From_Lake.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_Tower_From_Lake.jpg
+    Chris6d | Public domain | original 1476x2182, saved 609x900 thumbnail
+photo_03_Willis_Tower_scheme.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_Tower_scheme.jpg
+    Tobartos | CC0 | original 675x1200, saved 506x900 thumbnail
+photo_04_Willis_Tower_Skydeck.jpg
+    https://commons.wikimedia.org/wiki/File:Willis_Tower_-_Skydeck.jpg
+    Kennybozzle | CC BY-SA 3.0 | original 640x480, saved 640x480 thumbnail
+photo_05_Sears_Tower_from_the_river_7_07_2012.jpg
+    https://commons.wikimedia.org/wiki/File:Sears_Tower_from_the_river,_7.07.2012.jpg
+    WorldTraveller101 | CC BY-SA 3.0 | original 1936x2592, saved 672x900 thumbnail
+aerial_naip_140m.jpg
+    USGS NAIP Plus orthoimagery (public domain), imagery.nationalmap.gov ImageServer exportImage, crop in the plan frame of Saved/Mashup/plan_v3.json (see the file name for the width)

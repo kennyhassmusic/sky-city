@@ -1,0 +1,5889 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-21T03:24:42Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 356852049,
+  "lat": 30.2718751,
+  "lon": -97.7452832,
+  "tags": {
+    "ele": "162",
+    "gnis:feature_id": "2031664",
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - Guadalupe St & W 9th St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 430881357,
+  "lat": 30.2732283,
+  "lon": -97.7723494,
+  "tags": {
+    "access": "yes",
+    "fee": "no",
+    "highway": "trailhead",
+    "name": "Zilker Park at MoPac"
+  }
+},
+{
+  "type": "node",
+  "id": 454767629,
+  "lat": 30.2702409,
+  "lon": -97.7660063,
+  "tags": {
+    "leisure": "slipway",
+    "name": "Austin High School Boat Launch"
+  }
+},
+{
+  "type": "node",
+  "id": 919327916,
+  "lat": 30.2477582,
+  "lon": -97.7744273,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "2300",
+    "addr:postcode": "78704",
+    "addr:street": "South Lamar Boulevard",
+    "closed:shop": "bakery",
+    "name": "Moonlight Bakery",
+    "website": "http://moonlightbakery.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 919419441,
+  "lat": 30.2788625,
+  "lon": -97.7603174,
+  "tags": {
+    "communication:microwave": "yes",
+    "communication:mobile_phone": "yes",
+    "description": "Former AT&T LongLines site",
+    "man_made": "tower",
+    "tower:construction": "lattice",
+    "tower:type": "communication"
+  }
+},
+{
+  "type": "node",
+  "id": 1241074265,
+  "lat": 30.3041670,
+  "lon": -97.7313827,
+  "tags": {
+    "designation": "moonlight tower",
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - E 41st St & Speedway",
+    "note": "Moonlight Tower",
+    "ref": "2011",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3194175660,
+  "lat": 30.2644201,
+  "lon": -97.7702630,
+  "tags": {
+    "name": "Zilker Eagle",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3194262978,
+  "lat": 30.2643375,
+  "lon": -97.7674691,
+  "tags": {
+    "amenity": "boat_rental",
+    "name": "Zilker Park Boat Rental",
+    "phone": "+1-512-478-3852",
+    "website": "https://www.zilkerboats.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 3331447499,
+  "lat": 30.2658798,
+  "lon": -97.7682288,
+  "tags": {
+    "amenity": "bicycle_rental",
+    "name": "Bike Rent @ Zilker Park"
+  }
+},
+{
+  "type": "node",
+  "id": 3913700806,
+  "lat": 30.2494319,
+  "lon": -97.7552720,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - W Monroe St & S 1st St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3913701663,
+  "lat": 30.2413768,
+  "lon": -97.7473896,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - East Side Dr & Leland St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3913732649,
+  "lat": 30.2759123,
+  "lon": -97.7474316,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - W 12th St & Rio Grande St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed_lattice",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3913733224,
+  "lat": 30.2777414,
+  "lon": -97.7541610,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - W 12th St & Blanco St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3913733545,
+  "lat": 30.2781070,
+  "lon": -97.7442190,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting",
+    "wikipedia": "en:Moonlight tower#Austin, Texas"
+  }
+},
+{
+  "type": "node",
+  "id": 3913801013,
+  "lat": 30.2797305,
+  "lon": -97.7211151,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - Martin Luther King & Chicon St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3913801151,
+  "lat": 30.2663871,
+  "lon": -97.7711915,
+  "tags": {
+    "direction": "0;60;120;180;240;300",
+    "height": "50",
+    "highway": "street_lamp",
+    "lamp_mount": "high_mast",
+    "lamp_type": "led",
+    "man_made": "tower",
+    "name": "Moonlight Tower - Zilker Park",
+    "note": "Moonlight Tower",
+    "support": "pole",
+    "tower:construction": "guyed",
+    "tower:type": "Moon_Light_Tower"
+  }
+},
+{
+  "type": "node",
+  "id": 3913803861,
+  "lat": 30.2753090,
+  "lon": -97.7171514,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - E 13th St & Coleto St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3913809415,
+  "lat": 30.2686165,
+  "lon": -97.7278995,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - E 11th St & Lydia St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3913814550,
+  "lat": 30.2715222,
+  "lon": -97.7213918,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - Pennsylvania Ave & Leona St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3913816610,
+  "lat": 30.2716166,
+  "lon": -97.7375296,
+  "tags": {
+    "man_made": "tower",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 3913874366,
+  "lat": 30.2548884,
+  "lon": -97.7240771,
+  "tags": {
+    "height": "50",
+    "man_made": "tower",
+    "name": "Moonlight Tower - Canterbury St & Lynn St",
+    "note": "Moonlight Tower",
+    "tower:construction": "guyed",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 5018964618,
+  "lat": 30.2542361,
+  "lon": -97.7695806,
+  "tags": {
+    "name": "Zilker",
+    "place": "neighbourhood",
+    "wikidata": "Q8071888"
+  }
+},
+{
+  "type": "node",
+  "id": 6088595386,
+  "lat": 30.2606120,
+  "lon": -97.7418824,
+  "tags": {
+    "amenity": "boat_rental",
+    "check_date": "2024-04-04",
+    "kayak_rental": "yes",
+    "name": "Austin Rowing Club",
+    "opening_hours": "09:00-20:00",
+    "website": "https://austinrowing.org/"
+  }
+},
+{
+  "type": "node",
+  "id": 8118929122,
+  "lat": 30.2652371,
+  "lon": -97.7598230,
+  "tags": {
+    "capacity": "4",
+    "name": "Butler Shores Swing Set",
+    "playground": "swing",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "node",
+  "id": 8419524216,
+  "lat": 30.2454170,
+  "lon": -97.7305088,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "1610",
+    "addr:postcode": "78741",
+    "addr:state": "TX",
+    "addr:street": "East Riverside Drive",
+    "name": "Live Love Paddle 4.8",
+    "office": "guide",
+    "opening_hours": "Fr 11:00-18:00; Sa-Su 10:00-18:00; Mo 11:00-18:00",
+    "phone": "+1-512-804-2122",
+    "website": "https://www.livelovepaddle.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 8964514034,
+  "lat": 30.2605200,
+  "lon": -97.7554200,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "flickr": "https://flic.kr/p/2j5Luwg",
+    "historic": "memorial",
+    "material": "metal",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=134010",
+    "name": "Michael Butler and Butler Brick Company",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "18477",
+    "ref:hmdb": "134010",
+    "source:website": "https://atlas.thc.texas.gov/Details/5507018477",
+    "start_date": "2016",
+    "subject:wikimedia_commons": "File:Butler Brick Company Historical Marker Austin.jpg",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507018477",
+    "wikimedia_commons": "File:Butler Brick Company Historical Marker Austin.jpg"
+  }
+},
+{
+  "type": "node",
+  "id": 12453821502,
+  "lat": 30.2724300,
+  "lon": -97.7749700,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "addr:full": "301 Nature Center Dr",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25701",
+    "name": "Ashford McGill House (Zilker Park Refectory)",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "6442",
+    "ref:hmdb": "25701",
+    "source:website": "https://atlas.thc.texas.gov/Details/5453006442",
+    "start_date": "1990",
+    "support": "pole",
+    "thc:designation": "Recorded Texas Historic Landmark",
+    "website": "https://atlas.thc.texas.gov/Details/5453006442"
+  }
+},
+{
+  "type": "node",
+  "id": 12453821505,
+  "lat": 30.2641700,
+  "lon": -97.7709100,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25697",
+    "name": "Andrew Jackson Zilker",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "15335",
+    "ref:hmdb": "25697",
+    "source:website": "https://atlas.thc.texas.gov/Details/5507015335",
+    "start_date": "2003",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507015335"
+  }
+},
+{
+  "type": "node",
+  "id": 12531893464,
+  "lat": 30.2658638,
+  "lon": -97.7678406,
+  "tags": {
+    "bus": "yes",
+    "gtfs:stop_id:US-TX-CMTA": "4081",
+    "highway": "bus_stop",
+    "name": "Barton Springs/Zilker",
+    "network": "MetroBus",
+    "network:wikidata": "Q108455549",
+    "operator": "Capital Metropolitan Transportation Authority",
+    "operator:short": "CapMetro",
+    "operator:wikidata": "Q587830",
+    "public_transport": "platform",
+    "ref": "4081",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/4081"
+  }
+},
+{
+  "type": "node",
+  "id": 12531893466,
+  "lat": 30.2682062,
+  "lon": -97.7729804,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "gtfs:stop_id:US-TX-CMTA": "4080",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "2221 Barton Springs (Zilker)",
+    "network": "MetroBus",
+    "network:wikidata": "Q108455549",
+    "operator": "Capital Metropolitan Transportation Authority",
+    "operator:short": "CapMetro",
+    "operator:wikidata": "Q587830",
+    "public_transport": "platform",
+    "ref": "4080",
+    "shelter": "no",
+    "tactile_paving": "yes",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/4080"
+  }
+},
+{
+  "type": "node",
+  "id": 12531893468,
+  "lat": 30.2685386,
+  "lon": -97.7766288,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "gtfs:stop_id:US-TX-CMTA": "4167",
+    "highway": "bus_stop",
+    "name": "Mopac/Zilker",
+    "network": "MetroBus",
+    "network:wikidata": "Q108455549",
+    "operator": "Capital Metropolitan Transportation Authority",
+    "operator:short": "CapMetro",
+    "operator:wikidata": "Q587830",
+    "public_transport": "platform",
+    "ref": "4167",
+    "shelter": "no",
+    "tactile_paving": "no",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/4167"
+  }
+},
+{
+  "type": "node",
+  "id": 12532394818,
+  "lat": 30.2682625,
+  "lon": -97.7726719,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "gtfs:stop_id:US-TX-CMTA": "2206",
+    "highway": "bus_stop",
+    "name": "2220 Barton Springs (Zilker)",
+    "public_transport": "platform",
+    "ref": "2206",
+    "shelter": "no",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/2206"
+  }
+},
+{
+  "type": "node",
+  "id": 12532394819,
+  "lat": 30.2661302,
+  "lon": -97.7683841,
+  "tags": {
+    "bus": "yes",
+    "gtfs:stop_id:US-TX-CMTA": "4079",
+    "highway": "bus_stop",
+    "name": "Barton Springs (Zilker Park)",
+    "public_transport": "platform",
+    "ref": "4079",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/4079"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312727,
+  "lat": 30.2689324,
+  "lon": -97.7600980,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312728,
+  "lat": 30.2687159,
+  "lon": -97.7596356,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312729,
+  "lat": 30.2692180,
+  "lon": -97.7593109,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312730,
+  "lat": 30.2694358,
+  "lon": -97.7598052,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312731,
+  "lat": 30.2689554,
+  "lon": -97.7579353,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312732,
+  "lat": 30.2691250,
+  "lon": -97.7581985,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312733,
+  "lat": 30.2691027,
+  "lon": -97.7585809,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312734,
+  "lat": 30.2687956,
+  "lon": -97.7587810,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312735,
+  "lat": 30.2682944,
+  "lon": -97.7585757,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312736,
+  "lat": 30.2684432,
+  "lon": -97.7578302,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312737,
+  "lat": 30.2680774,
+  "lon": -97.7574733,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312738,
+  "lat": 30.2683135,
+  "lon": -97.7572466,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312739,
+  "lat": 30.2675820,
+  "lon": -97.7572840,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312740,
+  "lat": 30.2677282,
+  "lon": -97.7566191,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312741,
+  "lat": 30.2682022,
+  "lon": -97.7566304,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312742,
+  "lat": 30.2683389,
+  "lon": -97.7568978,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312743,
+  "lat": 30.2694757,
+  "lon": -97.7604058,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312744,
+  "lat": 30.2700376,
+  "lon": -97.7600197,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312745,
+  "lat": 30.2698074,
+  "lon": -97.7609128,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312746,
+  "lat": 30.2697073,
+  "lon": -97.7614110,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312747,
+  "lat": 30.2701510,
+  "lon": -97.7612988,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312748,
+  "lat": 30.2702106,
+  "lon": -97.7609657,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312749,
+  "lat": 30.2706102,
+  "lon": -97.7607970,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312750,
+  "lat": 30.2704479,
+  "lon": -97.7616141,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312751,
+  "lat": 30.2701282,
+  "lon": -97.7619284,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312752,
+  "lat": 30.2701661,
+  "lon": -97.7621795,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040312753,
+  "lat": 30.2705521,
+  "lon": -97.7624934,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326344,
+  "lat": 30.2462732,
+  "lon": -97.7117023,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326345,
+  "lat": 30.2467788,
+  "lon": -97.7113868,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326346,
+  "lat": 30.2470451,
+  "lon": -97.7119615,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326347,
+  "lat": 30.2465341,
+  "lon": -97.7122751,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326352,
+  "lat": 30.2472590,
+  "lon": -97.7107795,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326353,
+  "lat": 30.2473125,
+  "lon": -97.7116481,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326354,
+  "lat": 30.2475985,
+  "lon": -97.7111315,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326355,
+  "lat": 30.2476003,
+  "lon": -97.7107945,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326356,
+  "lat": 30.2461210,
+  "lon": -97.7114859,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326357,
+  "lat": 30.2461733,
+  "lon": -97.7106822,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326358,
+  "lat": 30.2459341,
+  "lon": -97.7121550,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326359,
+  "lat": 30.2459088,
+  "lon": -97.7129126,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326360,
+  "lat": 30.2454438,
+  "lon": -97.7129678,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326381,
+  "lat": 30.2451870,
+  "lon": -97.7126686,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326382,
+  "lat": 30.2454446,
+  "lon": -97.7120773,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326383,
+  "lat": 30.2456018,
+  "lon": -97.7114913,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326384,
+  "lat": 30.2453374,
+  "lon": -97.7111965,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326385,
+  "lat": 30.2453395,
+  "lon": -97.7108496,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326386,
+  "lat": 30.2456532,
+  "lon": -97.7105891,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326387,
+  "lat": 30.2462246,
+  "lon": -97.7129600,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326388,
+  "lat": 30.2464004,
+  "lon": -97.7133378,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326389,
+  "lat": 30.2469898,
+  "lon": -97.7132938,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326390,
+  "lat": 30.2470704,
+  "lon": -97.7124626,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326391,
+  "lat": 30.2476665,
+  "lon": -97.7124176,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326392,
+  "lat": 30.2474486,
+  "lon": -97.7133138,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326393,
+  "lat": 30.2478428,
+  "lon": -97.7127970,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326394,
+  "lat": 30.2477524,
+  "lon": -97.7131293,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326395,
+  "lat": 30.2483576,
+  "lon": -97.7104065,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326396,
+  "lat": 30.2481634,
+  "lon": -97.7100972,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326397,
+  "lat": 30.2482567,
+  "lon": -97.7100126,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326398,
+  "lat": 30.2485191,
+  "lon": -97.7107852,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326399,
+  "lat": 30.2484157,
+  "lon": -97.7111151,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040326400,
+  "lat": 30.2486941,
+  "lon": -97.7111921,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337401,
+  "lat": 30.2488677,
+  "lon": -97.7115160,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337402,
+  "lat": 30.2491735,
+  "lon": -97.7121924,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337403,
+  "lat": 30.2492958,
+  "lon": -97.7124979,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337404,
+  "lat": 30.2491989,
+  "lon": -97.7128043,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337405,
+  "lat": 30.2489443,
+  "lon": -97.7129541,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337413,
+  "lat": 30.2485474,
+  "lon": -97.7125812,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337414,
+  "lat": 30.2480348,
+  "lon": -97.7122829,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337415,
+  "lat": 30.2496065,
+  "lon": -97.7108528,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337416,
+  "lat": 30.2496167,
+  "lon": -97.7111840,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337417,
+  "lat": 30.2495104,
+  "lon": -97.7115263,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337418,
+  "lat": 30.2493265,
+  "lon": -97.7117834,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337419,
+  "lat": 30.2490840,
+  "lon": -97.7107134,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337420,
+  "lat": 30.2493147,
+  "lon": -97.7101495,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337421,
+  "lat": 30.2490843,
+  "lon": -97.7099295,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337422,
+  "lat": 30.2487849,
+  "lon": -97.7098077,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337423,
+  "lat": 30.2477043,
+  "lon": -97.7104472,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337424,
+  "lat": 30.2448326,
+  "lon": -97.7140757,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337425,
+  "lat": 30.2443740,
+  "lon": -97.7138386,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337426,
+  "lat": 30.2445834,
+  "lon": -97.7130770,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337427,
+  "lat": 30.2450895,
+  "lon": -97.7132078,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337428,
+  "lat": 30.2452870,
+  "lon": -97.7135826,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337429,
+  "lat": 30.2451766,
+  "lon": -97.7139319,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337430,
+  "lat": 30.2446571,
+  "lon": -97.7145784,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337431,
+  "lat": 30.2441395,
+  "lon": -97.7145754,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337432,
+  "lat": 30.2441020,
+  "lon": -97.7153940,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337433,
+  "lat": 30.2446067,
+  "lon": -97.7154928,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337434,
+  "lat": 30.2448718,
+  "lon": -97.7152288,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040337435,
+  "lat": 30.2448964,
+  "lon": -97.7148868,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040473180,
+  "lat": 30.2790429,
+  "lon": -97.7504157,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040473181,
+  "lat": 30.2782999,
+  "lon": -97.7504050,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040473182,
+  "lat": 30.2782954,
+  "lon": -97.7496244,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13040473183,
+  "lat": 30.2790626,
+  "lon": -97.7496242,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429252,
+  "lat": 30.2846226,
+  "lon": -97.7267173,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429253,
+  "lat": 30.2851013,
+  "lon": -97.7265607,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429254,
+  "lat": 30.2852335,
+  "lon": -97.7271484,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429255,
+  "lat": 30.2847542,
+  "lon": -97.7272930,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429256,
+  "lat": 30.2845417,
+  "lon": -97.7273911,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429257,
+  "lat": 30.2840895,
+  "lon": -97.7269552,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429258,
+  "lat": 30.2838856,
+  "lon": -97.7275899,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429259,
+  "lat": 30.2856922,
+  "lon": -97.7264439,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429260,
+  "lat": 30.2857239,
+  "lon": -97.7258517,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429261,
+  "lat": 30.2860582,
+  "lon": -97.7256745,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429262,
+  "lat": 30.2863827,
+  "lon": -97.7256007,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042429263,
+  "lat": 30.2867372,
+  "lon": -97.7260983,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042494864,
+  "lat": 30.2805655,
+  "lon": -97.7264740,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042494865,
+  "lat": 30.2800415,
+  "lon": -97.7270417,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042494866,
+  "lat": 30.2794311,
+  "lon": -97.7258464,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042494867,
+  "lat": 30.2799237,
+  "lon": -97.7254610,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042494868,
+  "lat": 30.2803444,
+  "lon": -97.7256012,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13042494869,
+  "lat": 30.2805805,
+  "lon": -97.7259681,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13334657122,
+  "lat": 30.2720622,
+  "lon": -97.7689553,
+  "tags": {
+    "man_made": "tower"
+  }
+},
+{
+  "type": "node",
+  "id": 13804115532,
+  "lat": 30.2728121,
+  "lon": -97.7720829,
+  "tags": {
+    "bicycle": "yes",
+    "hiking": "yes",
+    "information": "guidepost",
+    "name": "Zilker Metro Park",
+    "tourism": "information"
+  }
+},
+{
+  "type": "node",
+  "id": 13804115534,
+  "lat": 30.2698568,
+  "lon": -97.7685461,
+  "tags": {
+    "bicycle": "yes",
+    "hiking": "yes",
+    "information": "guidepost",
+    "name": "Zilker Park",
+    "tourism": "information"
+  }
+},
+{
+  "type": "node",
+  "id": 13804115535,
+  "lat": 30.2686433,
+  "lon": -97.7655335,
+  "tags": {
+    "bicycle": "yes",
+    "hiking": "yes",
+    "information": "guidepost",
+    "name": "Zilker Park",
+    "tourism": "information"
+  }
+},
+{
+  "type": "node",
+  "id": 13804115536,
+  "lat": 30.2684412,
+  "lon": -97.7648451,
+  "tags": {
+    "bicycle": "yes",
+    "hiking": "yes",
+    "information": "guidepost",
+    "name": "Zilker Metro Park",
+    "tourism": "information"
+  }
+},
+{
+  "type": "node",
+  "id": 13804115539,
+  "lat": 30.2657387,
+  "lon": -97.7643710,
+  "tags": {
+    "information": "guidepost",
+    "name": "Zilker Metro Park",
+    "tourism": "information"
+  }
+},
+{
+  "type": "node",
+  "id": 13804115569,
+  "lat": 30.2490972,
+  "lon": -97.7347815,
+  "tags": {
+    "bicycle": "yes",
+    "hiking": "yes",
+    "information": "guidepost",
+    "name": "Butler Trail",
+    "tourism": "information"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277558,
+  "lat": 30.2811786,
+  "lon": -97.7268457,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277559,
+  "lat": 30.2808572,
+  "lon": -97.7268163,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277560,
+  "lat": 30.2808767,
+  "lon": -97.7264323,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277561,
+  "lat": 30.2811993,
+  "lon": -97.7264606,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277562,
+  "lat": 30.2812199,
+  "lon": -97.7260756,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277563,
+  "lat": 30.2809649,
+  "lon": -97.7260279,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277564,
+  "lat": 30.2813967,
+  "lon": -97.7261242,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277565,
+  "lat": 30.2817030,
+  "lon": -97.7265086,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277566,
+  "lat": 30.2816781,
+  "lon": -97.7269297,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277567,
+  "lat": 30.2813463,
+  "lon": -97.7269050,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277568,
+  "lat": 30.2813755,
+  "lon": -97.7264709,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277579,
+  "lat": 30.2808667,
+  "lon": -97.7272250,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277580,
+  "lat": 30.2813313,
+  "lon": -97.7273131,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277581,
+  "lat": 30.2811538,
+  "lon": -97.7273022,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816277582,
+  "lat": 30.2815918,
+  "lon": -97.7273304,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816337209,
+  "lat": 30.2808025,
+  "lon": -97.7345239,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816337210,
+  "lat": 30.2810535,
+  "lon": -97.7342310,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816337211,
+  "lat": 30.2813376,
+  "lon": -97.7339910,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816337212,
+  "lat": 30.2817971,
+  "lon": -97.7346637,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816337213,
+  "lat": 30.2815326,
+  "lon": -97.7349180,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13816337214,
+  "lat": 30.2812407,
+  "lon": -97.7351954,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 13971422752,
+  "lat": 30.2717200,
+  "lon": -97.7451800,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=158890",
+    "name": "Austin's Moonlight Towers",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "6424",
+    "ref:hmdb": "158890",
+    "start_date": "1993",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5453006424"
+  }
+},
+{
+  "type": "node",
+  "id": 14172611670,
+  "lat": 30.2061559,
+  "lon": -97.7078320,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 14172611671,
+  "lat": 30.2055635,
+  "lon": -97.7077000,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 14172611672,
+  "lat": 30.2056722,
+  "lon": -97.7070750,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "node",
+  "id": 14172611673,
+  "lat": 30.2062629,
+  "lon": -97.7072078,
+  "tags": {
+    "man_made": "mast",
+    "tower:type": "lighting"
+  }
+},
+{
+  "type": "way",
+  "id": 15383161,
+  "center": {
+    "lat": 30.2624339,
+    "lon": -97.7586766
+  },
+  "tags": {
+    "highway": "residential",
+    "name": "Butler Road",
+    "tiger:cfcc": "A41",
+    "tiger:county": "Travis, TX",
+    "tiger:name_base": "Butler",
+    "tiger:name_type": "Rd",
+    "tiger:reviewed": "no",
+    "tiger:zip_left": "78704",
+    "tiger:zip_right": "78704"
+  }
+},
+{
+  "type": "way",
+  "id": 15395575,
+  "center": {
+    "lat": 30.2731644,
+    "lon": -97.7771082
+  },
+  "tags": {
+    "access": "permissive",
+    "highway": "service",
+    "name": "Zilker Clubhouse Road",
+    "service": "driveway",
+    "tiger:cfcc": "A41",
+    "tiger:county": "Travis, TX",
+    "tiger:name_base": "Zilker Clubhouse",
+    "tiger:name_type": "Rd",
+    "tiger:zip_left": "78746",
+    "tiger:zip_right": "78746"
+  }
+},
+{
+  "type": "way",
+  "id": 15409154,
+  "center": {
+    "lat": 30.3070030,
+    "lon": -97.7739576
+  },
+  "tags": {
+    "highway": "residential",
+    "name": "Moonlight Bend",
+    "surface": "asphalt",
+    "tiger:cfcc": "A41",
+    "tiger:county": "Travis, TX",
+    "tiger:name_base": "Moonlight Bend",
+    "tiger:reviewed": "no",
+    "tiger:zip_left": "78703",
+    "tiger:zip_right": "78703"
+  }
+},
+{
+  "type": "way",
+  "id": 15409518,
+  "center": {
+    "lat": 30.2657430,
+    "lon": -97.7711817
+  },
+  "tags": {
+    "bicycle": "yes",
+    "highway": "service",
+    "name": "Andrew Zilker Road",
+    "surface": "asphalt"
+  }
+},
+{
+  "type": "way",
+  "id": 15409519,
+  "center": {
+    "lat": 30.2658142,
+    "lon": -97.7698791
+  },
+  "tags": {
+    "highway": "service",
+    "name": "Andrew Zilker Road",
+    "oneway": "yes",
+    "surface": "asphalt",
+    "tiger:cfcc": "A41",
+    "tiger:county": "Travis, TX",
+    "tiger:name_base": "Andrew Zilker",
+    "tiger:name_type": "Rd",
+    "tiger:reviewed": "no",
+    "tiger:zip_left": "78746",
+    "tiger:zip_right": "78746"
+  }
+},
+{
+  "type": "way",
+  "id": 15409521,
+  "center": {
+    "lat": 30.2653750,
+    "lon": -97.7680679
+  },
+  "tags": {
+    "highway": "service",
+    "name": "Andrew Zilker Road",
+    "surface": "asphalt",
+    "tiger:cfcc": "A41",
+    "tiger:county": "Travis, TX",
+    "tiger:name_base": "Andrew Zilker",
+    "tiger:name_type": "Rd",
+    "tiger:zip_left": "78746",
+    "tiger:zip_right": "78746"
+  }
+},
+{
+  "type": "way",
+  "id": 27442711,
+  "center": {
+    "lat": 30.2638274,
+    "lon": -97.7708383
+  },
+  "tags": {
+    "access": "customers",
+    "access:conditional": "no @ 2024 Sep",
+    "charge:conditional": "0 USD @ age < 1 year; 2 USD @ age >= 1 year AND age <= 11 years AND resident; 3 USD @ age >= 12 years AND age <= 17 years AND resident; 5 USD @ age >= 18 years AND age < 62 years AND resident; 2 USD @ age >= 62 years AND resident; 0 USD @ veteran; 4 USD @",
+    "fee": "yes",
+    "fee:conditional": "no @ (Oct 31 - Austin ISD Spring Break); no @ Th; no @ (05:00-08:00)",
+    "leisure": "swimming_pool",
+    "location": "outdoor",
+    "name": "Barton Springs Pool",
+    "opening_hours": "Fr-We 05:00-22:00; Th 05:00-09:00",
+    "sport": "swimming",
+    "tourism": "attraction",
+    "water": "pond",
+    "website": "https://www.austintexas.gov/department/barton-springs-pool",
+    "wikidata": "Q4865688",
+    "wikipedia": "en:Barton Springs Pool"
+  }
+},
+{
+  "type": "way",
+  "id": 28117980,
+  "center": {
+    "lat": 30.2711762,
+    "lon": -97.7693637
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 31146417,
+  "center": {
+    "lat": 30.2650369,
+    "lon": -97.7520685
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 37749113,
+  "center": {
+    "lat": 30.2646315,
+    "lon": -97.7695028
+  },
+  "tags": {
+    "gauge": "305",
+    "name": "Zilker Eagle",
+    "railway": "miniature",
+    "usage": "tourism"
+  }
+},
+{
+  "type": "way",
+  "id": 37749114,
+  "center": {
+    "lat": 30.2647155,
+    "lon": -97.7701235
+  },
+  "tags": {
+    "gauge": "305",
+    "name": "Zilker Eagle",
+    "railway": "miniature",
+    "tunnel": "yes",
+    "usage": "tourism"
+  }
+},
+{
+  "type": "way",
+  "id": 37749115,
+  "center": {
+    "lat": 30.2658554,
+    "lon": -97.7662966
+  },
+  "tags": {
+    "electrified": "no",
+    "gauge": "305",
+    "name": "Zilker Eagle",
+    "railway": "miniature",
+    "usage": "tourism"
+  }
+},
+{
+  "type": "way",
+  "id": 37749182,
+  "center": {
+    "lat": 30.2688061,
+    "lon": -97.7684504
+  },
+  "tags": {
+    "leisure": "pitch",
+    "name": "Zilker Park Sand Vollyball Courts",
+    "sport": "beachvolleyball",
+    "surface": "sand"
+  }
+},
+{
+  "type": "way",
+  "id": 40454071,
+  "center": {
+    "lat": 30.2667668,
+    "lon": -97.7743428
+  },
+  "tags": {
+    "bicycle": "yes",
+    "highway": "service",
+    "name": "Andrew Zilker Road",
+    "oneway": "yes",
+    "surface": "asphalt"
+  }
+},
+{
+  "type": "way",
+  "id": 40454075,
+  "center": {
+    "lat": 30.2680241,
+    "lon": -97.7770371
+  },
+  "tags": {
+    "highway": "service",
+    "name": "Andrew Zilker Road",
+    "surface": "asphalt",
+    "tiger:cfcc": "A41",
+    "tiger:county": "Travis, TX",
+    "tiger:name_base": "Andrew Zilker",
+    "tiger:name_type": "Rd",
+    "tiger:zip_left": "78746",
+    "tiger:zip_right": "78746"
+  }
+},
+{
+  "type": "way",
+  "id": 55932523,
+  "center": {
+    "lat": 30.2664598,
+    "lon": -97.7490614
+  },
+  "tags": {
+    "addr:housenumber": "501",
+    "addr:postcode": "78701",
+    "addr:street": "West 3rd Street",
+    "building": "yes",
+    "name": "Butler Dance Education Center"
+  }
+},
+{
+  "type": "way",
+  "id": 127243901,
+  "center": {
+    "lat": 30.2655010,
+    "lon": -97.7642243
+  },
+  "tags": {
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "layer": "1",
+    "maxspeed": "10 mph",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "wood"
+  }
+},
+{
+  "type": "way",
+  "id": 134786168,
+  "center": {
+    "lat": 30.2603487,
+    "lon": -97.7411757
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "check_date": "2026-06-06",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "lit": "yes",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "oneway": "no",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 134786186,
+  "center": {
+    "lat": 30.2541818,
+    "lon": -97.7391545
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "1",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 134786188,
+  "center": {
+    "lat": 30.2568891,
+    "lon": -97.7404246
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 135124302,
+  "center": {
+    "lat": 30.2489885,
+    "lon": -97.7290219
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 135124315,
+  "center": {
+    "lat": 30.2502169,
+    "lon": -97.7354004
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "check_date": "2026-05-07",
+    "construction": "cycleway",
+    "foot": "designated",
+    "highway": "construction",
+    "horse": "no",
+    "layer": "2",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 135623979,
+  "center": {
+    "lat": 30.2509958,
+    "lon": -97.7363658
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "2",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 135623989,
+  "center": {
+    "lat": 30.2489446,
+    "lon": -97.7365985
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 186321560,
+  "center": {
+    "lat": 30.2655366,
+    "lon": -97.7635860
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 186321887,
+  "center": {
+    "lat": 30.2636824,
+    "lon": -97.7532032
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "dismount",
+    "dog": "unleashed",
+    "foot": "designated",
+    "highway": "footway",
+    "horse": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel",
+    "wheelchair": "yes",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 194714571,
+  "center": {
+    "lat": 30.2656832,
+    "lon": -97.7643346
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 196352166,
+  "center": {
+    "lat": 30.2653227,
+    "lon": -97.7580794
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "stroller": "yes",
+    "surface": "fine_gravel",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 204065904,
+  "center": {
+    "lat": 30.2527141,
+    "lon": -97.7746677
+  },
+  "tags": {
+    "addr:housenumber": "1900",
+    "addr:postcode": "78704",
+    "addr:street": "Bluebonnet Lane",
+    "amenity": "school",
+    "grades": "pk,k,1,2,3,4,5",
+    "isced:level": "0,1",
+    "name": "Zilker Elementary School",
+    "operator": "Austin Independent School District",
+    "operator:short": "AISD",
+    "operator:type": "public",
+    "operator:wikidata": "Q4823141",
+    "operator:wikipedia": "en:Austin Independent School District"
+  }
+},
+{
+  "type": "way",
+  "id": 206107544,
+  "center": {
+    "lat": 30.2643776,
+    "lon": -97.7501929
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "1",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 206107547,
+  "center": {
+    "lat": 30.2645535,
+    "lon": -97.7510432
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206109237,
+  "center": {
+    "lat": 30.2668591,
+    "lon": -97.7572950
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206109238,
+  "center": {
+    "lat": 30.2665046,
+    "lon": -97.7564860
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 206109239,
+  "center": {
+    "lat": 30.2675131,
+    "lon": -97.7586085
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 206109240,
+  "center": {
+    "lat": 30.2662498,
+    "lon": -97.7558168
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206109241,
+  "center": {
+    "lat": 30.2656912,
+    "lon": -97.7529928
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "lit": "yes",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 206109242,
+  "center": {
+    "lat": 30.2653562,
+    "lon": -97.7524157
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206109243,
+  "center": {
+    "lat": 30.2619363,
+    "lon": -97.7485236
+  },
+  "tags": {
+    "access": "yes",
+    "crossing": "uncontrolled",
+    "crossing:markings": "yes",
+    "footway": "crossing",
+    "highway": "footway",
+    "horse": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206109257,
+  "center": {
+    "lat": 30.2671830,
+    "lon": -97.7620907
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 206109258,
+  "center": {
+    "lat": 30.2662031,
+    "lon": -97.7634574
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 206109260,
+  "center": {
+    "lat": 30.2627464,
+    "lon": -97.7482022
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "1",
+    "lit": "yes",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206109261,
+  "center": {
+    "lat": 30.2640558,
+    "lon": -97.7483147
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206110440,
+  "center": {
+    "lat": 30.2601129,
+    "lon": -97.7474312
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 206110442,
+  "center": {
+    "lat": 30.2617470,
+    "lon": -97.7485957
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "yes",
+    "foot": "yes",
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "up",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "ramp": "no",
+    "step_count": "32",
+    "surface": "concrete",
+    "tactile_paving": "no"
+  }
+},
+{
+  "type": "way",
+  "id": 206110443,
+  "center": {
+    "lat": 30.2613370,
+    "lon": -97.7487781
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206156675,
+  "center": {
+    "lat": 30.2638871,
+    "lon": -97.7549895
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete:plates",
+    "wheelchair": "designated"
+  }
+},
+{
+  "type": "way",
+  "id": 206156689,
+  "center": {
+    "lat": 30.2638085,
+    "lon": -97.7548664
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "1",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete:plates",
+    "wheelchair": "designated"
+  }
+},
+{
+  "type": "way",
+  "id": 206160749,
+  "center": {
+    "lat": 30.2692229,
+    "lon": -97.7623461
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "1",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206160750,
+  "center": {
+    "lat": 30.2691166,
+    "lon": -97.7620338
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 206160753,
+  "center": {
+    "lat": 30.2706611,
+    "lon": -97.7662363
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "small_electric_vehicle": "no"
+  }
+},
+{
+  "type": "way",
+  "id": 206160754,
+  "center": {
+    "lat": 30.2680018,
+    "lon": -97.7595936
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "1",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206160755,
+  "center": {
+    "lat": 30.2727610,
+    "lon": -97.7685632
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 206160756,
+  "center": {
+    "lat": 30.2685016,
+    "lon": -97.7606688
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 206160760,
+  "center": {
+    "lat": 30.2689946,
+    "lon": -97.7617251
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "1",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 206200803,
+  "center": {
+    "lat": 30.2644424,
+    "lon": -97.7659704
+  },
+  "tags": {
+    "access": "yes",
+    "highway": "path",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 255960669,
+  "center": {
+    "lat": 30.2527522,
+    "lon": -97.7377829
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "construction": "cycleway",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "construction",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 255960670,
+  "center": {
+    "lat": 30.2515880,
+    "lon": -97.7360654
+  },
+  "tags": {
+    "access": "no",
+    "bicycle": "designated",
+    "construction": "cycleway",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "construction",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 255961707,
+  "center": {
+    "lat": 30.2758102,
+    "lon": -97.7723056
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 255961710,
+  "center": {
+    "lat": 30.2653189,
+    "lon": -97.7641156
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 255961714,
+  "center": {
+    "lat": 30.2621526,
+    "lon": -97.7714957
+  },
+  "tags": {
+    "access": "yes",
+    "highway": "path",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 255961715,
+  "center": {
+    "lat": 30.2626403,
+    "lon": -97.7704959
+  },
+  "tags": {
+    "access": "yes",
+    "highway": "path",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 255961720,
+  "center": {
+    "lat": 30.2633982,
+    "lon": -97.7677912
+  },
+  "tags": {
+    "highway": "path",
+    "name": "Zilker Metro Loop",
+    "surface": "gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 255962136,
+  "center": {
+    "lat": 30.2626135,
+    "lon": -97.7564898
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "201",
+    "addr:postcode": "78704",
+    "addr:street": "Lee Barton Drive",
+    "leisure": "golf_course",
+    "name": "Butler Pitch & Putt",
+    "operator": "City of Austin",
+    "phone": "+1 512 477 4430",
+    "website": "https://www.butlerparkpitchandputt.com/"
+  }
+},
+{
+  "type": "way",
+  "id": 292963395,
+  "center": {
+    "lat": 30.2558284,
+    "lon": -97.7428381
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "covered": "no",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "name_1": "Lady Bird Lake Boardwalk Trail",
+    "oneway": "no",
+    "segregated": "no",
+    "smoothness": "intermediate",
+    "stroller": "yes",
+    "surface": "gravel",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 292965297,
+  "center": {
+    "lat": 30.2568075,
+    "lon": -97.7429694
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "gravel",
+    "wheelchair": "designated",
+    "width": "varies"
+  }
+},
+{
+  "type": "way",
+  "id": 313444167,
+  "center": {
+    "lat": 30.2644399,
+    "lon": -97.7724459
+  },
+  "tags": {
+    "addr:housenumber": "2206",
+    "addr:postcode": "78746",
+    "addr:street": "William Barton Drive",
+    "amenity": "theatre",
+    "building": "yes",
+    "check_date": "2025-02-09",
+    "name": "Zilker Hillside Theater"
+  }
+},
+{
+  "type": "way",
+  "id": 313444169,
+  "center": {
+    "lat": 30.2694954,
+    "lon": -97.7730468
+  },
+  "tags": {
+    "leisure": "garden",
+    "name": "Zilker Botanical Garden",
+    "wheelchair": "limited",
+    "wikidata": "Q8071897"
+  }
+},
+{
+  "type": "way",
+  "id": 313444940,
+  "center": {
+    "lat": 30.2679202,
+    "lon": -97.7681464
+  },
+  "tags": {
+    "addr:city": "AUSTIN",
+    "addr:housenumber": "2100",
+    "addr:postcode": "78746",
+    "addr:state": "TX",
+    "addr:street": "Barton Springs Road",
+    "area": "yes",
+    "name": "Rock Wall At Zilker",
+    "tourism": "attraction"
+  }
+},
+{
+  "type": "way",
+  "id": 317429233,
+  "center": {
+    "lat": 30.2616318,
+    "lon": -97.7434351
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 317749916,
+  "center": {
+    "lat": 30.2679936,
+    "lon": -97.7591576
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 334432970,
+  "center": {
+    "lat": 30.2658110,
+    "lon": -97.7694114
+  },
+  "tags": {
+    "highway": "service",
+    "name": "Andrew Zilker Road",
+    "oneway": "yes",
+    "surface": "asphalt",
+    "tiger:cfcc": "A41",
+    "tiger:county": "Travis, TX",
+    "tiger:name_base": "Andrew Zilker",
+    "tiger:name_type": "Rd",
+    "tiger:zip_left": "78746",
+    "tiger:zip_right": "78746"
+  }
+},
+{
+  "type": "way",
+  "id": 379221714,
+  "center": {
+    "lat": 30.2605808,
+    "lon": -97.7417752
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "74",
+    "addr:postcode": "78701",
+    "addr:state": "TX",
+    "addr:street": "Trinity Street",
+    "building": "retail",
+    "height": "15.3",
+    "name": "Waller Creek Boathouse",
+    "phone": "+1 512 750 2040",
+    "website": "https://www.wallercreekboathouse.org/"
+  }
+},
+{
+  "type": "way",
+  "id": 382559642,
+  "center": {
+    "lat": 30.2720778,
+    "lon": -97.7687777
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "1541",
+    "addr:postcode": "78703",
+    "addr:state": "TX",
+    "addr:street": "West Cesar Chavez Street",
+    "amenity": "boat_rental",
+    "building": "yes",
+    "height": "3.8",
+    "name": "Texas Rowing Center"
+  }
+},
+{
+  "type": "way",
+  "id": 382790190,
+  "center": {
+    "lat": 30.2600546,
+    "lon": -97.7725486
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "1131",
+    "addr:postcode": "78704",
+    "addr:state": "TX",
+    "addr:street": "Hollow Creek Drive",
+    "building": "apartments",
+    "height": "7.3",
+    "name": "Zilker Capri"
+  }
+},
+{
+  "type": "way",
+  "id": 387940962,
+  "center": {
+    "lat": 30.2484807,
+    "lon": -97.7348794
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "check_date": "2026-05-07",
+    "construction": "cycleway",
+    "foot": "designated",
+    "highway": "construction",
+    "horse": "no",
+    "layer": "2",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 404264275,
+  "center": {
+    "lat": 30.2684524,
+    "lon": -97.7593153
+  },
+  "tags": {
+    "bicycle": "designated",
+    "covered": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "source": "Bing",
+    "surface": "asphalt"
+  }
+},
+{
+  "type": "way",
+  "id": 414882987,
+  "center": {
+    "lat": 30.2627437,
+    "lon": -97.7702834
+  },
+  "tags": {
+    "access": "yes",
+    "highway": "path",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 414883707,
+  "center": {
+    "lat": 30.2630380,
+    "lon": -97.7695002
+  },
+  "tags": {
+    "access": "yes",
+    "highway": "path",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "unpaved"
+  }
+},
+{
+  "type": "way",
+  "id": 431228106,
+  "center": {
+    "lat": 30.2658817,
+    "lon": -97.7543468
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 431228107,
+  "center": {
+    "lat": 30.2657480,
+    "lon": -97.7533893
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 585478594,
+  "center": {
+    "lat": 30.2561396,
+    "lon": -97.7431216
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Ann and Roy Butler Hike and Bike 222 Riverside Easement"
+  }
+},
+{
+  "type": "way",
+  "id": 585478595,
+  "center": {
+    "lat": 30.2546648,
+    "lon": -97.7432126
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Ann and Roy Butler Hike and Bike 300 Riverside Easement"
+  }
+},
+{
+  "type": "way",
+  "id": 732242104,
+  "center": {
+    "lat": 30.2517699,
+    "lon": -97.7752957
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "2016",
+    "addr:postcode": "78704",
+    "addr:state": "TX",
+    "addr:street": "Bluebonnet Lane",
+    "leisure": "park",
+    "name": "Little Zilker Neighborhood Park",
+    "opening_hours": "Mo-Su 05:00-22:00",
+    "operator": "Austin Parks and Recreation Department",
+    "operator:type": "public",
+    "operator:wikidata": "Q115220147",
+    "operator:wikipedia": "en:Austin, Texas"
+  }
+},
+{
+  "type": "way",
+  "id": 758577772,
+  "center": {
+    "lat": 30.2637906,
+    "lon": -97.7546543
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 848544410,
+  "center": {
+    "lat": 30.2669653,
+    "lon": -97.7573112
+  },
+  "tags": {
+    "bicycle": "designated",
+    "foot": "designated",
+    "highway": "cycleway",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 849984847,
+  "center": {
+    "lat": 30.2625968,
+    "lon": -97.7448807
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 849984848,
+  "center": {
+    "lat": 30.2636623,
+    "lon": -97.7476043
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "oneway": "no",
+    "segregated": "no",
+    "smoothness": "intermediate",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 868219308,
+  "center": {
+    "lat": 30.2618757,
+    "lon": -97.7485481
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 880046197,
+  "center": {
+    "lat": 30.2623636,
+    "lon": -97.7741433
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool",
+    "location": "outdoor",
+    "swimming_pool": "inground"
+  }
+},
+{
+  "type": "way",
+  "id": 880046198,
+  "center": {
+    "lat": 30.2611680,
+    "lon": -97.7740961
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool",
+    "location": "outdoor",
+    "swimming_pool": "inground"
+  }
+},
+{
+  "type": "way",
+  "id": 880046199,
+  "center": {
+    "lat": 30.2611723,
+    "lon": -97.7729320
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool",
+    "location": "outdoor",
+    "swimming_pool": "inground"
+  }
+},
+{
+  "type": "way",
+  "id": 892503950,
+  "center": {
+    "lat": 30.2753009,
+    "lon": -97.7717205
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "unpaved"
+  }
+},
+{
+  "type": "way",
+  "id": 903801736,
+  "center": {
+    "lat": 30.2589624,
+    "lon": -97.7784301
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801737,
+  "center": {
+    "lat": 30.2573096,
+    "lon": -97.7608301
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801738,
+  "center": {
+    "lat": 30.2570244,
+    "lon": -97.7625233
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801739,
+  "center": {
+    "lat": 30.2561190,
+    "lon": -97.7622307
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801741,
+  "center": {
+    "lat": 30.2617828,
+    "lon": -97.7621712
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801742,
+  "center": {
+    "lat": 30.2629255,
+    "lon": -97.7634342
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801743,
+  "center": {
+    "lat": 30.2620506,
+    "lon": -97.7631636
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801744,
+  "center": {
+    "lat": 30.2584450,
+    "lon": -97.7636115
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801746,
+  "center": {
+    "lat": 30.2606471,
+    "lon": -97.7681106
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801755,
+  "center": {
+    "lat": 30.2596270,
+    "lon": -97.7756494
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 903801756,
+  "center": {
+    "lat": 30.2592668,
+    "lon": -97.7765875
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 914331993,
+  "center": {
+    "lat": 30.2598436,
+    "lon": -97.7771302
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 914331994,
+  "center": {
+    "lat": 30.2581757,
+    "lon": -97.7697762
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 923791272,
+  "center": {
+    "lat": 30.2600479,
+    "lon": -97.7726148
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 946120954,
+  "center": {
+    "lat": 30.2676819,
+    "lon": -97.7666085
+  },
+  "tags": {
+    "addr:city": "AUSTIN",
+    "addr:postcode": "78746",
+    "addr:state": "TX",
+    "addr:street": "Barton Springs Road",
+    "leisure": "park",
+    "name": "Zilker Park",
+    "operator": "Austin Parks and Recreation Department",
+    "operator:type": "government",
+    "operator:wikidata": "Q115220147",
+    "operator:wikipedia": "en:Austin, Texas",
+    "wikidata": "Q8071899",
+    "wikipedia": "en:Zilker Park"
+  }
+},
+{
+  "type": "way",
+  "id": 946168734,
+  "center": {
+    "lat": 30.2748524,
+    "lon": -97.7741348
+  },
+  "tags": {
+    "access": "permissive",
+    "amenity": "boat_storage",
+    "name": "The Rowing Dock",
+    "operator": "THe Rowing Doc, LLC."
+  }
+},
+{
+  "type": "way",
+  "id": 960943389,
+  "center": {
+    "lat": 30.2777862,
+    "lon": -97.7394293
+  },
+  "tags": {
+    "building:part": "yes",
+    "man_made": "tower",
+    "tower:type": "bell_tower"
+  }
+},
+{
+  "type": "way",
+  "id": 968667933,
+  "center": {
+    "lat": 30.2608292,
+    "lon": -97.7548538
+  },
+  "tags": {
+    "fee": "no",
+    "maze": "labyrinth",
+    "name": "Butler Labyrinth",
+    "playground": "maze",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 971045261,
+  "center": {
+    "lat": 30.2547822,
+    "lon": -97.7426131
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "covered": "no",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "name_1": "Lady Bird Lake Boardwalk Trail",
+    "oneway": "no",
+    "segregated": "no",
+    "smoothness": "excellent",
+    "stroller": "yes",
+    "surface": "concrete",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 971045932,
+  "center": {
+    "lat": 30.2519255,
+    "lon": -97.7367477
+  },
+  "tags": {
+    "access": "no",
+    "bicycle": "designated",
+    "construction": "cycleway",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "construction",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 971045933,
+  "center": {
+    "lat": 30.2520970,
+    "lon": -97.7370338
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 971045938,
+  "center": {
+    "lat": 30.2507463,
+    "lon": -97.7340111
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 971045939,
+  "center": {
+    "lat": 30.2503365,
+    "lon": -97.7328557
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 971501452,
+  "center": {
+    "lat": 30.2707399,
+    "lon": -97.7659122
+  },
+  "tags": {
+    "access": "yes",
+    "highway": "service",
+    "lanes": "1",
+    "name": "Boat Launch",
+    "service": "parking_aisle",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 971501453,
+  "center": {
+    "lat": 30.2696545,
+    "lon": -97.7640317
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 971501454,
+  "center": {
+    "lat": 30.2702847,
+    "lon": -97.7659080
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 987840115,
+  "center": {
+    "lat": 30.2723533,
+    "lon": -97.7720608
+  },
+  "tags": {
+    "dog": "leashed",
+    "highway": "footway",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 997757258,
+  "center": {
+    "lat": 30.2548878,
+    "lon": -97.7427191
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "name_1": "Lady Bird Lake Boardwalk Trail",
+    "surface": "fine_gravel",
+    "wheelchair": "designated",
+    "width": "varies"
+  }
+},
+{
+  "type": "way",
+  "id": 1015707762,
+  "center": {
+    "lat": 30.2583281,
+    "lon": -97.7722866
+  },
+  "tags": {
+    "landuse": "residential",
+    "name": "Zilker Terrace",
+    "residential": "condominium"
+  }
+},
+{
+  "type": "way",
+  "id": 1015709922,
+  "center": {
+    "lat": 30.2582010,
+    "lon": -97.7716051
+  },
+  "tags": {
+    "landuse": "residential",
+    "name": "Zilker Skyline",
+    "residential": "condominium"
+  }
+},
+{
+  "type": "way",
+  "id": 1015709934,
+  "center": {
+    "lat": 30.2625469,
+    "lon": -97.7710891
+  },
+  "tags": {
+    "access": "yes",
+    "highway": "path",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "unpaved"
+  }
+},
+{
+  "type": "way",
+  "id": 1015709935,
+  "center": {
+    "lat": 30.2625829,
+    "lon": -97.7707805
+  },
+  "tags": {
+    "access": "yes",
+    "bridge": "yes",
+    "highway": "path",
+    "layer": "1",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 1033406107,
+  "center": {
+    "lat": 30.2712064,
+    "lon": -97.7398764
+  },
+  "tags": {
+    "building:part": "yes",
+    "man_made": "tower",
+    "tower:type": "bell_tower"
+  }
+},
+{
+  "type": "way",
+  "id": 1054317156,
+  "center": {
+    "lat": 30.2804073,
+    "lon": -97.7317316
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "533",
+    "addr:postcode": "78712",
+    "addr:state": "TX",
+    "addr:street": "East 20th Street",
+    "building": "university",
+    "building:levels": "4",
+    "name": "Basketball and Rowing Training Facility",
+    "ref": "BBR"
+  }
+},
+{
+  "type": "way",
+  "id": 1136103934,
+  "center": {
+    "lat": 30.2569838,
+    "lon": -97.7599421
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1153619587,
+  "center": {
+    "lat": 30.2634629,
+    "lon": -97.7580765
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "218",
+    "addr:postcode": "78704",
+    "addr:state": "TX",
+    "addr:street": "South Lamar Boulevard",
+    "building": "yes",
+    "check_date": "2023-03-11",
+    "name": "Zilker Point",
+    "website": "https://zilkerpoint.com/"
+  }
+},
+{
+  "type": "way",
+  "id": 1209882495,
+  "center": {
+    "lat": 30.2653030,
+    "lon": -97.7640554
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1209882496,
+  "center": {
+    "lat": 30.2657369,
+    "lon": -97.7643258
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1214223426,
+  "center": {
+    "lat": 30.2481438,
+    "lon": -97.7757822
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "2301",
+    "addr:postcode": "78704",
+    "addr:state": "TX",
+    "addr:street": "Bluebonnet Lane",
+    "landuse": "residential",
+    "name": "Bluebonnet at Zilker",
+    "residential": "condominium"
+  }
+},
+{
+  "type": "way",
+  "id": 1231261103,
+  "center": {
+    "lat": 30.2634630,
+    "lon": -97.7684281
+  },
+  "tags": {
+    "access": "yes",
+    "highway": "path",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1231262169,
+  "center": {
+    "lat": 30.2667603,
+    "lon": -97.7624353
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "paved"
+  }
+},
+{
+  "type": "way",
+  "id": 1231262686,
+  "center": {
+    "lat": 30.2768988,
+    "lon": -97.7734975
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "paved"
+  }
+},
+{
+  "type": "way",
+  "id": 1231263422,
+  "center": {
+    "lat": 30.2645376,
+    "lon": -97.7501032
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "oneway": "no",
+    "segregated": "no",
+    "surface": "concrete",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1243365342,
+  "center": {
+    "lat": 30.2814619,
+    "lon": -97.7372132
+  },
+  "tags": {
+    "area": "yes",
+    "artwork_type": "installation",
+    "name": "Butler Sound Gallery",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "way",
+  "id": 1265004520,
+  "center": {
+    "lat": 30.2560596,
+    "lon": -97.7605908
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1265170833,
+  "center": {
+    "lat": 30.2644611,
+    "lon": -97.7641108
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1265170835,
+  "center": {
+    "lat": 30.2631483,
+    "lon": -97.7610667
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1265170892,
+  "center": {
+    "lat": 30.2618018,
+    "lon": -97.7758252
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1265170897,
+  "center": {
+    "lat": 30.2613984,
+    "lon": -97.7718447
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1273857598,
+  "center": {
+    "lat": 30.2827172,
+    "lon": -97.7792424
+  },
+  "tags": {
+    "access": "private",
+    "highway": "service",
+    "name": "Boat House Road"
+  }
+},
+{
+  "type": "way",
+  "id": 1273987827,
+  "center": {
+    "lat": 30.2751763,
+    "lon": -97.7713978
+  },
+  "tags": {
+    "dog": "leashed",
+    "highway": "footway",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "unpaved"
+  }
+},
+{
+  "type": "way",
+  "id": 1274257957,
+  "center": {
+    "lat": 30.2679764,
+    "lon": -97.7595155
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 1274257960,
+  "center": {
+    "lat": 30.2683716,
+    "lon": -97.7587908
+  },
+  "tags": {
+    "bicycle": "designated",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "ground"
+  }
+},
+{
+  "type": "way",
+  "id": 1274257963,
+  "center": {
+    "lat": 30.2671480,
+    "lon": -97.7571387
+  },
+  "tags": {
+    "bicycle": "designated",
+    "foot": "designated",
+    "highway": "cycleway",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1288460449,
+  "center": {
+    "lat": 30.2595607,
+    "lon": -97.7408793
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "check_date": "2026-06-06",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "oneway": "no",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1316737783,
+  "center": {
+    "lat": 30.2719616,
+    "lon": -97.7788368
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925082,
+  "center": {
+    "lat": 30.2612061,
+    "lon": -97.7643971
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925083,
+  "center": {
+    "lat": 30.2614407,
+    "lon": -97.7638540
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925084,
+  "center": {
+    "lat": 30.2611926,
+    "lon": -97.7634342
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925085,
+  "center": {
+    "lat": 30.2604384,
+    "lon": -97.7643853
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925086,
+  "center": {
+    "lat": 30.2603736,
+    "lon": -97.7672535
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925087,
+  "center": {
+    "lat": 30.2608097,
+    "lon": -97.7685714
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925088,
+  "center": {
+    "lat": 30.2610333,
+    "lon": -97.7682034
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925089,
+  "center": {
+    "lat": 30.2588636,
+    "lon": -97.7685843
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925090,
+  "center": {
+    "lat": 30.2597345,
+    "lon": -97.7678547
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925091,
+  "center": {
+    "lat": 30.2596496,
+    "lon": -97.7676411
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925092,
+  "center": {
+    "lat": 30.2587896,
+    "lon": -97.7675995
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925093,
+  "center": {
+    "lat": 30.2587551,
+    "lon": -97.7675914
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925094,
+  "center": {
+    "lat": 30.2582863,
+    "lon": -97.7686080
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316925095,
+  "center": {
+    "lat": 30.2581117,
+    "lon": -97.7685159
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316929308,
+  "center": {
+    "lat": 30.2569222,
+    "lon": -97.7629159
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316929309,
+  "center": {
+    "lat": 30.2576183,
+    "lon": -97.7621316
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316929312,
+  "center": {
+    "lat": 30.2587558,
+    "lon": -97.7613740
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316929313,
+  "center": {
+    "lat": 30.2596638,
+    "lon": -97.7606510
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316929314,
+  "center": {
+    "lat": 30.2618266,
+    "lon": -97.7622091
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316929342,
+  "center": {
+    "lat": 30.2576123,
+    "lon": -97.7655587
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316929343,
+  "center": {
+    "lat": 30.2576611,
+    "lon": -97.7656247
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1316929344,
+  "center": {
+    "lat": 30.2576515,
+    "lon": -97.7655252
+  },
+  "tags": {
+    "leisure": "swimming_pool"
+  }
+},
+{
+  "type": "way",
+  "id": 1354021541,
+  "center": {
+    "lat": 30.2600577,
+    "lon": -97.7411331
+  },
+  "tags": {
+    "bicycle": "designated",
+    "check_date": "2026-06-06",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "lit": "yes",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "oneway": "no",
+    "opening_date": "2025-01-27",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete",
+    "wheelchair": "designated"
+  }
+},
+{
+  "type": "way",
+  "id": 1354021542,
+  "center": {
+    "lat": 30.2596158,
+    "lon": -97.7409180
+  },
+  "tags": {
+    "bicycle": "designated",
+    "check_date": "2026-06-06",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "oneway": "no",
+    "opening_date": "2025-01-27",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete",
+    "wheelchair": "designated"
+  }
+},
+{
+  "type": "way",
+  "id": 1374305241,
+  "center": {
+    "lat": 30.2520525,
+    "lon": -97.7649121
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "1508",
+    "addr:postcode": "78704",
+    "addr:state": "TX",
+    "addr:street": "South Lamar Boulevard",
+    "landuse": "residential",
+    "name": "Zilker Studios",
+    "operator": "Foundation Communities",
+    "residential": "apartments",
+    "website": "https://foundcom.org/housing/our-austin-communities/zilker-studios/"
+  }
+},
+{
+  "type": "way",
+  "id": 1383851275,
+  "center": {
+    "lat": 30.2634740,
+    "lon": -97.7678893
+  },
+  "tags": {
+    "access": "yes",
+    "highway": "path",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1383851276,
+  "center": {
+    "lat": 30.2636740,
+    "lon": -97.7676441
+  },
+  "tags": {
+    "access": "yes",
+    "bridge": "yes",
+    "highway": "path",
+    "layer": "1",
+    "motor_vehicle": "no",
+    "name": "Zilker Metro Loop",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1387423193,
+  "center": {
+    "lat": 30.2655668,
+    "lon": -97.7526303
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "lit": "yes",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 1387423194,
+  "center": {
+    "lat": 30.2656261,
+    "lon": -97.7527621
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "crossing": "unmarked",
+    "crossing:markings": "no",
+    "cycleway": "crossing",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "lit": "yes",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1419319762,
+  "center": {
+    "lat": 30.2819566,
+    "lon": -97.7302375
+  },
+  "tags": {
+    "building": "yes",
+    "man_made": "tower",
+    "tower:type": "observation"
+  }
+},
+{
+  "type": "way",
+  "id": 1423351484,
+  "center": {
+    "lat": 30.2658248,
+    "lon": -97.7630017
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1423351485,
+  "center": {
+    "lat": 30.2662982,
+    "lon": -97.7619853
+  },
+  "tags": {
+    "bicycle": "designated",
+    "check_date": "2026-05-06",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1509547408,
+  "center": {
+    "lat": 30.2545045,
+    "lon": -97.7396982
+  },
+  "tags": {
+    "area": "yes",
+    "floating": "yes",
+    "man_made": "pier",
+    "name": "Community Dock",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1509871629,
+  "center": {
+    "lat": 30.2549874,
+    "lon": -97.7396842
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel",
+    "wheelchair": "yes",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1509871630,
+  "center": {
+    "lat": 30.2543733,
+    "lon": -97.7393523
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1509871631,
+  "center": {
+    "lat": 30.2586457,
+    "lon": -97.7409197
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete",
+    "wheelchair": "yes",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1509871632,
+  "center": {
+    "lat": 30.2591220,
+    "lon": -97.7408401
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "check_date": "2026-06-06",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1509871633,
+  "center": {
+    "lat": 30.2606424,
+    "lon": -97.7413410
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "check_date": "2026-06-06",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "oneway": "no",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1509871634,
+  "center": {
+    "lat": 30.2607431,
+    "lon": -97.7419493
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete",
+    "wheelchair": "yes",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1510000961,
+  "center": {
+    "lat": 30.2594050,
+    "lon": -97.7408232
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "check_date": "2026-06-06",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "oneway": "no",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1510000965,
+  "center": {
+    "lat": 30.2606798,
+    "lon": -97.7415604
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1510730670,
+  "center": {
+    "lat": 30.2522344,
+    "lon": -97.7371718
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1510730671,
+  "center": {
+    "lat": 30.2536797,
+    "lon": -97.7387184
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1513672085,
+  "center": {
+    "lat": 30.2683015,
+    "lon": -97.7643110
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 1513672086,
+  "center": {
+    "lat": 30.2691151,
+    "lon": -97.7663634
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1516623056,
+  "center": {
+    "lat": 30.2660525,
+    "lon": -97.7551484
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1516623057,
+  "center": {
+    "lat": 30.2660927,
+    "lon": -97.7552209
+  },
+  "tags": {
+    "bicycle": "designated",
+    "covered": "yes",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1516623058,
+  "center": {
+    "lat": 30.2661232,
+    "lon": -97.7553341
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1516623059,
+  "center": {
+    "lat": 30.2661451,
+    "lon": -97.7554478
+  },
+  "tags": {
+    "bicycle": "designated",
+    "covered": "yes",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1516623067,
+  "center": {
+    "lat": 30.2661445,
+    "lon": -97.7554714
+  },
+  "tags": {
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1516623068,
+  "center": {
+    "lat": 30.2661489,
+    "lon": -97.7555054
+  },
+  "tags": {
+    "bicycle": "designated",
+    "covered": "yes",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1523074555,
+  "center": {
+    "lat": 30.2512332,
+    "lon": -97.7353358
+  },
+  "tags": {
+    "access": "no",
+    "bicycle": "designated",
+    "construction": "cycleway",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "construction",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "surface": "fine_gravel",
+    "width": "3.6"
+  }
+},
+{
+  "type": "way",
+  "id": 1525248735,
+  "center": {
+    "lat": 30.2606759,
+    "lon": -97.7414431
+  },
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "maxspeed": "10 mph",
+    "mofa": "no",
+    "motor_vehicle": "no",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "segregated": "no",
+    "surface": "concrete",
+    "wheelchair": "designated",
+    "width": "3.6"
+  }
+},
+{
+  "type": "relation",
+  "id": 3477373,
+  "center": {
+    "lat": 30.2652865,
+    "lon": -97.7610454
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "200",
+    "addr:postcode": "78704",
+    "addr:state": "TX",
+    "addr:street": "South Lamar Boulevard",
+    "dog": "leashed",
+    "leisure": "park",
+    "name": "Butler Shores at Town Lake",
+    "type": "multipolygon"
+  }
+},
+{
+  "type": "relation",
+  "id": 5292015,
+  "center": {
+    "lat": 30.2671476,
+    "lon": -97.7751979
+  },
+  "tags": {
+    "access": "yes",
+    "fee": "no",
+    "fixme": "map individual holes",
+    "leisure": "disc_golf_course",
+    "name": "Zilker Disc Golf",
+    "operator": "Waterloo Disc Golf Club",
+    "sport": "disc_golf",
+    "type": "multipolygon"
+  }
+},
+{
+  "type": "relation",
+  "id": 5695715,
+  "center": {
+    "lat": 30.2605623,
+    "lon": -97.7718778
+  },
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "1117",
+    "addr:postcode": "78704",
+    "addr:state": "TX",
+    "addr:street": "Hollow Creek Drive",
+    "building": "apartments",
+    "height": "8.1",
+    "name": "Zilker Walk",
+    "type": "multipolygon"
+  }
+},
+{
+  "type": "relation",
+  "id": 13307353,
+  "center": {
+    "lat": 30.2693197,
+    "lon": -97.7713107
+  },
+  "tags": {
+    "dog": "leashed",
+    "leisure": "park",
+    "name": "Zilker Metropolitan Park",
+    "type": "multipolygon",
+    "wikidata": "Q8071899"
+  }
+},
+{
+  "type": "relation",
+  "id": 14653827,
+  "center": {
+    "lat": 30.2599722,
+    "lon": -97.7434889
+  },
+  "tags": {
+    "colour": "#fc5000",
+    "electric_bicycle": "yes",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "network": "lcn",
+    "network:type": "lcn",
+    "ref": "ARBT",
+    "roundtrip": "yes",
+    "route": "bicycle",
+    "short_name": "Butler Trail",
+    "small_electric_vehicle": "no",
+    "source": "https://austin.maps.arcgis.com/apps/MapJournal/index.html?appid=0f4863f5f04147e9bcb36830d5bf0fed;https://www.austintexas.gov/department/ann-and-roy-butler-hike-and-bike-trail-and-boardwalk-lady-bird-lake",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 16160502,
+  "center": {
+    "lat": 30.2599715,
+    "lon": -97.7434889
+  },
+  "tags": {
+    "colour": "#fc5000",
+    "name": "Ann & Roy Butler Hike and Bike Trail",
+    "network": "lwn",
+    "operator": "The Trail Conservancy",
+    "ref": "ARBT",
+    "route": "foot",
+    "short_name": "Butler Trail",
+    "source": "https://austin.maps.arcgis.com/apps/MapJournal/index.html?appid=0f4863f5f04147e9bcb36830d5bf0fed;https://www.austintexas.gov/department/ann-and-roy-butler-hike-and-bike-trail-and-boardwalk-lady-bird-lake",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 18611281,
+  "center": {
+    "lat": 30.2658872,
+    "lon": -97.7678844
+  },
+  "tags": {
+    "name": "Barton Springs/Zilker",
+    "network": "CMTA",
+    "operator": "CapMetro",
+    "public_transport": "stop_area",
+    "ref": "4081",
+    "type": "public_transport",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/4081"
+  }
+},
+{
+  "type": "relation",
+  "id": 18611282,
+  "center": {
+    "lat": 30.2682438,
+    "lon": -97.7729571
+  },
+  "tags": {
+    "name": "2221 Barton Springs (Zilker)",
+    "network": "CMTA",
+    "operator": "CapMetro",
+    "public_transport": "stop_area",
+    "ref": "4080",
+    "type": "public_transport",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/4080"
+  }
+},
+{
+  "type": "relation",
+  "id": 18611283,
+  "center": {
+    "lat": 30.2685575,
+    "lon": -97.7766463
+  },
+  "tags": {
+    "name": "Mopac/Zilker",
+    "network": "CMTA",
+    "operator": "CapMetro",
+    "public_transport": "stop_area",
+    "ref": "4167",
+    "type": "public_transport",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/4167"
+  }
+},
+{
+  "type": "relation",
+  "id": 18612211,
+  "center": {
+    "lat": 30.2682237,
+    "lon": -97.7726928
+  },
+  "tags": {
+    "name": "2220 Barton Springs (Zilker)",
+    "network": "CMTA",
+    "operator": "CapMetro",
+    "public_transport": "stop_area",
+    "ref": "2206",
+    "type": "public_transport",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/2206"
+  }
+},
+{
+  "type": "relation",
+  "id": 18612212,
+  "center": {
+    "lat": 30.2661039,
+    "lon": -97.7683864
+  },
+  "tags": {
+    "name": "Barton Springs (Zilker Park)",
+    "network": "CMTA",
+    "operator": "CapMetro",
+    "public_transport": "stop_area",
+    "ref": "4079",
+    "type": "public_transport",
+    "website": "https://www.capmetro.org/plan/schedmap/stopdetail/4079"
+  }
+}
+
+  ]
+}

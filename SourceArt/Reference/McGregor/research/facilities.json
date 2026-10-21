@@ -1,0 +1,1288 @@
+{
+ "status": "v3 (complete for this session): 42 facilities; heights from shadows / published figures where stated; campus_map.png + campus_map_overview.png done",
+ "imagery_dates": {
+  "naip": "USDA NAIP 2022-07-11, 0.6 m (local copy in Saved/McGregorRaw (fetched by Scripts/mcgregor/fetch_rasters.py), public domain): base of campus_map.png",
+  "stratmap": "TxGIO StratMap 2020 (Surdex, leaf-off January 2020), 7.6 cm native, McLennan County only (covers the whole campus): top_stratmap2020_*.jpg crops",
+  "esri": "Esri World Imagery = Vantor/Maxar WorldView-3 2025-04-13, 0.31 m (viewed in the browser only, not saved; licence)",
+  "photos": "news photos 2019-2025 (NSF / Gary Blair), SpaceX CC0 photos 2008-2015 on Wikimedia Commons, Kenny's own pictures"
+ },
+ "confidence_scale": {
+  "high": "position confirmed on two or more independent sources (OSM footprint + imagery, or imagery + labelled photo); size measured from footprint/imagery",
+  "medium": "position from imagery or one labelled source; size estimated",
+  "low": "identity or position inferred (e.g. from photo direction or description); treat as a guess"
+ },
+ "facilities": [
+  {
+   "id": "first_stage_stand",
+   "name": "Falcon 9 first-stage test stand (current, 'big stand')",
+   "category": "test_stand",
+   "function": "Static fires of every Falcon 9 / Falcon Heavy first stage (9 Merlin 1D). Partially underground, built 2014-2015 for F9 Full Thrust, in use since late 2015; single-core configuration.",
+   "dates": "built 2014-2015; active 2015-present",
+   "x": -132,
+   "y": -560,
+   "footprint": {
+    "stand_deck_m": [
+     22,
+     20
+    ],
+    "flame_trench": "triangular concrete flame trench / deflector opening SOUTH from the deck: ~75 m long (y -578 to -652), ~18 m wide at the stand widening to ~65 m at the mouth (x -185..-105 at the south end)",
+    "how_known": "measured on StratMap 2020 + NAIP 2022"
+   },
+   "height_m": 45,
+   "height_how_known": "stand deck is near grade (partially underground stand, no tall tower over it in StratMap Jan 2020); a Falcon 9 booster standing in it rises ~41-47 m (stage + interstage). Kenny's photo also shows a blue lattice access tower beside it c. 2015-2017 (not standing in Jan 2020)",
+   "look": "Concrete deck over a sloped, concrete-lined triangular exhaust trench (dark grey, scorched) that opens south; tall blue steel lattice access tower; white propellant/pressurant tanks and blue/grey pipe racks to the north and east; red crawler crane often parked beside it (2020-2021). From the south (Kenny's photo) you see the open trench mouth with the water tower to the left and the tripod to the right.",
+   "osm": [
+    "925966263",
+    "925912161"
+   ],
+   "confidence": "high",
+   "notes": "Kenny's aerial_test_stands.jpg looks NNE at this stand: pit in the centre, water tower left, tripod right.",
+   "extra_images": [
+    "campus_overview/commons_2008-11-20_spacex_aerial_cc0.jpg"
+   ],
+   "map_no": 1
+  },
+  {
+   "id": "tripod_raptor_vertical",
+   "name": "The 'Tripod' (Beal Aerospace stand) - former F9 first-stage stand, now Raptor vertical stand",
+   "category": "test_stand",
+   "function": "Built by Beal Aerospace c. 1999-2000 (the '220-feet tall vertical-fire stand ... for larger engines' of Beal's 1999 release). SpaceX added a tall access tower with retractable floors on top and a water-cooled flame diverter at its base; F9 first-stage firings 2008 to mid-2015 (last: Jason-3 stage). Idle 2015-2019; from Oct 2019 converted to a vertical Raptor test stand (tower removed and laid down), in use for Raptor since ~2020.",
+   "dates": "c. 2000 (Beal); SpaceX F9 2008-2015; Raptor vertical 2020-present",
+   "x": -12,
+   "y": -552,
+   "footprint": {
+    "legs_triangle_m": 25,
+    "how_known": "OSM triangle ring + StratMap 2020"
+   },
+   "height_m": 66,
+   "height_how_known": "shadow length on StratMap Jan 2020 (~82 m, sun elevation 39+-2 deg from date + container-shadow calibration) -> ~66 m incl. the structure on top; matches Beal's 1999 '220-feet tall vertical-fire stand' (67 m). Concrete legs alone are lower (~40 m, estimate)",
+   "look": "Three massive grey concrete legs (a tripod) carrying a concrete ring/deck; 2008-2019 a tall blue steel lattice access tower on top (white F9 stage inside); today blue steel platforms and handrails on the deck, scaffolding, a white clad building beside it (to the east). Exhaust goes down between the legs into a flame diverter.",
+   "osm": [
+    "233582606"
+   ],
+   "confidence": "high",
+   "notes": "Kenny's aerial_test_stands.jpg: the right-hand structure with the blue tower on three concrete legs and a dark pit below.",
+   "map_no": 2,
+   "extra_images": [
+    "first_stage_stand/nsf_2021-09_stands_overview_with_water_tower.jpg",
+    "first_stage_stand/top_stratmap2020_central_stands.jpg"
+   ]
+  },
+  {
+   "id": "structural_test_stand",
+   "name": "Falcon 9 structural test stand",
+   "category": "test_stand",
+   "function": "Structural/pressure testing of tanks and stage sections.",
+   "dates": "by 2014 (labelled on the 2015 aerials)",
+   "x": -38,
+   "y": -444,
+   "footprint": {
+    "how_known": "OSM ring"
+   },
+   "height_m": 60,
+   "height_how_known": "shadow on StratMap Jan 2020: ~74 m long north of the stand -> ~60 m (+-10%); its lattice shadow is the long one crossing the loop road north of the stands",
+   "look": "Tall dark steel lattice tower with stair/platform levels, beside rows of horizontal white tanks just north of the tripod; long thin lattice shadow.",
+   "osm": [
+    "233582607"
+   ],
+   "confidence": "medium",
+   "map_no": 3,
+   "extra_images": [
+    "first_stage_stand/nsf_2021-09_stands_overview_with_water_tower.jpg",
+    "first_stage_stand/top_stratmap2020_central_stands.jpg"
+   ]
+  },
+  {
+   "id": "water_tower_central",
+   "name": "Central water tower (stands area)",
+   "category": "utility",
+   "function": "Elevated water storage feeding the stand deluge/cooling water.",
+   "dates": "by 2015 (in Kenny's photo and 2015 aerials)",
+   "x": -171,
+   "y": -497,
+   "footprint": {
+    "tank_diameter_m": 16,
+    "leg_spread_m": 22,
+    "how_known": "StratMap Jan 2020: tank ~16 m across (shadow width), legs spread ~22 m (OSM ring 23 m)"
+   },
+   "height_m": 83,
+   "height_how_known": "two independent estimates: (1) StratMap Jan 2020 shadow, base -> tank-shadow centre ~94 m at sun elevation 39+-2 deg -> tank centre ~75 m (68-82); (2) Kenny's aerial_test_stands.jpg proportions, height ~5.5x tank diameter -> ~85 m. Use ~75 m to tank centre, ~83 m to top",
+   "look": "Very tall white multi-leg lattice water tower (legs + X bracing, white) with a white near-spherical tank (~16 m) on top: the tallest thing in the central stands area; next to two white ground tanks on a grassy round mound inside the loop road.",
+   "osm": [
+    "509691343"
+   ],
+   "confidence": "high",
+   "map_no": 4,
+   "extra_images": [
+    "first_stage_stand/nsf_2021-09_b1068_on_first_stage_stand.jpg",
+    "first_stage_stand/nsf_2021-09_stands_overview_with_water_tower.jpg",
+    "first_stage_stand/top_stratmap2020_central_stands.jpg"
+   ]
+  },
+  {
+   "id": "ground_water_tanks_central",
+   "name": "Ground water storage tanks by the central water tower",
+   "category": "tank_farm",
+   "function": "Ground water storage for the stand deluge (two white flat-bottom tanks).",
+   "dates": "by 2020",
+   "x": -195,
+   "y": -495,
+   "footprint": {
+    "tanks": [
+     {
+      "centre": [
+       -200,
+       -503
+      ],
+      "d_m": 22
+     },
+     {
+      "centre": [
+       -186,
+       -479
+      ],
+      "d_m": 12
+     }
+    ],
+    "how_known": "OSM rings + StratMap 2020"
+   },
+   "height_m": 12,
+   "height_how_known": "estimate from shadows (low walls, domed roofs)",
+   "look": "White cylindrical tanks with shallow domed roofs on a grassy round mound inside the loop road.",
+   "osm": [
+    "925875245",
+    "925875246"
+   ],
+   "confidence": "high",
+   "map_no": 5,
+   "extra_images": [
+    "first_stage_stand/top_stratmap2020_central_stands.jpg"
+   ]
+  },
+  {
+   "id": "central_tank_farm",
+   "name": "Central stands tank farm (LOX / RP-1 / LN2 / helium)",
+   "category": "tank_farm",
+   "function": "Propellant and pressurant storage for the tripod and first-stage stand: rows of horizontal white tanks, vertical helium bottles (OSM content=helium), small vertical tanks.",
+   "dates": "evolving",
+   "x": -30,
+   "y": -490,
+   "footprint": {
+    "how_known": "OSM tank rings (horizontal tanks show as large overlapping 'r' values)"
+   },
+   "height_m": 5,
+   "height_how_known": "horizontal tanks ~3.5-4.5 m diameter",
+   "look": "Long white horizontal cylinders on saddles in parallel rows, silver vertical tanks, pipe racks.",
+   "osm": [
+    "925875275",
+    "925875276",
+    "925912158",
+    "925912159",
+    "1420197179",
+    "1420197180",
+    "1420197181",
+    "1420197182",
+    "1420197183",
+    "925912186",
+    "925912187",
+    "925912188",
+    "925912189",
+    "925912190",
+    "925875277",
+    "925912191",
+    "925912192",
+    "925912194",
+    "925912195",
+    "925912196"
+   ],
+   "confidence": "medium",
+   "map_no": 6,
+   "extra_images": [
+    "first_stage_stand/top_stratmap2020_central_stands.jpg"
+   ]
+  },
+  {
+   "id": "hangar_stands",
+   "name": "Stands-area hangar / shop",
+   "category": "building",
+   "function": "Hangar/workshop serving the central stands (labelled 'HANGAR' on the 2015 aerial).",
+   "dates": "by 2014",
+   "x": 43,
+   "y": -487,
+   "footprint": {
+    "how_known": "OSM ring"
+   },
+   "height_m": 10,
+   "height_how_known": "estimate (single-storey industrial hangar)",
+   "look": "Long light-grey metal building with a low gabled roof, cars parked along its east side.",
+   "osm": [
+    "233581969"
+   ],
+   "confidence": "high",
+   "map_no": 7,
+   "extra_images": [
+    "first_stage_stand/top_stratmap2020_central_stands.jpg"
+   ]
+  },
+  {
+   "id": "raptor_north_complex",
+   "name": "Raptor test complex (north): horizontal test bays",
+   "category": "test_stand",
+   "function": "Original Raptor horizontal test stands (first Raptor firing Sept 2016; second horizontal stand completed 2019); multiple bays firing roughly north into scoured exhaust fans; sea-level and vacuum Raptors.",
+   "dates": "2016-present",
+   "x": -89,
+   "y": 449,
+   "footprint": {
+    "how_known": "OSM ring (stand) + works polygon 910751658 (whole complex inside the oval road, ~87,700 m2)"
+   },
+   "height_m": 20,
+   "height_how_known": "estimate (test-cell structures 10-20 m; tallest frames ~25 m)",
+   "look": "Concrete test cells (walls, roofs, yellow jib cranes, dense silver pipework, black steel frames) clustered at the north end of a caliche pad; 2-4 exhaust troughs (light concrete wedges) fan NNW/N/NNE into bare scoured earth 100-200 m long; a grey flat-roof shop (~27 x 25 m) south-east of the cells; a long white pipe rack runs east at y~370 toward the propellant farm. The pad sits inside an oval caliche loop road with an earth berm on its north side.",
+   "osm": [
+    "926002320",
+    "910751658"
+   ],
+   "confidence": "high",
+   "map_no": 8,
+   "extra_images": [
+    "raptor_horizontal_stands/nsf_2019-10_two_horizontal_raptor_stands.jpg",
+    "raptor_horizontal_stands/nsf_2021-04_rvac_and_sl_raptor_in_horizontal_bays.jpg"
+   ]
+  },
+  {
+   "id": "raptor_vertical_2021",
+   "name": "Raptor vertical test stand (2021)",
+   "category": "test_stand",
+   "function": "Vertical sea-level Raptor stand built Jan-May 2021 ('New Raptor Stand'), up to 1-2 firings/day; flame trench opens south.",
+   "dates": "2021-present",
+   "x": -91,
+   "y": 328,
+   "footprint": {
+    "flame_trench": "triangular trench opening south, OSM ring 926002317",
+    "how_known": "OSM + NAIP"
+   },
+   "height_m": 25,
+   "height_how_known": "estimate from NSF 2021 photo (stand top a little above the white vertical tanks)",
+   "look": "Steel stand over a concrete triangular flame trench like a small version of the F9 stand; white vertical tanks beside it.",
+   "osm": [
+    "926002314",
+    "926002317",
+    "926002321",
+    "926002322",
+    "926002323",
+    "926002324",
+    "926002325",
+    "926002326",
+    "926002327"
+   ],
+   "confidence": "high",
+   "map_no": 9,
+   "extra_images": [
+    "raptor_north_complex/nsf_2021-04_raptor_complex_current_and_new_vertical_stand.jpg",
+    "raptor_north_complex/top_stratmap2020_raptor_complex.jpg"
+   ]
+  },
+  {
+   "id": "raptor_shop",
+   "name": "Raptor complex shop building",
+   "category": "building",
+   "function": "Grey flat-roofed shop/hangar on the Raptor pad (engine handling).",
+   "dates": "by 2020",
+   "x": -49,
+   "y": 407,
+   "footprint": {
+    "approx_m": [
+     27,
+     25
+    ],
+    "how_known": "StratMap 2020"
+   },
+   "height_m": 9,
+   "height_how_known": "estimate",
+   "look": "Light-grey metal building with a flat/low roof and roll-up doors.",
+   "osm": [],
+   "extra_images": [
+    "raptor_north_complex/nsf_2021-04_raptor_complex_current_and_new_vertical_stand.jpg",
+    "raptor_north_complex/top_stratmap2020_raptor_complex.jpg"
+   ],
+   "confidence": "medium",
+   "map_no": 10
+  },
+  {
+   "id": "raptor_prop_farm",
+   "name": "Raptor propellant tank farm along the north road",
+   "category": "tank_farm",
+   "function": "LOX / methane / LN2 storage feeding the north Raptor complex by an east-west pipe rack.",
+   "dates": "2019-2022+",
+   "x": 405,
+   "y": 345,
+   "footprint": {
+    "how_known": "OSM tank rings along the N-S road x~400-417, y 239-450"
+   },
+   "height_m": 6,
+   "height_how_known": "estimate",
+   "look": "Rows of white tanks beside the road; a long pipe rack runs west ~500 m to the Raptor complex at y~365.",
+   "osm": [
+    "925875229",
+    "925875230",
+    "925875231",
+    "925875232",
+    "925875233",
+    "925875234",
+    "925875235",
+    "925875236",
+    "1274325389",
+    "1274325390",
+    "1274325391",
+    "1274325392",
+    "1274325393",
+    "1274325394",
+    "1274325388"
+   ],
+   "confidence": "medium",
+   "map_no": 11,
+   "extra_images": [
+    "raptor_north_complex/top_stratmap2020_raptor_complex.jpg"
+   ]
+  },
+  {
+   "id": "raptor_north_stand",
+   "name": "Raptor North test stand (new, 2025)",
+   "category": "test_stand",
+   "function": "New horizontal Raptor stand with several bays; first firings mid-2025 (2 s, then 19 s in Aug 2025); Raptor 3.",
+   "dates": "built 2024-2025; active 2025-present",
+   "x": 907,
+   "y": 637,
+   "footprint": {
+    "pad_m": [
+     195,
+     125
+    ],
+    "flame_trench": "long concrete exhaust trench/apron to the WEST of the stand, ~77 m long, ~8 m wide at the stand widening to ~25 m",
+    "how_known": "Esri World Imagery 2025-04-13 (viewed), measured"
+   },
+   "height_m": null,
+   "height_how_known": "pending",
+   "look": "Black steel test-cell block with pipe racks, white horizontal tanks (~40 m long) east of it, white vertical tanks, bright caliche pad.",
+   "osm": [],
+   "confidence": "medium",
+   "map_no": 12
+  },
+  {
+   "id": "raptor_south_stand",
+   "name": "Raptor South test stand (new, 2025)",
+   "category": "test_stand",
+   "function": "New Raptor stand used for Raptor 3 development (record burns 152-201 s in Aug 2025, 354 s later).",
+   "dates": "built 2024-2025; active 2025-present",
+   "x": 882,
+   "y": 212,
+   "footprint": {
+    "pad_m": [
+     180,
+     80
+    ],
+    "flame_trench": "exhaust trench to the WEST, ~76 m long, ~24 m wide at the outer end",
+    "how_known": "Esri World Imagery 2025-04-13 (viewed), measured"
+   },
+   "height_m": null,
+   "height_how_known": "pending",
+   "look": "Twin of the North stand: black steel cell, horizontal and vertical white tanks to the east, N-S pipe rack linking it to the North stand (x~905).",
+   "osm": [],
+   "confidence": "medium",
+   "map_no": 13,
+   "extra_images": [
+    "raptor_north_stand/nsf_2025-08_raptor_north_bay_r3.jpg"
+   ]
+  },
+  {
+   "id": "stage2_stand_new",
+   "name": "Vertical second-stage test stand ('new test site', S2 stand)",
+   "category": "test_stand",
+   "function": "Falcon 9 second-stage (MVac) static fires; flame trench dug 2015, work resumed late 2017, nearing completion Oct 2019; similar design to the newer first-stage stand.",
+   "dates": "2015-2020 construction; active since ~2020",
+   "x": 990,
+   "y": -695,
+   "footprint": {
+    "deck_m": [
+     18,
+     35
+    ],
+    "flanking_buildings_m": [
+     [
+      21,
+      23
+     ],
+     [
+      20,
+      15
+     ]
+    ],
+    "flame_trench": "concrete trench opening SOUTH, ~50 m long, ~8 m wide at the stand to ~31 m at the mouth (StratMap 2020); Esri 2025 shows the opening ~80 m long incl. the scoured run-out",
+    "apron": "large dark paved apron NORTH of the stand, ~100 x 80 m (Esri 2025)",
+    "how_known": "StratMap Jan 2020 + Esri 2025"
+   },
+   "height_m": 18,
+   "height_how_known": "estimate (elevated deck + mount ring; F9 second stage ~14 m stands on it)",
+   "look": "Open sloped concrete flame trench with an elevated steel deck and mount ring over its head, flanked by two flat-roofed concrete buildings; grey metal sheds; white water tank nearby.",
+   "osm": [
+    "925875206",
+    "925912162",
+    "925920281"
+   ],
+   "confidence": "high",
+   "map_no": 14
+  },
+  {
+   "id": "water_tower_east",
+   "name": "East water tower (by the S2 stand)",
+   "category": "utility",
+   "function": "Water storage near the new stage-2 stand (possibly the 250,000 gal elevated / 500,000 gal ground tanks of the 2019 Walker Partners water-system project).",
+   "dates": "c. 2019",
+   "x": 1060,
+   "y": -672,
+   "footprint": {
+    "how_known": "OSM ring"
+   },
+   "height_m": 42,
+   "height_how_known": "estimate: typical 250,000 gal elevated tank (Walker Partners 2019 water-system project) 40-45 m; shadow not measurable in the crops",
+   "look": "White steel near-spherical tank on a white lattice leg tower (smaller than the central one); a white ground storage tank (~12 m) just north at (1049,-629).",
+   "osm": [
+    "925875205"
+   ],
+   "confidence": "medium",
+   "map_no": 15,
+   "extra_images": [
+    "stage2_stand_new/nsf_2019-10_new_second_stage_stand_construction.jpg",
+    "stage2_stand_new/top_stratmap2020_s2_stand.jpg"
+   ]
+  },
+  {
+   "id": "s2_tank_farm",
+   "name": "Propellant compounds east of the Merlin stands (S2 stand feed)",
+   "category": "tank_farm",
+   "function": "Three fenced compounds of tall vertical white tanks along the road between the Merlin complex and the S2 stand, plus a compound with horizontal tanks at (535,-815); feed the S2 stand via a long pipe rack.",
+   "dates": "by 2020",
+   "x": 815,
+   "y": -715,
+   "footprint": {
+    "compounds": [
+     [
+      [
+       743,
+       -725
+      ],
+      22,
+      28
+     ],
+     [
+      [
+       810,
+       -718
+      ],
+      28,
+      28
+     ],
+     [
+      [
+       868,
+       -708
+      ],
+      32,
+      30
+     ]
+    ],
+    "how_known": "StratMap 2020 (centre, w, h in m)"
+   },
+   "height_m": 14,
+   "height_how_known": "shadow ~17 m on StratMap -> ~14 m vertical tanks",
+   "look": "Gravel compounds with chain-link fence, 3-5 tall white vertical tanks each, process skids, small white buildings; black pipe rack on low supports to the east.",
+   "osm": [
+    "925875222",
+    "925875223",
+    "925875224",
+    "925875225",
+    "925875226",
+    "925875227",
+    "925875228",
+    "925912150",
+    "925912151",
+    "925912152",
+    "925912153",
+    "925912154",
+    "925875249",
+    "925875250",
+    "925912143",
+    "925912144",
+    "925912145"
+   ],
+   "confidence": "medium",
+   "map_no": 16
+  },
+  {
+   "id": "merlin_vertical_stands",
+   "name": "Merlin engine dual test stand (vertical M1D stands)",
+   "category": "test_stand",
+   "function": "Acceptance firings of Merlin 1D engines, two vertical cells; 'VERTICAL M1D TEST STANDS' on the 2015 aerial.",
+   "dates": "c. 2008-present",
+   "x": 547,
+   "y": -1284,
+   "footprint": {
+    "how_known": "OSM ring + tower ring 233583232"
+   },
+   "height_m": 28,
+   "height_how_known": "rough shadow estimate on StratMap Jan 2020 (~35 m shadow)",
+   "look": "Cluster of tall steel test towers (grey/blue framing, white tanks, pipework) at the south end of a long tank row; a huge dark scorched concrete exhaust apron/fan (~60 x 120 m) on its east side; burn scar spreading east-south-east on the grass.",
+   "osm": [
+    "233583231",
+    "233583232"
+   ],
+   "confidence": "high",
+   "map_no": 17,
+   "extra_images": [
+    "campus_overview/commons_2008-11-20_spacex_aerial_cc0.jpg"
+   ]
+  },
+  {
+   "id": "upper_stage_stand",
+   "name": "Upper-stage test stand (older vertical stage-2 / MVac stand)",
+   "category": "test_stand",
+   "function": "Falcon 9 second-stage firings before the new S2 stand; 'VERTICAL STAGE 2 TEST STAND' on the 2015 aerial; next to the M1D stands.",
+   "dates": "c. 2010-present",
+   "x": 550,
+   "y": -1304,
+   "footprint": {
+    "how_known": "OSM ring"
+   },
+   "height_m": null,
+   "height_how_known": "pending",
+   "look": "Tall enclosed steel tower with tanks, part of the M1D/stage-2 complex.",
+   "osm": [
+    "233583233"
+   ],
+   "confidence": "high",
+   "map_no": 18,
+   "extra_images": [
+    "merlin_vertical_stands/top_stratmap2020_merlin_complex.jpg"
+   ]
+  },
+  {
+   "id": "mvac_stand",
+   "name": "MVac test stand",
+   "category": "test_stand",
+   "function": "Merlin Vacuum engine firings (OSM name).",
+   "dates": "?",
+   "x": 558,
+   "y": -1333,
+   "footprint": {
+    "how_known": "OSM ring"
+   },
+   "height_m": null,
+   "height_how_known": "pending",
+   "look": "Steel stand south of the dual stand.",
+   "osm": [
+    "233583234"
+   ],
+   "confidence": "medium",
+   "map_no": 19,
+   "extra_images": [
+    "merlin_vertical_stands/top_stratmap2020_merlin_complex.jpg"
+   ]
+  },
+  {
+   "id": "merlin_horizontal_stand",
+   "name": "Horizontal M1D test stand (probable) / north Merlin cell",
+   "category": "test_stand",
+   "function": "Compact stand with buildings and tanks north of the vertical Merlin stands, by a small pond; probably the 'HORIZONTAL M1D TEST STAND' (#12) of the 2015 numbered aerial.",
+   "dates": "by 2015",
+   "x": 578,
+   "y": -1040,
+   "footprint": {
+    "approx_m": [
+     55,
+     45
+    ],
+    "how_known": "StratMap 2020"
+   },
+   "height_m": 10,
+   "height_how_known": "estimate",
+   "look": "Fenced compound with a white building, steel test frame, horizontal and vertical tanks, pipe bridge to the main tank row; small dark pond to the east.",
+   "osm": [
+    "233582619",
+    "925912141",
+    "926261820"
+   ],
+   "extra_images": [
+    "merlin_vertical_stands/top_stratmap2020_merlin_complex.jpg"
+   ],
+   "confidence": "low",
+   "map_no": 20
+  },
+  {
+   "id": "merlin_tank_farm",
+   "name": "Merlin / stage-2 complex tank farm",
+   "category": "tank_farm",
+   "function": "Propellant storage for the M1D / upper-stage / MVac stands: line of small tanks along the road north of the complex, large tanks at its south end.",
+   "dates": "evolving",
+   "x": 515,
+   "y": -1150,
+   "footprint": {
+    "how_known": "OSM tank rings x 474-557, y -1040..-1355"
+   },
+   "height_m": 10,
+   "height_how_known": "estimate",
+   "look": "White horizontal and vertical tanks; a big round black-topped tank at (506,-1335) (visible in the 2008 aerial as a black disc); long dark lined pond/trench east of the stands (x 538-592, y -1382..-1441).",
+   "osm": [
+    "434836853",
+    "434836855",
+    "434836860",
+    "926007236",
+    "233582619",
+    "925912141",
+    "926261820",
+    "925875210",
+    "925875211",
+    "925875212",
+    "925875213",
+    "925875214",
+    "925875215",
+    "925875216",
+    "925875217",
+    "925875218",
+    "925875219",
+    "925875220",
+    "925875221",
+    "925875257",
+    "925875258",
+    "925875259",
+    "925875260",
+    "925875261",
+    "925875262"
+   ],
+   "confidence": "medium",
+   "map_no": 21,
+   "extra_images": [
+    "merlin_vertical_stands/top_stratmap2020_merlin_complex.jpg"
+   ]
+  },
+  {
+   "id": "merlin_round_tank",
+   "name": "Round dark-topped tank by the Merlin stands",
+   "category": "utility",
+   "function": "Large round tank or basin with a dark top/water surface (visible as a black disc since 2008); probably water for deluge/cooling.",
+   "dates": "by 2008",
+   "x": 506,
+   "y": -1333,
+   "footprint": {
+    "diameter_m": 21,
+    "how_known": "StratMap 2020 + OSM ring 434836860"
+   },
+   "height_m": 5,
+   "height_how_known": "estimate (low wall, short shadow)",
+   "look": "Concrete/steel ring wall, black interior (water or black roof), white tanks around it.",
+   "osm": [
+    "434836860"
+   ],
+   "extra_images": [
+    "merlin_vertical_stands/top_stratmap2020_merlin_complex.jpg"
+   ],
+   "confidence": "medium",
+   "map_no": 22
+  },
+  {
+   "id": "merlin_retention_basin",
+   "name": "Lined retention basin east of the Merlin stands",
+   "category": "utility",
+   "function": "Two-cell concrete-walled, black-lined water retention basin at the foot of the Merlin exhaust apron.",
+   "dates": "by 2020",
+   "x": 567,
+   "y": -1408,
+   "footprint": {
+    "approx_m": [
+     62,
+     22
+    ],
+    "long_axis_bearing_deg": 147,
+    "how_known": "StratMap 2020 + NAIP 2022 (OSM pond ring)"
+   },
+   "height_m": -2,
+   "height_how_known": "basin (below grade, ~1 m walls)",
+   "look": "Black liner water in concrete-walled rectangular cells, white curbs.",
+   "osm": [],
+   "extra_images": [
+    "merlin_vertical_stands/top_stratmap2020_merlin_complex.jpg"
+   ],
+   "confidence": "high",
+   "map_no": 23
+  },
+  {
+   "id": "blockhouse_control",
+   "name": "Blockhouse / control room",
+   "category": "building",
+   "function": "Test control (the 'engine test bunker'); 'BLOCKHOUSE/CONTROL' on the 2015 aerials; OSM 'Control Room'.",
+   "dates": "by 2008",
+   "x": 448,
+   "y": -1436,
+   "footprint": {
+    "how_known": "OSM ring"
+   },
+   "height_m": 5,
+   "height_how_known": "estimate (low bunker building)",
+   "look": "Low flat-roofed concrete building with an attached dark-roofed wing, small parking lot to its south-west; 2012 interior photo shows a windowless control room with consoles (Jurvetson).",
+   "osm": [
+    "233581976"
+   ],
+   "confidence": "high",
+   "map_no": 24,
+   "extra_images": [
+    "merlin_vertical_stands/top_stratmap2020_merlin_complex.jpg"
+   ]
+  },
+  {
+   "id": "offices_shops",
+   "name": "Site offices, shops and old core-storage hangar ('Central Site')",
+   "category": "building",
+   "function": "Main office/shop building (OSM 'SpaceX Central Shop'), connected office wing and the large white hangar at its south-east end ('OLD CORE STORAGE HANGAR' on the 2015 aerial); main parking lot to the west.",
+   "dates": "offices by 2008, expanded 2012-2014",
+   "x": 266,
+   "y": -1630,
+   "footprint": {
+    "main_building_obb_m": [
+     92,
+     38
+    ],
+    "bearing_deg": 148,
+    "how_known": "OSM ring 233581960 + StratMap 2020"
+   },
+   "height_m": 9,
+   "height_how_known": "estimate: single storey shop bays ~8-9 m to ridge; 2-storey office addition with observation deck built 2013-2014 (TDLR EABPRJB4802760)",
+   "look": "White/light-grey corrugated metal buildings with blue trim and low gabled roofs; a dark-grey single-storey office wing with a glass entrance canopy and flagpoles; the hangar has a full-height sliding door on its east end; landscaped strip and big asphalt lot.",
+   "osm": [
+    "233581960",
+    "233581958",
+    "509693382",
+    "509693383"
+   ],
+   "confidence": "high",
+   "map_no": 25
+  },
+  {
+   "id": "old_core_storage_hangar",
+   "name": "Old core-storage hangar (big white hangar at the offices)",
+   "category": "building",
+   "function": "Large hangar at the SE end of the office/shop complex ('OLD CORE STORAGE HANGAR' on the 2015 aerial): horizontal stage storage and work.",
+   "dates": "by 2013",
+   "x": 318,
+   "y": -1690,
+   "footprint": {
+    "approx_m": [
+     76,
+     33
+    ],
+    "long_axis_bearing_deg": 67,
+    "how_known": "StratMap 2020 (measured)"
+   },
+   "height_m": 14,
+   "height_how_known": "estimate from the 2013 CC0 aerial (door height vs. pickups)",
+   "look": "White ribbed metal hangar with blue trim and a low gabled roof; full-height sliding hangar door with a blue rail on its east gable; HVAC units along the north wall.",
+   "osm": [],
+   "extra_images": [
+    "offices_shops/commons_2013-06-06_central_site_aerial_cc0.jpg",
+    "offices_shops/top_stratmap2020_offices.jpg"
+   ],
+   "confidence": "high",
+   "map_no": 26
+  },
+  {
+   "id": "office_annexes",
+   "name": "Office/shop annex buildings north of the main lot",
+   "category": "building",
+   "function": "Grey gabled shop (OSM 233581958) and a white shed north-west of the main building.",
+   "dates": "by 2013",
+   "x": 214,
+   "y": -1540,
+   "footprint": {
+    "how_known": "OSM ring + StratMap 2020"
+   },
+   "height_m": 8,
+   "height_how_known": "estimate",
+   "look": "Light-grey gabled metal building ~29 x 22 m; small white metal sheds; gravel yard.",
+   "osm": [
+    "233581958"
+   ],
+   "extra_images": [
+    "offices_shops/top_stratmap2020_offices.jpg"
+   ],
+   "confidence": "high",
+   "map_no": 27
+  },
+  {
+   "id": "main_parking",
+   "name": "Main parking lot",
+   "category": "parking",
+   "function": "Staff parking west of the offices (~300+ spaces).",
+   "dates": "2013-present",
+   "x": 200,
+   "y": -1660,
+   "footprint": {
+    "poly_approx": [
+     [
+      130,
+      -1605
+     ],
+     [
+      262,
+      -1600
+     ],
+     [
+      275,
+      -1715
+     ],
+     [
+      140,
+      -1720
+     ]
+    ],
+    "how_known": "StratMap 2020 / NAIP 2022 (rotated lot, measured)"
+   },
+   "height_m": 0,
+   "look": "Asphalt with white striping, landscaped median with gravel and small trees.",
+   "osm": [],
+   "confidence": "high",
+   "extra_images": [
+    "offices_shops/commons_2013-06-06_central_site_aerial_cc0.jpg",
+    "offices_shops/top_stratmap2020_offices.jpg"
+   ],
+   "map_no": 28
+  },
+  {
+   "id": "main_gate",
+   "name": "Main entrance (office access drive off the south road)",
+   "category": "access",
+   "function": "No gatehouse is visible on the 2020/2022/2025 imagery. The concrete office drive leaves the east-west south road at about (105,-2003) and curves north (x~60-80) to the office junction at (100,-1715). The south road (concrete/asphalt with a yellow centre line) runs east to x~812 and on (asphalt) to a north-south road at x~1800-1950 that meets FM 2671 at about (1950,-2275): most likely the public approach ('1 Rocket Road').",
+   "dates": "",
+   "x": 105,
+   "y": -2003,
+   "footprint": {
+    "entry_drive_width_m": 7,
+    "how_known": "StratMap 2020 / NAIP 2022"
+   },
+   "height_m": 0,
+   "look": "Concrete two-lane drive with grass verges and white culvert headwalls; the site address is 1 Rocket Road, McGregor TX 76657.",
+   "osm": [],
+   "confidence": "medium",
+   "extra_images": [],
+   "map_no": 29
+  },
+  {
+   "id": "boneyard",
+   "name": "Boneyard / scrap yard",
+   "category": "yard",
+   "function": "Outdoor storage of hardware and debris ('BONE YARD: F9R-DEV1 DEBRIS' on the 2015 labelled aerial). In Aug 2025 NSF counted 40-50 retired Raptors rusting in a 'junkyard' area (location not stated; may be here or near the Raptor complex).",
+   "dates": "2014-present",
+   "x": -29,
+   "y": -1374,
+   "footprint": {
+    "how_known": "OSM landuse polygon 925912169 + StratMap 2020"
+   },
+   "height_m": 3,
+   "look": "Gravel yard with rows of steel frames, stacked pipes, rusty parts and long lattice sections on the ground.",
+   "osm": [
+    "925912169"
+   ],
+   "confidence": "medium",
+   "map_no": 30
+  },
+  {
+   "id": "new_core_storage_hangar",
+   "name": "'New core storage hangar' (2015 label) - long white hangar south of the boneyard",
+   "category": "building",
+   "function": "Stage storage hangar (under construction on the 2015 labelled aerial). Identification by position relative to the boneyard and the structural stand: medium.",
+   "dates": "2014-2015",
+   "x": 52,
+   "y": -1466,
+   "footprint": {
+    "how_known": "OSM ring 847218461 (~1730 m2) + NAIP 2022"
+   },
+   "height_m": 14,
+   "height_how_known": "estimate",
+   "look": "Long white metal hangar with a dark steel-framed section at one end (2015), parking in front.",
+   "osm": [
+    "847218461"
+   ],
+   "confidence": "low",
+   "map_no": 31
+  },
+  {
+   "id": "dragon_processing",
+   "name": "Dragon processing / deconstruction + early SuperDraco stand ('Dragon site')",
+   "category": "building",
+   "function": "Post-flight Dragon defueling and disassembly; labelled 'DRAGON DECONSTRUCTION, SUPERDRACO TEST STAND' (2015 labelled aerial) and '9 SUPERDRACO TEST STANDS' (2015 numbered aerial). In 2025 small bunkered test pads line the road to its north-west (see small_test_pads).",
+   "dates": "2012-present",
+   "x": 165,
+   "y": -1065,
+   "footprint": {
+    "how_known": "StratMap 2020: cluster of white metal buildings ~110 x 70 m"
+   },
+   "height_m": 9,
+   "look": "Cluster of white gabled metal buildings, one long white hall to the east, blue-roofed annex, process equipment between them.",
+   "osm": [],
+   "confidence": "medium",
+   "map_no": 32,
+   "extra_images": [
+    "superdraco_stand/commons_2014-05_superdraco_hotfire_cc0.jpg",
+    "superdraco_stand/nasa_2012-01_superdraco_test_pd.jpg"
+   ],
+   "notes": "SuperDraco firing photos (2012, 2014) are attached because the 2015 aerials label this site as the SuperDraco test stand; which stand those photos show is not stated."
+  },
+  {
+   "id": "small_test_pads",
+   "name": "Small component test pads (north-west of the Dragon site)",
+   "category": "test_stand",
+   "function": "Small concrete pads with test hardware along the road NW of the Dragon site (Esri 2025); probably the component / COPV / tank 'torture test' pads NSF mentions (2025).",
+   "dates": "by 2025",
+   "x": 120,
+   "y": -955,
+   "footprint": {
+    "pads": [
+     [
+      61,
+      -936
+     ],
+     [
+      138,
+      -970
+     ],
+     [
+      177,
+      -995
+     ],
+     [
+      159,
+      -905
+     ]
+    ],
+    "how_known": "Esri World Imagery 2025-04-13 (viewed), positions +-5 m"
+   },
+   "height_m": 4,
+   "height_how_known": "estimate",
+   "look": "Small round/square concrete pads with a box structure, gravel aprons.",
+   "osm": [],
+   "confidence": "low",
+   "map_no": 33
+  },
+  {
+   "id": "superdraco_stand",
+   "name": "SuperDraco test stand (west, OSM)",
+   "category": "test_stand",
+   "function": "SuperDraco and Draco thruster firings (OSM 'Super Draco test stand').",
+   "dates": "2012-present",
+   "x": -748,
+   "y": -1204,
+   "footprint": {
+    "how_known": "OSM ring + StratMap 2020 (pad ~90 x 70 m)"
+   },
+   "height_m": 10,
+   "look": "Compact pad with dark-blue steel test cells, white sheds, a row of horizontal white tanks to the south, small red lattice frame.",
+   "osm": [
+    "925915307",
+    "925915305",
+    "925915308",
+    "925915309",
+    "925915310",
+    "925915311"
+   ],
+   "confidence": "high",
+   "extra_images": [
+    "dragonfly_hover_site/commons_2015-11-23_dragon2_hover_test_cc0.jpg",
+    "superdraco_stand/top_stratmap2020_superdraco.jpg"
+   ],
+   "map_no": 34,
+   "notes": "The DragonFly tethered SuperDraco hover test (Nov 2015, crane + blast wall) was at McGregor; its exact spot on the site is not identified."
+  },
+  {
+   "id": "grasshopper_pad",
+   "name": "Grasshopper / F9R-Dev1 launch site (west-south-west)",
+   "category": "test_stand",
+   "function": "Half-acre concrete pad for Grasshopper (8 flights 2012-2013) and F9R-Dev1 (5 flights 2014, lost 22 Aug 2014); later a test stand with a lattice tower and tanks was added beside it.",
+   "dates": "pad 2012; stand later",
+   "x": -735,
+   "y": -1735,
+   "footprint": {
+    "pad": "square concrete pad ~45 x 40 m centred about (-763,-1775) (half-acre per Wikipedia)",
+    "stand": "later test stand with a dark lattice tower and tank farm at about (-690,-1700)",
+    "how_known": "StratMap 2020 + 2013 CC0 aerial of the Grasshopper site"
+   },
+   "height_m": 32,
+   "height_how_known": "Grasshopper vehicle 32 m (106 ft, '10 stories'); lattice tower at the later stand ~25-30 m (estimate)",
+   "look": "Bare concrete square pad in open field, low concrete block wall, horizontal white tanks and white containers beside the access road; a dark lattice tower and tank farm to the north-east (2020).",
+   "osm": [
+    "925915303",
+    "925915299",
+    "925915300",
+    "925915301",
+    "925915302"
+   ],
+   "confidence": "medium",
+   "map_no": 35
+  },
+  {
+   "id": "raptor_assembly_building",
+   "name": "Raptor assembly building (engine factory, 2021)",
+   "category": "building",
+   "function": "Raptor 2 engine assembly plant announced July 2021; TDLR TABS2022002603 'SpaceX- Raptor Assembly Building', 52,000 ft2, new construction factory + limited office, Oct-Dec 2021, design Ware Malcomb.",
+   "dates": "built Oct 2021 - early 2022",
+   "x": 2517,
+   "y": 587,
+   "footprint": {
+    "approx_m": [
+     180,
+     27
+    ],
+    "long_axis_bearing_deg": 75,
+    "area_m2": 4852,
+    "how_known": "OSM ring 1531097407 (4852 m2 = 52,200 ft2, matches TDLR 52,000 ft2) + NAIP 2022 + Esri 2025"
+   },
+   "height_m": 11,
+   "height_how_known": "estimate (single-storey tilt-up/metal factory)",
+   "look": "Long low white flat-roofed building with a row of roof vents, parking lot with striped bays at its east end, paved yard to the south (container/equipment storage).",
+   "osm": [
+    "1531097407"
+   ],
+   "extra_images": [
+    "raptor_factory/nsf_2021-09_raptor_factory_foundation.jpg"
+   ],
+   "confidence": "high",
+   "map_no": 36
+  },
+  {
+   "id": "rocket_development_hangar",
+   "name": "Rocket Development Hangar (RDH) + 2025 expansion",
+   "category": "building",
+   "function": "Large hangar in the north-east part of the property (OSM building=hangar). TDLR TABS2025005557 'RDH Expansion': 22,500 ft2 addition, Dec 2024 - May 2025 (OSM way 1531097404, 2,240 m2, on its east side).",
+   "dates": "hangar by 2022; expansion 2024-2025",
+   "x": 1712,
+   "y": 570,
+   "footprint": {
+    "hangar_obb_from_osm": "see osm_matches",
+    "how_known": "OSM rings 847218450 + 1531097404, NAIP 2022, Esri 2025"
+   },
+   "height_m": 18,
+   "height_how_known": "estimate (high-bay hangar)",
+   "look": "Large light-grey/white high-bay hangar with a lower annex on its west side; 2025: new white extension on the east; round paved pad (~25 m) to the north-east, long concrete apron east, parking strip to the west.",
+   "osm": [
+    "847218450",
+    "1531097404"
+   ],
+   "confidence": "medium",
+   "map_no": 37
+  },
+  {
+   "id": "storage_building_2026",
+   "name": "New storage building (2026, under construction)",
+   "category": "building",
+   "function": "TDLR TABS2026013758 'Storage Building', 128,520 ft2 (~11,900 m2), $23 M, start 2026-03-15, completion 2026-10-31. Location on the property not public; it may be the large white building near the reveal lot in Kenny's photos (demo_layout 'white_building' at (1887,837)) - unconfirmed.",
+   "dates": "2026",
+   "x": null,
+   "y": null,
+   "footprint": {
+    "area_m2": 11940,
+    "how_known": "TDLR record"
+   },
+   "height_m": null,
+   "look": "unknown (pre-engineered metal storage building likely)",
+   "osm": [],
+   "confidence": "low",
+   "map_no": 38
+  },
+  {
+   "id": "hls_rig_2025",
+   "name": "Large suspended test rig (2025, 'HLS rig')",
+   "category": "test_stand",
+   "function": "Big scaffolded two-tower rig with a top beam and a hanging tray, assembled Aug 2025 (precursor rig May 2025); purpose unconfirmed (NSF speculates lunar-lander / low-gravity simulation). NSF: next to an earlier test area for booster transfer tubes and header tanks. Exact position not found.",
+   "dates": "2025",
+   "x": null,
+   "y": null,
+   "footprint": {},
+   "height_m": 30,
+   "height_how_known": "estimate from NSF photos (several scaffold lifts, people for scale)",
+   "look": "Two lattice towers joined by a top girder, surrounded by silver scaffolding; white vertical tank and white horizontal tank on the pad behind; caliche pad on a grassy field.",
+   "osm": [],
+   "confidence": "low",
+   "map_no": 39
+  },
+  {
+   "id": "ww2_magazine_igloos",
+   "name": "WWII Bluebonnet Ordnance Plant magazine igloos",
+   "category": "historic",
+   "function": "Dozens of earth-covered concrete storage magazines in diagonal rows (1942-45 ordnance plant; 'explosive magazine storage, area H' on the Solid Rocket Division plan); now in fields north-west of the Raptor complex.",
+   "dates": "1942",
+   "x": -800,
+   "y": 650,
+   "footprint": {
+    "area": "rows across x -1900..-200, y 300..1400; each igloo ~8 x 12 m concrete front + grassy mound ~25 m",
+    "how_known": "OSM building=bunker rings + NAIP"
+   },
+   "height_m": 4,
+   "height_how_known": "estimate (mounded)",
+   "look": "Small grey concrete headwalls with doors facing one way, grass-covered mounds behind, set in long diagonal rows with track roads.",
+   "osm": [
+    "1234151624",
+    "1234151637",
+    "1234151645",
+    "1234151646",
+    "1287172411",
+    "1287172412",
+    "1287172626",
+    "1287172627",
+    "1287172705",
+    "1287172706",
+    "1287172997",
+    "1287172998",
+    "1287173496",
+    "1287173712",
+    "1287173713",
+    "1287173969",
+    "1287174676",
+    "1287174677"
+   ],
+   "confidence": "high",
+   "map_no": 40
+  },
+  {
+   "id": "substation",
+   "name": "McGregor Hercules substation (Oncor)",
+   "category": "utility",
+   "function": "69 kV / 12.5 kV industrial substation feeding the site (OSM, operator Oncor).",
+   "dates": "historic (Hercules era) - present",
+   "x": -861,
+   "y": -518,
+   "footprint": {
+    "how_known": "OSM fenced polygon 435000725"
+   },
+   "height_m": 12,
+   "height_how_known": "estimate (steel gantries)",
+   "look": "Fenced gravel yard with steel lattice gantries, transformers and insulators; power line pylons leading away.",
+   "osm": [
+    "435000725"
+   ],
+   "confidence": "high",
+   "map_no": 41
+  },
+  {
+   "id": "historic_west_plant",
+   "name": "Historic rocket-propellant plant (west, Hercules / Rocket Research era)",
+   "category": "historic",
+   "function": "Cluster of large old industrial buildings, pipelines and a scrap yard ~2 km west of the stands inside the property boundary: the 'MANUFACTURING (M)' area of the Solid Rocket Division site plan (Phillips 1952-58, Astrodyne, Rocketdyne 1959-78, Hercules 1978-95). Current use not confirmed (not part of the SpaceX test areas in any source found).",
+   "dates": "1950s-1995 (historic)",
+   "x": -2150,
+   "y": -900,
+   "footprint": {
+    "how_known": "OSM building rings (largest 435219644 ~35,600 m2 footprint ring, probably a compound outline) + NAIP 2022"
+   },
+   "height_m": 9,
+   "height_how_known": "OSM default / estimate",
+   "look": "Long low weathered metal and concrete process buildings joined by pipe racks, gravel yards, scrap yard; oval perimeter road around it.",
+   "osm": [
+    "435219644",
+    "435219645",
+    "435219646",
+    "435787701",
+    "435787703",
+    "925915315"
+   ],
+   "confidence": "medium",
+   "map_no": 42
+  }
+ ],
+ "roads": [
+  {
+   "name": "Plant Road (asphalt, 2 lanes, 40 mph, private)",
+   "osm": "way 21927245",
+   "note": "east-west spine north of the stands, x -1316..1935 at y -416..-23"
+  },
+  {
+   "name": "Campus caliche/asphalt loop",
+   "note": "oval road around the central stands and down to the offices; see mcgregor_data roads"
+  }
+ ],
+ "open_questions": [
+  "Position of the 2025 large suspended rig ('HLS rig'): NSF only says it is next to an earlier booster transfer-tube / header-tank test area. Check newer Esri/Google imagery (after Aug 2025).",
+  "Position of the 128,520 ft2 storage building (TDLR, Mar-Oct 2026). It may be the big white building at the reveal lot in Kenny's photos (demo_layout white_building at (1887,837)); imagery predates it.",
+  "Where the 2025 'junkyard' of 40-50 retired Raptors and the 'Raptor hangar' are (boneyard at (-29,-1374) or near the Raptor complex).",
+  "Tripod today: Jan-2020 shadow shows ~66 m incl. a structure on top; NSF said the tower was laid down in Oct 2019 and a blue tower is back in the 2021 photo. Exact current top structure unclear.",
+  "Heights other than water tower / tripod / structural stand are estimates; Raptor N/S stand heights unknown (no shadow-measurable imagery saved).",
+  "'NEW TEST SITE' (#10) on the 2015 numbered aerial: probably the S2 stand site (trench dug 2015) but the photo bearing does not fit well.",
+  "Main gate: no gatehouse seen; entrance placed where the concrete office drive leaves the south road (105,-2003). Public approach probably via FM 2671 and the N-S asphalt road at x~1800-1950.",
+  "Kenny's labelled aerials (aerial_labelled.webp / aerial_numbered.jpg, r/SpaceX user 'local', c. 2015) and aerial_test_stands.jpg: no full-resolution originals found (not on Commons; SpaceX Flickr search failed). Closest originals saved: the CC0 SpaceX aerials of 2008 and 2013."
+ ],
+ "sources": [
+  {
+   "what": "NSF 2019-10-14 'SpaceX renovating former Falcon 9 test stand at McGregor' (tripod history, new S2 stand)",
+   "url": "https://www.nasaspaceflight.com/2019/10/spacex-renovating-falcon-stand-mcgregor/"
+  },
+  {
+   "what": "NSF 2021-09-16 'New Raptor Factory under construction at SpaceX McGregor' (vertical Raptor stand Jan-May 2021, factory foundation, 4,300 acres, 5 Raptor bays)",
+   "url": "https://www.nasaspaceflight.com/2021/09/raptor-factor-testing-mcgregor/"
+  },
+  {
+   "what": "NSF 2025-08-11 'Raptor 3 testing ramps up at SpaceX McGregor' (Raptor North / South stands)",
+   "url": "https://www.nasaspaceflight.com/2025/08/raptor-3-ramps-spacex-mcgregor/"
+  },
+  {
+   "what": "NSF 2025-09-02 'SpaceX McGregor looks to the future, from Raptor 3 to potential HLS testing' (2025 rig, junkyard, Raptor hangar)",
+   "url": "https://www.nasaspaceflight.com/2025/09/spacex-mcgregor-raptor-3-hls/"
+  },
+  {
+   "what": "Wikipedia: SpaceX Rocket Development and Test Facility (history, acreage, test counts)",
+   "url": "https://en.wikipedia.org/wiki/SpaceX_Rocket_Development_and_Test_Facility"
+  },
+  {
+   "what": "Wikipedia: Bluebonnet Ordnance Plant (1942-45, later Air Force Plant 66, Phillips/Astrodyne/Rocketdyne/Hercules)",
+   "url": "https://en.wikipedia.org/wiki/Bluebonnet_Ordnance_Plant"
+  },
+  {
+   "what": "Spaceflight Now 2000-03: Beal BA-810 test; Beal's '220-feet tall vertical-fire stand ... for larger engines'",
+   "url": "https://www.spaceflightnow.com/news/0003/06bealtest/index.html"
+  },
+  {
+   "what": "Wikimedia Commons category: SpaceX Rocket Development and Test Facility (CC0 SpaceX aerials 2008/2013, stand photos)",
+   "url": "https://commons.wikimedia.org/wiki/Category:SpaceX_Rocket_Development_and_Test_Facility"
+  },
+  {
+   "what": "TDLR TABS2022002603 'SpaceX- Raptor Assembly Building' 52,000 ft2, 2021",
+   "url": "https://www.tdlr.texas.gov/TABS/Projects/TABS2022002603"
+  },
+  {
+   "what": "TDLR TABS2025005557 'RDH Expansion' (Rocket Development Hangar) 22,500 ft2, 2024-25",
+   "url": "https://www.tdlr.texas.gov/TABS/Search/Print/TABS2025005557"
+  },
+  {
+   "what": "TDLR TABS2026013758 'Storage Building' 128,520 ft2, Mar-Oct 2026",
+   "url": "https://www.tdlr.texas.gov/TABS/Search/Print/TABS2026013758"
+  },
+  {
+   "what": "TDLR EABPRJB4802760 'SpaceX Central Shop Office Addition' 2-storey with observation deck, 2013-14",
+   "url": "https://www.tdlr.texas.gov/TABS/Search/Print/EABPRJB4802760"
+  },
+  {
+   "what": "Walker Partners: SpaceX McGregor water system (250,000 gal elevated + 500,000 gal ground tank, 2019)",
+   "url": "https://walkerpartners.com/project-spacex-water-system"
+  },
+  {
+   "what": "USDA NAIP 2022-07-11 (USGSNAIPPlus ImageServer), public domain: campus_map base",
+   "url": "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPPlus/ImageServer"
+  },
+  {
+   "what": "TxGIO StratMap 2020 orthoimagery (McLennan, Jan 2020, 3 in): top_stratmap2020_* crops",
+   "url": "https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer"
+  },
+  {
+   "what": "Esri World Imagery (Vantor WV3 2025-04-13), viewed in the browser only",
+   "url": "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer"
+  },
+  {
+   "what": "OpenStreetMap (c) contributors: relation 13609042 and footprints (SourceArt/osm/mcgregor.json)",
+   "url": "https://www.openstreetmap.org/relation/13609042"
+  }
+ ]
+}

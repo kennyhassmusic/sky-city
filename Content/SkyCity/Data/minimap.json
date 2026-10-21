@@ -1,0 +1,20 @@
+{
+ "SkyCityMashup": {
+  "tex": "/Game/SkyCity/HUD/T_MiniMap_SkyCity.T_MiniMap_SkyCity",
+  "x0": -2125,
+  "y0": 1880,
+  "size": 4096
+ },
+ "McGregor": {
+  "tex": "/Game/SkyCity/HUD/T_MiniMap_McGregor.T_MiniMap_McGregor",
+  "x0": 505,
+  "y0": 1900,
+  "size": 2048
+ },
+ "McGregorNight": {
+  "tex": "/Game/SkyCity/HUD/T_MiniMap_McGregor.T_MiniMap_McGregor",
+  "x0": 505,
+  "y0": 1900,
+  "size": 2048
+ }
+}

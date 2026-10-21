@@ -1,0 +1,6264 @@
+{
+ "assets": {
+  "LM_ATX_Cap_AfricanAmerican": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_AfricanAmerican.glb",
+   "tris": 1612,
+   "bbox_min_m": [
+    -5.449,
+    -2.6,
+    0.0
+   ],
+   "bbox_max_m": [
+    5.449,
+    2.037,
+    8.073
+   ],
+   "size_m": [
+    10.898,
+    4.637,
+    8.073
+   ],
+   "materials": [
+    "M_Granite",
+    "M_BronzeDark",
+    "M_Bronze"
+   ],
+   "origin": "drum centre + 0.6 m back, at grade; faces -Y"
+  },
+  "LM_ATX_Cap_Children": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_Children.glb",
+   "tris": 1308,
+   "bbox_min_m": [
+    -2.454,
+    -1.4,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.876,
+    0.63,
+    1.377
+   ],
+   "size_m": [
+    5.33,
+    2.03,
+    1.377
+   ],
+   "materials": [
+    "M_Bronze",
+    "M_GraniteGrey"
+   ],
+   "origin": "group centre at grade; faces -Y"
+  },
+  "LM_ATX_Cap_DisabledVets": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_DisabledVets.glb",
+   "tris": 236,
+   "bbox_min_m": [
+    -2.3,
+    -0.6,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.3,
+    0.6,
+    2.45
+   ],
+   "size_m": [
+    4.6,
+    1.2,
+    2.45
+   ],
+   "materials": [
+    "M_GraniteGrey",
+    "M_Granite",
+    "M_BronzeDark"
+   ],
+   "origin": "centre at grade; faces -Y"
+  },
+  "LM_ATX_Cap_Liberty": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_Liberty.glb",
+   "tris": 536,
+   "bbox_min_m": [
+    -1.46,
+    -1.46,
+    0.0
+   ],
+   "bbox_max_m": [
+    1.46,
+    1.46,
+    6.57
+   ],
+   "size_m": [
+    2.92,
+    2.92,
+    6.57
+   ],
+   "materials": [
+    "M_Granite",
+    "M_Limestone",
+    "M_Verdigris",
+    "M_Gold",
+    "M_BronzeDark"
+   ],
+   "origin": "centre at grade; faces -Y"
+  },
+  "LM_ATX_Cap_NationalGuard": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_NationalGuard.glb",
+   "tris": 368,
+   "bbox_min_m": [
+    -0.95,
+    -0.95,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.95,
+    0.95,
+    4.588
+   ],
+   "size_m": [
+    1.9,
+    1.9,
+    4.588
+   ],
+   "materials": [
+    "M_Granite",
+    "M_BronzeDark",
+    "M_Bronze"
+   ],
+   "origin": "centre at grade; faces -Y",
+   "note": "Texas National Guard monument (generic soldier form)"
+  },
+  "LM_ATX_Cap_PeaceOfficers": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_PeaceOfficers.glb",
+   "tris": 622,
+   "bbox_min_m": [
+    -7.2,
+    -7.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    7.2,
+    7.2,
+    6.4
+   ],
+   "size_m": [
+    14.4,
+    14.4,
+    6.4
+   ],
+   "materials": [
+    "M_GraniteGrey",
+    "M_GraniteBlack"
+   ],
+   "origin": "plaza centre at grade; faces -Y"
+  },
+  "LM_ATX_Cap_PearlHarbor": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_PearlHarbor.glb",
+   "tris": 220,
+   "bbox_min_m": [
+    -1.2,
+    -0.5,
+    0.0
+   ],
+   "bbox_max_m": [
+    1.588,
+    0.5,
+    2.15
+   ],
+   "size_m": [
+    2.788,
+    1.0,
+    2.15
+   ],
+   "materials": [
+    "M_GraniteGrey",
+    "M_BronzeDark",
+    "M_Iron"
+   ],
+   "origin": "centre at grade; faces -Y"
+  },
+  "LM_ATX_Cap_PioneerWoman": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_PioneerWoman.glb",
+   "tris": 520,
+   "bbox_min_m": [
+    -0.71,
+    -0.71,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.71,
+    0.71,
+    3.968
+   ],
+   "size_m": [
+    1.42,
+    1.42,
+    3.968
+   ],
+   "materials": [
+    "M_Granite",
+    "M_BronzeDark",
+    "M_Bronze"
+   ],
+   "origin": "centre at grade; faces -Y"
+  },
+  "LM_ATX_Cap_Tejano": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_Tejano.glb",
+   "tris": 2172,
+   "bbox_min_m": [
+    -6.0,
+    -2.13,
+    0.0
+   ],
+   "bbox_max_m": [
+    6.0,
+    2.2,
+    5.868
+   ],
+   "size_m": [
+    12.0,
+    4.33,
+    5.868
+   ],
+   "materials": [
+    "M_GraniteRough",
+    "M_Bronze",
+    "M_BronzeDark"
+   ],
+   "origin": "centre at grade; faces -Y"
+  },
+  "LM_ATX_Cap_TenCommandments": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_TenCommandments.glb",
+   "tris": 84,
+   "bbox_min_m": [
+    -0.85,
+    -0.4,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.85,
+    0.45,
+    1.82
+   ],
+   "size_m": [
+    1.7,
+    0.85,
+    1.82
+   ],
+   "materials": [
+    "M_GranitePolished"
+   ],
+   "origin": "centre at grade; faces -Y"
+  },
+  "LM_ATX_Cap_Vietnam": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_Vietnam.glb",
+   "tris": 1372,
+   "bbox_min_m": [
+    -2.6,
+    -2.6,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.6,
+    2.6,
+    4.401
+   ],
+   "size_m": [
+    5.2,
+    5.2,
+    4.401
+   ],
+   "materials": [
+    "M_Granite",
+    "M_BronzeDark",
+    "M_Bronze"
+   ],
+   "origin": "centre at grade; faces -Y"
+  },
+  "LM_ATX_Cap_WWII": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Cap_WWII.glb",
+   "tris": 388,
+   "bbox_min_m": [
+    -0.9,
+    -0.75,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.9,
+    0.75,
+    5.0
+   ],
+   "size_m": [
+    1.8,
+    1.5,
+    5.0
+   ],
+   "materials": [
+    "M_Granite",
+    "M_BronzeDark",
+    "M_GraniteGrey",
+    "M_Bronze"
+   ],
+   "origin": "centre at grade; faces -Y"
+  },
+  "LM_ATX_CongressBridge": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_CongressBridge.glb",
+   "tris": 5764,
+   "bbox_min_m": [
+    -12.794,
+    -0.582,
+    -8.0
+   ],
+   "bbox_max_m": [
+    19.445,
+    209.977,
+    11.456
+   ],
+   "size_m": [
+    32.238,
+    210.559,
+    19.456
+   ],
+   "materials": [
+    "M_ConcreteDark",
+    "M_Concrete",
+    "M_DeckConcrete",
+    "M_Metal",
+    "M_Light"
+   ],
+   "origin": "plan frame (Blender X = plan east), origin at the quay wall on the bridge axis; z = Unreal metres",
+   "spans": 6,
+   "length_m": 209.5,
+   "style": "congress"
+  },
+  "LM_ATX_CrowdLawn": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_CrowdLawn.glb",
+   "tris": 10952,
+   "bbox_min_m": [
+    -15.668,
+    -6.885,
+    0.0
+   ],
+   "bbox_max_m": [
+    15.793,
+    7.615,
+    1.88
+   ],
+   "size_m": [
+    31.461,
+    14.5,
+    1.88
+   ],
+   "materials": [
+    "M_Seat",
+    "M_ClothLight",
+    "M_Skin",
+    "M_Cloth",
+    "M_ClothRed"
+   ],
+   "origin": "centre of the strip; figures face +Y",
+   "figures": 60
+  },
+  "LM_ATX_CrowdSidewalk": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_CrowdSidewalk.glb",
+   "tris": 13608,
+   "bbox_min_m": [
+    -29.858,
+    -1.162,
+    0.0
+   ],
+   "bbox_max_m": [
+    29.949,
+    1.291,
+    1.931
+   ],
+   "size_m": [
+    59.807,
+    2.453,
+    1.931
+   ],
+   "materials": [
+    "M_Seat",
+    "M_ClothLight",
+    "M_Skin",
+    "M_Cloth",
+    "M_ClothRed"
+   ],
+   "origin": "centre of the strip; figures face +Y",
+   "figures": 70
+  },
+  "LM_ATX_CruiseBoat": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_CruiseBoat.glb",
+   "tris": 2758,
+   "bbox_min_m": [
+    -6.95,
+    -2.4,
+    -0.4
+   ],
+   "bbox_max_m": [
+    6.835,
+    2.4,
+    2.95
+   ],
+   "size_m": [
+    13.785,
+    4.8,
+    3.35
+   ],
+   "materials": [
+    "M_Metal",
+    "M_TrimBlue",
+    "M_DeckWood",
+    "M_HullWhite",
+    "M_Seat",
+    "M_CanopyBlue",
+    "M_Cloth",
+    "M_ClothRed",
+    "M_Skin",
+    "M_ClothLight"
+   ],
+   "origin": "waterline, centre; bow +X",
+   "length_m": 13.5
+  },
+  "LM_ATX_DockModule": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_DockModule.glb",
+   "tris": 468,
+   "bbox_min_m": [
+    -5.06,
+    -1.56,
+    -0.28
+   ],
+   "bbox_max_m": [
+    5.06,
+    1.56,
+    0.55
+   ],
+   "size_m": [
+    10.12,
+    3.12,
+    0.83
+   ],
+   "materials": [
+    "M_DockDeck",
+    "M_Float",
+    "M_Piling",
+    "M_Iron"
+   ],
+   "origin": "deck centre at the waterline; 10 m along X, 3 m along Y"
+  },
+  "LM_ATX_EberlyStatue": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_EberlyStatue.glb",
+   "tris": 2338,
+   "bbox_min_m": [
+    -2.5,
+    -2.5,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.5,
+    2.5,
+    2.47
+   ],
+   "size_m": [
+    5.0,
+    5.0,
+    2.47
+   ],
+   "materials": [
+    "M_GranitePolished",
+    "M_BronzeDark"
+   ],
+   "origin": "base centre at the sidewalk; faces -Y"
+  },
+  "LM_ATX_Gazebo": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Gazebo.glb",
+   "tris": 1024,
+   "bbox_min_m": [
+    -6.005,
+    -7.05,
+    -0.17
+   ],
+   "bbox_max_m": [
+    6.005,
+    6.005,
+    9.8
+   ],
+   "size_m": [
+    12.01,
+    13.055,
+    9.97
+   ],
+   "materials": [
+    "M_Limestone",
+    "M_DeckWood",
+    "M_RoofWhite",
+    "M_Copper"
+   ],
+   "origin": "centre at grade",
+   "diameter_m": 12.399999999999999
+  },
+  "LM_ATX_GrulkePlaza": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_GrulkePlaza.glb",
+   "tris": 684,
+   "bbox_min_m": [
+    -24.748,
+    -12.16,
+    -5.8
+   ],
+   "bbox_max_m": [
+    22.072,
+    9.585,
+    1.279
+   ],
+   "size_m": [
+    46.82,
+    21.745,
+    7.079
+   ],
+   "materials": [
+    "M_DeckConcrete",
+    "M_Metal",
+    "M_ConcreteDark"
+   ],
+   "origin": "plaza centroid, plan frame; z = Unreal metres"
+  },
+  "LM_ATX_Kayak_Blue": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Kayak_Blue.glb",
+   "tris": 240,
+   "bbox_min_m": [
+    -1.9,
+    -0.39,
+    -0.12
+   ],
+   "bbox_max_m": [
+    1.9,
+    0.39,
+    0.26
+   ],
+   "size_m": [
+    3.8,
+    0.78,
+    0.38
+   ],
+   "materials": [
+    "M_KayakBlue"
+   ],
+   "origin": "waterline, centre; bow +X",
+   "length_m": 3.8
+  },
+  "LM_ATX_Kayak_Green": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Kayak_Green.glb",
+   "tris": 240,
+   "bbox_min_m": [
+    -1.9,
+    -0.39,
+    -0.12
+   ],
+   "bbox_max_m": [
+    1.9,
+    0.39,
+    0.26
+   ],
+   "size_m": [
+    3.8,
+    0.78,
+    0.38
+   ],
+   "materials": [
+    "M_KayakGreen"
+   ],
+   "origin": "waterline, centre; bow +X",
+   "length_m": 3.8
+  },
+  "LM_ATX_Kayak_Red": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Kayak_Red.glb",
+   "tris": 512,
+   "bbox_min_m": [
+    -1.9,
+    -1.174,
+    -0.12
+   ],
+   "bbox_max_m": [
+    1.9,
+    1.174,
+    1.265
+   ],
+   "size_m": [
+    3.8,
+    2.349,
+    1.385
+   ],
+   "materials": [
+    "M_KayakRed",
+    "M_Cloth",
+    "M_PFD",
+    "M_Skin",
+    "M_Carbon",
+    "M_OarBlade"
+   ],
+   "origin": "waterline, centre; bow +X",
+   "length_m": 3.8
+  },
+  "LM_ATX_Kayak_Yellow": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Kayak_Yellow.glb",
+   "tris": 512,
+   "bbox_min_m": [
+    -1.9,
+    -1.174,
+    -0.12
+   ],
+   "bbox_max_m": [
+    1.9,
+    1.174,
+    1.265
+   ],
+   "size_m": [
+    3.8,
+    2.349,
+    1.385
+   ],
+   "materials": [
+    "M_KayakYellow",
+    "M_Cloth",
+    "M_PFD",
+    "M_Skin",
+    "M_ClothRed",
+    "M_Carbon",
+    "M_OarBlade"
+   ],
+   "origin": "waterline, centre; bow +X",
+   "length_m": 3.8
+  },
+  "LM_ATX_LamarBridge": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_LamarBridge.glb",
+   "tris": 9652,
+   "bbox_min_m": [
+    -11.793,
+    -1.093,
+    -8.0
+   ],
+   "bbox_max_m": [
+    22.02,
+    152.749,
+    8.943
+   ],
+   "size_m": [
+    33.813,
+    153.842,
+    16.943
+   ],
+   "materials": [
+    "M_Concrete",
+    "M_DeckConcrete",
+    "M_Metal",
+    "M_Light"
+   ],
+   "origin": "plan frame (Blender X = plan east), origin at the quay wall on the bridge axis; z = Unreal metres",
+   "spans": 5,
+   "length_m": 152.0,
+   "style": "lamar twin ribs"
+  },
+  "LM_ATX_LizCarpenterFountain": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_LizCarpenterFountain.glb",
+   "tris": 1176,
+   "bbox_min_m": [
+    -12.5,
+    -13.3,
+    -0.1
+   ],
+   "bbox_max_m": [
+    12.5,
+    12.5,
+    0.45
+   ],
+   "size_m": [
+    25.0,
+    25.8,
+    0.55
+   ],
+   "materials": [
+    "M_Paving",
+    "M_GraniteGrey",
+    "M_GraniteBlack"
+   ],
+   "origin": "centre at grade",
+   "diameter_m": 25.0
+  },
+  "LM_ATX_LizCarpenterJets": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_LizCarpenterJets.glb",
+   "tris": 1512,
+   "bbox_min_m": [
+    -9.1,
+    -9.087,
+    0.06
+   ],
+   "bbox_max_m": [
+    9.1,
+    9.087,
+    2.7
+   ],
+   "size_m": [
+    18.2,
+    18.173,
+    2.64
+   ],
+   "materials": [
+    "M_WaterJet"
+   ],
+   "origin": "fountain centre at grade"
+  },
+  "LM_ATX_MoonlightGuys": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_MoonlightGuys.glb",
+   "tris": 54,
+   "bbox_min_m": [
+    -24.259,
+    -28.009,
+    -0.006
+   ],
+   "bbox_max_m": [
+    24.255,
+    14.01,
+    41.006
+   ],
+   "size_m": [
+    48.514,
+    42.019,
+    41.012
+   ],
+   "materials": [
+    "M_Steel"
+   ],
+   "origin": "foot of the tower mast",
+   "anchor_radius_m": [
+    16.0,
+    22.0,
+    28.0
+   ]
+  },
+  "LM_ATX_MoonlightTower": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_MoonlightTower.glb",
+   "tris": 4044,
+   "bbox_min_m": [
+    -1.61,
+    -1.785,
+    0.0
+   ],
+   "bbox_max_m": [
+    1.61,
+    1.785,
+    50.3
+   ],
+   "size_m": [
+    3.22,
+    3.57,
+    50.3
+   ],
+   "materials": [
+    "M_TowerIron",
+    "M_Light"
+   ],
+   "origin": "foot of the mast",
+   "height_m": 50.3,
+   "guy_levels_m": [
+    19.5,
+    30.5,
+    41.0
+   ]
+  },
+  "LM_ATX_NeonFlat_Burgers": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_NeonFlat_Burgers.glb",
+   "tris": 2364,
+   "bbox_min_m": [
+    -2.0,
+    -0.176,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.0,
+    0.0,
+    0.87
+   ],
+   "size_m": [
+    4.0,
+    0.176,
+    0.87
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Neon_Green"
+   ],
+   "origin": "wall (plane y=0) at the bottom centre; faces -Y",
+   "width_m": 4.0,
+   "words": [
+    "BURGERS"
+   ]
+  },
+  "LM_ATX_NeonFlat_Cocktails": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_NeonFlat_Cocktails.glb",
+   "tris": 1812,
+   "bbox_min_m": [
+    -2.3,
+    -0.176,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.3,
+    0.0,
+    0.87
+   ],
+   "size_m": [
+    4.6,
+    0.176,
+    0.87
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Neon_Pink"
+   ],
+   "origin": "wall (plane y=0) at the bottom centre; faces -Y",
+   "width_m": 4.6,
+   "words": [
+    "COCKTAILS"
+   ]
+  },
+  "LM_ATX_NeonFlat_HonkyTonk": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_NeonFlat_HonkyTonk.glb",
+   "tris": 1464,
+   "bbox_min_m": [
+    -2.2,
+    -0.176,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.2,
+    0.0,
+    1.49
+   ],
+   "size_m": [
+    4.4,
+    0.176,
+    1.49
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Neon_Yellow"
+   ],
+   "origin": "wall (plane y=0) at the bottom centre; faces -Y",
+   "width_m": 4.4,
+   "words": [
+    "HONKY",
+    "TONK"
+   ]
+  },
+  "LM_ATX_NeonFlat_Karaoke": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_NeonFlat_Karaoke.glb",
+   "tris": 1368,
+   "bbox_min_m": [
+    -2.0,
+    -0.176,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.0,
+    0.0,
+    0.87
+   ],
+   "size_m": [
+    4.0,
+    0.176,
+    0.87
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Neon_Blue"
+   ],
+   "origin": "wall (plane y=0) at the bottom centre; faces -Y",
+   "width_m": 4.0,
+   "words": [
+    "KARAOKE"
+   ]
+  },
+  "LM_ATX_NeonFlat_LiveTonight": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_NeonFlat_LiveTonight.glb",
+   "tris": 1536,
+   "bbox_min_m": [
+    -2.2,
+    -0.176,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.2,
+    0.0,
+    1.49
+   ],
+   "size_m": [
+    4.4,
+    0.176,
+    1.49
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Neon_Red"
+   ],
+   "origin": "wall (plane y=0) at the bottom centre; faces -Y",
+   "width_m": 4.4,
+   "words": [
+    "LIVE",
+    "TONIGHT"
+   ]
+  },
+  "LM_ATX_NeonFlat_Music": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_NeonFlat_Music.glb",
+   "tris": 1248,
+   "bbox_min_m": [
+    -1.6,
+    -0.176,
+    0.0
+   ],
+   "bbox_max_m": [
+    1.6,
+    0.0,
+    0.87
+   ],
+   "size_m": [
+    3.2,
+    0.176,
+    0.87
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Neon_White"
+   ],
+   "origin": "wall (plane y=0) at the bottom centre; faces -Y",
+   "width_m": 3.2,
+   "words": [
+    "MUSIC"
+   ]
+  },
+  "LM_ATX_Neon_Bar": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Bar.glb",
+   "tris": 1980,
+   "bbox_min_m": [
+    -0.233,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.233,
+    0.0,
+    3.0
+   ],
+   "size_m": [
+    0.466,
+    1.2,
+    3.0
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Pink"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 3.0,
+   "word": "BAR"
+  },
+  "LM_ATX_Neon_Blues": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Blues.glb",
+   "tris": 2748,
+   "bbox_min_m": [
+    -0.231,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.231,
+    0.0,
+    4.2
+   ],
+   "size_m": [
+    0.461,
+    1.2,
+    4.2
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Blue"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 4.2,
+   "word": "BLUES"
+  },
+  "LM_ATX_Neon_Club": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Club.glb",
+   "tris": 2316,
+   "bbox_min_m": [
+    -0.232,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.232,
+    0.0,
+    3.6
+   ],
+   "size_m": [
+    0.463,
+    1.2,
+    3.6
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_White"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 3.6,
+   "word": "CLUB"
+  },
+  "LM_ATX_Neon_Dance": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Dance.glb",
+   "tris": 2004,
+   "bbox_min_m": [
+    -0.231,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.231,
+    0.0,
+    4.2
+   ],
+   "size_m": [
+    0.461,
+    1.2,
+    4.2
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Green"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 4.2,
+   "word": "DANCE"
+  },
+  "LM_ATX_Neon_Hotel": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Hotel.glb",
+   "tris": 1644,
+   "bbox_min_m": [
+    -0.231,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.231,
+    0.0,
+    4.2
+   ],
+   "size_m": [
+    0.461,
+    1.2,
+    4.2
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_White"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 4.2,
+   "word": "HOTEL"
+  },
+  "LM_ATX_Neon_Jazz": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Jazz.glb",
+   "tris": 1140,
+   "bbox_min_m": [
+    -0.232,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.232,
+    0.0,
+    3.6
+   ],
+   "size_m": [
+    0.463,
+    1.2,
+    3.6
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Blue"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 3.6,
+   "word": "JAZZ"
+  },
+  "LM_ATX_Neon_LiveMusic": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_LiveMusic.glb",
+   "tris": 852,
+   "bbox_min_m": [
+    -0.232,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.232,
+    0.0,
+    3.6
+   ],
+   "size_m": [
+    0.463,
+    1.2,
+    3.6
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Red"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 3.6,
+   "word": "LIVE"
+  },
+  "LM_ATX_Neon_Open": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Open.glb",
+   "tris": 1740,
+   "bbox_min_m": [
+    -0.232,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.232,
+    0.0,
+    3.6
+   ],
+   "size_m": [
+    0.463,
+    1.2,
+    3.6
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Red"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 3.6,
+   "word": "OPEN"
+  },
+  "LM_ATX_Neon_Pizza": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Pizza.glb",
+   "tris": 1380,
+   "bbox_min_m": [
+    -0.231,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.231,
+    0.0,
+    4.2
+   ],
+   "size_m": [
+    0.461,
+    1.2,
+    4.2
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Green"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 4.2,
+   "word": "PIZZA"
+  },
+  "LM_ATX_Neon_Rock": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Rock.glb",
+   "tris": 2364,
+   "bbox_min_m": [
+    -0.232,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.232,
+    0.0,
+    3.6
+   ],
+   "size_m": [
+    0.463,
+    1.2,
+    3.6
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Pink"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 3.6,
+   "word": "ROCK"
+  },
+  "LM_ATX_Neon_Saloon": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Saloon.glb",
+   "tris": 2724,
+   "bbox_min_m": [
+    -0.23,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.23,
+    0.0,
+    4.8
+   ],
+   "size_m": [
+    0.46,
+    1.2,
+    4.8
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Red"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 4.8,
+   "word": "SALOON"
+  },
+  "LM_ATX_Neon_Tacos": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Neon_Tacos.glb",
+   "tris": 2580,
+   "bbox_min_m": [
+    -0.231,
+    -1.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    0.231,
+    0.0,
+    4.2
+   ],
+   "size_m": [
+    0.461,
+    1.2,
+    4.2
+   ],
+   "materials": [
+    "M_SignBox",
+    "M_Iron",
+    "M_Neon_Yellow"
+   ],
+   "origin": "wall (plane y=0) at the bottom of the sign; sign projects toward -Y",
+   "height_m": 4.2,
+   "word": "TACOS"
+  },
+  "LM_ATX_PflugerBridge": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_PflugerBridge.glb",
+   "tris": 34380,
+   "bbox_min_m": [
+    -14.587,
+    -14.587,
+    -8.057
+   ],
+   "bbox_max_m": [
+    89.066,
+    189.809,
+    10.62
+   ],
+   "size_m": [
+    103.654,
+    204.397,
+    18.677
+   ],
+   "materials": [
+    "M_PflugerRed",
+    "M_DeckConcrete",
+    "M_Steel",
+    "M_SteelDark",
+    "M_Metal",
+    "M_Limestone",
+    "M_Stucco",
+    "M_Light",
+    "M_Concrete"
+   ],
+   "origin": "helix centre, plan frame (Blender X = plan east); z = Unreal metres",
+   "deck_m": 7.0,
+   "deck_height_m": 5.0,
+   "helix_radius_m": 12.19,
+   "span_len_m": 188.9
+  },
+  "LM_ATX_Piling": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Piling.glb",
+   "tris": 84,
+   "bbox_min_m": [
+    -0.2,
+    -0.2,
+    -2.6
+   ],
+   "bbox_max_m": [
+    0.2,
+    0.2,
+    2.25
+   ],
+   "size_m": [
+    0.4,
+    0.4,
+    4.85
+   ],
+   "materials": [
+    "M_Piling"
+   ],
+   "origin": "waterline"
+  },
+  "LM_ATX_QuayStair": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_QuayStair.glb",
+   "tris": 624,
+   "bbox_min_m": [
+    -0.068,
+    -3.04,
+    -5.405
+   ],
+   "bbox_max_m": [
+    5.669,
+    -0.06,
+    1.024
+   ],
+   "size_m": [
+    5.737,
+    2.98,
+    6.429
+   ],
+   "materials": [
+    "M_Steel",
+    "M_Metal"
+   ],
+   "origin": "top of the quay wall; wall = plane y=0, water at -Y",
+   "rise_m": 5.65
+  },
+  "LM_ATX_Riverboat": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Riverboat.glb",
+   "tris": 6370,
+   "bbox_min_m": [
+    -13.25,
+    -2.8,
+    -0.87
+   ],
+   "bbox_max_m": [
+    10.782,
+    2.8,
+    5.75
+   ],
+   "size_m": [
+    24.032,
+    5.6,
+    6.62
+   ],
+   "materials": [
+    "M_HullWhite",
+    "M_DeckWood",
+    "M_TrimRed",
+    "M_TrimBlue",
+    "M_GlassDark",
+    "M_Canopy",
+    "M_Iron",
+    "M_Cloth",
+    "M_ClothRed",
+    "M_Skin",
+    "M_ClothLight"
+   ],
+   "origin": "waterline, hull centre; bow +X",
+   "length_m": 21.5
+  },
+  "LM_ATX_SRVStatue": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_SRVStatue.glb",
+   "tris": 1626,
+   "bbox_min_m": [
+    -8.096,
+    -8.0,
+    0.0
+   ],
+   "bbox_max_m": [
+    8.096,
+    8.057,
+    3.02
+   ],
+   "size_m": [
+    16.192,
+    16.057,
+    3.02
+   ],
+   "materials": [
+    "M_Gravel",
+    "M_Limestone",
+    "M_BronzeDark",
+    "M_ClothRed"
+   ],
+   "origin": "plinth centre at grade; the figure faces -Y",
+   "figure_m": 2.47
+  },
+  "LM_ATX_SUP": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_SUP.glb",
+   "tris": 356,
+   "bbox_min_m": [
+    -1.65,
+    -0.4,
+    -0.18
+   ],
+   "bbox_max_m": [
+    1.65,
+    0.42,
+    1.903
+   ],
+   "size_m": [
+    3.3,
+    0.82,
+    2.083
+   ],
+   "materials": [
+    "M_BoardWhite",
+    "M_Cloth",
+    "M_PFD",
+    "M_Skin",
+    "M_ClothLight",
+    "M_Carbon",
+    "M_OarBlade"
+   ],
+   "origin": "waterline, centre; nose +X",
+   "length_m": 3.3
+  },
+  "LM_ATX_Scull1": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Scull1.glb",
+   "tris": 664,
+   "bbox_min_m": [
+    -4.1,
+    -2.838,
+    -0.22
+   ],
+   "bbox_max_m": [
+    4.1,
+    2.838,
+    1.298
+   ],
+   "size_m": [
+    8.2,
+    5.675,
+    1.518
+   ],
+   "materials": [
+    "M_HullWhite",
+    "M_Carbon",
+    "M_Metal",
+    "M_OarBlade",
+    "M_Cloth",
+    "M_ClothRed",
+    "M_Skin"
+   ],
+   "origin": "waterline, centre; bow +X",
+   "length_m": 8.2
+  },
+  "LM_ATX_Shell8": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_Shell8.glb",
+   "tris": 2728,
+   "bbox_min_m": [
+    -8.8,
+    -3.551,
+    -0.22
+   ],
+   "bbox_max_m": [
+    8.8,
+    3.551,
+    1.298
+   ],
+   "size_m": [
+    17.6,
+    7.103,
+    1.518
+   ],
+   "materials": [
+    "M_ShellYellow",
+    "M_Carbon",
+    "M_Metal",
+    "M_OarBlade",
+    "M_Cloth",
+    "M_ClothRed",
+    "M_Skin",
+    "M_ClothLight"
+   ],
+   "origin": "waterline, centre; bow +X",
+   "length_m": 17.6
+  },
+  "LM_ATX_StorefrontA": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_StorefrontA.glb",
+   "tris": 576,
+   "bbox_min_m": [
+    -4.1,
+    -1.6,
+    0.0
+   ],
+   "bbox_max_m": [
+    4.1,
+    8.0,
+    8.8
+   ],
+   "size_m": [
+    8.2,
+    9.6,
+    8.8
+   ],
+   "materials": [
+    "M_Brick",
+    "M_RoofFlat",
+    "M_TrimDark",
+    "M_Limestone",
+    "M_GlassDark",
+    "M_Door",
+    "M_AwningRed"
+   ],
+   "origin": "front wall bottom centre; faces -Y; 8 m deep toward +Y",
+   "width_m": 8.0,
+   "height_m": 8.2
+  },
+  "LM_ATX_StorefrontB": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_StorefrontB.glb",
+   "tris": 864,
+   "bbox_min_m": [
+    -5.1,
+    -1.42,
+    0.0
+   ],
+   "bbox_max_m": [
+    5.1,
+    8.0,
+    10.2
+   ],
+   "size_m": [
+    10.2,
+    9.42,
+    10.2
+   ],
+   "materials": [
+    "M_Limestone",
+    "M_RoofFlat",
+    "M_TrimDark",
+    "M_GlassDark",
+    "M_Door",
+    "M_Iron"
+   ],
+   "origin": "front wall bottom centre; faces -Y; 8 m deep toward +Y",
+   "width_m": 10.0,
+   "height_m": 9.6
+  },
+  "LM_ATX_StorefrontC": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_StorefrontC.glb",
+   "tris": 854,
+   "bbox_min_m": [
+    -6.1,
+    -1.6,
+    0.0
+   ],
+   "bbox_max_m": [
+    6.1,
+    8.0,
+    9.2
+   ],
+   "size_m": [
+    12.2,
+    9.6,
+    9.2
+   ],
+   "materials": [
+    "M_PaintTeal",
+    "M_RoofFlat",
+    "M_TrimDark",
+    "M_Limestone",
+    "M_GlassDark",
+    "M_Door",
+    "M_AwningRed"
+   ],
+   "origin": "front wall bottom centre; faces -Y; 8 m deep toward +Y",
+   "width_m": 12.0,
+   "height_m": 8.6
+  },
+  "LM_ATX_StorefrontD": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_StorefrontD.glb",
+   "tris": 1394,
+   "bbox_min_m": [
+    -7.1,
+    -0.3,
+    0.0
+   ],
+   "bbox_max_m": [
+    7.1,
+    8.0,
+    11.8
+   ],
+   "size_m": [
+    14.2,
+    8.3,
+    11.8
+   ],
+   "materials": [
+    "M_Brick",
+    "M_RoofFlat",
+    "M_TrimDark",
+    "M_Limestone",
+    "M_GlassDark",
+    "M_Door"
+   ],
+   "origin": "front wall bottom centre; faces -Y; 8 m deep toward +Y",
+   "width_m": 14.0,
+   "height_m": 11.2
+  },
+  "LM_ATX_StorefrontE": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_StorefrontE.glb",
+   "tris": 800,
+   "bbox_min_m": [
+    -4.6,
+    -1.6,
+    0.0
+   ],
+   "bbox_max_m": [
+    4.6,
+    8.0,
+    9.2
+   ],
+   "size_m": [
+    9.2,
+    9.6,
+    9.2
+   ],
+   "materials": [
+    "M_PaintRust",
+    "M_RoofFlat",
+    "M_TrimDark",
+    "M_GlassDark",
+    "M_Door",
+    "M_Iron",
+    "M_AwningRed"
+   ],
+   "origin": "front wall bottom centre; faces -Y; 8 m deep toward +Y",
+   "width_m": 9.0,
+   "height_m": 8.6
+  },
+  "LM_ATX_StorefrontF": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_StorefrontF.glb",
+   "tris": 632,
+   "bbox_min_m": [
+    -5.6,
+    -0.3,
+    0.0
+   ],
+   "bbox_max_m": [
+    5.6,
+    8.0,
+    9.6
+   ],
+   "size_m": [
+    11.2,
+    8.3,
+    9.6
+   ],
+   "materials": [
+    "M_PaintCream",
+    "M_RoofFlat",
+    "M_TrimDark",
+    "M_GlassDark",
+    "M_Door"
+   ],
+   "origin": "front wall bottom centre; faces -Y; 8 m deep toward +Y",
+   "width_m": 11.0,
+   "height_m": 9.0
+  },
+  "LM_ATX_StringLights": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_StringLights.glb",
+   "tris": 1296,
+   "bbox_min_m": [
+    -12.6,
+    -0.043,
+    -1.54
+   ],
+   "bbox_max_m": [
+    12.6,
+    0.043,
+    0.03
+   ],
+   "size_m": [
+    25.2,
+    0.087,
+    1.57
+   ],
+   "materials": [
+    "M_Iron",
+    "M_Bulb"
+   ],
+   "origin": "span midpoint at bracket height; spans along X",
+   "span_m": 24.0
+  },
+  "LM_ATX_TheatreSign": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_TheatreSign.glb",
+   "tris": 12394,
+   "bbox_min_m": [
+    -4.62,
+    -3.312,
+    3.599
+   ],
+   "bbox_max_m": [
+    4.62,
+    0.0,
+    24.8
+   ],
+   "size_m": [
+    9.24,
+    3.312,
+    21.201
+   ],
+   "materials": [
+    "M_SignFace",
+    "M_MarqueeFace",
+    "M_SignBox",
+    "M_BladeGreen",
+    "M_TrimRed",
+    "M_Iron",
+    "M_Neon_Yellow",
+    "M_Bulb"
+   ],
+   "origin": "wall (plane y=0) at sidewalk level; marquee 3.6-6.0 m, blade 6.6-17.6 m, projects toward -Y"
+  },
+  "LM_ATX_TreatyOak": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_TreatyOak.glb",
+   "tris": 7550,
+   "bbox_min_m": [
+    -16.635,
+    -19.519,
+    1.084
+   ],
+   "bbox_max_m": [
+    17.405,
+    15.904,
+    12.03
+   ],
+   "size_m": [
+    34.04,
+    35.423,
+    10.947
+   ],
+   "materials": [
+    "M_Bark",
+    "M_Leaves_liveoak"
+   ],
+   "origin": "trunk centre at grade",
+   "height_m": 13.0,
+   "spread_m": 30.0,
+   "part": "crown"
+  },
+  "LM_ATX_TreatyOak_Trunk": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_TreatyOak_Trunk.glb",
+   "tris": 1866,
+   "bbox_min_m": [
+    -12.847,
+    -13.684,
+    -0.05
+   ],
+   "bbox_max_m": [
+    13.743,
+    14.02,
+    6.269
+   ],
+   "size_m": [
+    26.59,
+    27.704,
+    6.319
+   ],
+   "materials": [
+    "M_Bark",
+    "M_Mulch",
+    "M_TrimGreen",
+    "M_Iron",
+    "M_GraniteGrey",
+    "M_GranitePolished"
+   ],
+   "origin": "trunk centre at grade",
+   "part": "trunk and main limbs"
+  },
+  "LM_ATX_WillieStatue": {
+   "file": "SourceArt/Landmarks/austin/LM_ATX_WillieStatue.glb",
+   "tris": 1052,
+   "bbox_min_m": [
+    -1.8,
+    -1.1,
+    0.0
+   ],
+   "bbox_max_m": [
+    1.8,
+    1.9,
+    4.2
+   ],
+   "size_m": [
+    3.6,
+    3.0,
+    4.2
+   ],
+   "materials": [
+    "M_GraniteBlack",
+    "M_ConcreteDark",
+    "M_BronzeDark"
+   ],
+   "origin": "plinth centre at grade; faces -Y"
+  }
+ },
+ "conventions": {
+  "units": "metres in Blender/GLB; Unreal imports as centimetres",
+  "placements": "p = plan metres (x east, y north; Unreal X = y*100, Y = x*100); theta = plan angle (deg CCW from east) of the asset's Blender +X; Unreal yaw = 90 - theta; z = 'ground' | 'water' | 'deck' | metres",
+  "austin": {
+   "rotation_deg": -164,
+   "offset_plan_m": [
+    -1429,
+    395
+   ],
+   "origin_latlon": [
+    30.261444,
+    -97.7451
+   ],
+   "projection": "local metres = ((lon - lon0) * 111320 cos(lat0), (lat - lat0) * 110574); plan = R(rot) local + offset (Scripts/mashup/build_mashup_data.py Proj + integrate_v2.py Frame.tf)"
+  },
+  "osm": "(c) OpenStreetMap contributors (ODbL); cached Overpass extracts in SourceArt/Landmarks/austin/osm/",
+  "generator": "Scripts/landmarks/blender_austin_sights.py"
+ },
+ "layout": {
+  "bridges": {
+   "congress": {
+    "origin": [
+     -1417.23,
+     262.69
+    ],
+    "dir": [
+     0.03175,
+     0.9995
+    ],
+    "water_len": 209.5
+   },
+   "lamar": {
+    "origin": [
+     -239.26,
+     170.96
+    ],
+    "dir": [
+     0.06728,
+     0.99773
+    ],
+    "water_len": 152.0
+   }
+  },
+  "placements": [
+   {
+    "asset": "LM_ATX_CongressBridge",
+    "p": [
+     -1417.23,
+     262.69
+    ],
+    "theta": 0.0,
+    "z": 0.0,
+    "collision": "complex",
+    "note": "arches, piers, sidewalks and lamps under/along the city's deck"
+   },
+   {
+    "asset": "LM_ATX_LamarBridge",
+    "p": [
+     -239.26,
+     170.96
+    ],
+    "theta": 0.0,
+    "z": 0.0,
+    "collision": "complex",
+    "note": "open-spandrel arches under the city's deck"
+   },
+   {
+    "asset": "LM_ATX_PflugerBridge",
+    "p": [
+     -339.94,
+     168.82
+    ],
+    "theta": 0.0,
+    "z": 0.0,
+    "collision": "complex",
+    "note": "drivable walkway with helix"
+   },
+   {
+    "asset": "LM_ATX_Neon_Dance",
+    "p": [
+     -1458.6,
+     -361.09
+    ],
+    "theta": 357.4,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Dance",
+    "p": [
+     -1742.28,
+     -373.82
+    ],
+    "theta": 177.9,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Burgers",
+    "p": [
+     -1750.44,
+     -347.77
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_GrulkePlaza",
+    "p": [
+     -1055.85,
+     415.12
+    ],
+    "theta": 0.0,
+    "z": 0.0,
+    "collision": "complex",
+    "site": "shores"
+   },
+   {
+    "asset": "LM_ATX_MoonlightTower",
+    "p": [
+     -1109.82,
+     -693.71
+    ],
+    "theta": 0.0,
+    "z": "ground",
+    "collision": "complex",
+    "site": "9th_guadalupe"
+   },
+   {
+    "asset": "LM_ATX_MoonlightGuys",
+    "p": [
+     -1109.82,
+     -693.71
+    ],
+    "theta": 0.0,
+    "z": "ground",
+    "collision": "none",
+    "site": "9th_guadalupe"
+   },
+   {
+    "asset": "LM_ATX_MoonlightTower",
+    "p": [
+     -1817.89,
+     -888.74
+    ],
+    "theta": 110.0,
+    "z": "ground",
+    "collision": "complex",
+    "site": "11th_trinity"
+   },
+   {
+    "asset": "LM_ATX_MoonlightGuys",
+    "p": [
+     -1817.89,
+     -888.74
+    ],
+    "theta": 110.0,
+    "z": "ground",
+    "collision": "none",
+    "site": "11th_trinity"
+   },
+   {
+    "asset": "LM_ATX_TreatyOak",
+    "p": [
+     -166.3,
+     -372.35
+    ],
+    "theta": 0.0,
+    "z": "ground",
+    "collision": "none",
+    "site": "treaty_oak"
+   },
+   {
+    "asset": "LM_ATX_TreatyOak_Trunk",
+    "p": [
+     -166.3,
+     -372.35
+    ],
+    "theta": 0.0,
+    "z": "ground",
+    "collision": "complex",
+    "site": "treaty_oak"
+   },
+   {
+    "asset": "LM_ATX_SRVStatue",
+    "p": [
+     -863.51,
+     369.72
+    ],
+    "theta": 196.0,
+    "z": "ground",
+    "collision": "complex",
+    "site": "srv"
+   },
+   {
+    "asset": "LM_ATX_EberlyStatue",
+    "p": [
+     -1425.22,
+     -432.55
+    ],
+    "theta": 16.0,
+    "z": "ground",
+    "collision": "complex",
+    "site": "eberly"
+   },
+   {
+    "asset": "LM_ATX_WillieStatue",
+    "p": [
+     -1163.1,
+     42.98
+    ],
+    "theta": 196.0,
+    "z": "ground",
+    "collision": "complex",
+    "site": "willie"
+   },
+   {
+    "asset": "LM_ATX_Cap_Tejano",
+    "p": [
+     -1520.19,
+     -958.08
+    ],
+    "theta": 88.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_AfricanAmerican",
+    "p": [
+     -1403.67,
+     -961.33
+    ],
+    "theta": 268.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_PeaceOfficers",
+    "p": [
+     -1567.61,
+     -1232.77
+    ],
+    "theta": 88.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_Vietnam",
+    "p": [
+     -1558.73,
+     -1258.43
+    ],
+    "theta": 88.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_DisabledVets",
+    "p": [
+     -1566.78,
+     -1215.29
+    ],
+    "theta": 88.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_Liberty",
+    "p": [
+     -1397.66,
+     -1272.38
+    ],
+    "theta": 268.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_TenCommandments",
+    "p": [
+     -1403.89,
+     -1189.48
+    ],
+    "theta": 268.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_WWII",
+    "p": [
+     -1397.66,
+     -1257.59
+    ],
+    "theta": 268.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_Children",
+    "p": [
+     -1426.68,
+     -1219.47
+    ],
+    "theta": 268.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_PioneerWoman",
+    "p": [
+     -1414.09,
+     -1230.24
+    ],
+    "theta": 268.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_PearlHarbor",
+    "p": [
+     -1417.12,
+     -1266.17
+    ],
+    "theta": 268.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_Cap_NationalGuard",
+    "p": [
+     -1338.29,
+     -1145.2
+    ],
+    "theta": 268.08,
+    "z": "ground",
+    "collision": "complex",
+    "site": "capitol"
+   },
+   {
+    "asset": "LM_ATX_CrowdSidewalk",
+    "p": [
+     -1426.68,
+     318.02
+    ],
+    "theta": 88.18,
+    "z": 0.12,
+    "collision": "none",
+    "site": "congress"
+   },
+   {
+    "asset": "LM_ATX_CrowdSidewalk",
+    "p": [
+     -1424.46,
+     387.98
+    ],
+    "theta": 88.18,
+    "z": 0.12,
+    "collision": "none",
+    "site": "congress"
+   },
+   {
+    "asset": "LM_ATX_CrowdLawn",
+    "p": [
+     -1380.15,
+     485.13
+    ],
+    "theta": 268.18,
+    "z": "ground",
+    "collision": "none",
+    "site": "bat_lawn"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1205.21,
+     454.37
+    ],
+    "theta": 264.27,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1207.35,
+     450.57
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1203.87,
+     450.22
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1206.21,
+     444.42
+    ],
+    "theta": 264.27,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1208.35,
+     440.62
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1204.87,
+     440.27
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_QuayStair",
+    "p": [
+     -1204.68,
+     459.65
+    ],
+    "theta": 354.27,
+    "z": 0.0,
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_CruiseBoat",
+    "p": [
+     -1202.23,
+     444.02
+    ],
+    "theta": 264.27,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1236.32,
+     459.03
+    ],
+    "theta": 358.79,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1232.36,
+     457.2
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1232.28,
+     460.7
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1226.32,
+     458.82
+    ],
+    "theta": 358.79,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1222.36,
+     456.99
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1222.29,
+     460.48
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_QuayStair",
+    "p": [
+     -1241.62,
+     459.14
+    ],
+    "theta": 88.79,
+    "z": 0.0,
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1217.85,
+     455.57
+    ],
+    "theta": 287.16,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1218.34,
+     451.24
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1214.99,
+     452.27
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_QuayStair",
+    "p": [
+     -1219.41,
+     460.64
+    ],
+    "theta": 17.16,
+    "z": 0.0,
+    "collision": "complex",
+    "site": "hyatt"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1166.4,
+     424.52
+    ],
+    "theta": 331.59,
+    "z": "water",
+    "collision": "complex",
+    "site": "riverboat"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1163.72,
+     421.08
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "riverboat"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1162.05,
+     424.15
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "riverboat"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1157.61,
+     419.76
+    ],
+    "theta": 331.59,
+    "z": "water",
+    "collision": "complex",
+    "site": "riverboat"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1154.92,
+     416.32
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "riverboat"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1153.25,
+     419.4
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "riverboat"
+   },
+   {
+    "asset": "LM_ATX_QuayStair",
+    "p": [
+     -1171.06,
+     427.04
+    ],
+    "theta": 61.59,
+    "z": 0.0,
+    "collision": "complex",
+    "site": "riverboat"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1744.02,
+     445.67
+    ],
+    "theta": 50.21,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1740.12,
+     447.63
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1742.81,
+     449.87
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1737.62,
+     453.36
+    ],
+    "theta": 50.21,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1733.72,
+     455.31
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1736.41,
+     457.55
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1731.22,
+     461.04
+    ],
+    "theta": 50.21,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1727.32,
+     462.99
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1730.01,
+     465.23
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_QuayStair",
+    "p": [
+     -1747.41,
+     441.6
+    ],
+    "theta": 140.21,
+    "z": 0.0,
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Green",
+    "p": [
+     -1742.33,
+     444.26
+    ],
+    "theta": 50.21,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Blue",
+    "p": [
+     -1745.71,
+     447.08
+    ],
+    "theta": 50.21,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Blue",
+    "p": [
+     -1735.93,
+     451.95
+    ],
+    "theta": 50.21,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Green",
+    "p": [
+     -1739.31,
+     454.76
+    ],
+    "theta": 50.21,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1733.52,
+     439.63
+    ],
+    "theta": 49.79,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1729.61,
+     441.56
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1732.28,
+     443.82
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1727.07,
+     447.27
+    ],
+    "theta": 49.79,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1723.15,
+     449.19
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1725.82,
+     451.45
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1720.61,
+     454.91
+    ],
+    "theta": 49.79,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1716.69,
+     456.83
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1719.37,
+     459.09
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_QuayStair",
+    "p": [
+     -1736.95,
+     435.58
+    ],
+    "theta": 139.79,
+    "z": 0.0,
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Green",
+    "p": [
+     -1731.84,
+     438.21
+    ],
+    "theta": 49.79,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Blue",
+    "p": [
+     -1735.21,
+     441.05
+    ],
+    "theta": 49.79,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Blue",
+    "p": [
+     -1725.39,
+     445.85
+    ],
+    "theta": 49.79,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Green",
+    "p": [
+     -1728.75,
+     448.69
+    ],
+    "theta": 49.79,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1705.28,
+     424.83
+    ],
+    "theta": 66.1,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1702.06,
+     427.78
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1705.26,
+     429.2
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     -1701.23,
+     433.97
+    ],
+    "theta": 66.1,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1698.01,
+     436.92
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Piling",
+    "p": [
+     -1701.21,
+     438.34
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_QuayStair",
+    "p": [
+     -1707.43,
+     419.99
+    ],
+    "theta": 156.1,
+    "z": 0.0,
+    "collision": "complex",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Green",
+    "p": [
+     -1703.27,
+     423.94
+    ],
+    "theta": 66.1,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Blue",
+    "p": [
+     -1707.29,
+     425.72
+    ],
+    "theta": 66.1,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Blue",
+    "p": [
+     -1699.21,
+     433.08
+    ],
+    "theta": 66.1,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Green",
+    "p": [
+     -1703.24,
+     434.86
+    ],
+    "theta": 66.1,
+    "z": "water",
+    "collision": "none",
+    "site": "boathouse"
+   },
+   {
+    "asset": "LM_ATX_Shell8",
+    "p": [
+     -1650.0,
+     405.0
+    ],
+    "theta": 4.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Scull1",
+    "p": [
+     -1540.0,
+     380.0
+    ],
+    "theta": 186.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Shell8",
+    "p": [
+     -980.0,
+     335.0
+    ],
+    "theta": 178.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_CruiseBoat",
+    "p": [
+     -1470.0,
+     360.0
+    ],
+    "theta": 95.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Riverboat",
+    "p": [
+     -1290.0,
+     420.0
+    ],
+    "theta": 182.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Red",
+    "p": [
+     -930.0,
+     300.0
+    ],
+    "theta": 20.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Yellow",
+    "p": [
+     -905.0,
+     292.0
+    ],
+    "theta": 35.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_SUP",
+    "p": [
+     -860.0,
+     310.0
+    ],
+    "theta": 190.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Red",
+    "p": [
+     -700.0,
+     280.0
+    ],
+    "theta": 200.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_SUP",
+    "p": [
+     -640.0,
+     300.0
+    ],
+    "theta": 12.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Yellow",
+    "p": [
+     -520.0,
+     300.0
+    ],
+    "theta": 170.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Scull1",
+    "p": [
+     -380.0,
+     280.0
+    ],
+    "theta": 10.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Red",
+    "p": [
+     -150.0,
+     300.0
+    ],
+    "theta": 15.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_SUP",
+    "p": [
+     -1180.0,
+     360.0
+    ],
+    "theta": 0.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Yellow",
+    "p": [
+     -1600.0,
+     380.0
+    ],
+    "theta": 190.0,
+    "z": "water",
+    "collision": "none",
+    "site": "lake"
+   },
+   {
+    "asset": "LM_ATX_Gazebo",
+    "p": [
+     -1068.91,
+     387.92
+    ],
+    "theta": 0.0,
+    "z": "ground",
+    "collision": "complex",
+    "site": "gazebo"
+   },
+   {
+    "asset": "LM_ATX_LizCarpenterFountain",
+    "p": [
+     -547.87,
+     567.62
+    ],
+    "theta": 0.0,
+    "z": "ground",
+    "collision": "complex",
+    "site": "butler"
+   },
+   {
+    "asset": "LM_ATX_LizCarpenterJets",
+    "p": [
+     -547.87,
+     567.62
+    ],
+    "theta": 0.0,
+    "z": "ground",
+    "collision": "none",
+    "site": "butler"
+   },
+   {
+    "asset": "LM_ATX_DockModule",
+    "p": [
+     729.18,
+     684.62
+    ],
+    "theta": 60.0,
+    "z": "water",
+    "collision": "complex",
+    "site": "zilker"
+   },
+   {
+    "asset": "LM_ATX_QuayStair",
+    "p": [
+     726.53,
+     680.03
+    ],
+    "theta": 150.0,
+    "z": 0.0,
+    "collision": "complex",
+    "site": "zilker"
+   },
+   {
+    "asset": "LM_ATX_Kayak_Green",
+    "p": [
+     726.78,
+     684.86
+    ],
+    "theta": 60.0,
+    "z": "water",
+    "collision": "none",
+    "site": "zilker"
+   },
+   {
+    "asset": "LM_ATX_SUP",
+    "p": [
+     727.74,
+     688.92
+    ],
+    "theta": 60.0,
+    "z": "water",
+    "collision": "none",
+    "site": "zilker"
+   },
+   {
+    "asset": "LM_ATX_Neon_Hotel",
+    "p": [
+     -1518.05,
+     -353.3
+    ],
+    "theta": 358.7,
+    "z": "ground",
+    "dz": 4.2,
+    "collision": "complex",
+    "site": "sixth",
+    "wall": true
+   },
+   {
+    "asset": "LM_ATX_Neon_LiveMusic",
+    "p": [
+     -1477.25,
+     -379.51
+    ],
+    "theta": 178.0,
+    "z": "ground",
+    "dz": 4.2,
+    "collision": "complex",
+    "site": "sixth",
+    "wall": true
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Cocktails",
+    "p": [
+     -1586.5,
+     -386.12
+    ],
+    "theta": 88.6,
+    "z": "ground",
+    "dz": 3.4,
+    "collision": "none",
+    "site": "sixth",
+    "wall": true
+   },
+   {
+    "asset": "LM_ATX_Neon_Open",
+    "p": [
+     -1595.3,
+     -377.9
+    ],
+    "theta": 178.6,
+    "z": "ground",
+    "dz": 4.2,
+    "collision": "complex",
+    "site": "sixth",
+    "wall": true
+   },
+   {
+    "asset": "LM_ATX_Neon_Saloon",
+    "p": [
+     -1545.43,
+     -353.4
+    ],
+    "theta": 358.8,
+    "z": "ground",
+    "dz": 4.2,
+    "collision": "complex",
+    "site": "sixth",
+    "wall": true
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Music",
+    "p": [
+     -1642.88,
+     -347.79
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "dz": 3.4,
+    "collision": "none",
+    "site": "sixth",
+    "wall": true
+   },
+   {
+    "asset": "LM_ATX_TheatreSign",
+    "p": [
+     -1476.03,
+     -543.22
+    ],
+    "theta": 87.9,
+    "z": "ground",
+    "dz": 0.0,
+    "collision": "complex",
+    "site": "paramount",
+    "wall": true
+   },
+   {
+    "asset": "LM_ATX_StorefrontC",
+    "p": [
+     -1664.82,
+     -374.0
+    ],
+    "theta": 177.9,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Hotel",
+    "p": [
+     -1669.92,
+     -373.82
+    ],
+    "theta": 177.9,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontC",
+    "p": [
+     -1651.97,
+     -374.42
+    ],
+    "theta": 178.62,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_LiveMusic",
+    "p": [
+     -1646.87,
+     -374.54
+    ],
+    "theta": 178.62,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontB",
+    "p": [
+     -1640.14,
+     -374.84
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Blues",
+    "p": [
+     -1644.24,
+     -374.69
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontF",
+    "p": [
+     -1628.79,
+     -375.2
+    ],
+    "theta": 177.9,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Cocktails",
+    "p": [
+     -1628.78,
+     -374.84
+    ],
+    "theta": 177.9,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontD",
+    "p": [
+     -1615.44,
+     -375.64
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Rock",
+    "p": [
+     -1609.34,
+     -375.86
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1666.68,
+     -352.65
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Tacos",
+    "p": [
+     -1663.08,
+     -352.78
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontF",
+    "p": [
+     -1621.98,
+     -354.12
+    ],
+    "theta": 358.6,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Blues",
+    "p": [
+     -1617.38,
+     -354.23
+    ],
+    "theta": 358.6,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1611.67,
+     -354.46
+    ],
+    "theta": 357.93,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Blues",
+    "p": [
+     -1614.77,
+     -354.35
+    ],
+    "theta": 357.93,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1602.92,
+     -354.78
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Saloon",
+    "p": [
+     -1606.02,
+     -354.67
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontF",
+    "p": [
+     -1592.48,
+     -355.11
+    ],
+    "theta": 358.6,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Music",
+    "p": [
+     -1592.49,
+     -355.47
+    ],
+    "theta": 358.6,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontC",
+    "p": [
+     -1458.5,
+     -361.12
+    ],
+    "theta": 357.4,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Karaoke",
+    "p": [
+     -1458.52,
+     -361.48
+    ],
+    "theta": 357.4,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1470.16,
+     -360.65
+    ],
+    "theta": 357.43,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Jazz",
+    "p": [
+     -1473.75,
+     -360.49
+    ],
+    "theta": 357.43,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontD",
+    "p": [
+     -1482.55,
+     -360.18
+    ],
+    "theta": 358.05,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_LiveMusic",
+    "p": [
+     -1488.65,
+     -359.97
+    ],
+    "theta": 358.05,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontD",
+    "p": [
+     -1497.5,
+     -359.62
+    ],
+    "theta": 358.05,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_HonkyTonk",
+    "p": [
+     -1497.51,
+     -359.98
+    ],
+    "theta": 358.05,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1497.29,
+     -376.93
+    ],
+    "theta": 177.4,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_HonkyTonk",
+    "p": [
+     -1497.28,
+     -376.57
+    ],
+    "theta": 177.4,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontD",
+    "p": [
+     -1509.49,
+     -376.51
+    ],
+    "theta": 178.05,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_LiveTonight",
+    "p": [
+     -1509.48,
+     -376.15
+    ],
+    "theta": 178.05,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontF",
+    "p": [
+     -1522.69,
+     -376.17
+    ],
+    "theta": 178.74,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Jazz",
+    "p": [
+     -1527.29,
+     -376.07
+    ],
+    "theta": 178.74,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1533.34,
+     -375.94
+    ],
+    "theta": 178.74,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Tacos",
+    "p": [
+     -1536.94,
+     -375.86
+    ],
+    "theta": 178.74,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1542.49,
+     -375.74
+    ],
+    "theta": 178.75,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Karaoke",
+    "p": [
+     -1542.48,
+     -375.38
+    ],
+    "theta": 178.75,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1551.09,
+     -375.55
+    ],
+    "theta": 178.74,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Tacos",
+    "p": [
+     -1547.99,
+     -375.62
+    ],
+    "theta": 178.74,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontD",
+    "p": [
+     -1771.02,
+     -372.83
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Saloon",
+    "p": [
+     -1764.93,
+     -373.05
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1759.12,
+     -373.21
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Jazz",
+    "p": [
+     -1756.03,
+     -373.32
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1749.88,
+     -373.55
+    ],
+    "theta": 177.9,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Hotel",
+    "p": [
+     -1746.28,
+     -373.68
+    ],
+    "theta": 177.9,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1740.05,
+     -373.88
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Jazz",
+    "p": [
+     -1736.45,
+     -374.01
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1730.3,
+     -374.18
+    ],
+    "theta": 178.6,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Club",
+    "p": [
+     -1733.9,
+     -374.1
+    ],
+    "theta": 178.6,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1720.68,
+     -374.51
+    ],
+    "theta": 177.9,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Open",
+    "p": [
+     -1724.28,
+     -374.38
+    ],
+    "theta": 177.9,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontF",
+    "p": [
+     -1709.75,
+     -374.89
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Bar",
+    "p": [
+     -1705.15,
+     -375.06
+    ],
+    "theta": 177.93,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1699.35,
+     -375.22
+    ],
+    "theta": 178.62,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Bar",
+    "p": [
+     -1702.45,
+     -375.14
+    ],
+    "theta": 178.62,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1772.26,
+     -346.7
+    ],
+    "theta": 357.93,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Club",
+    "p": [
+     -1775.35,
+     -346.58
+    ],
+    "theta": 357.93,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontC",
+    "p": [
+     -1761.51,
+     -347.03
+    ],
+    "theta": 358.6,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_HonkyTonk",
+    "p": [
+     -1761.52,
+     -347.39
+    ],
+    "theta": 358.6,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontB",
+    "p": [
+     -1749.43,
+     -347.44
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Club",
+    "p": [
+     -1753.52,
+     -347.29
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1739.76,
+     -347.78
+    ],
+    "theta": 357.93,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Music",
+    "p": [
+     -1739.77,
+     -348.14
+    ],
+    "theta": 357.93,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontC",
+    "p": [
+     -1729.01,
+     -348.12
+    ],
+    "theta": 358.6,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Tacos",
+    "p": [
+     -1734.1,
+     -348.0
+    ],
+    "theta": 358.6,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontF",
+    "p": [
+     -1716.58,
+     -348.54
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Cocktails",
+    "p": [
+     -1716.59,
+     -348.9
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1706.31,
+     -348.9
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Tacos",
+    "p": [
+     -1709.4,
+     -348.78
+    ],
+    "theta": 357.9,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1697.06,
+     -349.18
+    ],
+    "theta": 358.62,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Cocktails",
+    "p": [
+     -1697.06,
+     -349.54
+    ],
+    "theta": 358.62,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1873.37,
+     -367.44
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Club",
+    "p": [
+     -1870.27,
+     -367.56
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontC",
+    "p": [
+     -1862.77,
+     -367.83
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_LiveMusic",
+    "p": [
+     -1857.68,
+     -368.02
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1852.18,
+     -368.23
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Music",
+    "p": [
+     -1852.16,
+     -367.87
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontD",
+    "p": [
+     -1840.53,
+     -368.66
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Music",
+    "p": [
+     -1840.51,
+     -368.3
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontC",
+    "p": [
+     -1826.88,
+     -369.17
+    ],
+    "theta": 177.85,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Blues",
+    "p": [
+     -1831.97,
+     -368.98
+    ],
+    "theta": 177.85,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontB",
+    "p": [
+     -1815.27,
+     -369.6
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Hotel",
+    "p": [
+     -1811.18,
+     -369.75
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontA",
+    "p": [
+     -1804.67,
+     -369.99
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Saloon",
+    "p": [
+     -1801.58,
+     -370.1
+    ],
+    "theta": 177.88,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontF",
+    "p": [
+     -1871.03,
+     -344.71
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_LiveMusic",
+    "p": [
+     -1875.63,
+     -344.54
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontC",
+    "p": [
+     -1858.93,
+     -345.16
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Cocktails",
+    "p": [
+     -1858.95,
+     -345.52
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontB",
+    "p": [
+     -1847.23,
+     -345.59
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Hotel",
+    "p": [
+     -1843.13,
+     -345.75
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontD",
+    "p": [
+     -1834.63,
+     -346.06
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_NeonFlat_Cocktails",
+    "p": [
+     -1834.64,
+     -346.42
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "dz": 4.25,
+    "collision": "none",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontF",
+    "p": [
+     -1821.53,
+     -346.55
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Open",
+    "p": [
+     -1816.93,
+     -346.72
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StorefrontE",
+    "p": [
+     -1810.93,
+     -346.94
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_Neon_Pizza",
+    "p": [
+     -1807.33,
+     -347.08
+    ],
+    "theta": 357.88,
+    "z": "ground",
+    "dz": 4.4,
+    "collision": "complex",
+    "site": "sixth"
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1640.38,
+     -374.81
+    ],
+    "theta": 358.06,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.967,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1625.38,
+     -364.66
+    ],
+    "theta": 72.11,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.923,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1613.55,
+     -365.05
+    ],
+    "theta": 79.9,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.896,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1665.75,
+     -363.33
+    ],
+    "theta": 274.96,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.893,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1612.45,
+     -354.45
+    ],
+    "theta": 358.0,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.795,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1602.07,
+     -354.79
+    ],
+    "theta": 358.07,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.8,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1503.5,
+     -368.06
+    ],
+    "theta": 54.63,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.863,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1532.59,
+     -375.95
+    ],
+    "theta": 358.74,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.825,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1542.21,
+     -375.74
+    ],
+    "theta": 358.75,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.74,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1760.45,
+     -373.19
+    ],
+    "theta": 358.05,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.882,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1749.59,
+     -373.55
+    ],
+    "theta": 357.98,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.795,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1740.09,
+     -373.86
+    ],
+    "theta": 358.13,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.816,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1760.84,
+     -347.07
+    ],
+    "theta": 358.12,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.952,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "asset": "LM_ATX_StringLights",
+    "p": [
+     -1750.63,
+     -347.41
+    ],
+    "theta": 358.03,
+    "z": "ground",
+    "dz": 7.2,
+    "collision": "none",
+    "site": "sixth",
+    "scale": [
+     0.907,
+     1.0,
+     1.0
+    ]
+   }
+  ],
+  "sites": {
+   "pfluger": {
+    "origin": [
+     -339.94,
+     168.82
+    ],
+    "helix_r": 12.19,
+    "keepout_plan": [
+     [
+      -341.0,
+      181.0
+     ],
+     [
+      -342.1,
+      186.4
+     ],
+     [
+      -341.6,
+      189.4
+     ],
+     [
+      -337.4,
+      195.4
+     ],
+     [
+      -332.2,
+      202.6
+     ],
+     [
+      -326.5,
+      210.3
+     ],
+     [
+      -322.0,
+      217.2
+     ],
+     [
+      -319.4,
+      226.0
+     ],
+     [
+      -317.5,
+      234.2
+     ],
+     [
+      -315.7,
+      241.0
+     ],
+     [
+      -313.0,
+      250.3
+     ],
+     [
+      -310.8,
+      256.9
+     ],
+     [
+      -307.9,
+      263.1
+     ],
+     [
+      -303.8,
+      271.1
+     ],
+     [
+      -301.9,
+      276.2
+     ],
+     [
+      -299.3,
+      283.8
+     ],
+     [
+      -296.3,
+      292.8
+     ],
+     [
+      -294.2,
+      300.9
+     ],
+     [
+      -294.2,
+      308.1
+     ],
+     [
+      -294.1,
+      315.9
+     ],
+     [
+      -293.9,
+      324.7
+     ],
+     [
+      -293.5,
+      333.6
+     ],
+     [
+      -293.2,
+      342.2
+     ],
+     [
+      -293.5,
+      350.6
+     ],
+     [
+      -294.0,
+      358.5
+     ],
+     [
+      -294.8,
+      298.1
+     ],
+     [
+      -290.4,
+      305.2
+     ],
+     [
+      -285.7,
+      312.6
+     ],
+     [
+      -280.9,
+      320.2
+     ],
+     [
+      -275.8,
+      327.4
+     ],
+     [
+      -270.2,
+      334.2
+     ],
+     [
+      -264.6,
+      340.5
+     ],
+     [
+      -258.7,
+      347.0
+     ],
+     [
+      -252.7,
+      353.5
+     ]
+    ],
+    "drive_path": [
+     [
+      -351.9,
+      166.4,
+      0.2
+     ],
+     [
+      -352.1,
+      169.6,
+      0.36
+     ],
+     [
+      -351.5,
+      172.8,
+      0.52
+     ],
+     [
+      -350.0,
+      175.6,
+      0.68
+     ],
+     [
+      -347.9,
+      178.1,
+      0.84
+     ],
+     [
+      -345.2,
+      179.8,
+      1.0
+     ],
+     [
+      -342.1,
+      180.8,
+      1.16
+     ],
+     [
+      -338.9,
+      181.0,
+      1.32
+     ],
+     [
+      -335.8,
+      180.3,
+      1.48
+     ],
+     [
+      -332.9,
+      178.8,
+      1.64
+     ],
+     [
+      -330.5,
+      176.6,
+      1.8
+     ],
+     [
+      -328.8,
+      173.8,
+      1.96
+     ],
+     [
+      -327.9,
+      170.7,
+      2.12
+     ],
+     [
+      -327.8,
+      167.5,
+      2.28
+     ],
+     [
+      -328.6,
+      164.4,
+      2.44
+     ],
+     [
+      -330.2,
+      161.6,
+      2.6
+     ],
+     [
+      -332.4,
+      159.2,
+      2.76
+     ],
+     [
+      -335.2,
+      157.6,
+      2.92
+     ],
+     [
+      -338.3,
+      156.7,
+      3.08
+     ],
+     [
+      -341.5,
+      156.7,
+      3.24
+     ],
+     [
+      -344.6,
+      157.6,
+      3.4
+     ],
+     [
+      -347.4,
+      159.2,
+      3.56
+     ],
+     [
+      -349.7,
+      161.5,
+      3.72
+     ],
+     [
+      -351.3,
+      164.3,
+      3.88
+     ],
+     [
+      -352.0,
+      167.5,
+      4.04
+     ],
+     [
+      -352.0,
+      170.7,
+      4.2
+     ],
+     [
+      -351.1,
+      173.8,
+      4.36
+     ],
+     [
+      -349.4,
+      176.5,
+      4.52
+     ],
+     [
+      -347.0,
+      178.7,
+      4.68
+     ],
+     [
+      -344.2,
+      180.2,
+      4.84
+     ],
+     [
+      -341.0,
+      181.0,
+      5.0
+     ],
+     [
+      -341.5,
+      183.3,
+      5.0
+     ],
+     [
+      -342.1,
+      186.4,
+      5.0
+     ],
+     [
+      -342.2,
+      188.2,
+      5.0
+     ],
+     [
+      -340.0,
+      191.7,
+      5.0
+     ],
+     [
+      -335.7,
+      197.9,
+      5.0
+     ],
+     [
+      -332.2,
+      202.6,
+      5.0
+     ],
+     [
+      -327.9,
+      208.4,
+      5.0
+     ],
+     [
+      -323.9,
+      214.0,
+      5.0
+     ],
+     [
+      -320.7,
+      219.9,
+      5.0
+     ],
+     [
+      -319.4,
+      226.0,
+      5.0
+     ],
+     [
+      -317.9,
+      232.4,
+      5.0
+     ],
+     [
+      -316.7,
+      237.6,
+      5.0
+     ],
+     [
+      -315.1,
+      243.1,
+      5.0
+     ],
+     [
+      -313.0,
+      250.3,
+      5.0
+     ],
+     [
+      -311.2,
+      255.9,
+      5.0
+     ],
+     [
+      -309.6,
+      259.4,
+      5.0
+     ],
+     [
+      -307.0,
+      265.0,
+      5.0
+     ],
+     [
+      -303.8,
+      271.1,
+      5.0
+     ],
+     [
+      -302.3,
+      274.9,
+      5.0
+     ],
+     [
+      -300.8,
+      279.6,
+      5.0
+     ],
+     [
+      -298.5,
+      286.1,
+      5.0
+     ],
+     [
+      -296.3,
+      292.8,
+      4.92
+     ],
+     [
+      -294.8,
+      298.1,
+      4.7
+     ],
+     [
+      -294.1,
+      304.5,
+      4.3
+     ],
+     [
+      -294.2,
+      310.0,
+      3.85
+     ],
+     [
+      -294.1,
+      315.9,
+      3.28
+     ],
+     [
+      -294.0,
+      322.7,
+      2.57
+     ],
+     [
+      -293.7,
+      329.1,
+      1.92
+     ],
+     [
+      -293.4,
+      335.9,
+      1.27
+     ],
+     [
+      -293.2,
+      342.2,
+      0.78
+     ],
+     [
+      -293.4,
+      348.7,
+      0.42
+     ],
+     [
+      -293.7,
+      354.5,
+      0.24
+     ]
+    ]
+   },
+   "grulke": {
+    "origin": [
+     -1055.85,
+     415.12
+    ]
+   }
+  },
+  "clear": [
+   {
+    "kind": "props",
+    "circle": [
+     -1109.8248468451902,
+     -693.707262288043,
+     2.6
+    ],
+    "why": "moonlight tower 9th_guadalupe"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1817.8944317245375,
+     -888.7357965869813,
+     2.6
+    ],
+    "why": "moonlight tower 11th_trinity"
+   },
+   {
+    "kind": "trees",
+    "circle": [
+     -166.29683082639022,
+     -372.3507337948988,
+     15.0
+    ],
+    "why": "Treaty Oak canopy"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -166.29683082639022,
+     -372.3507337948988,
+     3.5
+    ],
+    "why": "Treaty Oak trunk"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -863.5059306961382,
+     369.7217299085422,
+     8.6
+    ],
+    "why": "SRV plaza"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1425.2151301858141,
+     -432.54888727292337,
+     2.8
+    ],
+    "why": "Eberly base"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1163.0967932493625,
+     42.97806464397769,
+     1.6
+    ],
+    "why": "Willie plinth"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1520.1944275166466,
+     -958.0789517171008,
+     7.5
+    ],
+    "why": "LM_ATX_Cap_Tejano"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1403.6732223994622,
+     -961.3271170583523,
+     6.5
+    ],
+    "why": "LM_ATX_Cap_AfricanAmerican"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1567.6148812849892,
+     -1232.7671993023903,
+     8.0
+    ],
+    "why": "LM_ATX_Cap_PeaceOfficers"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1558.732263100333,
+     -1258.4301238474482,
+     3.5
+    ],
+    "why": "LM_ATX_Cap_Vietnam"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1566.7814357321017,
+     -1215.2898063722691,
+     3.1
+    ],
+    "why": "LM_ATX_Cap_DisabledVets"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1397.6612701265021,
+     -1272.381480334876,
+     2.3
+    ],
+    "why": "LM_ATX_Cap_Liberty"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1403.887850481813,
+     -1189.481786118784,
+     1.7
+    ],
+    "why": "LM_ATX_Cap_TenCommandments"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1397.661910142024,
+     -1257.588796877394,
+     1.7
+    ],
+    "why": "LM_ATX_Cap_WWII"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1426.6766741303509,
+     -1219.4710073832437,
+     3.5
+    ],
+    "why": "LM_ATX_Cap_Children"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1414.0863907073203,
+     -1230.2395604339827,
+     1.7
+    ],
+    "why": "LM_ATX_Cap_PioneerWoman"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1417.117712189541,
+     -1266.1703490747232,
+     2.1
+    ],
+    "why": "LM_ATX_Cap_PearlHarbor"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1338.290362702097,
+     -1145.1985013702931,
+     1.7
+    ],
+    "why": "LM_ATX_Cap_NationalGuard"
+   },
+   {
+    "kind": "trees",
+    "circle": [
+     -1380.148875,
+     485.12575000000004,
+     9.0
+    ],
+    "why": "bat lawn"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -1068.910340299436,
+     387.9172054064595,
+     7.0
+    ],
+    "why": "gazebo"
+   },
+   {
+    "kind": "props",
+    "circle": [
+     -547.8651424436523,
+     567.6198926674308,
+     13.5
+    ],
+    "why": "Liz Carpenter Fountain"
+   }
+  ],
+  "report": {
+   "9th_guadalupe": {
+    "p": [
+     -1109.8,
+     -693.7
+    ],
+    "moved_m": 2.0,
+    "guys_bad_anchors": 4
+   },
+   "11th_trinity": {
+    "p": [
+     -1817.9,
+     -888.7
+    ],
+    "moved_m": 2.0,
+    "guys_bad_anchors": 4
+   },
+   "treaty_oak": [
+    -166.3,
+    -372.4
+   ],
+   "eberly": {
+    "p": [
+     -1425.2,
+     -432.5
+    ],
+    "moved_m": 2.0
+   },
+   "willie": {
+    "p": [
+     -1163.1,
+     43.0
+    ],
+    "moved_m": 0.0
+   },
+   "LM_ATX_Cap_Tejano": {
+    "local": [
+     61.3,
+     -176.5
+    ],
+    "moved_m": 0,
+    "src": "n14134110658"
+   },
+   "LM_ATX_Cap_AfricanAmerican": {
+    "local": [
+     -55.2,
+     -177.1
+    ],
+    "moved_m": 0,
+    "src": "n4979610121"
+   },
+   "LM_ATX_Cap_PeaceOfficers": {
+    "local": [
+     99.5,
+     99.7
+    ],
+    "moved_m": 0,
+    "src": "w1406446799"
+   },
+   "LM_ATX_Cap_Vietnam": {
+    "local": [
+     89.8,
+     125.0
+    ],
+    "moved_m": 0,
+    "src": "n6990944960"
+   },
+   "LM_ATX_Cap_DisabledVets": {
+    "local": [
+     99.3,
+     82.2
+    ],
+    "moved_m": 0,
+    "src": "n14134107471"
+   },
+   "LM_ATX_Cap_Liberty": {
+    "local": [
+     -71.7,
+     133.6
+    ],
+    "moved_m": 0,
+    "src": "n9293789970"
+   },
+   "LM_ATX_Cap_TenCommandments": {
+    "local": [
+     -62.7,
+     50.9
+    ],
+    "moved_m": 0,
+    "src": "n5058269727"
+   },
+   "LM_ATX_Cap_WWII": {
+    "local": [
+     -71.2,
+     118.8
+    ],
+    "moved_m": 0,
+    "src": "n9293789971"
+   },
+   "LM_ATX_Cap_Children": {
+    "local": [
+     -40.9,
+     81.6
+    ],
+    "moved_m": 0,
+    "src": "n2743506690"
+   },
+   "LM_ATX_Cap_PioneerWoman": {
+    "local": [
+     -53.8,
+     92.0
+    ],
+    "moved_m": 0,
+    "src": "ll30.27561,-97.74059"
+   },
+   "LM_ATX_Cap_PearlHarbor": {
+    "local": [
+     -52.0,
+     128.0
+    ],
+    "moved_m": 0,
+    "src": "TSPB guide"
+   },
+   "LM_ATX_Cap_NationalGuard": {
+    "local": [
+     -126.7,
+     4.5
+    ],
+    "moved_m": 5,
+    "src": "TSPB guide"
+   },
+   "bat_lawn": {
+    "p": [
+     -1380.1,
+     485.1
+    ],
+    "moved_m": 0.0
+   },
+   "docks": {
+    "hyatt": 5,
+    "riverboat": 2,
+    "boathouse": 8,
+    "lake_boats": 15
+   },
+   "theatre_sign": {
+    "p": [
+     -1476.0,
+     -543.2
+    ],
+    "off_footprint_m": 15.6
+   },
+   "sixth_street_signs": 6,
+   "sixth_storefronts": 49,
+   "sixth_storefront_signs": 49,
+   "zilker_dock": [
+    729.2,
+    684.6
+   ],
+   "sixth_string_lights": 14,
+   "srv": {
+    "p": [
+     -863.5,
+     369.7
+    ],
+    "moved_m": 4.5
+   },
+   "liz_carpenter": {
+    "p": [
+     -547.9,
+     567.6
+    ],
+    "moved_m": 0.0
+   }
+  }
+ },
+ "materials": {
+  "M_Concrete": {
+   "rgb": [
+    0.5,
+    0.48,
+    0.44
+   ],
+   "metal": 0.0,
+   "rough": 0.85,
+   "emit": 0.0
+  },
+  "M_ConcreteDark": {
+   "rgb": [
+    0.26,
+    0.25,
+    0.23
+   ],
+   "metal": 0.0,
+   "rough": 0.9,
+   "emit": 0.0
+  },
+  "M_Limestone": {
+   "rgb": [
+    0.66,
+    0.6,
+    0.48
+   ],
+   "metal": 0.0,
+   "rough": 0.75,
+   "emit": 0.0
+  },
+  "M_Granite": {
+   "rgb": [
+    0.5,
+    0.29,
+    0.22
+   ],
+   "metal": 0.0,
+   "rough": 0.62,
+   "emit": 0.0
+  },
+  "M_GranitePolished": {
+   "rgb": [
+    0.3,
+    0.15,
+    0.11
+   ],
+   "metal": 0.0,
+   "rough": 0.3,
+   "emit": 0.0
+  },
+  "M_GraniteGrey": {
+   "rgb": [
+    0.36,
+    0.36,
+    0.35
+   ],
+   "metal": 0.0,
+   "rough": 0.45,
+   "emit": 0.0
+  },
+  "M_GraniteBlack": {
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "metal": 0.0,
+   "rough": 0.22,
+   "emit": 0.0
+  },
+  "M_Bronze": {
+   "rgb": [
+    0.23,
+    0.16,
+    0.09
+   ],
+   "metal": 0.9,
+   "rough": 0.45,
+   "emit": 0.0
+  },
+  "M_BronzeDark": {
+   "rgb": [
+    0.1,
+    0.07,
+    0.045
+   ],
+   "metal": 0.85,
+   "rough": 0.5,
+   "emit": 0.0
+  },
+  "M_Verdigris": {
+   "rgb": [
+    0.26,
+    0.48,
+    0.4
+   ],
+   "metal": 0.35,
+   "rough": 0.55,
+   "emit": 0.0
+  },
+  "M_Gold": {
+   "rgb": [
+    0.8,
+    0.55,
+    0.18
+   ],
+   "metal": 1.0,
+   "rough": 0.3,
+   "emit": 0.0
+  },
+  "M_GraniteRough": {
+   "rgb": [
+    0.36,
+    0.2,
+    0.15
+   ],
+   "metal": 0.0,
+   "rough": 0.88,
+   "emit": 0.0
+  },
+  "M_Iron": {
+   "rgb": [
+    0.025,
+    0.025,
+    0.028
+   ],
+   "metal": 0.6,
+   "rough": 0.5,
+   "emit": 0.0
+  },
+  "M_TowerIron": {
+   "rgb": [
+    0.42,
+    0.43,
+    0.44
+   ],
+   "metal": 0.55,
+   "rough": 0.45,
+   "emit": 0.0
+  },
+  "M_Steel": {
+   "rgb": [
+    0.3,
+    0.32,
+    0.33
+   ],
+   "metal": 0.7,
+   "rough": 0.4,
+   "emit": 0.0
+  },
+  "M_WhiteSteel": {
+   "rgb": [
+    0.82,
+    0.83,
+    0.82
+   ],
+   "metal": 0.3,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_Light": {
+   "rgb": [
+    1.0,
+    0.93,
+    0.8
+   ],
+   "metal": 0.0,
+   "rough": 0.4,
+   "emit": 6.0
+  },
+  "M_Bark": {
+   "rgb": [
+    0.3,
+    0.26,
+    0.22
+   ],
+   "metal": 0.0,
+   "rough": 0.9,
+   "emit": 0.0
+  },
+  "M_Leaves_liveoak": {
+   "rgb": [
+    0.2,
+    0.35,
+    0.12
+   ],
+   "metal": 0.0,
+   "rough": 0.6,
+   "emit": 0.0
+  },
+  "M_Lawn": {
+   "rgb": [
+    0.09,
+    0.2,
+    0.05
+   ],
+   "metal": 0.0,
+   "rough": 0.95,
+   "emit": 0.0
+  },
+  "M_Mulch": {
+   "rgb": [
+    0.11,
+    0.07,
+    0.045
+   ],
+   "metal": 0.0,
+   "rough": 1.0,
+   "emit": 0.0
+  },
+  "M_Paving": {
+   "rgb": [
+    0.55,
+    0.52,
+    0.47
+   ],
+   "metal": 0.0,
+   "rough": 0.8,
+   "emit": 0.0
+  },
+  "M_Gravel": {
+   "rgb": [
+    0.55,
+    0.45,
+    0.32
+   ],
+   "metal": 0.0,
+   "rough": 0.95,
+   "emit": 0.0
+  },
+  "M_DeckConcrete": {
+   "rgb": [
+    0.58,
+    0.56,
+    0.52
+   ],
+   "metal": 0.0,
+   "rough": 0.85,
+   "emit": 0.0
+  },
+  "M_Asphalt": {
+   "rgb": [
+    0.055,
+    0.055,
+    0.06
+   ],
+   "metal": 0.0,
+   "rough": 0.9,
+   "emit": 0.0
+  },
+  "M_Water": {
+   "rgb": [
+    0.05,
+    0.12,
+    0.14
+   ],
+   "metal": 0.0,
+   "rough": 0.03,
+   "emit": 0.0
+  },
+  "M_WaterJet": {
+   "rgb": [
+    0.92,
+    0.96,
+    1.0
+   ],
+   "metal": 0.0,
+   "rough": 0.25,
+   "emit": 0.0
+  },
+  "M_Glass": {
+   "rgb": [
+    0.1,
+    0.14,
+    0.17
+   ],
+   "metal": 0.3,
+   "rough": 0.06,
+   "emit": 0.0
+  },
+  "M_GlassDark": {
+   "rgb": [
+    0.03,
+    0.04,
+    0.05
+   ],
+   "metal": 0.4,
+   "rough": 0.08,
+   "emit": 0.0
+  },
+  "M_Stucco": {
+   "rgb": [
+    0.7,
+    0.66,
+    0.58
+   ],
+   "metal": 0.0,
+   "rough": 0.85,
+   "emit": 0.0
+  },
+  "M_Metal": {
+   "rgb": [
+    0.55,
+    0.56,
+    0.57
+   ],
+   "metal": 0.8,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_SteelDark": {
+   "rgb": [
+    0.2,
+    0.08,
+    0.04
+   ],
+   "metal": 0.3,
+   "rough": 0.7,
+   "emit": 0.0
+  },
+  "M_BladeGreen": {
+   "rgb": [
+    0.03,
+    0.22,
+    0.1
+   ],
+   "metal": 0.2,
+   "rough": 0.45,
+   "emit": 0.0
+  },
+  "M_RoofWhite": {
+   "rgb": [
+    0.8,
+    0.8,
+    0.78
+   ],
+   "metal": 0.0,
+   "rough": 0.55,
+   "emit": 0.0
+  },
+  "M_Copper": {
+   "rgb": [
+    0.55,
+    0.27,
+    0.13
+   ],
+   "metal": 0.9,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_PflugerRed": {
+   "rgb": [
+    0.42,
+    0.17,
+    0.12
+   ],
+   "metal": 0.0,
+   "rough": 0.8,
+   "emit": 0.0
+  },
+  "M_RoofMetal": {
+   "rgb": [
+    0.33,
+    0.34,
+    0.34
+   ],
+   "metal": 0.55,
+   "rough": 0.45,
+   "emit": 0.0
+  },
+  "M_Brick": {
+   "rgb": [
+    0.36,
+    0.13,
+    0.08
+   ],
+   "metal": 0.0,
+   "rough": 0.85,
+   "emit": 0.0
+  },
+  "M_TrimDark": {
+   "rgb": [
+    0.05,
+    0.05,
+    0.05
+   ],
+   "metal": 0.2,
+   "rough": 0.55,
+   "emit": 0.0
+  },
+  "M_PaintTeal": {
+   "rgb": [
+    0.08,
+    0.28,
+    0.26
+   ],
+   "metal": 0.0,
+   "rough": 0.7,
+   "emit": 0.0
+  },
+  "M_PaintRust": {
+   "rgb": [
+    0.4,
+    0.12,
+    0.05
+   ],
+   "metal": 0.0,
+   "rough": 0.7,
+   "emit": 0.0
+  },
+  "M_PaintCream": {
+   "rgb": [
+    0.7,
+    0.62,
+    0.46
+   ],
+   "metal": 0.0,
+   "rough": 0.7,
+   "emit": 0.0
+  },
+  "M_RoofFlat": {
+   "rgb": [
+    0.16,
+    0.16,
+    0.17
+   ],
+   "metal": 0.0,
+   "rough": 0.9,
+   "emit": 0.0
+  },
+  "M_AwningRed": {
+   "rgb": [
+    0.4,
+    0.04,
+    0.04
+   ],
+   "metal": 0.0,
+   "rough": 0.8,
+   "emit": 0.0
+  },
+  "M_Door": {
+   "rgb": [
+    0.09,
+    0.05,
+    0.03
+   ],
+   "metal": 0.2,
+   "rough": 0.45,
+   "emit": 0.0
+  },
+  "M_HullWhite": {
+   "rgb": [
+    0.84,
+    0.85,
+    0.85
+   ],
+   "metal": 0.1,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_TrimRed": {
+   "rgb": [
+    0.42,
+    0.035,
+    0.03
+   ],
+   "metal": 0.1,
+   "rough": 0.4,
+   "emit": 0.0
+  },
+  "M_TrimBlue": {
+   "rgb": [
+    0.025,
+    0.08,
+    0.3
+   ],
+   "metal": 0.1,
+   "rough": 0.4,
+   "emit": 0.0
+  },
+  "M_TrimGreen": {
+   "rgb": [
+    0.03,
+    0.18,
+    0.08
+   ],
+   "metal": 0.1,
+   "rough": 0.4,
+   "emit": 0.0
+  },
+  "M_DeckWood": {
+   "rgb": [
+    0.3,
+    0.19,
+    0.11
+   ],
+   "metal": 0.0,
+   "rough": 0.8,
+   "emit": 0.0
+  },
+  "M_Canopy": {
+   "rgb": [
+    0.86,
+    0.86,
+    0.84
+   ],
+   "metal": 0.0,
+   "rough": 0.7,
+   "emit": 0.0
+  },
+  "M_CanopyBlue": {
+   "rgb": [
+    0.04,
+    0.13,
+    0.36
+   ],
+   "metal": 0.0,
+   "rough": 0.7,
+   "emit": 0.0
+  },
+  "M_Seat": {
+   "rgb": [
+    0.06,
+    0.06,
+    0.065
+   ],
+   "metal": 0.0,
+   "rough": 0.6,
+   "emit": 0.0
+  },
+  "M_ShellYellow": {
+   "rgb": [
+    0.8,
+    0.58,
+    0.08
+   ],
+   "metal": 0.1,
+   "rough": 0.3,
+   "emit": 0.0
+  },
+  "M_Carbon": {
+   "rgb": [
+    0.03,
+    0.03,
+    0.035
+   ],
+   "metal": 0.2,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_OarBlade": {
+   "rgb": [
+    0.55,
+    0.04,
+    0.03
+   ],
+   "metal": 0.0,
+   "rough": 0.4,
+   "emit": 0.0
+  },
+  "M_KayakRed": {
+   "rgb": [
+    0.6,
+    0.06,
+    0.03
+   ],
+   "metal": 0.0,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_KayakYellow": {
+   "rgb": [
+    0.85,
+    0.62,
+    0.05
+   ],
+   "metal": 0.0,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_KayakBlue": {
+   "rgb": [
+    0.03,
+    0.22,
+    0.55
+   ],
+   "metal": 0.0,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_KayakGreen": {
+   "rgb": [
+    0.1,
+    0.45,
+    0.12
+   ],
+   "metal": 0.0,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_BoardWhite": {
+   "rgb": [
+    0.8,
+    0.82,
+    0.82
+   ],
+   "metal": 0.0,
+   "rough": 0.35,
+   "emit": 0.0
+  },
+  "M_PFD": {
+   "rgb": [
+    0.9,
+    0.3,
+    0.02
+   ],
+   "metal": 0.0,
+   "rough": 0.6,
+   "emit": 0.0
+  },
+  "M_Skin": {
+   "rgb": [
+    0.5,
+    0.32,
+    0.22
+   ],
+   "metal": 0.0,
+   "rough": 0.6,
+   "emit": 0.0
+  },
+  "M_Cloth": {
+   "rgb": [
+    0.1,
+    0.15,
+    0.28
+   ],
+   "metal": 0.0,
+   "rough": 0.85,
+   "emit": 0.0
+  },
+  "M_ClothLight": {
+   "rgb": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "metal": 0.0,
+   "rough": 0.85,
+   "emit": 0.0
+  },
+  "M_ClothRed": {
+   "rgb": [
+    0.45,
+    0.06,
+    0.05
+   ],
+   "metal": 0.0,
+   "rough": 0.85,
+   "emit": 0.0
+  },
+  "M_Float": {
+   "rgb": [
+    0.07,
+    0.07,
+    0.075
+   ],
+   "metal": 0.0,
+   "rough": 0.7,
+   "emit": 0.0
+  },
+  "M_DockDeck": {
+   "rgb": [
+    0.36,
+    0.33,
+    0.29
+   ],
+   "metal": 0.0,
+   "rough": 0.85,
+   "emit": 0.0
+  },
+  "M_Piling": {
+   "rgb": [
+    0.2,
+    0.17,
+    0.13
+   ],
+   "metal": 0.0,
+   "rough": 0.9,
+   "emit": 0.0
+  },
+  "M_SignBox": {
+   "rgb": [
+    0.025,
+    0.025,
+    0.03
+   ],
+   "metal": 0.5,
+   "rough": 0.5,
+   "emit": 0.0
+  },
+  "M_SignFace": {
+   "rgb": [
+    0.7,
+    0.64,
+    0.52
+   ],
+   "metal": 0.1,
+   "rough": 0.45,
+   "emit": 0.0
+  },
+  "M_Neon_Red": {
+   "rgb": [
+    1.0,
+    0.08,
+    0.05
+   ],
+   "metal": 0.0,
+   "rough": 0.3,
+   "emit": 12.0
+  },
+  "M_Neon_Pink": {
+   "rgb": [
+    1.0,
+    0.12,
+    0.55
+   ],
+   "metal": 0.0,
+   "rough": 0.3,
+   "emit": 12.0
+  },
+  "M_Neon_Blue": {
+   "rgb": [
+    0.1,
+    0.35,
+    1.0
+   ],
+   "metal": 0.0,
+   "rough": 0.3,
+   "emit": 12.0
+  },
+  "M_Neon_Green": {
+   "rgb": [
+    0.2,
+    1.0,
+    0.25
+   ],
+   "metal": 0.0,
+   "rough": 0.3,
+   "emit": 12.0
+  },
+  "M_Neon_Yellow": {
+   "rgb": [
+    1.0,
+    0.75,
+    0.1
+   ],
+   "metal": 0.0,
+   "rough": 0.3,
+   "emit": 12.0
+  },
+  "M_Neon_White": {
+   "rgb": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "metal": 0.0,
+   "rough": 0.3,
+   "emit": 10.0
+  },
+  "M_Bulb": {
+   "rgb": [
+    1.0,
+    0.82,
+    0.5
+   ],
+   "metal": 0.0,
+   "rough": 0.3,
+   "emit": 9.0
+  },
+  "M_MarqueeFace": {
+   "rgb": [
+    0.92,
+    0.9,
+    0.84
+   ],
+   "metal": 0.0,
+   "rough": 0.5,
+   "emit": 1.5
+  },
+  "M_LetterBlack": {
+   "rgb": [
+    0.02,
+    0.02,
+    0.02
+   ],
+   "metal": 0.0,
+   "rough": 0.5,
+   "emit": 0.0
+  }
+ }
+}

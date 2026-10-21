@@ -1,0 +1,272 @@
+{
+ "frame": "plan metres, x east, y north (Saved/Mashup/plan_v3.json); Unreal X = y*100, Y = x*100",
+ "why": "landmark footprints, plazas and walks: no street props or trees inside ('props'), no City Sample buildings ('buildings')",
+ "used_by": "Scripts/roads/place_landmarks_ue.py stage clear (re-run after build_road_props_ue.py); Scripts/roads/roadnet.py may read it",
+ "zones": [
+  {
+   "name": "cloud_gate_plaza_and_rink_terrace",
+   "clear": [
+    "props"
+   ],
+   "poly": [
+    [
+     308.8,
+     -579.1
+    ],
+    [
+     388.0,
+     -579.1
+    ],
+    [
+     388.0,
+     -498.4
+    ],
+    [
+     308.8,
+     -498.4
+    ]
+   ]
+  },
+  {
+   "name": "chase_promenade",
+   "clear": [
+    "props"
+   ],
+   "poly": [
+    [
+     388.0,
+     -610.0
+    ],
+    [
+     413.0,
+     -610.0
+    ],
+    [
+     413.0,
+     -474.0
+    ],
+    [
+     388.0,
+     -474.0
+    ]
+   ]
+  },
+  {
+   "name": "millennium_park_north_walk",
+   "clear": [
+    "props"
+   ],
+   "poly": [
+    [
+     308.8,
+     -486.0
+    ],
+    [
+     388.0,
+     -486.0
+    ],
+    [
+     388.0,
+     -474.0
+    ],
+    [
+     308.8,
+     -474.0
+    ]
+   ]
+  },
+  {
+   "name": "millennium_park_south_walk",
+   "clear": [
+    "props"
+   ],
+   "poly": [
+    [
+     308.8,
+     -610.0
+    ],
+    [
+     388.0,
+     -610.0
+    ],
+    [
+     388.0,
+     -598.0
+    ],
+    [
+     308.8,
+     -598.0
+    ]
+   ]
+  },
+  {
+   "name": "buckingham_fountain_plaza",
+   "clear": [
+    "props"
+   ],
+   "poly": [
+    [
+     700.0,
+     -1172.15
+    ],
+    [
+     765.0,
+     -1172.15
+    ],
+    [
+     765.0,
+     -1214.15
+    ],
+    [
+     805.0,
+     -1254.15
+    ],
+    [
+     805.0,
+     -1283.15
+    ],
+    [
+     840.0,
+     -1283.15
+    ],
+    [
+     840.0,
+     -1317.15
+    ],
+    [
+     805.0,
+     -1317.15
+    ],
+    [
+     805.0,
+     -1346.15
+    ],
+    [
+     765.0,
+     -1386.15
+    ],
+    [
+     765.0,
+     -1428.15
+    ],
+    [
+     700.0,
+     -1428.15
+    ],
+    [
+     700.0,
+     -1386.15
+    ],
+    [
+     662.0,
+     -1348.15
+    ],
+    [
+     636.6,
+     -1348.15
+    ],
+    [
+     636.6,
+     -1315.15
+    ],
+    [
+     613.0,
+     -1315.15
+    ],
+    [
+     613.0,
+     -1287.15
+    ],
+    [
+     636.6,
+     -1287.15
+    ],
+    [
+     636.6,
+     -1252.15
+    ],
+    [
+     662.0,
+     -1252.15
+    ],
+    [
+     700.0,
+     -1214.15
+    ]
+   ]
+  },
+  {
+   "name": "polk_bros_plaza",
+   "clear": [
+    "props"
+   ],
+   "poly": [
+    [
+     1392.0,
+     434.0
+    ],
+    [
+     1464.0,
+     434.0
+    ],
+    [
+     1464.0,
+     482.5
+    ],
+    [
+     1392.0,
+     482.5
+    ]
+   ]
+  },
+  {
+   "name": "navy_pier_forecourt_and_buildings",
+   "clear": [
+    "props",
+    "buildings"
+   ],
+   "poly": [
+    [
+     1482.8,
+     406.4
+    ],
+    [
+     1723.0,
+     406.4
+    ],
+    [
+     1723.0,
+     496.4
+    ],
+    [
+     1482.8,
+     496.4
+    ]
+   ]
+  },
+  {
+   "name": "navy_pier_land_strip",
+   "clear": [
+    "buildings"
+   ],
+   "poly": [
+    [
+     1466.0,
+     383.0
+    ],
+    [
+     1723.0,
+     383.0
+    ],
+    [
+     1723.0,
+     521.5
+    ],
+    [
+     1466.0,
+     521.5
+    ]
+   ]
+  }
+ ]
+}

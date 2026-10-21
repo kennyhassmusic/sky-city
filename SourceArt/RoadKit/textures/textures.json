@@ -1,0 +1,597 @@
+{
+ "uv_convention": "uv_offset / uv_scale are top-down (glTF / Unreal: v = 0 at the image top). Atlas UV = mesh UV * uv_scale + uv_offset; RK_SignPanel and RK_Glyph carry 0..1 UVs over the whole face.",
+ "glyphs": {
+  "file": "T_RoadGlyphs.png",
+  "size": [
+   2048,
+   1024
+  ],
+  "grid": [
+   4,
+   2
+  ],
+  "cell_px": 512,
+  "note": "white RGB, alpha = paint. Top of each cell = direction of travel; image right = the driver's right. decal_m = [width across the lane, length along it]: scale RK_Glyph by Unreal X = length, Y = width.",
+  "cells": [
+   {
+    "index": 0,
+    "name": "S",
+    "desc": "lane-use arrow, straight",
+    "col": 0,
+    "row": 0,
+    "uv_offset": [
+     0.0,
+     0.0
+    ],
+    "uv_scale": [
+     0.25,
+     0.5
+    ],
+    "decal_m": [
+     1.2,
+     3.0
+    ]
+   },
+   {
+    "index": 1,
+    "name": "L",
+    "desc": "lane-use arrow, left turn",
+    "col": 1,
+    "row": 0,
+    "uv_offset": [
+     0.25,
+     0.0
+    ],
+    "uv_scale": [
+     0.25,
+     0.5
+    ],
+    "decal_m": [
+     1.2,
+     3.0
+    ]
+   },
+   {
+    "index": 2,
+    "name": "R",
+    "desc": "lane-use arrow, right turn",
+    "col": 2,
+    "row": 0,
+    "uv_offset": [
+     0.5,
+     0.0
+    ],
+    "uv_scale": [
+     0.25,
+     0.5
+    ],
+    "decal_m": [
+     1.2,
+     3.0
+    ]
+   },
+   {
+    "index": 3,
+    "name": "LS",
+    "desc": "lane-use arrow, left + straight",
+    "col": 3,
+    "row": 0,
+    "uv_offset": [
+     0.75,
+     0.0
+    ],
+    "uv_scale": [
+     0.25,
+     0.5
+    ],
+    "decal_m": [
+     1.2,
+     3.0
+    ]
+   },
+   {
+    "index": 4,
+    "name": "SR",
+    "desc": "lane-use arrow, straight + right",
+    "col": 0,
+    "row": 1,
+    "uv_offset": [
+     0.0,
+     0.5
+    ],
+    "uv_scale": [
+     0.25,
+     0.5
+    ],
+    "decal_m": [
+     1.2,
+     3.0
+    ]
+   },
+   {
+    "index": 5,
+    "name": "LR",
+    "desc": "lane-use arrow, left + right",
+    "col": 1,
+    "row": 1,
+    "uv_offset": [
+     0.25,
+     0.5
+    ],
+    "uv_scale": [
+     0.25,
+     0.5
+    ],
+    "decal_m": [
+     1.2,
+     3.0
+    ]
+   },
+   {
+    "index": 6,
+    "name": "ONLY",
+    "desc": "word ONLY, elongated letters",
+    "col": 2,
+    "row": 1,
+    "uv_offset": [
+     0.5,
+     0.5
+    ],
+    "uv_scale": [
+     0.25,
+     0.5
+    ],
+    "decal_m": [
+     1.5,
+     2.4
+    ]
+   },
+   {
+    "index": 7,
+    "name": "BIKE",
+    "desc": "bicycle symbol (bike lane)",
+    "col": 3,
+    "row": 1,
+    "uv_offset": [
+     0.75,
+     0.5
+    ],
+    "uv_scale": [
+     0.25,
+     0.5
+    ],
+    "decal_m": [
+     1.0,
+     1.8
+    ]
+   }
+  ]
+ },
+ "signs": {
+  "file": "T_SignAtlas2.png",
+  "size": [
+   2048,
+   2048
+  ],
+  "grid": [
+   4,
+   4
+  ],
+  "cell_px": 512,
+  "note": "each cell is one whole sign face pre-distorted for panel_m = [width, height] in metres. panel_scale_from_RK_SignPanel = [width, height] scale of the 0.9 x 0.9 m RK_SignPanel. Alpha 0 outside the sign shape.",
+  "cells": [
+   {
+    "index": 0,
+    "name": "ONE_WAY",
+    "mutcd": "R6-1",
+    "col": 0,
+    "row": 0,
+    "uv_offset": [
+     0.0,
+     0.0
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.9,
+     0.3
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     1.0,
+     0.3333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 1,
+    "name": "DO_NOT_ENTER",
+    "mutcd": "R5-1",
+    "col": 1,
+    "row": 0,
+    "uv_offset": [
+     0.25,
+     0.0
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.75,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.8333,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 2,
+    "name": "STOP",
+    "mutcd": "R1-1",
+    "col": 2,
+    "row": 0,
+    "uv_offset": [
+     0.5,
+     0.0
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.75,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.8333,
+     0.8333
+    ],
+    "shape": "octagon",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 3,
+    "name": "ALL_WAY",
+    "mutcd": "R1-3P",
+    "col": 3,
+    "row": 0,
+    "uv_offset": [
+     0.75,
+     0.0
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.45,
+     0.15
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.5,
+     0.1667
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 4,
+    "name": "DEAD_END",
+    "mutcd": "W14-1",
+    "col": 0,
+    "row": 1,
+    "uv_offset": [
+     0.0,
+     0.25
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.75,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.8333,
+     0.8333
+    ],
+    "shape": "diamond",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 5,
+    "name": "ROAD_CLOSED",
+    "mutcd": "R11-2",
+    "col": 1,
+    "row": 1,
+    "uv_offset": [
+     0.25,
+     0.25
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     1.2,
+     0.6
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     1.3333,
+     0.6667
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 6,
+    "name": "SPEED_LIMIT_25",
+    "mutcd": "R2-1",
+    "col": 2,
+    "row": 1,
+    "uv_offset": [
+     0.5,
+     0.25
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.6,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.6667,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 7,
+    "name": "SPEED_LIMIT_30",
+    "mutcd": "R2-1",
+    "col": 3,
+    "row": 1,
+    "uv_offset": [
+     0.75,
+     0.25
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.6,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.6667,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 8,
+    "name": "SPEED_LIMIT_35",
+    "mutcd": "R2-1",
+    "col": 0,
+    "row": 2,
+    "uv_offset": [
+     0.0,
+     0.5
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.6,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.6667,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 9,
+    "name": "SPEED_LIMIT_40",
+    "mutcd": "R2-1",
+    "col": 1,
+    "row": 2,
+    "uv_offset": [
+     0.25,
+     0.5
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.6,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.6667,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 10,
+    "name": "SPEED_LIMIT_45",
+    "mutcd": "R2-1",
+    "col": 2,
+    "row": 2,
+    "uv_offset": [
+     0.5,
+     0.5
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.6,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.6667,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 11,
+    "name": "SPEED_LIMIT_55",
+    "mutcd": "R2-1",
+    "col": 3,
+    "row": 2,
+    "uv_offset": [
+     0.75,
+     0.5
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.6,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.6667,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 12,
+    "name": "NO_LEFT_TURN",
+    "mutcd": "R3-2",
+    "col": 0,
+    "row": 3,
+    "uv_offset": [
+     0.0,
+     0.75
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.75,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.8333,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 13,
+    "name": "NO_RIGHT_TURN",
+    "mutcd": "R3-1",
+    "col": 1,
+    "row": 3,
+    "uv_offset": [
+     0.25,
+     0.75
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.75,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.8333,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 14,
+    "name": "KEEP_RIGHT",
+    "mutcd": "R4-7",
+    "col": 2,
+    "row": 3,
+    "uv_offset": [
+     0.5,
+     0.75
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.6,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.6667,
+     0.8333
+    ],
+    "shape": "rect",
+    "alpha_outside_shape": true
+   },
+   {
+    "index": 15,
+    "name": "PED_XING",
+    "mutcd": "W11-2",
+    "col": 3,
+    "row": 3,
+    "uv_offset": [
+     0.75,
+     0.75
+    ],
+    "uv_scale": [
+     0.25,
+     0.25
+    ],
+    "panel_m": [
+     0.75,
+     0.75
+    ],
+    "panel_scale_from_RK_SignPanel": [
+     0.8333,
+     0.8333
+    ],
+    "shape": "diamond",
+    "alpha_outside_shape": true
+   }
+  ]
+ },
+ "stripe": {
+  "file": "T_BarricadeStripe.png",
+  "size": [
+   512,
+   128
+  ],
+  "tile_m": [
+   0.8,
+   0.2
+  ],
+  "note": "orange (255,110,0) / white 45-degree stripes, tiles in U; RK_Barricade rails are UV'd U = metres / 0.8, V = 0..1 per rail."
+ }
+}

@@ -1,0 +1,226 @@
+McGregor research images: every file under research/, with its source URL and date.
+Reference only: never textures in the game, never in Content/. Copyright stays with the credited owners;
+NAIP (USDA) and USGS imagery are public domain; TxGIO StratMap 2020 orthoimagery is public data (credit:
+Texas Geographic Information Office and partners). News photos are (c) their photographers/publishers.
+
+blockhouse_control/commons_2012-09_engine_test_bunker_ccby.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/SpaceX_Engine_Test_Bunker.jpg/1280px-SpaceX_Engine_Test_Bunker.jpg
+    page:  https://commons.wikimedia.org/wiki/File:SpaceX_Engine_Test_Bunker.jpg
+    date:  2012-09-07   retrieved 2026-10-20   1280x1013 px, 250 KB
+    note:  Steve Jurvetson, CC BY 2.0: inside the engine test bunker (control room)
+
+boneyard/top_stratmap2020_boneyard.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4637840,31.3905462,-97.4612580,31.3921740&bboxSR=4326&imageSR=102100&size=960,725&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   960x720 px, 155 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[-160.0,80.0] y[-1460.0,-1280.0] (ticks labelled in map metres)
+
+campus_overview/commons_2008-11-20_spacex_aerial_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/2008_SpaceX%27s_Rocket_Development_facility%2C_McGregor%2C_TX.jpg/1280px-2008_SpaceX%27s_Rocket_Development_facility%2C_McGregor%2C_TX.jpg
+    page:  https://commons.wikimedia.org/wiki/File:2008_SpaceX%27s_Rocket_Development_facility,_McGregor,_TX.jpg
+    date:  2008-11-20   retrieved 2026-10-20   1280x853 px, 344 KB
+    note:  SpaceX, CC0 (Wikimedia Commons): aerial of the rocket development facility, 2008
+
+dragon_processing/top_stratmap2020_dragon_buildings.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4614685,31.3935306,-97.4591530,31.3948872&bboxSR=4326&imageSR=102100&size=880,604&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   880x600 px, 133 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[60.0,280.0] y[-1130.0,-980.0] (ticks labelled in map metres)
+
+dragonfly_hover_site/commons_2015-11-23_dragon2_hover_test_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Dragon_2_hover_test_%2824159153709%29.jpg/1280px-Dragon_2_hover_test_%2824159153709%29.jpg
+    page:  https://commons.wikimedia.org/wiki/File:Dragon_2_hover_test_(24159153709).jpg
+    date:  2015-11-23   retrieved 2026-10-20   1280x853 px, 135 KB
+    note:  SpaceX, CC0: DragonFly test article hover test (tethered) at McGregor
+
+first_stage_stand/nsf_2021-09_b1068_on_first_stage_stand.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2021/09/mcgreogr-1-scaled.jpeg
+    page:  https://www.nasaspaceflight.com/2021/09/raptor-factor-testing-mcgregor/
+    date:  2021-09   retrieved 2026-10-20   1400x934 px, 302 KB
+    note:  Gary Blair for NSF/L2: Falcon Heavy centre core B1068 standing in the F9 first-stage stand; water tower legs right, red crawler crane
+
+first_stage_stand/nsf_2021-09_stands_overview_with_water_tower.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2021/09/NSF-2021-09-16-20-30-56-817-watermarked-1170x654.jpg
+    page:  https://www.nasaspaceflight.com/2021/09/raptor-factor-testing-mcgregor/
+    date:  2021-09   retrieved 2026-10-20   1170x654 px, 123 KB
+    note:  Gary Blair for NSF/L2: looking N over the F9 first-stage stand (pit), water tower (left), tripod with blue tower (right), north Raptor complex in the distance
+
+first_stage_stand/top_stratmap2020_central_stands.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4648365,31.3975098,-97.4609423,31.4001325&bboxSR=4326&imageSR=102100&size=1480,1168&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   1480x1160 px, 337 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[-260.0,110.0] y[-690.0,-400.0] (ticks labelled in map metres)
+
+grasshopper_pad/commons_2012-09_grasshopper_from_f9_tower_ccby.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/5/5e/Spx_Grasshopper_03.jpg
+    page:  https://commons.wikimedia.org/wiki/File:Spx_Grasshopper_03.jpg
+    date:  2012-09-07   retrieved 2026-10-20   511x471 px, 62 KB
+    note:  Steve Jurvetson, CC BY 2.0: Grasshopper seen from a distance atop the F9 test tower
+
+grasshopper_pad/commons_2012-09_grasshopper_jurvetson_ccby.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/SpaceX_Grasshopper_%287971310054%29.jpg/1280px-SpaceX_Grasshopper_%287971310054%29.jpg
+    page:  https://commons.wikimedia.org/wiki/File:SpaceX_Grasshopper_(7971310054).jpg
+    date:  2012-09-07   retrieved 2026-10-20   1280x822 px, 157 KB
+    note:  Steve Jurvetson, CC BY 2.0: Grasshopper on its pad, seen from the F9 test tower
+
+grasshopper_pad/commons_2012-09_grasshopper_on_pad_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Grasshopper_test_vehicle_in_McGregor%2C_TX.jpg/1280px-Grasshopper_test_vehicle_in_McGregor%2C_TX.jpg
+    page:  https://commons.wikimedia.org/wiki/File:Grasshopper_test_vehicle_in_McGregor,_TX.jpg
+    date:  2012-09-21   retrieved 2026-10-20   1280x853 px, 125 KB
+    note:  SpaceX, CC0: Grasshopper on its pad
+
+grasshopper_pad/commons_2013-06-06_grasshopper_site_aerial_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Grasshopper_Site_at_Rocket_Development_Facility.jpg/1280px-Grasshopper_Site_at_Rocket_Development_Facility.jpg
+    page:  https://commons.wikimedia.org/wiki/File:Grasshopper_Site_at_Rocket_Development_Facility.jpg
+    date:  2013-06-06   retrieved 2026-10-20   1280x853 px, 274 KB
+    note:  SpaceX, CC0 (Wikimedia Commons): aerial of the Grasshopper site
+
+grasshopper_pad/top_stratmap2020_grasshopper_site.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4705199,31.3872904,-97.4679939,31.3890992&bboxSR=4326&imageSR=102100&size=960,805&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   960x800 px, 180 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[-800.0,-560.0] y[-1820.0,-1620.0] (ticks labelled in map metres)
+
+hls_rig_2025/nsf_2025-05_precursor_rig.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2025/09/NSF-2025-09-02-04-35-00-659.jpg
+    page:  https://www.nasaspaceflight.com/2025/09/spacex-mcgregor-raptor-3-hls/
+    date:  2025-05   retrieved 2026-10-20   1400x784 px, 235 KB
+    note:  Gary Blair for NSF: smaller precursor rig (beam on two columns, hanging tray), May 2025
+
+hls_rig_2025/nsf_2025-08_new_large_rig_aerial.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2025/09/NSF-2025-09-02-04-32-08-074.jpg
+    page:  https://www.nasaspaceflight.com/2025/09/spacex-mcgregor-raptor-3-hls/
+    date:  2025-08 (published 2025-09-02)   retrieved 2026-10-20   1400x946 px, 293 KB
+    note:  Gary Blair for NSF: new large scaffolded rig, location within site not stated (near earlier transfer-tube/header-tank test area)
+
+hls_rig_2025/nsf_mcgregorlive_2025-08_rig_ground.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2025/09/NSF-2025-09-02-04-28-41-913-wmarked-scaled.jpg
+    page:  https://www.nasaspaceflight.com/2025/09/spacex-mcgregor-raptor-3-hls/
+    date:  2025-08   retrieved 2026-10-20   1400x803 px, 78 KB
+    note:  NSF McGregor Live ground camera: rig towers with scaffold, white vertical tank + horizontal tank behind
+
+merlin_vertical_stands/commons_2012-12_merlin_dual_test_stand_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Merlin_Engine_Dual_Test_Stand.jpg/1280px-Merlin_Engine_Dual_Test_Stand.jpg
+    page:  https://commons.wikimedia.org/wiki/File:Merlin_Engine_Dual_Test_Stand.jpg
+    date:  2012-12-05   retrieved 2026-10-20   1280x843 px, 252 KB
+    note:  SpaceX, CC0: Merlin 1D engines in the dual test stand
+
+merlin_vertical_stands/top_stratmap2020_merlin_complex.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4582058,31.3905462,-97.4553641,31.3945254&bboxSR=4326&imageSR=102100&size=1080,1772&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   1080x1760 px, 324 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[370.0,640.0] y[-1460.0,-1020.0] (ticks labelled in map metres)
+
+offices_shops/commons_2013-06-06_central_site_aerial_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Central_Site_at_Rocket_Development_Facility.jpg/1280px-Central_Site_at_Rocket_Development_Facility.jpg
+    page:  https://commons.wikimedia.org/wiki/File:Central_Site_at_Rocket_Development_Facility.jpg
+    date:  2013-06-06   retrieved 2026-10-20   1280x832 px, 316 KB
+    note:  SpaceX, CC0 (Wikimedia Commons): 'Central Site' = the offices/shops + old core-storage hangar + main parking lot, looking roughly N-NE
+
+offices_shops/top_stratmap2020_offices.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4610475,31.3879235,-97.4573638,31.3906366&bboxSR=4326&imageSR=102100&size=1400,1208&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   1400x1200 px, 353 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[100.0,450.0] y[-1750.0,-1450.0] (ticks labelled in map metres)
+
+raptor_factory/nsf_2021-09_raptor_factory_foundation.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2021/04/NSF-2021-04-04-19-16-55-860.jpg
+    page:  https://www.nasaspaceflight.com/2021/09/raptor-factor-testing-mcgregor/
+    date:  2021-09   retrieved 2026-10-20   1400x822 px, 273 KB
+    note:  Gary Blair for NSF/L2: foundation slab (rebar) of the new Raptor factory
+
+raptor_horizontal_stands/nsf_2019-10_two_horizontal_raptor_stands.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2019/10/Dual-raptors.jpg
+    page:  https://www.nasaspaceflight.com/2019/10/spacex-renovating-falcon-stand-mcgregor/
+    date:  2019-10   retrieved 2026-10-20   1400x934 px, 291 KB
+    note:  Gary Blair for NSF/L2: two Raptors in the twin horizontal stands; newest stand upper left, original right
+
+raptor_horizontal_stands/nsf_2021-04_rvac_and_sl_raptor_in_horizontal_bays.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2021/04/NSF-2021-04-26-06-17-49-395-watermarked.jpg
+    page:  https://www.nasaspaceflight.com/2021/09/raptor-factor-testing-mcgregor/
+    date:  2021-04   retrieved 2026-10-20   1391x850 px, 236 KB
+    note:  Gary Blair for NSF/L2: RVac and sea-level Raptor in the horizontal test bays (concrete walls, yellow jib cranes, pipework)
+
+raptor_north_complex/nsf_2021-04_raptor_complex_current_and_new_vertical_stand.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2021/09/NSF-2021-09-16-20-01-45-120-scaled.jpg
+    page:  https://www.nasaspaceflight.com/2021/09/raptor-factor-testing-mcgregor/
+    date:  2021   retrieved 2026-10-20   1400x736 px, 184 KB
+    note:  Gary Blair for NSF/L2: north Raptor complex inside the oval road; labelled 'Current Raptor Stand' (horizontal bays, exhaust fans to the N) and 'New Raptor Stand' (vertical, trench opening S)
+
+raptor_north_complex/top_stratmap2020_raptor_complex.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4648365,31.4058301,-97.4608370,31.4093571&bboxSR=4326&imageSR=102100&size=1520,1571&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   1520x1560 px, 353 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[-260.0,120.0] y[230.0,620.0] (ticks labelled in map metres)
+
+raptor_north_stand/nsf_2025-08_raptor_north_bay_r3.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2025/09/NSF-2025-09-02-04-36-39-403.jpg
+    page:  https://www.nasaspaceflight.com/2025/09/spacex-mcgregor-raptor-3-hls/
+    date:  2025-08   retrieved 2026-10-20   1400x784 px, 209 KB
+    note:  Gary Blair for NSF: a bay of the new Raptor North horizontal stand with a Raptor 3 installed (black steel cell, pipe racks, white tanks behind)
+
+raptor_prop_farm/top_stratmap2020_prop_farm.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4586268,31.4055587,-97.4570481,31.4082719&bboxSR=4326&imageSR=102100&size=600,1208&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   600x1200 px, 190 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[330.0,480.0] y[200.0,500.0] (ticks labelled in map metres)
+
+stage2_stand_new/nsf_2019-10_new_second_stage_stand_construction.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2019/10/S2-stand.jpg
+    page:  https://www.nasaspaceflight.com/2019/10/spacex-renovating-falcon-stand-mcgregor/
+    date:  2019-10   retrieved 2026-10-20   1400x933 px, 317 KB
+    note:  Gary Blair for NSF/L2: under-construction second-stage stand, flame trench, S2 tank behind, prop lines on left
+
+stage2_stand_new/top_stratmap2020_s2_stand.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4526277,31.3965150,-97.4503122,31.3981429&bboxSR=4326&imageSR=102100&size=880,725&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   880x720 px, 127 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[900.0,1120.0] y[-800.0,-620.0] (ticks labelled in map metres)
+
+superdraco_stand/commons_2014-05_superdraco_hotfire_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/SpaceX_superdraco_on_a_test_stand_KSC-20180102-PH_SPX01_0005~orig.jpg/1280px-SpaceX_superdraco_on_a_test_stand_KSC-20180102-PH_SPX01_0005~orig.jpg
+    page:  https://commons.wikimedia.org/wiki/File:SpaceX_superdraco_on_a_test_stand_KSC-20180102-PH_SPX01_0005~orig.jpg
+    date:  2014-05-21   retrieved 2026-10-20   1280x853 px, 247 KB
+    note:  SpaceX, CC0: SuperDraco hot-fire on its test stand
+
+superdraco_stand/nasa_2012-01_superdraco_test_pd.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/SuperDraco_test_%28KSC-2012-1208%29.jpg/1280px-SuperDraco_test_%28KSC-2012-1208%29.jpg
+    page:  https://commons.wikimedia.org/wiki/File:SuperDraco_test_(KSC-2012-1208).jpg
+    date:  2012-01-08   retrieved 2026-10-20   1280x675 px, 118 KB
+    note:  NASA/SpaceX, public domain: SuperDraco prototype full-duration firing at McGregor
+
+superdraco_stand/top_stratmap2020_superdraco.jpg
+    image: https://imagery.geographic.texas.gov/server/rest/services/StratMap/StratMap20_NCCIR_CapArea_McLennan/ImageServer/exportImage?bbox=-97.4711513,31.3919932,-97.4688359,31.3936210&bboxSR=4326&imageSR=102100&size=880,725&format=jpg&bandIds=0,1,2&f=image
+    page:  https://geographic.texas.gov/ (TxGIO StratMap 2020 Capital Area / McLennan orthoimagery, Surdex, leaf-off Jan 2020)
+    date:  2020-01   retrieved 2026-10-20   880x720 px, 162 KB
+    note:  top-down ortho, north up, 0.25 m/px, map-frame box x[-860.0,-640.0] y[-1300.0,-1120.0] (ticks labelled in map metres)
+
+tripod_raptor_vertical/commons_2012-03-02_tripod_test_stand_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/8/8b/Tripod_Test_Stand.jpg
+    page:  https://commons.wikimedia.org/wiki/File:Tripod_Test_Stand.jpg
+    date:  2012-03-02   retrieved 2026-10-20   1170x1400 px, 167 KB
+    note:  SpaceX, CC0: F9 first stage tank atop the big (tripod) test stand before a 9-engine test
+
+tripod_raptor_vertical/commons_2013-03_f9_first_stage_firing_on_tripod_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Falcon_9_Engine_Test.jpg/1280px-Falcon_9_Engine_Test.jpg
+    page:  https://commons.wikimedia.org/wiki/File:Falcon_9_Engine_Test.jpg
+    date:  2013-03-08   retrieved 2026-10-20   1280x853 px, 119 KB
+    note:  SpaceX, CC0: Falcon 9 first stage test fired (tripod stand era)
+
+tripod_raptor_vertical/nsf_2019-10_header.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2019/10/NSF-2019-10-14-13-18-02-609-1170x753.jpg
+    page:  https://www.nasaspaceflight.com/2019/10/spacex-renovating-falcon-stand-mcgregor/
+    date:  2019-10   retrieved 2026-10-20   1170x753 px, 230 KB
+    note:  NSF header image (Gary Blair aerial)
+
+tripod_raptor_vertical/nsf_2019-10_tripod_modification.jpg
+    image: https://www.nasaspaceflight.com/wp-content/uploads/2019/10/NSF-2019-10-14-13-19-38-865.jpg
+    page:  https://www.nasaspaceflight.com/2019/10/spacex-renovating-falcon-stand-mcgregor/
+    date:  2019-10 (published 2019-10-14)   retrieved 2026-10-20   1400x803 px, 291 KB
+    note:  Gary Blair Aerial Photo for NSF/L2: tripod with access tower removed and laid on its side
+
+upper_stage_stand/commons_2013-03_f9_second_stage_test_cc0.jpg
+    image: https://upload.wikimedia.org/wikipedia/commons/1/1b/Falcon_9_Rocket_2nd_Stage_Engine_Test.jpg
+    page:  https://commons.wikimedia.org/wiki/File:Falcon_9_Rocket_2nd_Stage_Engine_Test.jpg
+    date:  2013-03-08   retrieved 2026-10-20   775x1024 px, 98 KB
+    note:  SpaceX, CC0: Falcon 9 second stage test firing (older vertical upper-stage stand)

@@ -1,0 +1,782 @@
+{
+ "generator": "Scripts/rail/blender_l_kit.py",
+ "units": "metres (Unreal import: x100 cm)",
+ "axes": "Blender Z up; linear modules run y 0 -> -L on the track-pair centreline x = 0. Unreal (Interchange glTF, measured 20 Oct 2026): local +Y = blender -Y (run direction), local +X = blender +X, Z = z.",
+ "track": {
+  "gauge": 1.435,
+  "track_centres_x": [
+   -1.9,
+   1.9
+  ],
+  "rail_centres_x": [
+   -2.6535,
+   -1.1464999999999999,
+   1.1464999999999999,
+   2.6535
+  ],
+  "top_of_rail_z": 7.3,
+  "tie_top_z": 7.1,
+  "tie": {
+   "length": 2.6,
+   "w": 0.15,
+   "h": 0.2,
+   "pitch": 0.6096,
+   "long_every": 3,
+   "long_length": 9.0
+  },
+  "third_rail_x": [
+   -3.4,
+   3.4
+  ],
+  "third_rail_top_z": 7.42,
+  "longitudinal_girders": {
+   "x": [
+    -2.6535,
+    -1.1464999999999999,
+    1.1464999999999999,
+    2.6535
+   ],
+   "top_z": 6.8999999999999995,
+   "depth": 1.5,
+   "bottom_z": 5.3999999999999995
+  },
+  "walkways": {
+   "centre_x": [
+    -0.62,
+    0.62
+   ],
+   "outer_x": [
+    3.62,
+    4.45
+   ],
+   "deck_z": 7.135,
+   "handrail_x": 4.42,
+   "handrail_top_z": 8.015
+  },
+  "structure_width": 8.9,
+  "bent_spacing": 15.24
+ },
+ "station": {
+  "platform_z": 8.3,
+  "platform_edge_x": 3.35,
+  "platform_outer_x": 6.95,
+  "platform_width": 3.6,
+  "canopy_underside_z": 11.2,
+  "module_length": 30.48,
+  "stair_opening_y": [
+   -14.04,
+   -16.44
+  ]
+ },
+ "materials": [
+  "M_Canopy",
+  "M_Concrete",
+  "M_DestSign",
+  "M_Glass",
+  "M_Grating",
+  "M_Insulator",
+  "M_LSteel",
+  "M_LSteelRust",
+  "M_Light",
+  "M_LineStripe",
+  "M_Paint_Yellow",
+  "M_Rail",
+  "M_SignPanel",
+  "M_Stainless",
+  "M_Tie",
+  "M_TrainDark",
+  "M_TrainInterior"
+ ],
+ "assets": {
+  "L_Bent": {
+   "kind": "joint",
+   "length_y": 0.0,
+   "pivot": "centre of the bent at street level; place at every span joint (y = 0 of a span)",
+   "columns_x": [
+    -5.0,
+    5.0
+   ],
+   "column_size_xy": [
+    0.6,
+    0.45
+   ],
+   "footing_size_xy": [
+    1.5,
+    1.3
+   ],
+   "heights": {
+    "footing_top": 0.5,
+    "footing_bottom_buried": -0.4,
+    "cross_girder_top": 5.9,
+    "cross_girder_bottom_clearance": 4.5,
+    "knee_brace_low_point_at_column": 3.1
+   },
+   "cross_girder_x": [
+    -5.45,
+    5.45
+   ],
+   "tris": 1172,
+   "bbox_blender_m": {
+    "x": [
+     -5.75,
+     5.75
+    ],
+    "y": [
+     -0.65,
+     0.65
+    ],
+    "z": [
+     -0.4,
+     5.9
+    ]
+   },
+   "materials": [
+    "M_Concrete",
+    "M_LSteelRust",
+    "M_LSteel"
+   ],
+   "file": "meshes/L_Bent.glb"
+  },
+  "L_Span15": {
+   "kind": "linear",
+   "length_y": 15.24,
+   "pivot": "y = 0 end on the track-pair centreline, z = street level",
+   "ends_meet_bents_at_y": [
+    0.0,
+    -15.24
+   ],
+   "tris": 3124,
+   "bbox_blender_m": {
+    "x": [
+     -4.5,
+     4.5
+    ],
+    "y": [
+     -15.24,
+     0.0
+    ],
+    "z": [
+     5.4,
+     8.036
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Tie",
+    "M_LSteelRust",
+    "M_Rail",
+    "M_Insulator",
+    "M_Grating"
+   ],
+   "file": "meshes/L_Span15.glb"
+  },
+  "L_Span5": {
+   "kind": "linear",
+   "length_y": 5.08,
+   "pivot": "as L_Span15; chain 3 per bent bay or use around curves",
+   "ends_meet_bents_at_y": [
+    0.0,
+    -5.08
+   ],
+   "tris": 1448,
+   "bbox_blender_m": {
+    "x": [
+     -4.5,
+     4.5
+    ],
+    "y": [
+     -5.08,
+     0.0
+    ],
+    "z": [
+     5.4,
+     8.036
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Tie",
+    "M_LSteelRust",
+    "M_Rail",
+    "M_Insulator",
+    "M_Grating"
+   ],
+   "file": "meshes/L_Span5.glb"
+  },
+  "L_StationPlatform30": {
+   "kind": "linear",
+   "length_y": 30.48,
+   "pivot": "same frame as the spans it sits beside (track centreline, street level)",
+   "platform_x": [
+    [
+     -6.95,
+     -3.35
+    ],
+    [
+     3.35,
+     6.95
+    ]
+   ],
+   "columns_x": [
+    -6.7,
+    6.7
+   ],
+   "columns_y": [
+    -3.81,
+    -11.43,
+    -19.05,
+    -26.67
+   ],
+   "canopy_posts_x": [
+    -6.3,
+    6.3
+   ],
+   "name_signs_y": [
+    -7.62,
+    -22.86
+   ],
+   "name_sign_x": [
+    -4.2,
+    4.2
+   ],
+   "name_sign_size": [
+    2.4,
+    0.45
+   ],
+   "tris": 7840,
+   "bbox_blender_m": {
+    "x": [
+     -7.25,
+     7.25
+    ],
+    "y": [
+     -30.48,
+     0.0
+    ],
+    "z": [
+     -0.4,
+     11.5
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Concrete",
+    "M_Paint_Yellow",
+    "M_LSteelRust",
+    "M_Light",
+    "M_Canopy",
+    "M_SignPanel",
+    "M_Tie",
+    "M_Glass"
+   ],
+   "file": "meshes/L_StationPlatform30.glb"
+  },
+  "L_StationPlatform30_Stair": {
+   "kind": "linear",
+   "length_y": 30.48,
+   "pivot": "as L_StationPlatform30",
+   "railing_opening_y": [
+    -14.04,
+    -16.44
+   ],
+   "note": "openings on both platforms; attach L_StationStairs / L_StationHouse here",
+   "tris": 7832,
+   "bbox_blender_m": {
+    "x": [
+     -7.25,
+     7.25
+    ],
+    "y": [
+     -30.48,
+     0.0
+    ],
+    "z": [
+     -0.4,
+     11.5
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Concrete",
+    "M_Paint_Yellow",
+    "M_LSteelRust",
+    "M_Light",
+    "M_Canopy",
+    "M_SignPanel",
+    "M_Tie",
+    "M_Glass"
+   ],
+   "file": "meshes/L_StationPlatform30_Stair.glb"
+  },
+  "L_StationStairs": {
+   "kind": "attachment",
+   "length_y": 16.56,
+   "pivot": "PLATFORM FRAME: use the transform of the L_StationPlatform30_Stair module",
+   "footprint_x": [
+    6.95,
+    9.95
+   ],
+   "footprint_y": [
+    0.0,
+    -16.56
+   ],
+   "entrance_y": -1.0,
+   "entrance_faces": "+Y blender (= Unreal -X): pedestrians enter at the y=0 end and climb toward -Y",
+   "top_landing_y": [
+    -14.04,
+    -16.44
+   ],
+   "risers": 44,
+   "riser_m": 0.1886,
+   "tread_m": 0.254,
+   "blade_sign": "M_SignPanel, 0.55 x 2.3 m, both faces (+-Y), at x 6.32..6.95, z 3.2..5.6",
+   "other_side": "yaw 180 about the module centre (place at module local y = -30.48 rotated 180) or mirror Unreal Y",
+   "tris": 1178,
+   "bbox_blender_m": {
+    "x": [
+     6.32,
+     10.05
+    ],
+    "y": [
+     -16.56,
+     0.0
+    ],
+    "z": [
+     -0.3,
+     11.12
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Paint_Yellow",
+    "M_Concrete",
+    "M_Glass",
+    "M_Light",
+    "M_LSteelRust",
+    "M_Canopy",
+    "M_SignPanel"
+   ],
+   "file": "meshes/L_StationStairs.glb"
+  },
+  "L_StationHouse": {
+   "kind": "attachment",
+   "length_y": 6.0,
+   "pivot": "PLATFORM FRAME: same transform as L_StationPlatform30_Stair / L_StationStairs",
+   "footprint_x": [
+    5.0,
+    6.75
+   ],
+   "footprint_y": [
+    -12.24,
+    -18.24
+   ],
+   "floor_z": 8.3,
+   "roof_z": 10.97,
+   "choice": "platform level, on the +X platform under the canopy at the stair head (Quincy/Wells style fare control); doors: stair landing side and both ends",
+   "tris": 448,
+   "bbox_blender_m": {
+    "x": [
+     4.94,
+     6.81
+    ],
+    "y": [
+     -18.3,
+     -12.18
+    ],
+    "z": [
+     8.3,
+     10.97
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Glass",
+    "M_Canopy",
+    "M_Light",
+    "M_SignPanel"
+   ],
+   "file": "meshes/L_StationHouse.glb"
+  },
+  "L_TrainCar": {
+   "kind": "vehicle",
+   "length_y": 14.6,
+   "pivot": "car centre, rail plane (wheel bottoms at z 0); place at z = top of rail on a track centre (x = +-1.9)",
+   "front": "-Y blender (= Unreal +X); ends identical",
+   "width": 2.8,
+   "height": 3.7,
+   "floor_z": 1.12,
+   "truck_centres_y": [
+    -5.15,
+    5.15
+   ],
+   "wheelbase": 2.08,
+   "wheel_radius": 0.356,
+   "gauge": 1.435,
+   "door_centres_y": [
+    -3.75,
+    3.75
+   ],
+   "third_rail_shoe_x": [
+    -1.5,
+    1.5
+   ],
+   "tris": 2522,
+   "bbox_blender_m": {
+    "x": [
+     -1.6,
+     1.6
+    ],
+    "y": [
+     -7.3,
+     7.3
+    ],
+    "z": [
+     0.0,
+     3.71
+    ]
+   },
+   "materials": [
+    "M_Stainless",
+    "M_LineStripe",
+    "M_Glass",
+    "M_TrainDark",
+    "M_DestSign",
+    "M_Light",
+    "M_Rail",
+    "M_TrainInterior"
+   ],
+   "file": "meshes/L_TrainCar.glb"
+  },
+  "L_BentColumn": {
+   "kind": "joint",
+   "pivot": "column centre at street level; knee brace toward +X (turn +X toward the track)",
+   "footing_size_xy": [
+    1.5,
+    1.3
+   ],
+   "top_z": 4.5,
+   "tris": 452,
+   "bbox_blender_m": {
+    "x": [
+     -0.75,
+     1.722
+    ],
+    "y": [
+     -0.65,
+     0.65
+    ],
+    "z": [
+     -0.4,
+     4.502
+    ]
+   },
+   "materials": [
+    "M_Concrete",
+    "M_LSteelRust",
+    "M_LSteel"
+   ],
+   "file": "meshes/L_BentColumn.glb"
+  },
+  "L_BentGirder": {
+   "kind": "joint",
+   "pivot": "girder centre at street level",
+   "length_x": 10.9,
+   "bearing_x": [
+    -5.0,
+    5.0
+   ],
+   "z": [
+    4.5,
+    5.9
+   ],
+   "scale": "X = (column spacing + 0.9) / 10.9",
+   "tris": 268,
+   "bbox_blender_m": {
+    "x": [
+     -5.45,
+     5.45
+    ],
+    "y": [
+     -0.25,
+     0.25
+    ],
+    "z": [
+     4.5,
+     5.9
+    ]
+   },
+   "materials": [
+    "M_LSteel"
+   ],
+   "file": "meshes/L_BentGirder.glb"
+  },
+  "L_Span15J": {
+   "kind": "linear",
+   "length_y": 15.24,
+   "pivot": "as L_Span15",
+   "note": "junction deck: no outer walkways/handrails/third rail",
+   "tris": 2500,
+   "bbox_blender_m": {
+    "x": [
+     -3.2,
+     3.2
+    ],
+    "y": [
+     -15.24,
+     0.0
+    ],
+    "z": [
+     5.4,
+     7.3
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Tie",
+    "M_LSteelRust",
+    "M_Rail",
+    "M_Grating"
+   ],
+   "file": "meshes/L_Span15J.glb"
+  },
+  "L_Span5J": {
+   "kind": "linear",
+   "length_y": 5.08,
+   "pivot": "as L_Span5",
+   "note": "junction deck",
+   "tris": 1084,
+   "bbox_blender_m": {
+    "x": [
+     -3.2,
+     3.2
+    ],
+    "y": [
+     -5.08,
+     0.0
+    ],
+    "z": [
+     5.4,
+     7.3
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Tie",
+    "M_LSteelRust",
+    "M_Rail",
+    "M_Grating"
+   ],
+   "file": "meshes/L_Span5J.glb"
+  },
+  "L_PlatSide30": {
+   "kind": "linear",
+   "length_y": 30.48,
+   "pivot": "track-pair centreline frame; the +X platform only, cantilevered",
+   "platform_x": [
+    3.35,
+    6.95
+   ],
+   "tris": 1264,
+   "bbox_blender_m": {
+    "x": [
+     2.674,
+     7.0
+    ],
+    "y": [
+     -30.48,
+     0.0
+    ],
+    "z": [
+     5.353,
+     11.5
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Concrete",
+    "M_Paint_Yellow",
+    "M_Light",
+    "M_Canopy",
+    "M_SignPanel",
+    "M_Tie",
+    "M_Glass"
+   ],
+   "file": "meshes/L_PlatSide30.glb"
+  },
+  "L_PlatSide30_Stair": {
+   "kind": "linear",
+   "length_y": 30.48,
+   "pivot": "as L_PlatSide30",
+   "railing_opening_y": [
+    -14.04,
+    -16.44
+   ],
+   "tris": 1260,
+   "bbox_blender_m": {
+    "x": [
+     2.674,
+     7.0
+    ],
+    "y": [
+     -30.48,
+     0.0
+    ],
+    "z": [
+     5.353,
+     11.5
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_Concrete",
+    "M_Paint_Yellow",
+    "M_Light",
+    "M_Canopy",
+    "M_SignPanel",
+    "M_Tie",
+    "M_Glass"
+   ],
+   "file": "meshes/L_PlatSide30_Stair.glb"
+  },
+  "L_StairBridge": {
+   "kind": "attachment",
+   "pivot": "x 0 at the platform's outer edge (x 6.95 of the platform frame); scale X = gap",
+   "y": [
+    -14.04,
+    -16.44
+   ],
+   "floor_z": 8.3,
+   "tris": 162,
+   "bbox_blender_m": {
+    "x": [
+     -0.02,
+     1.02
+    ],
+    "y": [
+     -16.79,
+     -13.69
+    ],
+    "z": [
+     7.6,
+     11.12
+    ]
+   },
+   "materials": [
+    "M_Concrete",
+    "M_LSteel",
+    "M_Glass",
+    "M_Canopy",
+    "M_Light"
+   ],
+   "file": "meshes/L_StairBridge.glb"
+  },
+  "L_Bumper": {
+   "kind": "attachment",
+   "length_y": 2.42,
+   "pivot": "deck end on the centreline; buffers toward -Y",
+   "tris": 384,
+   "bbox_blender_m": {
+    "x": [
+     -3.1,
+     3.1
+    ],
+    "y": [
+     -2.42,
+     -0.18
+    ],
+    "z": [
+     7.065,
+     8.93
+    ]
+   },
+   "materials": [
+    "M_Rail",
+    "M_LSteel",
+    "M_Paint_Yellow",
+    "M_LSteelRust",
+    "M_LineStripe"
+   ],
+   "file": "meshes/L_Bumper.glb"
+  },
+  "L_EndFence": {
+   "kind": "attachment",
+   "length_y": 0.4,
+   "pivot": "deck end on the centreline; fence toward -Y",
+   "tris": 228,
+   "bbox_blender_m": {
+    "x": [
+     -4.5,
+     4.5
+    ],
+    "y": [
+     -0.33,
+     0.005
+    ],
+    "z": [
+     5.35,
+     8.55
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_LineStripe"
+   ],
+   "file": "meshes/L_EndFence.glb"
+  },
+  "L_Truss": {
+   "kind": "linear",
+   "length_y": 45.0,
+   "truss_x": [
+    -4.95,
+    4.95
+   ],
+   "height": 5.6,
+   "panels": 6,
+   "pivot": "span start on the centreline, street level",
+   "tris": 708,
+   "bbox_blender_m": {
+    "x": [
+     -5.21,
+     5.21
+    ],
+    "y": [
+     -45.5,
+     0.5
+    ],
+    "z": [
+     6.0,
+     12.161
+    ]
+   },
+   "materials": [
+    "M_LSteel",
+    "M_LSteelRust"
+   ],
+   "file": "meshes/L_Truss.glb"
+  },
+  "L_DeckSlab": {
+   "kind": "linear",
+   "length_y": 1.0,
+   "pivot": "x -0.5..0.5, y 0..-1, z 0..1 (scale to the chord)",
+   "tris": 12,
+   "bbox_blender_m": {
+    "x": [
+     -0.5,
+     0.5
+    ],
+    "y": [
+     -1.0,
+     0.0
+    ],
+    "z": [
+     0.0,
+     1.0
+    ]
+   },
+   "materials": [
+    "M_Concrete"
+   ],
+   "file": "meshes/L_DeckSlab.glb"
+  }
+ }
+}

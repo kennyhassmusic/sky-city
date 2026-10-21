@@ -1,0 +1,174 @@
+Sky City - elevated expressway reference photos (Austin I-35 pre-2024, Chicago viaducts)
+Collected 2026-10-20. All images are 1280 px wide Wikimedia Commons thumbnails
+(upload.wikimedia.org/.../1280px-...), downloaded for personal reference use.
+Licences require attribution (CC BY / CC BY-SA); keep this file next to the images.
+
+=====================================================================
+AUSTIN - Interstate 35
+=====================================================================
+
+austin_i35_upperdeck_below_night_01.jpg
+  Shows: I-35 upper deck seen from the lower-level frontage road just north of downtown (near the
+         MLK / 26th St "LBJ Library" exit), long exposure. Right: single rectangular column with a wide
+         hammerhead cap carrying about 7 prestressed I-girders. Left: the other direction's upper deck
+         with a galvanized box-truss sign bridge on it. Lower main lanes in a cut with a vertical
+         retaining wall; cross-street bridge behind.
+  Source: https://commons.wikimedia.org/wiki/File:Street_-_Flickr_-_Night_Photo.jpg
+  Author: Maxx@night (Flickr "Night Photo"), taken 4 Dec 2021.  Licence: CC BY 2.0
+
+austin_i35_upperdeck_below_night_02.jpg
+  Shows: same double-deck area (green "EXIT 236B" sign). Right: upper-deck single-column T-bent,
+         cap and the soffit with about 7 I-girders. Left: opposite upper deck on single columns.
+         Lower deck with W-beam guardrail on a concrete curb in front.
+  Source: https://commons.wikimedia.org/wiki/File:Flow_-_Flickr_-_Night_Photo.jpg
+  Author: Maxx@night, taken 9 Dec 2022.  Licence: CC BY 2.0
+
+austin_i35_downtown_mainlanes_top_04.jpg
+  Shows: downtown I-35 main lanes from a cross-street bridge (around 11th/12th St), looking south
+         toward the elevated section. Four lanes each way plus an exit lane, concrete safety-shape
+         median barrier, grass side slopes, overhead green guide sign "EXIT 234B Cesar Chavez St /
+         Holly St", tall light poles along the top of the slope.
+  Source: https://commons.wikimedia.org/wiki/File:Typical_Weekend_Traffic_on_IH_35_Downtown_Austin_2019.jpg
+  Author: Larry D. Moore, 17 Feb 2019.  Licence: CC BY 4.0
+
+austin_i35_downtown_dusk_top_05.jpg
+  Shows: I-35 main lanes at the downtown edge at dusk, with a 2-lane elevated roadway on the left.
+         Shows the concrete median barrier, twin-arm (double davit) light poles and the downtown
+         skyline. Photo taken in 2010.
+  Source: https://commons.wikimedia.org/wiki/File:AustinInterstate35Skyline-May2010.JPG
+  Author: LoneStarMike, 2010.  Licence: CC BY-SA 3.0
+
+austin_i35_ladybirdlake_night_lights_06.jpg
+  Shows: I-35 at Lady Bird Lake at night, looking north to downtown. Concrete safety-shape median
+         barrier, twin-arm davit light poles about 12-14 m tall (photo estimate), and the frontage
+         road at a lower level on the right.
+  Source: https://commons.wikimedia.org/wiki/File:Austin_(8095567898).jpg
+  Author: Aleksandr Zykov, 10 Oct 2012.  Licence: CC BY-SA 2.0
+
+austin_other_modern_elevated_NOT_i35_07.jpg   (CONTRAST ONLY - NOT I-35)
+  Shows: a modern Austin elevated expressway (location not stated; tags "highway, elevated, atx";
+         probably the 2020s US 183 South / Bergstrom Expressway - this is an estimate). Twin decks on
+         trapezoidal TxDOT U-beams, paired rusticated columns with flared capitals. The 1970s I-35
+         decks look nothing like this: use it only as a "future" contrast.
+  Source: https://commons.wikimedia.org/wiki/File:Support_-_Flickr_-_Night_Photo.jpg
+  Author: Maxx@night, 22 Jan 2023.  Licence: CC BY 2.0
+
+=====================================================================
+CHICAGO
+=====================================================================
+
+chicago_danryan_viaduct_below_ruble18th_01.jpg
+  Shows: the Dan Ryan (I-90/94) elevated viaduct seen from Ruble St at 18th St. Multi-column
+         concrete bents (round columns, 6+ per bent) under a deep cap beam, a pale concrete parapet
+         over a darker girder band, black drain downspouts on the columns, and a galvanized sign
+         bridge with green guide signs (I-90/94 West, I-290 exits 51H-I). City cobra-head poles at
+         street level.
+  Source: https://commons.wikimedia.org/wiki/File:Ruble_St_north_at_18th_St_-_Chicago,_IL_-_June_2022.jpg
+  Author: AlphaBeta135, 27 Jun 2022.  Licence: CC BY 4.0
+
+chicago_danryan_viaduct_girder_gantry_canalport_02.jpg
+  Shows: close side view of the Dan Ryan westbound viaduct at Canalport Ave. Rust/orange-brown steel
+         plate-girder fascia (weathered paint or weathering steel, not identified) under a pale,
+         stained concrete parapet with a drip groove. A brown-painted steel sign bridge on base
+         plates on the parapet, with green signs and I-90/94 and I-290 shields. Black street-light
+         pole; a high-mast tower in the distance.
+  Source: https://commons.wikimedia.org/wiki/File:I-90_%26_I-94_WB_at_Canalport_Ave_-_September_2021.jpg
+  Author: AlphaBeta135, 3 Sep 2021.  Licence: CC BY 4.0
+
+chicago_danryan_elevated_top_gantries_canalport_03.jpg
+  Shows: driver's view on top of the Dan Ryan viaduct (westbound at Canalport Ave). Concrete
+         parapets, two brown steel frame sign structures (one cantilevered), a high-mast light tower
+         (about 30-40 m, estimate) and the skyline.
+  Source: https://commons.wikimedia.org/wiki/File:I-90_I-94_west_at_Canalport_Ave_ramp_-_Chicago,_IL_-_December_2021.jpg
+  Author: AlphaBeta135, 18 Dec 2021.  Licence: CC BY 4.0
+
+chicago_chinatown_feeder_ramps_below_lasalle_04.jpg
+  Shows: Chinatown feeder ramp structures crossing overhead at LaSalle St. Weathered concrete
+         parapet with graffiti, slate-gray steel girders, square concrete piers with caps and round
+         columns, and single-arm davit light poles on the parapet. A second viaduct behind has
+         maroon girders and steel bents. Concrete median barrier and retaining walls below.
+  Source: https://commons.wikimedia.org/wiki/File:Chinatown_feeder_ramp_at_LaSalle_St_-_Chicago,_IL_-_November_2025.jpg
+  Author: AlphaBeta135, 8 Nov 2025.  Licence: CC BY 4.0
+
+chicago_ohio_feeder_steel_girders_kingsbury_05.jpg
+  Shows: the Ohio Street feeder (Kennedy spur) over Kingsbury St. Shallow multi-girder steel deck
+         with maroon/red-brown girders, concrete parapet with a metal pipe railing on top, concrete
+         pier walls and steel multi-column bents, amber lights under the deck, a Chicago curved-arm
+         street light on the pier and a green guide sign on the deck.
+  Source: https://commons.wikimedia.org/wiki/File:Kingsbury_St_at_Ohio_St_feeder_ramp_-_Chicago,_IL_-_May_2023.jpg
+  Author: AlphaBeta135, 20 May 2023.  Licence: CC BY 4.0
+
+chicago_ohio_feeder_side_frontage_06.jpg
+  Shows: the Ohio feeder viaduct along its frontage street. Red-brown girder band under a
+         beige-gray concrete parapet and fascia; the space under the deck is enclosed or used for
+         parking; a davit light pole on the deck; River North towers.
+  Source: https://commons.wikimedia.org/wiki/File:Ohio_St_feeder_ramp_and_frontage_road_-_Chicago,_IL_-_May_2023.jpg
+  Author: AlphaBeta135, 20 May 2023.  Licence: CC BY 4.0
+
+chicago_circle_interchange_flyovers_aerial_07.jpg
+  Shows: aerial of the Circle (Jane Byrne) Interchange from Willis Tower in 2018, during
+         reconstruction. Curved flyover ramps on single-column piers, stacked levels, the Blue Line
+         in the Eisenhower median, and a new flyover under construction.
+  Source: https://commons.wikimedia.org/wiki/File:Chicago_Circle_Interchange_2018.jpg
+  Author: Chris6d, 18 Jul 2018.  Licence: CC BY-SA 4.0
+
+chicago_stevenson_i55_elevated_kingdr_truss_08.jpg
+  Shows: I-55 Stevenson northbound near its east end at King Dr. A galvanized (bare silver)
+         four-chord box-truss sign bridge with green guide signs and US 41 shields. The elevated
+         McCormick Place structure on the left; davit poles beyond.
+  Source: https://commons.wikimedia.org/wiki/File:I-55_NB_at_King_Dr_(exit_293D)_-_Chicago,_IL_-_December_2021.jpg
+  Author: AlphaBeta135, 4 Dec 2021.  Licence: CC BY 4.0
+
+chicago_stevenson_i55_canal_aerial_09.jpg
+  Shows: aerial of the Stevenson (I-55) running beside the Sanitary & Ship Canal and rail yards on
+         the Southwest Side. Mostly at grade here: useful for the corridor layout, not for viaduct
+         detail.
+  Source: https://commons.wikimedia.org/wiki/File:Industrial_Canal_and_I-55_in_Chicago.jpg
+  Author: formulanone, 13 Jul 2020.  Licence: CC BY-SA 2.0
+
+=====================================================================
+NOT DOWNLOADED - view-only references (copyrighted or not free; open in a browser)
+=====================================================================
+- AARoads I-35 Austin guides (many photos of the decks, signs and ramps):
+    https://www.aaroads.com/guides/i-035-north-austin-tx
+    https://www.aaroads.com/texas/i-035nc_tx.html
+- Google Street View suggestions: under the upper decks on the frontage roads at E 38 1/2 St,
+  Manor Rd and Dean Keeton (26th) St; under the downtown viaduct at E 6th, E 7th and E 8th St
+  (parking lots under the deck); the I-35 bridge over Lady Bird Lake from the hike-and-bike trail.
+- KUT, "Why was I-35 designed as a double-decker through Central Austin?" (2018):
+    https://www.kut.org/transportation/2018-01-19/why-was-i-35-designed-as-a-double-decker-through-central-austin
+
+=====================================================================
+FACT SOURCES (dimensions)
+=====================================================================
+National Bridge Inventory data as shown on bridgelookup.com:
+  Austin  upper deck SB  https://bridgelookup.com/bridge/ih-35-sb-overhead-over-ih-35-sb-lower-level-541196
+  Austin  upper deck NB  https://bridgelookup.com/bridge/ih-35-nb-overhead-over-ih-35-nb-lower-level-541197
+  Austin  6th-8th St     https://bridgelookup.com/bridge/ih-35-nb-and-sb-over-6th-7th-and-8th-streets-541187
+  Austin  4th St/CapMet  https://bridgelookup.com/bridge/ih-35-over-4thstta-cap-met-rr-541188
+  Austin  15th St        https://bridgelookup.com/bridge/ih-35-over-e-15th-st-541184
+  Austin  NB Cesar Chavez https://bridgelookup.com/bridge/ih-35-nb-over-cesar-chavez-e-1st-st-541211
+  Austin  Lady Bird Lake https://bridgelookup.com/bridge/ih-35-over-col-ri-lady-bird-lk-e-av-541177
+  Chicago Dan Ryan elev 18th-22nd https://bridgelookup.com/bridge/i-90-94-ryan-elev-over-18th-to-22nd-sts-117711
+  Chicago Dan Ryan elev 16th-18th https://bridgelookup.com/bridge/i-90-94-ryan-elev-over-16th-to-18th-sts-117710
+  Chicago Dan Ryan elev Canal-Stewart https://bridgelookup.com/bridge/117715
+  Chicago Ryan SB ramp to I-55 over river https://bridgelookup.com/bridge/117680
+  Chicago I-55 WB elevated over S Branch https://bridgelookup.com/bridge/117692
+  Chicago Ohio feeder over RR https://bridgelookup.com/bridge/117676
+  Chicago Ohio feeder over Kingsbury https://bridgelookup.com/bridge/ohio-st-feeder-e-a-over-kingsbury-st-117670
+Wikipedia, Interstate 35 in Texas: https://en.wikipedia.org/wiki/Interstate_35_in_Texas
+TxDOT, History of I-35: https://www.txdot.gov/mobility35/about/history-i35.html
+TxDOT Bridge Railing Manual (T5 = 32 in concrete safety shape):
+  https://www.txdot.gov/manuals/brg/rlg/chapter-4---treatment-of-existing-railing/section-2---bridge-railing-upgrade-requirements/existing-railing-meeting-current-standards--nchrp-.html
+TxDMV low-clearance list (lower deck, 13'6" posted under Manor Rd, 32nd St and 38 1/2 St):
+  https://www.txdmv.gov/motorcarriers/low-clearance
+IDOT Standard 830011, light poles (davit arm max 12 ft double, 15 ft single):
+  https://public.powerdms.com/IDOT/documents/2767490
+Roads & Bridges, Ohio Street feeder rebuild (2014; steel girders up to 131 ft):
+  https://www.roadsbridges.com/bridges/article/10707455/all-erection-crane-rental-corp-kennedy-expressways-ohio-street-bridge-erected
+KUT, "Your ultimate guide to the I-35 expansion through Central Austin" (2024; the plan narrows main
+  lanes from 12 ft to 11 ft, so existing lanes are 12 ft):
+  https://www.kut.org/transportation/2024-02-21/your-ultimate-guide-to-the-i-35-expansion-through-central-austin
+TTI/TAMU Mobility Investment Priorities corridor sheet AUS-4 IH 35 (2013): "two lanes in each direction on
+  each deck" from Airport Blvd to MLK (read in a search snippet; the PDF now returns 404):
+  https://mobility.tamu.edu/mip/corridors-pdfs/austin/AUS-4-IH-35-101713.pdf

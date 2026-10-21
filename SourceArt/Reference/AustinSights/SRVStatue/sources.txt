@@ -1,0 +1,9 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+front_3q_plinth_shadow_seatwall.jpg	https://www.flickr.com/photos/142289055@N04/29963163826	https://live.staticflickr.com/8788/29963163826_3d11a8ec57_b.jpg	sbmeaper1	CC0 1.0 (Flickr, via Openverse)
+front_with_people_scale_seatwall.jpg	https://www.flickr.com/photos/50809461@N03/4670755466	https://live.staticflickr.com/4012/4670755466_43d2524ebc_b.jpg	DogLovr	CC BY 2.0 (Flickr)
+front_dusk_plinth_side.jpg	https://www.flickr.com/photos/76771463@N02/11901980216	https://live.staticflickr.com/3747/11901980216_1cd2d37352_b.jpg	Katie Haugland Bowen	CC BY 2.0 (Flickr)
+detail_hand_on_guitar_headstock.jpg	https://www.flickr.com/photos/40845011@N03/4883993419	https://live.staticflickr.com/4116/4883993419_3f1ba84db2_b.jpg	JustinJensen	CC BY 2.0 (Flickr)

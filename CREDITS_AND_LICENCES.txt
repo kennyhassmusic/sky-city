@@ -1,0 +1,59 @@
+SKY CITY - credits and licences (ships with every build)
+Public build, 21 October 2026. (c) 2026 Kenny Hass Music LLC. https://kornontheken.itch.io/sky-city
+(Personal builds with the full vehicle line-up use CREDITS_AND_LICENCES_personal.txt instead.)
+
+Made with Unreal(R) Engine. Unreal and its logo are Epic Games' trademarks or registered trademarks in the US and
+elsewhere.
+
+Street map data
+  (c) OpenStreetMap contributors, available under the Open Database Licence (ODbL), https://www.openstreetmap.org/copyright
+  Streets, rail, water, parks, place names and building footprints of Chicago, Austin and McGregor, Texas.
+
+Terrain and aerial imagery (McGregor maps and reference)
+  USGS 3D Elevation Program (3DEP) and USDA National Agriculture Imagery Program (NAIP): public domain.
+
+City buildings
+  Epic Games City Sample (Fab). Fab Standard Licence: ships inside this packaged game; never redistributed on its own.
+
+Textures and props
+  Poly Haven (CC0) scanned textures and props (fire hydrant, trash can, manhole cover, street seating); ambientCG (CC0)
+  leaf scans. Everything else (streets, the elevated L, expressways, landmarks, parks, harbours and boats, the McGregor
+  test site and show set, the signal kit, smoke and engine-test effects, the vehicle stand-ins) was modelled or generated
+  for this project.
+
+Player car
+  The Skyster Roadster: (c) Kenny Hass Music LLC, all rights reserved.
+
+Other vehicles
+  Model licences cover the 3D files only, never any carmaker's trademarks, names or designs. All badges and plates
+  were removed; none are added back.
+  Pickup     "Tesla Cybertruck" by yava-custom, CGTrader, CGTrader Royalty Free.
+             https://www.cgtrader.com/free-3d-models/vehicle/truck/tesla-cybertruck-20fe84b5-6618-4e49-a10a-5d50bbe1ce7b
+  Robotaxi   "Tesla Robotaxi - Cybercab 3D model" by widerkits-ar, CGTrader, CGTrader Royalty Free.
+             https://www.cgtrader.com/3d-models/car/concept-car/tesla-robotaxi-3d-model
+  Crossover  "2025 Tesla Model Y" (https://skfb.ly/pBrBF) by BloxBloger, Sketchfab, CC BY-NC 4.0
+             (https://creativecommons.org/licenses/by-nc/4.0/). Used in this free, non-commercial release.
+  Sedan, semi truck: original blocky stand-ins made for Sky City.
+
+Landmarks, parks and artworks
+  All landmark, park, bridge and building models are original work, made from OpenStreetMap data, public-domain
+  aerials, published measurements and reference photos. No third-party geometry or textures were copied. The Texas
+  Capitol follows the Historic American Buildings Survey drawings (Library of Congress, public domain).
+  Artworks still in copyright appear only as original, simplified stand-ins, not reproductions. These include Cloud Gate
+  (Anish Kapoor), the Jay Pritzker Pavilion and BP Bridge (Frank Gehry), Crown Fountain (Jaume Plensa; generic faces),
+  Flamingo (Alexander Calder), The Four Seasons (Marc Chagall), Miro's Chicago (Joan Miro) and the Austin statues.
+  Public-domain sculptures (the Art Institute lions, The Bowman and The Spearman, the Saint-Gaudens Lincoln and Logan
+  monuments, the Chicago Picasso and others) are modelled in simplified form.
+  Names of real places, buildings, bridges and parks identify the setting only. They belong to their owners, who don't
+  sponsor or endorse this game.
+
+Sound
+  Engine-test roar and other effects: generated for this project.
+
+Generative AI
+  Code, generated 3D content, in-game text and some sounds were made with the help of generative AI (Claude).
+
+Licence of Sky City itself
+  Free to play, mod, share, stream (monetized videos too) and contribute to. Only Kenny Hass Music LLC may sell Sky City.
+  Source code: PolyForm Noncommercial 1.0.0. Original assets: CC BY-NC 4.0. See LICENSE and LICENSE-ASSETS.md in the
+  source repository.

@@ -1,0 +1,9 @@
+Sky City - Austin sights reference images (reference only: never textures in the game, never in Content/).
+Collected 20 Oct 2026 for the austin-sights modelling agent. Thumbnails (<=1280 px) of Wikimedia Commons / Flickr (via Openverse) / Library of Congress files.
+Columns (tab-separated): file | source page | direct image URL downloaded | author | licence [| note]
+NC / ND licences are marked 'reference only': use for looking at, not for redistribution or derived textures.
+
+underside_twin_arch_ribs_floorbeams.jpg	https://commons.wikimedia.org/wiki/File:Lamar_Blvd_Bridge_Austin_Substructure.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Lamar_Blvd_Bridge_Austin_Substructure.jpg/960px-Lamar_Blvd_Bridge_Austin_Substructure.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Larry D. Moore	CC BY 4.0
+side_elevation_6_arches.jpg	https://commons.wikimedia.org/wiki/File:Lamar_Boulevard_Bridge_20160904171258.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Lamar_Boulevard_Bridge_20160904171258.jpg/960px-Lamar_Boulevard_Bridge_20160904171258.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Spawnzilla	CC BY-SA 4.0
+under_deck_view_along_piers.jpg	https://commons.wikimedia.org/wiki/File:Lamar_St_Bridge,_Austin_TX.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Lamar_St_Bridge%2C_Austin_TX.jpg/960px-Lamar_St_Bridge%2C_Austin_TX.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	sbmeaper1	CC0
+oblique_railing_pier_columns_fluting.jpg	https://commons.wikimedia.org/wiki/File:Lamar_Bridge.jpg	https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Lamar_Bridge.jpg/960px-Lamar_Bridge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail	Claudia Durand	CC BY-SA 3.0

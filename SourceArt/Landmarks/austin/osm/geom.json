@@ -1,0 +1,2495 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-21T03:27:49Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 2167146202,
+  "lat": 30.2740661,
+  "lon": -97.7393492,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "statue"
+  }
+},
+{
+  "type": "node",
+  "id": 2167146204,
+  "lat": 30.2740973,
+  "lon": -97.7414480,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "statue"
+  }
+},
+{
+  "type": "node",
+  "id": 2167146205,
+  "lat": 30.2739144,
+  "lon": -97.7408043,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "statue",
+    "name": "Texas Rangers"
+  }
+},
+{
+  "type": "node",
+  "id": 2167146206,
+  "lat": 30.2731059,
+  "lon": -97.7407828,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "war_memorial",
+    "name": "Southern Confederacy Memorial"
+  }
+},
+{
+  "type": "node",
+  "id": 2167146224,
+  "lat": 30.2731777,
+  "lon": -97.7410309,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "statue",
+    "name": "Volunteer Firemen Memorial"
+  }
+},
+{
+  "type": "node",
+  "id": 2167146225,
+  "lat": 30.2738275,
+  "lon": -97.7404918,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "war_memorial",
+    "name": "Heroes of the Alamo"
+  }
+},
+{
+  "type": "node",
+  "id": 2743506688,
+  "lat": 30.2737551,
+  "lon": -97.7386843,
+  "tags": {
+    "historic": "memorial",
+    "name": "The Archive War"
+  }
+},
+{
+  "type": "node",
+  "id": 2743506690,
+  "lat": 30.2754850,
+  "lon": -97.7404950,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "statue",
+    "name": "Tribute to Texas Schoolchildren",
+    "start_date": "1998.06"
+  }
+},
+{
+  "type": "node",
+  "id": 4979610121,
+  "lat": 30.2732982,
+  "lon": -97.7414650,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "war_memorial",
+    "name": "Texas African American History Memorial",
+    "name:en": "Texas African American History Memorial",
+    "wikidata": "Q56475502"
+  }
+},
+{
+  "type": "node",
+  "id": 5058269727,
+  "lat": 30.2752811,
+  "lon": -97.7408088,
+  "tags": {
+    "artwork_type": "statue",
+    "material": "stone",
+    "memorial": "stele",
+    "name": "The Ten Commandments",
+    "name:en": "The Ten Commandments",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 5595232009,
+  "lat": 30.2714658,
+  "lon": -97.7554622,
+  "tags": {
+    "denotation": "natural_monument",
+    "leaf_cycle": "evergreen",
+    "leaf_type": "broadleaved",
+    "name": "Treaty Oak",
+    "natural": "tree",
+    "wikidata": "Q7836942"
+  }
+},
+{
+  "type": "node",
+  "id": 6879997373,
+  "lat": 30.2746740,
+  "lon": -97.7403430,
+  "tags": {
+    "artwork_subject": "figurative",
+    "artwork_type": "statue",
+    "name": "Goddess of Liberty",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 6990944960,
+  "lat": 30.2754945,
+  "lon": -97.7390631,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "war_memorial",
+    "name": "Vietnam Veterans Monument",
+    "wikidata": "Q17054391",
+    "wikipedia": "en:Texas Capitol Vietnam Veterans Monument"
+  }
+},
+{
+  "type": "node",
+  "id": 8295238460,
+  "lat": 30.2743265,
+  "lon": -97.7410748,
+  "tags": {
+    "artwork_type": "statue",
+    "material": "metal",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 8964570207,
+  "lat": 30.2642387,
+  "lon": -97.7537935,
+  "tags": {
+    "leisure": "slipway"
+  }
+},
+{
+  "type": "node",
+  "id": 8964570229,
+  "lat": 30.2641801,
+  "lon": -97.7536987,
+  "tags": {
+    "leisure": "slipway"
+  }
+},
+{
+  "type": "node",
+  "id": 9293789970,
+  "lat": 30.2760173,
+  "lon": -97.7406334,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "statue",
+    "name": "Copy of Statue Of Liberty"
+  }
+},
+{
+  "type": "node",
+  "id": 9293789971,
+  "lat": 30.2758887,
+  "lon": -97.7406758,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "war_memorial",
+    "name": "Texas World War II Memorial"
+  }
+},
+{
+  "type": "node",
+  "id": 12453752247,
+  "lat": 30.2765400,
+  "lon": -97.7419300,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "addr:full": "208 W 14th Street",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25698",
+    "name": "Wahrenberger House",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "6421",
+    "ref:hmdb": "25698",
+    "source:website": "https://atlas.thc.texas.gov/Details/5453006421",
+    "start_date": "1963",
+    "support": "pole",
+    "thc:designation": "Recorded Texas Historic Landmark",
+    "website": "https://atlas.thc.texas.gov/Details/5453006421"
+  }
+},
+{
+  "type": "node",
+  "id": 12453752251,
+  "lat": 30.2757000,
+  "lon": -97.7406700,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=26694",
+    "name": "Tyler Rose",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "15263",
+    "ref:hmdb": "26694",
+    "source:website": "https://atlas.thc.texas.gov/Details/5507015263",
+    "start_date": "1969",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507015263"
+  }
+},
+{
+  "type": "node",
+  "id": 12453752271,
+  "lat": 30.2737700,
+  "lon": -97.7387100,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "addr:full": "1201 Brazos Street",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=100623",
+    "name": "The Archive War",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "14722",
+    "ref:hmdb": "100623",
+    "source:website": "https://atlas.thc.texas.gov/Details/5507014722",
+    "start_date": "1978",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507014722"
+  }
+},
+{
+  "type": "node",
+  "id": 12453752281,
+  "lat": 30.2741600,
+  "lon": -97.7385400,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "addr:full": "1201 Brazos Street",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25728",
+    "name": "Texas and the Civil War: Secession Convention",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "12693",
+    "ref:hmdb": "25728",
+    "source:website": "https://atlas.thc.texas.gov/Details/5453012693",
+    "start_date": "1965",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5453012693"
+  }
+},
+{
+  "type": "node",
+  "id": 12453752288,
+  "lat": 30.2761900,
+  "lon": -97.7411200,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=26609",
+    "name": "Swedish Central Methodist Church",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "15330",
+    "ref:hmdb": "26609",
+    "source:website": "https://atlas.thc.texas.gov/Details/5507015330",
+    "start_date": "1975",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507015330"
+  }
+},
+{
+  "type": "node",
+  "id": 12453752295,
+  "lat": 30.2769400,
+  "lon": -97.7411400,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "addr:full": "1414 Colorado Street",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=26574",
+    "name": "State Bar of Texas",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "6422",
+    "ref:hmdb": "26574",
+    "source:website": "https://atlas.thc.texas.gov/Details/5453006422",
+    "start_date": "1985",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5453006422"
+  }
+},
+{
+  "type": "node",
+  "id": 12453752299,
+  "lat": 30.2755900,
+  "lon": -97.7393100,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25590",
+    "name": "St. Martin's Evangelical Lutheran Church",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "15486",
+    "ref:hmdb": "25590",
+    "source:website": "https://atlas.thc.texas.gov/Details/5507015486",
+    "start_date": "1979",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507015486"
+  }
+},
+{
+  "type": "node",
+  "id": 12453821245,
+  "lat": 30.2764500,
+  "lon": -97.7420700,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "addr:full": "209 West 14th Street",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25823",
+    "name": "Price Daniel",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "13094",
+    "ref:hmdb": "25823",
+    "source:website": "https://atlas.thc.texas.gov/Details/5453013094",
+    "start_date": "2004",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5453013094"
+  }
+},
+{
+  "type": "node",
+  "id": 12453821379,
+  "lat": 30.2727100,
+  "lon": -97.7410300,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=26690",
+    "name": "Site of Second Travis County Courthouse and Walton Building",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "15063",
+    "ref:hmdb": "26690",
+    "source:website": "https://atlas.thc.texas.gov/Details/5507015063",
+    "start_date": "1965",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507015063"
+  }
+},
+{
+  "type": "node",
+  "id": 12453821382,
+  "lat": 30.2725800,
+  "lon": -97.7410300,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25965",
+    "name": "Governor Andrew Jackson Hamilton",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "15101",
+    "ref:hmdb": "25965",
+    "source:website": "https://atlas.thc.texas.gov/Details/5507015101",
+    "start_date": "1978",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507015101"
+  }
+},
+{
+  "type": "node",
+  "id": 12453821383,
+  "lat": 30.2756700,
+  "lon": -97.7421900,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "addr:full": "1300 Colorado Street",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25700",
+    "name": "Goodman Building",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "6438",
+    "ref:hmdb": "25700",
+    "source:website": "https://atlas.thc.texas.gov/Details/5453006438",
+    "start_date": "1969",
+    "support": "pole",
+    "thc:designation": "Recorded Texas Historic Landmark",
+    "website": "https://atlas.thc.texas.gov/Details/5453006438"
+  }
+},
+{
+  "type": "node",
+  "id": 12453821450,
+  "lat": 30.2753300,
+  "lon": -97.7393600,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=26644",
+    "name": "Confederate Texas Legislatures",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "12685",
+    "ref:hmdb": "26644",
+    "source:website": "https://atlas.thc.texas.gov/Details/5453012685",
+    "start_date": "1965",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5453012685"
+  }
+},
+{
+  "type": "node",
+  "id": 12453821510,
+  "lat": 30.2725700,
+  "lon": -97.7413800,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25746",
+    "name": "African Americans in the Texas Revolution",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "13929",
+    "ref:hmdb": "25746",
+    "source:website": "https://atlas.thc.texas.gov/Details/5507013929",
+    "start_date": "1994",
+    "support": "pole",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507013929",
+    "wikimedia_commons": "File:African Americans in the Texas Revolution, Austin, Texas Historical Marker (8501564012).jpg"
+  }
+},
+{
+  "type": "node",
+  "id": 13427168200,
+  "lat": 30.2734663,
+  "lon": -97.7384026,
+  "tags": {
+    "artwork_type": "sculpture",
+    "name": "The Price of Liberty",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 13464842253,
+  "lat": 30.2739249,
+  "lon": -97.7386145,
+  "tags": {
+    "artwork_type": "statue",
+    "description": "Dr Anson Jones",
+    "material": "bronze",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 13464842254,
+  "lat": 30.2739895,
+  "lon": -97.7385867,
+  "tags": {
+    "artwork_type": "statue",
+    "description": "General Sam Houston",
+    "material": "bronze",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 13988610491,
+  "lat": 30.2729300,
+  "lon": -97.7409700,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "addr:full": "100 1/2 W 11th St",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=307885",
+    "name": "Texas State Capitol",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "14150",
+    "ref:hmdb": "307885",
+    "start_date": "1965",
+    "thc:designation": "Recorded Texas Historic Landmark",
+    "website": "https://atlas.thc.texas.gov/Details/5507014150"
+  }
+},
+{
+  "type": "node",
+  "id": 13988610495,
+  "lat": 30.2727100,
+  "lon": -97.7410300,
+  "tags": {
+    "addr:city": "Austin",
+    "addr:county": "Travis",
+    "historic": "memorial",
+    "material": "aluminium",
+    "memorial": "plaque",
+    "memorial:website": "https://www.hmdb.org/m.asp?m=25874",
+    "name": "Governor James Edward Ferguson_Governor Miriam A. Ferguson",
+    "operator": "Texas Historical Commission",
+    "operator:wikidata": "Q2397965",
+    "ref:US-TX:thc": "14797",
+    "ref:hmdb": "25874",
+    "start_date": "1977",
+    "thc:designation": "Historical Marker",
+    "website": "https://atlas.thc.texas.gov/Details/5507014797"
+  }
+},
+{
+  "type": "node",
+  "id": 14134071358,
+  "lat": 30.2741012,
+  "lon": -97.7407207,
+  "tags": {
+    "artwork_type": "statue",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 14134074573,
+  "lat": 30.2740265,
+  "lon": -97.7404226,
+  "tags": {
+    "artwork_type": "statue",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 14134090062,
+  "lat": 30.2746748,
+  "lon": -97.7415678,
+  "tags": {
+    "historic": "memorial",
+    "memorial": "statue"
+  }
+},
+{
+  "type": "node",
+  "id": 14134107471,
+  "lat": 30.2750994,
+  "lon": -97.7391063,
+  "tags": {
+    "historic": "memorial"
+  }
+},
+{
+  "type": "node",
+  "id": 14134110658,
+  "lat": 30.2729795,
+  "lon": -97.7403094,
+  "tags": {
+    "artwork_type": "statue",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 14134113502,
+  "lat": 30.2737854,
+  "lon": -97.7408704,
+  "tags": {
+    "artwork_type": "statue",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 14134130025,
+  "lat": 30.2746786,
+  "lon": -97.7389366,
+  "tags": {
+    "artwork_type": "statue",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "way",
+  "id": 15377301,
+  "bounds": {
+    "minlat": 30.2601432,
+    "minlon": -97.7457584,
+    "maxlat": 30.2626428,
+    "maxlon": -97.7448250
+  },
+  "geometry": [
+    { "lat": 30.2626428, "lon": -97.7448250 },
+    { "lat": 30.2601432, "lon": -97.7457584 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "cycleway:both": "track",
+    "highway": "primary",
+    "lanes": "4",
+    "lanes:backward": "2",
+    "lanes:forward": "2",
+    "layer": "1",
+    "lit": "yes",
+    "maxspeed": "30 mph",
+    "motor_vehicle": "designated",
+    "name": "South Congress Avenue",
+    "old_ref": "Loop 275 (old US 81)",
+    "shoulder": "no",
+    "sidewalk:both": "separate",
+    "surface": "asphalt"
+  }
+},
+{
+  "type": "way",
+  "id": 27401202,
+  "bounds": {
+    "minlat": 30.2647370,
+    "minlon": -97.7567408,
+    "maxlat": 30.2651138,
+    "maxlon": -97.7561615
+  },
+  "geometry": [
+    { "lat": 30.2651138, "lon": -97.7561615 },
+    { "lat": 30.2650352, "lon": -97.7562622 },
+    { "lat": 30.2649306, "lon": -97.7563981 },
+    { "lat": 30.2648483, "lon": -97.7565335 },
+    { "lat": 30.2647370, "lon": -97.7567408 }
+  ],
+  "tags": {
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "layer": "2",
+    "maxspeed": "10 mph",
+    "name": "Pfluger Pedestrian Bridge",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "stroller": "yes",
+    "surface": "concrete:plates",
+    "wheelchair": "designated"
+  }
+},
+{
+  "type": "way",
+  "id": 37692951,
+  "bounds": {
+    "minlat": 30.2620296,
+    "minlon": -97.7545322,
+    "maxlat": 30.2622533,
+    "maxlon": -97.7542619
+  },
+  "geometry": [
+    { "lat": 30.2621499, "lon": -97.7544997 },
+    { "lat": 30.2621359, "lon": -97.7545116 },
+    { "lat": 30.2621201, "lon": -97.7545213 },
+    { "lat": 30.2621060, "lon": -97.7545277 },
+    { "lat": 30.2620941, "lon": -97.7545322 },
+    { "lat": 30.2620860, "lon": -97.7544925 },
+    { "lat": 30.2620659, "lon": -97.7544907 },
+    { "lat": 30.2620382, "lon": -97.7544825 },
+    { "lat": 30.2620713, "lon": -97.7544275 },
+    { "lat": 30.2620621, "lon": -97.7544219 },
+    { "lat": 30.2620482, "lon": -97.7544054 },
+    { "lat": 30.2620381, "lon": -97.7543856 },
+    { "lat": 30.2620321, "lon": -97.7543646 },
+    { "lat": 30.2620301, "lon": -97.7543425 },
+    { "lat": 30.2620296, "lon": -97.7543161 },
+    { "lat": 30.2620921, "lon": -97.7543308 },
+    { "lat": 30.2621002, "lon": -97.7543100 },
+    { "lat": 30.2621122, "lon": -97.7542911 },
+    { "lat": 30.2621240, "lon": -97.7542827 },
+    { "lat": 30.2621391, "lon": -97.7542734 },
+    { "lat": 30.2621535, "lon": -97.7542667 },
+    { "lat": 30.2621667, "lon": -97.7542619 },
+    { "lat": 30.2621692, "lon": -97.7542981 },
+    { "lat": 30.2621709, "lon": -97.7543286 },
+    { "lat": 30.2621844, "lon": -97.7543304 },
+    { "lat": 30.2621977, "lon": -97.7543349 },
+    { "lat": 30.2622089, "lon": -97.7543420 },
+    { "lat": 30.2622249, "lon": -97.7543545 },
+    { "lat": 30.2622404, "lon": -97.7543720 },
+    { "lat": 30.2622533, "lon": -97.7543884 },
+    { "lat": 30.2622220, "lon": -97.7544068 },
+    { "lat": 30.2622285, "lon": -97.7544324 },
+    { "lat": 30.2622310, "lon": -97.7544568 },
+    { "lat": 30.2622309, "lon": -97.7544775 },
+    { "lat": 30.2621982, "lon": -97.7544672 },
+    { "lat": 30.2621931, "lon": -97.7544868 },
+    { "lat": 30.2621826, "lon": -97.7545111 },
+    { "lat": 30.2621721, "lon": -97.7545276 },
+    { "lat": 30.2621499, "lon": -97.7544997 }
+  ],
+  "tags": {
+    "amenity": "fountain",
+    "drinking_water": "no",
+    "fountain": "splash_pad",
+    "name": "Liz Carpenter Fountain"
+  }
+},
+{
+  "type": "way",
+  "id": 37692960,
+  "bounds": {
+    "minlat": 30.2624346,
+    "minlon": -97.7551634,
+    "maxlat": 30.2625615,
+    "maxlon": -97.7550183
+  },
+  "geometry": [
+    { "lat": 30.2625615, "lon": -97.7551634 },
+    { "lat": 30.2625423, "lon": -97.7551398 },
+    { "lat": 30.2624346, "lon": -97.7550183 }
+  ],
+  "tags": {
+    "man_made": "pier",
+    "surface": "wood"
+  }
+},
+{
+  "type": "way",
+  "id": 37692961,
+  "bounds": {
+    "minlat": 30.2624582,
+    "minlon": -97.7550846,
+    "maxlat": 30.2625863,
+    "maxlon": -97.7548899
+  },
+  "geometry": [
+    { "lat": 30.2625863, "lon": -97.7550846 },
+    { "lat": 30.2625734, "lon": -97.7550634 },
+    { "lat": 30.2624582, "lon": -97.7548899 }
+  ],
+  "tags": {
+    "man_made": "pier",
+    "surface": "wood"
+  }
+},
+{
+  "type": "way",
+  "id": 37692962,
+  "bounds": {
+    "minlat": 30.2625551,
+    "minlon": -97.7550211,
+    "maxlat": 30.2626238,
+    "maxlon": -97.7548636
+  },
+  "geometry": [
+    { "lat": 30.2626238, "lon": -97.7550211 },
+    { "lat": 30.2626145, "lon": -97.7549994 },
+    { "lat": 30.2625551, "lon": -97.7548636 }
+  ],
+  "tags": {
+    "man_made": "pier",
+    "surface": "wood"
+  }
+},
+{
+  "type": "way",
+  "id": 126586913,
+  "bounds": {
+    "minlat": 30.2649464,
+    "minlon": -97.7569364,
+    "maxlat": 30.2658699,
+    "maxlon": -97.7565551
+  },
+  "geometry": [
+    { "lat": 30.2649464, "lon": -97.7569364 },
+    { "lat": 30.2658699, "lon": -97.7565551 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "bridge:name": "Lamar Boulevard Bridge",
+    "cycleway:both": "no",
+    "foot": "no",
+    "heritage": "2",
+    "heritage:operator": "nrhp",
+    "highway": "primary",
+    "historic": "yes",
+    "lanes": "4",
+    "layer": "1",
+    "lit": "yes",
+    "maxspeed:backward": "30 mph",
+    "maxspeed:forward": "35 mph",
+    "name": "South Lamar Boulevard",
+    "name:etymology:wikidata": "Q456633",
+    "old_ref": "US 290",
+    "ref": "Loop 343",
+    "ref:nrhp": "94000678",
+    "sidewalk": "no",
+    "surface": "asphalt",
+    "wikidata": "Q14710932",
+    "wikipedia": "en:Lamar Boulevard Bridge"
+  }
+},
+{
+  "type": "way",
+  "id": 127249123,
+  "bounds": {
+    "minlat": 30.2659871,
+    "minlon": -97.7555319,
+    "maxlat": 30.2660679,
+    "maxlon": -97.7553697
+  },
+  "geometry": [
+    { "lat": 30.2660679, "lon": -97.7555319 },
+    { "lat": 30.2660138, "lon": -97.7554246 },
+    { "lat": 30.2659871, "lon": -97.7553697 }
+  ],
+  "tags": {
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "2",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Pfluger Pedestrian Bridge",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 131234490,
+  "bounds": {
+    "minlat": 30.2659544,
+    "minlon": -97.7555022,
+    "maxlat": 30.2659818,
+    "maxlon": -97.7554652
+  },
+  "geometry": [
+    { "lat": 30.2659648, "lon": -97.7554652 },
+    { "lat": 30.2659593, "lon": -97.7554697 },
+    { "lat": 30.2659550, "lon": -97.7554765 },
+    { "lat": 30.2659544, "lon": -97.7554849 },
+    { "lat": 30.2659565, "lon": -97.7554927 },
+    { "lat": 30.2659635, "lon": -97.7555007 },
+    { "lat": 30.2659717, "lon": -97.7555022 },
+    { "lat": 30.2659772, "lon": -97.7555002 },
+    { "lat": 30.2659818, "lon": -97.7554969 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "dog": "leashed",
+    "highway": "footway",
+    "layer": "1",
+    "name": "Pfluger Pedestrian Bridge",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 131234491,
+  "bounds": {
+    "minlat": 30.2660497,
+    "minlon": -97.7554478,
+    "maxlat": 30.2662704,
+    "maxlon": -97.7553072
+  },
+  "geometry": [
+    { "lat": 30.2660501, "lon": -97.7553072 },
+    { "lat": 30.2660497, "lon": -97.7553218 },
+    { "lat": 30.2660511, "lon": -97.7553442 },
+    { "lat": 30.2660573, "lon": -97.7553718 },
+    { "lat": 30.2660709, "lon": -97.7554038 },
+    { "lat": 30.2660901, "lon": -97.7554241 },
+    { "lat": 30.2661166, "lon": -97.7554374 },
+    { "lat": 30.2661376, "lon": -97.7554462 },
+    { "lat": 30.2661617, "lon": -97.7554478 },
+    { "lat": 30.2661839, "lon": -97.7554450 },
+    { "lat": 30.2662097, "lon": -97.7554377 },
+    { "lat": 30.2662319, "lon": -97.7554230 },
+    { "lat": 30.2662445, "lon": -97.7554057 },
+    { "lat": 30.2662548, "lon": -97.7553857 },
+    { "lat": 30.2662630, "lon": -97.7553655 },
+    { "lat": 30.2662699, "lon": -97.7553402 },
+    { "lat": 30.2662704, "lon": -97.7553177 }
+  ],
+  "tags": {
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "1",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Pfluger Pedestrian Bridge",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 131234492,
+  "bounds": {
+    "minlat": 30.2659648,
+    "minlon": -97.7554652,
+    "maxlat": 30.2660138,
+    "maxlon": -97.7554246
+  },
+  "geometry": [
+    { "lat": 30.2660138, "lon": -97.7554246 },
+    { "lat": 30.2659648, "lon": -97.7554652 }
+  ],
+  "tags": {
+    "access": "yes",
+    "bridge": "yes",
+    "dog": "leashed",
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "down",
+    "layer": "2",
+    "name": "Pfluger Pedestrian Bridge",
+    "small_electric_vehicle": "no"
+  }
+},
+{
+  "type": "way",
+  "id": 187668220,
+  "bounds": {
+    "minlat": 30.2597728,
+    "minlon": -97.7516608,
+    "maxlat": 30.2607474,
+    "maxlon": -97.7505776
+  },
+  "geometry": [
+    { "lat": 30.2602291, "lon": -97.7516321 },
+    { "lat": 30.2602772, "lon": -97.7516002 },
+    { "lat": 30.2603964, "lon": -97.7515212 },
+    { "lat": 30.2605663, "lon": -97.7514085 },
+    { "lat": 30.2606192, "lon": -97.7513534 },
+    { "lat": 30.2606525, "lon": -97.7513188 },
+    { "lat": 30.2607053, "lon": -97.7512352 },
+    { "lat": 30.2607335, "lon": -97.7511583 },
+    { "lat": 30.2607474, "lon": -97.7510922 },
+    { "lat": 30.2606968, "lon": -97.7510840 },
+    { "lat": 30.2606416, "lon": -97.7510767 },
+    { "lat": 30.2606239, "lon": -97.7511388 },
+    { "lat": 30.2605888, "lon": -97.7511809 },
+    { "lat": 30.2605359, "lon": -97.7511308 },
+    { "lat": 30.2605192, "lon": -97.7511499 },
+    { "lat": 30.2604869, "lon": -97.7511194 },
+    { "lat": 30.2601657, "lon": -97.7507782 },
+    { "lat": 30.2602159, "lon": -97.7507133 },
+    { "lat": 30.2602423, "lon": -97.7507013 },
+    { "lat": 30.2602677, "lon": -97.7506909 },
+    { "lat": 30.2602511, "lon": -97.7506308 },
+    { "lat": 30.2602364, "lon": -97.7505776 },
+    { "lat": 30.2602157, "lon": -97.7505862 },
+    { "lat": 30.2602057, "lon": -97.7505904 },
+    { "lat": 30.2601897, "lon": -97.7505970 },
+    { "lat": 30.2601740, "lon": -97.7506036 },
+    { "lat": 30.2601151, "lon": -97.7506403 },
+    { "lat": 30.2600972, "lon": -97.7506564 },
+    { "lat": 30.2600853, "lon": -97.7506403 },
+    { "lat": 30.2598765, "lon": -97.7509058 },
+    { "lat": 30.2599348, "lon": -97.7509573 },
+    { "lat": 30.2599155, "lon": -97.7510021 },
+    { "lat": 30.2598260, "lon": -97.7509630 },
+    { "lat": 30.2597884, "lon": -97.7510682 },
+    { "lat": 30.2598805, "lon": -97.7511133 },
+    { "lat": 30.2598388, "lon": -97.7512261 },
+    { "lat": 30.2598452, "lon": -97.7512564 },
+    { "lat": 30.2597728, "lon": -97.7513497 },
+    { "lat": 30.2600621, "lon": -97.7516407 },
+    { "lat": 30.2600825, "lon": -97.7516173 },
+    { "lat": 30.2601273, "lon": -97.7516608 },
+    { "lat": 30.2601790, "lon": -97.7515848 },
+    { "lat": 30.2602291, "lon": -97.7516321 }
+  ],
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "701",
+    "addr:postcode": "78704",
+    "addr:state": "TX",
+    "addr:street": "West Riverside Drive",
+    "amenity": "theatre",
+    "building": "yes",
+    "building:levels": "2",
+    "check_date": "2025-02-16",
+    "layer": "1",
+    "name": "The Long Center for the Performing Arts",
+    "phone": "+1-512-474-5664",
+    "website": "https://thelongcenter.org/",
+    "wikidata": "Q6672445",
+    "wikipedia": "en:Long Center for the Performing Arts"
+  }
+},
+{
+  "type": "way",
+  "id": 187668223,
+  "bounds": {
+    "minlat": 30.2599647,
+    "minlon": -97.7536062,
+    "maxlat": 30.2612827,
+    "maxlon": -97.7520469
+  },
+  "geometry": [
+    { "lat": 30.2604908, "lon": -97.7536062 },
+    { "lat": 30.2608096, "lon": -97.7531859 },
+    { "lat": 30.2608409, "lon": -97.7532177 },
+    { "lat": 30.2609352, "lon": -97.7530934 },
+    { "lat": 30.2609569, "lon": -97.7531154 },
+    { "lat": 30.2610512, "lon": -97.7529911 },
+    { "lat": 30.2610189, "lon": -97.7529581 },
+    { "lat": 30.2610331, "lon": -97.7529394 },
+    { "lat": 30.2610610, "lon": -97.7529680 },
+    { "lat": 30.2611334, "lon": -97.7528730 },
+    { "lat": 30.2611069, "lon": -97.7528458 },
+    { "lat": 30.2612827, "lon": -97.7526154 },
+    { "lat": 30.2609977, "lon": -97.7523241 },
+    { "lat": 30.2607266, "lon": -97.7520469 },
+    { "lat": 30.2607181, "lon": -97.7520581 },
+    { "lat": 30.2604638, "lon": -97.7523914 },
+    { "lat": 30.2604134, "lon": -97.7523399 },
+    { "lat": 30.2603076, "lon": -97.7524787 },
+    { "lat": 30.2603672, "lon": -97.7525395 },
+    { "lat": 30.2600365, "lon": -97.7529736 },
+    { "lat": 30.2599647, "lon": -97.7530679 },
+    { "lat": 30.2600748, "lon": -97.7531803 },
+    { "lat": 30.2600517, "lon": -97.7532106 },
+    { "lat": 30.2601572, "lon": -97.7533181 },
+    { "lat": 30.2602731, "lon": -97.7534362 },
+    { "lat": 30.2602951, "lon": -97.7534073 },
+    { "lat": 30.2604908, "lon": -97.7536062 }
+  ],
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "900",
+    "addr:postcode": "78704",
+    "addr:state": "TX",
+    "addr:street": "Barton Springs Road",
+    "amenity": "conference_centre",
+    "building": "yes",
+    "check_date": "2024-04-12",
+    "layer": "1",
+    "name": "Palmer Events Center",
+    "phone": "+1-512-404-4500",
+    "website": "https://www.palmereventscenter.com/"
+  }
+},
+{
+  "type": "way",
+  "id": 210646847,
+  "bounds": {
+    "minlat": 30.2710272,
+    "minlon": -97.7557577,
+    "maxlat": 30.2714226,
+    "maxlon": -97.7552504
+  },
+  "geometry": [
+    { "lat": 30.2714226, "lon": -97.7556291 },
+    { "lat": 30.2714129, "lon": -97.7556038 },
+    { "lat": 30.2712776, "lon": -97.7552504 },
+    { "lat": 30.2710272, "lon": -97.7553790 },
+    { "lat": 30.2711723, "lon": -97.7557577 },
+    { "lat": 30.2714226, "lon": -97.7556291 }
+  ],
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "507",
+    "addr:postcode": "78703",
+    "addr:state": "TX",
+    "addr:street": "Baylor Street",
+    "leisure": "park",
+    "name": "Caldwell Treaty Oak Park",
+    "operator": "Austin Parks and Recreation Department",
+    "operator:type": "public",
+    "operator:wikidata": "Q115220147",
+    "operator:wikipedia": "en:Austin, Texas"
+  }
+},
+{
+  "type": "way",
+  "id": 238575801,
+  "bounds": {
+    "minlat": 30.2645911,
+    "minlon": -97.7563427,
+    "maxlat": 30.2659871,
+    "maxlon": -97.7553673
+  },
+  "geometry": [
+    { "lat": 30.2659871, "lon": -97.7553697 },
+    { "lat": 30.2659775, "lon": -97.7553673 },
+    { "lat": 30.2659671, "lon": -97.7553682 },
+    { "lat": 30.2659547, "lon": -97.7553728 },
+    { "lat": 30.2659423, "lon": -97.7553818 },
+    { "lat": 30.2658833, "lon": -97.7554654 },
+    { "lat": 30.2657495, "lon": -97.7556575 },
+    { "lat": 30.2656649, "lon": -97.7557168 },
+    { "lat": 30.2656125, "lon": -97.7557509 },
+    { "lat": 30.2655850, "lon": -97.7557688 },
+    { "lat": 30.2655576, "lon": -97.7557887 },
+    { "lat": 30.2655026, "lon": -97.7558284 },
+    { "lat": 30.2654509, "lon": -97.7558664 },
+    { "lat": 30.2654319, "lon": -97.7558837 },
+    { "lat": 30.2654132, "lon": -97.7559027 },
+    { "lat": 30.2653713, "lon": -97.7559444 },
+    { "lat": 30.2653355, "lon": -97.7559832 },
+    { "lat": 30.2653173, "lon": -97.7560016 },
+    { "lat": 30.2652963, "lon": -97.7560194 },
+    { "lat": 30.2651138, "lon": -97.7561615 },
+    { "lat": 30.2650283, "lon": -97.7561957 },
+    { "lat": 30.2649171, "lon": -97.7562346 },
+    { "lat": 30.2647343, "lon": -97.7563034 },
+    { "lat": 30.2645911, "lon": -97.7563427 }
+  ],
+  "tags": {
+    "bicycle": "designated",
+    "bridge": "yes",
+    "covered": "no",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "2",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Pfluger Pedestrian Bridge",
+    "oneway": "no",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "stroller": "yes",
+    "surface": "concrete:plates",
+    "wheelchair": "designated"
+  }
+},
+{
+  "type": "way",
+  "id": 239372004,
+  "bounds": {
+    "minlat": 30.2658699,
+    "minlon": -97.7565551,
+    "maxlat": 30.2667687,
+    "maxlon": -97.7561841
+  },
+  "geometry": [
+    { "lat": 30.2658699, "lon": -97.7565551 },
+    { "lat": 30.2667687, "lon": -97.7561841 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "bridge:name": "Lamar Boulevard Bridge",
+    "cycleway:both": "no",
+    "foot": "no",
+    "heritage": "2",
+    "heritage:operator": "nrhp",
+    "highway": "primary",
+    "historic": "yes",
+    "lanes": "4",
+    "layer": "1",
+    "lit": "yes",
+    "maxspeed:backward": "30 mph",
+    "maxspeed:forward": "35 mph",
+    "name": "North Lamar Boulevard",
+    "name:etymology:wikidata": "Q456633",
+    "old_ref": "US 290",
+    "ref": "Loop 343",
+    "ref:nrhp": "94000678",
+    "sidewalk": "no",
+    "surface": "asphalt",
+    "wikidata": "Q14710932",
+    "wikipedia": "en:Lamar Boulevard Bridge"
+  }
+},
+{
+  "type": "way",
+  "id": 328526454,
+  "bounds": {
+    "minlat": 30.2692143,
+    "minlon": -97.7421384,
+    "maxlat": 30.2695439,
+    "maxlon": -97.7415882
+  },
+  "geometry": [
+    { "lat": 30.2695439, "lon": -97.7420648 },
+    { "lat": 30.2694109, "lon": -97.7415882 },
+    { "lat": 30.2692143, "lon": -97.7416617 },
+    { "lat": 30.2693473, "lon": -97.7421384 },
+    { "lat": 30.2695439, "lon": -97.7420648 }
+  ],
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "713",
+    "addr:postcode": "78701",
+    "addr:state": "TX",
+    "addr:street": "Congress Avenue",
+    "amenity": "theatre",
+    "architect": "John Eberson",
+    "building": "yes",
+    "building:levels": "5",
+    "height": "19.2024",
+    "heritage": "yes",
+    "historic": "building",
+    "image": "http://commons.wikimedia.org/wiki/File:Paramount_austin_2012.jpg",
+    "name": "Paramount Theatre",
+    "source:geometry": "Bing",
+    "start_date": "1915-10-11",
+    "website": "https://www.austintheatre.org/",
+    "wikidata": "Q7756086",
+    "wikipedia": "en:Paramount Theatre (Austin, Texas)"
+  }
+},
+{
+  "type": "way",
+  "id": 352112927,
+  "bounds": {
+    "minlat": 30.2662361,
+    "minlon": -97.7531063,
+    "maxlat": 30.2669551,
+    "maxlon": -97.7521487
+  },
+  "geometry": [
+    { "lat": 30.2667882, "lon": -97.7529842 },
+    { "lat": 30.2666683, "lon": -97.7530292 },
+    { "lat": 30.2666322, "lon": -97.7530427 },
+    { "lat": 30.2665982, "lon": -97.7530554 },
+    { "lat": 30.2664639, "lon": -97.7531063 },
+    { "lat": 30.2664155, "lon": -97.7529309 },
+    { "lat": 30.2662874, "lon": -97.7524812 },
+    { "lat": 30.2662361, "lon": -97.7522948 },
+    { "lat": 30.2663120, "lon": -97.7522669 },
+    { "lat": 30.2663339, "lon": -97.7522585 },
+    { "lat": 30.2663738, "lon": -97.7522439 },
+    { "lat": 30.2663581, "lon": -97.7521904 },
+    { "lat": 30.2664770, "lon": -97.7521487 },
+    { "lat": 30.2664894, "lon": -97.7521915 },
+    { "lat": 30.2664969, "lon": -97.7521889 },
+    { "lat": 30.2665059, "lon": -97.7522203 },
+    { "lat": 30.2665098, "lon": -97.7522331 },
+    { "lat": 30.2665703, "lon": -97.7522087 },
+    { "lat": 30.2665728, "lon": -97.7522170 },
+    { "lat": 30.2666844, "lon": -97.7521736 },
+    { "lat": 30.2668435, "lon": -97.7527793 },
+    { "lat": 30.2669148, "lon": -97.7527543 },
+    { "lat": 30.2669529, "lon": -97.7528847 },
+    { "lat": 30.2669422, "lon": -97.7528884 },
+    { "lat": 30.2669551, "lon": -97.7529333 },
+    { "lat": 30.2669025, "lon": -97.7529524 },
+    { "lat": 30.2668478, "lon": -97.7529724 },
+    { "lat": 30.2668332, "lon": -97.7529188 },
+    { "lat": 30.2667756, "lon": -97.7529394 },
+    { "lat": 30.2667882, "lon": -97.7529842 }
+  ],
+  "tags": {
+    "addr:housenumber": "812",
+    "addr:postcode": "78701",
+    "addr:street": "West Cesar Chavez Street",
+    "building": "commercial",
+    "building:levels": "3",
+    "name": "Old Seaholm Power Plant",
+    "office": "company"
+  }
+},
+{
+  "type": "way",
+  "id": 379221714,
+  "bounds": {
+    "minlat": 30.2604296,
+    "minlon": -97.7419560,
+    "maxlat": 30.2607321,
+    "maxlon": -97.7415944
+  },
+  "geometry": [
+    { "lat": 30.2605393, "lon": -97.7415944 },
+    { "lat": 30.2604296, "lon": -97.7417178 },
+    { "lat": 30.2606018, "lon": -97.7419238 },
+    { "lat": 30.2606213, "lon": -97.7419471 },
+    { "lat": 30.2606294, "lon": -97.7419560 },
+    { "lat": 30.2607321, "lon": -97.7418405 },
+    { "lat": 30.2606834, "lon": -97.7417825 },
+    { "lat": 30.2606888, "lon": -97.7417765 },
+    { "lat": 30.2606204, "lon": -97.7416950 },
+    { "lat": 30.2606155, "lon": -97.7416891 },
+    { "lat": 30.2606257, "lon": -97.7416777 },
+    { "lat": 30.2606060, "lon": -97.7416542 },
+    { "lat": 30.2605862, "lon": -97.7416306 },
+    { "lat": 30.2605777, "lon": -97.7416402 },
+    { "lat": 30.2605722, "lon": -97.7416336 },
+    { "lat": 30.2605393, "lon": -97.7415944 }
+  ],
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "74",
+    "addr:postcode": "78701",
+    "addr:state": "TX",
+    "addr:street": "Trinity Street",
+    "building": "retail",
+    "height": "15.3",
+    "name": "Waller Creek Boathouse",
+    "phone": "+1 512 750 2040",
+    "website": "https://www.wallercreekboathouse.org/"
+  }
+},
+{
+  "type": "way",
+  "id": 382559472,
+  "bounds": {
+    "minlat": 30.2653287,
+    "minlon": -97.7527567,
+    "maxlat": 30.2654453,
+    "maxlon": -97.7526413
+  },
+  "geometry": [
+    { "lat": 30.2654453, "lon": -97.7527202 },
+    { "lat": 30.2654224, "lon": -97.7526413 },
+    { "lat": 30.2653287, "lon": -97.7526778 },
+    { "lat": 30.2653364, "lon": -97.7527042 },
+    { "lat": 30.2653516, "lon": -97.7527567 },
+    { "lat": 30.2654453, "lon": -97.7527202 }
+  ],
+  "tags": {
+    "building": "yes",
+    "height": "8.1",
+    "name": "Seaholm Intake Building 3",
+    "start_date": "1990"
+  }
+},
+{
+  "type": "way",
+  "id": 382559566,
+  "bounds": {
+    "minlat": 30.2651375,
+    "minlon": -97.7527845,
+    "maxlat": 30.2652753,
+    "maxlon": -97.7526102
+  },
+  "geometry": [
+    { "lat": 30.2652512, "lon": -97.7526623 },
+    { "lat": 30.2652364, "lon": -97.7526102 },
+    { "lat": 30.2651667, "lon": -97.7526368 },
+    { "lat": 30.2651375, "lon": -97.7526479 },
+    { "lat": 30.2651763, "lon": -97.7527845 },
+    { "lat": 30.2652753, "lon": -97.7527468 },
+    { "lat": 30.2652512, "lon": -97.7526623 }
+  ],
+  "tags": {
+    "building": "yes",
+    "height": "25.7",
+    "name": "Seaholm Intake Building 2",
+    "start_date": "1960"
+  }
+},
+{
+  "type": "way",
+  "id": 382559624,
+  "bounds": {
+    "minlat": 30.2651868,
+    "minlon": -97.7532691,
+    "maxlat": 30.2654117,
+    "maxlon": -97.7527904
+  },
+  "geometry": [
+    { "lat": 30.2652889, "lon": -97.7527904 },
+    { "lat": 30.2651868, "lon": -97.7528285 },
+    { "lat": 30.2653095, "lon": -97.7532691 },
+    { "lat": 30.2654117, "lon": -97.7532309 },
+    { "lat": 30.2653140, "lon": -97.7528806 },
+    { "lat": 30.2652889, "lon": -97.7527904 }
+  ],
+  "tags": {
+    "building": "yes",
+    "height": "14.8",
+    "name": "Seaholm Intake Building 1",
+    "start_date": "1950"
+  }
+},
+{
+  "type": "way",
+  "id": 383346797,
+  "bounds": {
+    "minlat": 30.2623499,
+    "minlon": -97.7487620,
+    "maxlat": 30.2624659,
+    "maxlon": -97.7486300
+  },
+  "geometry": [
+    { "lat": 30.2624139, "lon": -97.7486300 },
+    { "lat": 30.2623931, "lon": -97.7486359 },
+    { "lat": 30.2623719, "lon": -97.7486418 },
+    { "lat": 30.2623690, "lon": -97.7486476 },
+    { "lat": 30.2623499, "lon": -97.7486850 },
+    { "lat": 30.2623609, "lon": -97.7487350 },
+    { "lat": 30.2624009, "lon": -97.7487620 },
+    { "lat": 30.2624419, "lon": -97.7487490 },
+    { "lat": 30.2624659, "lon": -97.7487060 },
+    { "lat": 30.2624539, "lon": -97.7486540 },
+    { "lat": 30.2624139, "lon": -97.7486300 }
+  ],
+  "tags": {
+    "amenity": "shelter",
+    "bench": "yes",
+    "building": "yes",
+    "name": "Fannie Davis Town Lake Gazebo",
+    "shelter_type": "gazebo"
+  }
+},
+{
+  "type": "way",
+  "id": 516271467,
+  "bounds": {
+    "minlat": 30.2656183,
+    "minlon": -97.7521482,
+    "maxlat": 30.2663181,
+    "maxlon": -97.7512934
+  },
+  "geometry": [
+    { "lat": 30.2663181, "lon": -97.7519595 },
+    { "lat": 30.2662186, "lon": -97.7515920 },
+    { "lat": 30.2661736, "lon": -97.7514496 },
+    { "lat": 30.2660866, "lon": -97.7513023 },
+    { "lat": 30.2660814, "lon": -97.7512934 },
+    { "lat": 30.2659286, "lon": -97.7514160 },
+    { "lat": 30.2659514, "lon": -97.7514723 },
+    { "lat": 30.2659364, "lon": -97.7514862 },
+    { "lat": 30.2659015, "lon": -97.7515185 },
+    { "lat": 30.2658612, "lon": -97.7515560 },
+    { "lat": 30.2658468, "lon": -97.7515293 },
+    { "lat": 30.2658286, "lon": -97.7514954 },
+    { "lat": 30.2658271, "lon": -97.7514926 },
+    { "lat": 30.2656183, "lon": -97.7515506 },
+    { "lat": 30.2656885, "lon": -97.7517894 },
+    { "lat": 30.2657306, "lon": -97.7519974 },
+    { "lat": 30.2657403, "lon": -97.7520455 },
+    { "lat": 30.2657977, "lon": -97.7521482 },
+    { "lat": 30.2660936, "lon": -97.7520388 },
+    { "lat": 30.2663181, "lon": -97.7519595 }
+  ],
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "710",
+    "addr:postcode": "78701",
+    "addr:state": "TX",
+    "addr:street": "West Cesar Chavez Street",
+    "amenity": "library",
+    "building": "yes",
+    "building:levels": "6",
+    "internet_access": "yes",
+    "name": "Austin Central Library",
+    "opening_hours": "Mo-Th 09:00-20:00; Fr 09:00-17:00; Sa 10:00-17:00; Su 12:00-17:00",
+    "operator": "Austin Public Library",
+    "operator:type": "government",
+    "operator:wikidata": "Q69491633",
+    "source": "http://library.austintexas.gov/new-central-library",
+    "website": "https://library.austintexas.gov/",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 679083604,
+  "bounds": {
+    "minlat": 30.2649282,
+    "minlon": -97.7570119,
+    "maxlat": 30.2667878,
+    "maxlon": -97.7561212
+  },
+  "geometry": [
+    { "lat": 30.2667878, "lon": -97.7562659 },
+    { "lat": 30.2667847, "lon": -97.7562556 },
+    { "lat": 30.2667836, "lon": -97.7562519 },
+    { "lat": 30.2667651, "lon": -97.7561909 },
+    { "lat": 30.2667439, "lon": -97.7561212 },
+    { "lat": 30.2649895, "lon": -97.7568366 },
+    { "lat": 30.2649282, "lon": -97.7568616 },
+    { "lat": 30.2649529, "lon": -97.7569427 },
+    { "lat": 30.2649739, "lon": -97.7570119 },
+    { "lat": 30.2663929, "lon": -97.7564283 },
+    { "lat": 30.2664885, "lon": -97.7563890 },
+    { "lat": 30.2667697, "lon": -97.7562733 },
+    { "lat": 30.2667878, "lon": -97.7562659 }
+  ],
+  "tags": {
+    "bridge:structure": "arch",
+    "layer": "1",
+    "man_made": "bridge",
+    "name": "Lamar Boulevard Bridge",
+    "wikidata": "Q14710932",
+    "wikipedia": "en:Lamar Boulevard Bridge"
+  }
+},
+{
+  "type": "way",
+  "id": 708605258,
+  "bounds": {
+    "minlat": 30.2601094,
+    "minlon": -97.7458801,
+    "maxlat": 30.2626767,
+    "maxlon": -97.7447036
+  },
+  "geometry": [
+    { "lat": 30.2626090, "lon": -97.7447036 },
+    { "lat": 30.2626158, "lon": -97.7447280 },
+    { "lat": 30.2626428, "lon": -97.7448250 },
+    { "lat": 30.2626703, "lon": -97.7449238 },
+    { "lat": 30.2626740, "lon": -97.7449369 },
+    { "lat": 30.2626767, "lon": -97.7449467 },
+    { "lat": 30.2601771, "lon": -97.7458801 },
+    { "lat": 30.2601726, "lon": -97.7458639 },
+    { "lat": 30.2601432, "lon": -97.7457584 },
+    { "lat": 30.2601233, "lon": -97.7456880 },
+    { "lat": 30.2601094, "lon": -97.7456370 },
+    { "lat": 30.2626090, "lon": -97.7447036 }
+  ],
+  "tags": {
+    "bridge:structure": "arch",
+    "layer": "1",
+    "man_made": "bridge",
+    "name": "Ann W. Richards Congress Avenue Bridge",
+    "name:en": "Ann W. Richards Congress Avenue Bridge",
+    "name:lt": "Kongreso alėjos tiltas",
+    "old_name": "Congress Avenue Bridge",
+    "wikidata": "Q4766731",
+    "wikipedia": "en:Ann W. Richards Congress Avenue Bridge"
+  }
+},
+{
+  "type": "way",
+  "id": 849962544,
+  "bounds": {
+    "minlat": 30.2600667,
+    "minlon": -97.7423365,
+    "maxlat": 30.2602591,
+    "maxlon": -97.7420361
+  },
+  "geometry": [
+    { "lat": 30.2601005, "lon": -97.7423365 },
+    { "lat": 30.2600667, "lon": -97.7423095 },
+    { "lat": 30.2601599, "lon": -97.7421529 },
+    { "lat": 30.2601674, "lon": -97.7421589 },
+    { "lat": 30.2602404, "lon": -97.7420361 },
+    { "lat": 30.2602483, "lon": -97.7420424 },
+    { "lat": 30.2602591, "lon": -97.7420510 },
+    { "lat": 30.2601853, "lon": -97.7421749 },
+    { "lat": 30.2601930, "lon": -97.7421811 },
+    { "lat": 30.2601005, "lon": -97.7423365 }
+  ],
+  "tags": {
+    "area": "yes",
+    "floating": "yes",
+    "man_made": "pier"
+  }
+},
+{
+  "type": "way",
+  "id": 849962545,
+  "bounds": {
+    "minlat": 30.2601452,
+    "minlon": -97.7424281,
+    "maxlat": 30.2603332,
+    "maxlon": -97.7421289
+  },
+  "geometry": [
+    { "lat": 30.2602703, "lon": -97.7422745 },
+    { "lat": 30.2602595, "lon": -97.7422659 },
+    { "lat": 30.2603332, "lon": -97.7421418 },
+    { "lat": 30.2603247, "lon": -97.7421350 },
+    { "lat": 30.2603169, "lon": -97.7421289 },
+    { "lat": 30.2602439, "lon": -97.7422518 },
+    { "lat": 30.2602371, "lon": -97.7422465 },
+    { "lat": 30.2601452, "lon": -97.7424012 },
+    { "lat": 30.2601790, "lon": -97.7424281 },
+    { "lat": 30.2602703, "lon": -97.7422745 }
+  ],
+  "tags": {
+    "area": "yes",
+    "floating": "yes",
+    "man_made": "pier"
+  }
+},
+{
+  "type": "way",
+  "id": 849962546,
+  "bounds": {
+    "minlat": 30.2603273,
+    "minlon": -97.7426062,
+    "maxlat": 30.2605571,
+    "maxlon": -97.7423581
+  },
+  "geometry": [
+    { "lat": 30.2604358, "lon": -97.7426062 },
+    { "lat": 30.2604652, "lon": -97.7425767 },
+    { "lat": 30.2604189, "lon": -97.7425148 },
+    { "lat": 30.2605499, "lon": -97.7423837 },
+    { "lat": 30.2605571, "lon": -97.7423764 },
+    { "lat": 30.2605499, "lon": -97.7423668 },
+    { "lat": 30.2605434, "lon": -97.7423581 },
+    { "lat": 30.2604069, "lon": -97.7424947 },
+    { "lat": 30.2603584, "lon": -97.7424298 },
+    { "lat": 30.2603273, "lon": -97.7424609 },
+    { "lat": 30.2604358, "lon": -97.7426062 }
+  ],
+  "tags": {
+    "area": "yes",
+    "floating": "yes",
+    "man_made": "pier"
+  }
+},
+{
+  "type": "way",
+  "id": 856483794,
+  "bounds": {
+    "minlat": 30.2620992,
+    "minlon": -97.7490774,
+    "maxlat": 30.2623487,
+    "maxlon": -97.7486285
+  },
+  "geometry": [
+    { "lat": 30.2621757, "lon": -97.7486285 },
+    { "lat": 30.2621968, "lon": -97.7487551 },
+    { "lat": 30.2621857, "lon": -97.7487887 },
+    { "lat": 30.2621849, "lon": -97.7488128 },
+    { "lat": 30.2621869, "lon": -97.7488418 },
+    { "lat": 30.2621930, "lon": -97.7488711 },
+    { "lat": 30.2622015, "lon": -97.7488923 },
+    { "lat": 30.2622235, "lon": -97.7489198 },
+    { "lat": 30.2622284, "lon": -97.7489525 },
+    { "lat": 30.2622976, "lon": -97.7489381 },
+    { "lat": 30.2623031, "lon": -97.7489708 },
+    { "lat": 30.2623324, "lon": -97.7489643 },
+    { "lat": 30.2623487, "lon": -97.7490774 },
+    { "lat": 30.2623073, "lon": -97.7490747 },
+    { "lat": 30.2622852, "lon": -97.7490691 },
+    { "lat": 30.2622580, "lon": -97.7490629 },
+    { "lat": 30.2622305, "lon": -97.7490479 },
+    { "lat": 30.2621848, "lon": -97.7490154 },
+    { "lat": 30.2621475, "lon": -97.7489695 },
+    { "lat": 30.2621243, "lon": -97.7489315 },
+    { "lat": 30.2621075, "lon": -97.7488817 },
+    { "lat": 30.2621012, "lon": -97.7488460 },
+    { "lat": 30.2620992, "lon": -97.7488103 },
+    { "lat": 30.2620999, "lon": -97.7487735 },
+    { "lat": 30.2621080, "lon": -97.7487366 },
+    { "lat": 30.2621231, "lon": -97.7486967 },
+    { "lat": 30.2621462, "lon": -97.7486517 },
+    { "lat": 30.2621757, "lon": -97.7486285 }
+  ],
+  "tags": {
+    "area": "yes",
+    "floating": "no",
+    "man_made": "pier",
+    "mooring": "no",
+    "name": "Brent Grulke Plaza",
+    "surface": "concrete:plates"
+  }
+},
+{
+  "type": "way",
+  "id": 868219302,
+  "bounds": {
+    "minlat": 30.2639216,
+    "minlon": -97.7527095,
+    "maxlat": 30.2639884,
+    "maxlon": -97.7526331
+  },
+  "geometry": [
+    { "lat": 30.2639884, "lon": -97.7526994 },
+    { "lat": 30.2639479, "lon": -97.7527095 },
+    { "lat": 30.2639216, "lon": -97.7526559 },
+    { "lat": 30.2639456, "lon": -97.7526331 },
+    { "lat": 30.2639884, "lon": -97.7526994 }
+  ],
+  "tags": {
+    "area": "yes",
+    "bicycle": "no",
+    "floating": "no",
+    "foot": "yes",
+    "man_made": "pier",
+    "motor_vehicle": "no",
+    "surface": "wood"
+  }
+},
+{
+  "type": "way",
+  "id": 878430876,
+  "bounds": {
+    "minlat": 30.2669712,
+    "minlon": -97.7528179,
+    "maxlat": 30.2670061,
+    "maxlon": -97.7527775
+  },
+  "geometry": [
+    { "lat": 30.2669790, "lon": -97.7528146 },
+    { "lat": 30.2669845, "lon": -97.7528174 },
+    { "lat": 30.2669904, "lon": -97.7528179 },
+    { "lat": 30.2669962, "lon": -97.7528160 },
+    { "lat": 30.2670011, "lon": -97.7528120 },
+    { "lat": 30.2670045, "lon": -97.7528064 },
+    { "lat": 30.2670061, "lon": -97.7527997 },
+    { "lat": 30.2670057, "lon": -97.7527928 },
+    { "lat": 30.2670035, "lon": -97.7527869 },
+    { "lat": 30.2669998, "lon": -97.7527821 },
+    { "lat": 30.2669950, "lon": -97.7527788 },
+    { "lat": 30.2669895, "lon": -97.7527775 },
+    { "lat": 30.2669840, "lon": -97.7527782 },
+    { "lat": 30.2669790, "lon": -97.7527809 },
+    { "lat": 30.2669749, "lon": -97.7527853 },
+    { "lat": 30.2669722, "lon": -97.7527909 },
+    { "lat": 30.2669712, "lon": -97.7527973 },
+    { "lat": 30.2669720, "lon": -97.7528037 },
+    { "lat": 30.2669747, "lon": -97.7528098 },
+    { "lat": 30.2669790, "lon": -97.7528146 }
+  ],
+  "tags": {
+    "height": "36.9",
+    "historic": "yes",
+    "man_made": "chimney",
+    "material": "metal",
+    "name": "Seaholm Chimney 1"
+  }
+},
+{
+  "type": "way",
+  "id": 878430877,
+  "bounds": {
+    "minlat": 30.2668985,
+    "minlon": -97.7526742,
+    "maxlat": 30.2669214,
+    "maxlon": -97.7526479
+  },
+  "geometry": [
+    { "lat": 30.2669044, "lon": -97.7526727 },
+    { "lat": 30.2669080, "lon": -97.7526742 },
+    { "lat": 30.2669118, "lon": -97.7526742 },
+    { "lat": 30.2669155, "lon": -97.7526728 },
+    { "lat": 30.2669185, "lon": -97.7526700 },
+    { "lat": 30.2669205, "lon": -97.7526662 },
+    { "lat": 30.2669214, "lon": -97.7526619 },
+    { "lat": 30.2669209, "lon": -97.7526575 },
+    { "lat": 30.2669193, "lon": -97.7526536 },
+    { "lat": 30.2669168, "lon": -97.7526505 },
+    { "lat": 30.2669135, "lon": -97.7526485 },
+    { "lat": 30.2669098, "lon": -97.7526479 },
+    { "lat": 30.2669062, "lon": -97.7526486 },
+    { "lat": 30.2669029, "lon": -97.7526507 },
+    { "lat": 30.2669004, "lon": -97.7526538 },
+    { "lat": 30.2668989, "lon": -97.7526577 },
+    { "lat": 30.2668985, "lon": -97.7526620 },
+    { "lat": 30.2668993, "lon": -97.7526662 },
+    { "lat": 30.2669014, "lon": -97.7526700 },
+    { "lat": 30.2669044, "lon": -97.7526727 }
+  ],
+  "tags": {
+    "height": "36.9",
+    "historic": "yes",
+    "man_made": "chimney",
+    "material": "metal",
+    "name": "Seaholm Chimney 2"
+  }
+},
+{
+  "type": "way",
+  "id": 878430878,
+  "bounds": {
+    "minlat": 30.2668560,
+    "minlon": -97.7525227,
+    "maxlat": 30.2668788,
+    "maxlon": -97.7524964
+  },
+  "geometry": [
+    { "lat": 30.2668618, "lon": -97.7525212 },
+    { "lat": 30.2668655, "lon": -97.7525227 },
+    { "lat": 30.2668693, "lon": -97.7525227 },
+    { "lat": 30.2668729, "lon": -97.7525213 },
+    { "lat": 30.2668760, "lon": -97.7525185 },
+    { "lat": 30.2668780, "lon": -97.7525147 },
+    { "lat": 30.2668788, "lon": -97.7525104 },
+    { "lat": 30.2668784, "lon": -97.7525060 },
+    { "lat": 30.2668768, "lon": -97.7525021 },
+    { "lat": 30.2668742, "lon": -97.7524990 },
+    { "lat": 30.2668710, "lon": -97.7524970 },
+    { "lat": 30.2668673, "lon": -97.7524964 },
+    { "lat": 30.2668636, "lon": -97.7524971 },
+    { "lat": 30.2668604, "lon": -97.7524992 },
+    { "lat": 30.2668579, "lon": -97.7525023 },
+    { "lat": 30.2668564, "lon": -97.7525062 },
+    { "lat": 30.2668560, "lon": -97.7525105 },
+    { "lat": 30.2668568, "lon": -97.7525147 },
+    { "lat": 30.2668589, "lon": -97.7525185 },
+    { "lat": 30.2668618, "lon": -97.7525212 }
+  ],
+  "tags": {
+    "height": "36.9",
+    "historic": "yes",
+    "man_made": "chimney",
+    "material": "metal",
+    "name": "Seaholm Chimney 3"
+  }
+},
+{
+  "type": "way",
+  "id": 878430879,
+  "bounds": {
+    "minlat": 30.2668133,
+    "minlon": -97.7523715,
+    "maxlat": 30.2668362,
+    "maxlon": -97.7523451
+  },
+  "geometry": [
+    { "lat": 30.2668192, "lon": -97.7523700 },
+    { "lat": 30.2668228, "lon": -97.7523715 },
+    { "lat": 30.2668266, "lon": -97.7523715 },
+    { "lat": 30.2668303, "lon": -97.7523700 },
+    { "lat": 30.2668333, "lon": -97.7523672 },
+    { "lat": 30.2668353, "lon": -97.7523635 },
+    { "lat": 30.2668362, "lon": -97.7523591 },
+    { "lat": 30.2668357, "lon": -97.7523547 },
+    { "lat": 30.2668342, "lon": -97.7523508 },
+    { "lat": 30.2668316, "lon": -97.7523478 },
+    { "lat": 30.2668283, "lon": -97.7523458 },
+    { "lat": 30.2668246, "lon": -97.7523451 },
+    { "lat": 30.2668210, "lon": -97.7523459 },
+    { "lat": 30.2668177, "lon": -97.7523479 },
+    { "lat": 30.2668152, "lon": -97.7523511 },
+    { "lat": 30.2668137, "lon": -97.7523550 },
+    { "lat": 30.2668133, "lon": -97.7523592 },
+    { "lat": 30.2668141, "lon": -97.7523634 },
+    { "lat": 30.2668162, "lon": -97.7523672 },
+    { "lat": 30.2668192, "lon": -97.7523700 }
+  ],
+  "tags": {
+    "historic": "yes",
+    "man_made": "chimney",
+    "material": "metal",
+    "name": "Seaholm Chimney 4"
+  }
+},
+{
+  "type": "way",
+  "id": 878430880,
+  "bounds": {
+    "minlat": 30.2667692,
+    "minlon": -97.7522234,
+    "maxlat": 30.2667920,
+    "maxlon": -97.7521971
+  },
+  "geometry": [
+    { "lat": 30.2667750, "lon": -97.7522219 },
+    { "lat": 30.2667787, "lon": -97.7522234 },
+    { "lat": 30.2667825, "lon": -97.7522234 },
+    { "lat": 30.2667861, "lon": -97.7522219 },
+    { "lat": 30.2667891, "lon": -97.7522192 },
+    { "lat": 30.2667912, "lon": -97.7522154 },
+    { "lat": 30.2667920, "lon": -97.7522111 },
+    { "lat": 30.2667916, "lon": -97.7522067 },
+    { "lat": 30.2667900, "lon": -97.7522028 },
+    { "lat": 30.2667874, "lon": -97.7521997 },
+    { "lat": 30.2667841, "lon": -97.7521977 },
+    { "lat": 30.2667805, "lon": -97.7521971 },
+    { "lat": 30.2667768, "lon": -97.7521978 },
+    { "lat": 30.2667736, "lon": -97.7521999 },
+    { "lat": 30.2667711, "lon": -97.7522030 },
+    { "lat": 30.2667695, "lon": -97.7522069 },
+    { "lat": 30.2667692, "lon": -97.7522112 },
+    { "lat": 30.2667700, "lon": -97.7522154 },
+    { "lat": 30.2667720, "lon": -97.7522191 },
+    { "lat": 30.2667750, "lon": -97.7522219 }
+  ],
+  "tags": {
+    "historic": "yes",
+    "man_made": "chimney",
+    "material": "metal",
+    "name": "Seaholm Chimney 5"
+  }
+},
+{
+  "type": "way",
+  "id": 878655736,
+  "bounds": {
+    "minlat": 30.2605187,
+    "minlon": -97.7490580,
+    "maxlat": 30.2638645,
+    "maxlon": -97.7474583
+  },
+  "geometry": [
+    { "lat": 30.2606153, "lon": -97.7490580 },
+    { "lat": 30.2605187, "lon": -97.7487422 },
+    { "lat": 30.2609795, "lon": -97.7485451 },
+    { "lat": 30.2610332, "lon": -97.7485091 },
+    { "lat": 30.2628138, "lon": -97.7478483 },
+    { "lat": 30.2628529, "lon": -97.7478148 },
+    { "lat": 30.2629686, "lon": -97.7477705 },
+    { "lat": 30.2630180, "lon": -97.7477718 },
+    { "lat": 30.2636051, "lon": -97.7475543 },
+    { "lat": 30.2636290, "lon": -97.7475457 },
+    { "lat": 30.2637209, "lon": -97.7474858 },
+    { "lat": 30.2637605, "lon": -97.7474600 },
+    { "lat": 30.2637631, "lon": -97.7474583 },
+    { "lat": 30.2638645, "lon": -97.7478187 },
+    { "lat": 30.2638330, "lon": -97.7478237 },
+    { "lat": 30.2637049, "lon": -97.7478440 },
+    { "lat": 30.2630962, "lon": -97.7480723 },
+    { "lat": 30.2630594, "lon": -97.7481036 },
+    { "lat": 30.2629460, "lon": -97.7481453 },
+    { "lat": 30.2629001, "lon": -97.7481454 },
+    { "lat": 30.2615350, "lon": -97.7486543 },
+    { "lat": 30.2613527, "lon": -97.7487231 },
+    { "lat": 30.2610901, "lon": -97.7488459 },
+    { "lat": 30.2608544, "lon": -97.7489428 },
+    { "lat": 30.2606153, "lon": -97.7490580 }
+  ],
+  "tags": {
+    "bridge": "viaduct",
+    "bridge:structure": "beam",
+    "layer": "1",
+    "man_made": "bridge",
+    "name": "Drake Bridge"
+  }
+},
+{
+  "type": "way",
+  "id": 922194707,
+  "bounds": {
+    "minlat": 30.2660501,
+    "minlon": -97.7553072,
+    "maxlat": 30.2661165,
+    "maxlon": -97.7552117
+  },
+  "geometry": [
+    { "lat": 30.2661165, "lon": -97.7552117 },
+    { "lat": 30.2660985, "lon": -97.7552210 },
+    { "lat": 30.2660900, "lon": -97.7552298 },
+    { "lat": 30.2660804, "lon": -97.7552387 },
+    { "lat": 30.2660709, "lon": -97.7552492 },
+    { "lat": 30.2660616, "lon": -97.7552612 },
+    { "lat": 30.2660548, "lon": -97.7552799 },
+    { "lat": 30.2660501, "lon": -97.7553072 }
+  ],
+  "tags": {
+    "bicycle": "designated",
+    "bridge": "yes",
+    "covered": "yes",
+    "dog": "leashed",
+    "electric_bicycle": "yes",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "1",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Pfluger Pedestrian Bridge",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 929944788,
+  "bounds": {
+    "minlat": 30.2652409,
+    "minlon": -97.7475139,
+    "maxlat": 30.2657231,
+    "maxlon": -97.7468635
+  },
+  "geometry": [
+    { "lat": 30.2657231, "lon": -97.7473895 },
+    { "lat": 30.2655787, "lon": -97.7468635 },
+    { "lat": 30.2652832, "lon": -97.7469722 },
+    { "lat": 30.2652409, "lon": -97.7469878 },
+    { "lat": 30.2653854, "lon": -97.7475139 },
+    { "lat": 30.2657231, "lon": -97.7473895 }
+  ],
+  "tags": {
+    "addr:city": "Austin",
+    "addr:housenumber": "310",
+    "addr:postcode": "78701",
+    "addr:state": "TX",
+    "addr:street": "West 2nd Street",
+    "amenity": "theatre",
+    "capacity": "2750",
+    "indoor": "room",
+    "name": "Moody Theater",
+    "room": "auditorium",
+    "website": "https://www.acllive.com/"
+  }
+},
+{
+  "type": "way",
+  "id": 929950015,
+  "bounds": {
+    "minlat": 30.2613341,
+    "minlon": -97.7473368,
+    "maxlat": 30.2613809,
+    "maxlon": -97.7472659
+  },
+  "geometry": [
+    { "lat": 30.2613809, "lon": -97.7473257 },
+    { "lat": 30.2613582, "lon": -97.7473368 },
+    { "lat": 30.2613341, "lon": -97.7472774 },
+    { "lat": 30.2613577, "lon": -97.7472659 },
+    { "lat": 30.2613621, "lon": -97.7472779 },
+    { "lat": 30.2613736, "lon": -97.7473082 },
+    { "lat": 30.2613809, "lon": -97.7473257 }
+  ],
+  "tags": {
+    "amenity": "boat_rental",
+    "name": "Capital Cruises"
+  }
+},
+{
+  "type": "way",
+  "id": 929950133,
+  "bounds": {
+    "minlat": 30.2618315,
+    "minlon": -97.7479073,
+    "maxlat": 30.2619637,
+    "maxlon": -97.7477329
+  },
+  "geometry": [
+    { "lat": 30.2619351, "lon": -97.7479073 },
+    { "lat": 30.2619120, "lon": -97.7478745 },
+    { "lat": 30.2618872, "lon": -97.7478392 },
+    { "lat": 30.2618765, "lon": -97.7478241 },
+    { "lat": 30.2618315, "lon": -97.7477600 },
+    { "lat": 30.2618602, "lon": -97.7477329 },
+    { "lat": 30.2619637, "lon": -97.7478803 },
+    { "lat": 30.2619351, "lon": -97.7479073 }
+  ],
+  "tags": {
+    "amenity": "boat_rental",
+    "name": "Lone Star Riverboat"
+  }
+},
+{
+  "type": "way",
+  "id": 965061100,
+  "bounds": {
+    "minlat": 30.2635560,
+    "minlon": -97.7553873,
+    "maxlat": 30.2668580,
+    "maxlon": -97.7534068
+  },
+  "geometry": [
+    { "lat": 30.2668580, "lon": -97.7534556 },
+    { "lat": 30.2668381, "lon": -97.7534068 },
+    { "lat": 30.2668146, "lon": -97.7534254 },
+    { "lat": 30.2667059, "lon": -97.7534943 },
+    { "lat": 30.2635560, "lon": -97.7553466 },
+    { "lat": 30.2635729, "lon": -97.7553873 },
+    { "lat": 30.2667584, "lon": -97.7535012 },
+    { "lat": 30.2668307, "lon": -97.7534648 },
+    { "lat": 30.2668580, "lon": -97.7534556 }
+  ],
+  "tags": {
+    "layer": "1",
+    "man_made": "bridge",
+    "name": "Colorado River Bridge (Union Pacific Railroad)"
+  }
+},
+{
+  "type": "way",
+  "id": 969902073,
+  "bounds": {
+    "minlat": 30.2618186,
+    "minlon": -97.7479073,
+    "maxlat": 30.2619637,
+    "maxlon": -97.7477329
+  },
+  "geometry": [
+    { "lat": 30.2619637, "lon": -97.7478803 },
+    { "lat": 30.2619351, "lon": -97.7479073 },
+    { "lat": 30.2619120, "lon": -97.7478745 },
+    { "lat": 30.2618872, "lon": -97.7478392 },
+    { "lat": 30.2618285, "lon": -97.7478924 },
+    { "lat": 30.2618230, "lon": -97.7478836 },
+    { "lat": 30.2618186, "lon": -97.7478765 },
+    { "lat": 30.2618765, "lon": -97.7478241 },
+    { "lat": 30.2618315, "lon": -97.7477600 },
+    { "lat": 30.2618602, "lon": -97.7477329 },
+    { "lat": 30.2619637, "lon": -97.7478803 }
+  ],
+  "tags": {
+    "area": "yes",
+    "floating": "yes",
+    "man_made": "pier"
+  }
+},
+{
+  "type": "way",
+  "id": 969902081,
+  "bounds": {
+    "minlat": 30.2614369,
+    "minlon": -97.7475362,
+    "maxlat": 30.2615810,
+    "maxlon": -97.7474481
+  },
+  "geometry": [
+    { "lat": 30.2614723, "lon": -97.7475362 },
+    { "lat": 30.2614669, "lon": -97.7475208 },
+    { "lat": 30.2614448, "lon": -97.7475313 },
+    { "lat": 30.2614401, "lon": -97.7475335 },
+    { "lat": 30.2614369, "lon": -97.7475244 },
+    { "lat": 30.2614390, "lon": -97.7475234 },
+    { "lat": 30.2614642, "lon": -97.7475116 },
+    { "lat": 30.2614597, "lon": -97.7474989 },
+    { "lat": 30.2615680, "lon": -97.7474481 },
+    { "lat": 30.2615810, "lon": -97.7474852 },
+    { "lat": 30.2614723, "lon": -97.7475362 }
+  ],
+  "tags": {
+    "area": "yes",
+    "floating": "yes",
+    "man_made": "pier"
+  }
+},
+{
+  "type": "way",
+  "id": 969902082,
+  "bounds": {
+    "minlat": 30.2613447,
+    "minlon": -97.7473092,
+    "maxlat": 30.2614241,
+    "maxlon": -97.7471535
+  },
+  "geometry": [
+    { "lat": 30.2613736, "lon": -97.7473082 },
+    { "lat": 30.2613933, "lon": -97.7472981 },
+    { "lat": 30.2613975, "lon": -97.7473092 },
+    { "lat": 30.2614241, "lon": -97.7472956 },
+    { "lat": 30.2613701, "lon": -97.7471535 },
+    { "lat": 30.2613447, "lon": -97.7471665 },
+    { "lat": 30.2613830, "lon": -97.7472673 },
+    { "lat": 30.2613621, "lon": -97.7472779 },
+    { "lat": 30.2613736, "lon": -97.7473082 }
+  ],
+  "tags": {
+    "area": "yes",
+    "floating": "yes",
+    "man_made": "pier"
+  }
+},
+{
+  "type": "way",
+  "id": 969902083,
+  "bounds": {
+    "minlat": 30.2613647,
+    "minlon": -97.7474049,
+    "maxlat": 30.2614713,
+    "maxlon": -97.7473664
+  },
+  "geometry": [
+    { "lat": 30.2614713, "lon": -97.7474033 },
+    { "lat": 30.2614066, "lon": -97.7474049 },
+    { "lat": 30.2614063, "lon": -97.7473869 },
+    { "lat": 30.2613649, "lon": -97.7473880 },
+    { "lat": 30.2613647, "lon": -97.7473774 },
+    { "lat": 30.2614064, "lon": -97.7473764 },
+    { "lat": 30.2614062, "lon": -97.7473680 },
+    { "lat": 30.2614706, "lon": -97.7473664 },
+    { "lat": 30.2614713, "lon": -97.7474033 }
+  ],
+  "tags": {
+    "area": "yes",
+    "floating": "yes",
+    "man_made": "pier"
+  }
+},
+{
+  "type": "way",
+  "id": 969955635,
+  "bounds": {
+    "minlat": 30.2562612,
+    "minlon": -97.7428615,
+    "maxlat": 30.2563506,
+    "maxlon": -97.7427609
+  },
+  "geometry": [
+    { "lat": 30.2563506, "lon": -97.7427693 },
+    { "lat": 30.2563420, "lon": -97.7427686 },
+    { "lat": 30.2563406, "lon": -97.7427919 },
+    { "lat": 30.2563311, "lon": -97.7427911 },
+    { "lat": 30.2563326, "lon": -97.7427668 },
+    { "lat": 30.2563231, "lon": -97.7427660 },
+    { "lat": 30.2563216, "lon": -97.7427904 },
+    { "lat": 30.2563126, "lon": -97.7427894 },
+    { "lat": 30.2563141, "lon": -97.7427650 },
+    { "lat": 30.2563035, "lon": -97.7427642 },
+    { "lat": 30.2563021, "lon": -97.7427884 },
+    { "lat": 30.2562921, "lon": -97.7427875 },
+    { "lat": 30.2562938, "lon": -97.7427644 },
+    { "lat": 30.2562843, "lon": -97.7427639 },
+    { "lat": 30.2562829, "lon": -97.7427859 },
+    { "lat": 30.2562724, "lon": -97.7427851 },
+    { "lat": 30.2562738, "lon": -97.7427616 },
+    { "lat": 30.2562650, "lon": -97.7427609 },
+    { "lat": 30.2562612, "lon": -97.7428226 },
+    { "lat": 30.2562909, "lon": -97.7428250 },
+    { "lat": 30.2562888, "lon": -97.7428584 },
+    { "lat": 30.2563076, "lon": -97.7428600 },
+    { "lat": 30.2563263, "lon": -97.7428615 },
+    { "lat": 30.2563298, "lon": -97.7428033 },
+    { "lat": 30.2563484, "lon": -97.7428049 },
+    { "lat": 30.2563506, "lon": -97.7427693 }
+  ],
+  "tags": {
+    "access": "private",
+    "area": "yes",
+    "floating": "no",
+    "man_made": "pier",
+    "mooring": "private",
+    "surface": "wood"
+  }
+},
+{
+  "type": "way",
+  "id": 1274242597,
+  "bounds": {
+    "minlat": 30.2659871,
+    "minlon": -97.7553697,
+    "maxlat": 30.2662704,
+    "maxlon": -97.7551937
+  },
+  "geometry": [
+    { "lat": 30.2662704, "lon": -97.7553177 },
+    { "lat": 30.2662642, "lon": -97.7552823 },
+    { "lat": 30.2662587, "lon": -97.7552625 },
+    { "lat": 30.2662489, "lon": -97.7552422 },
+    { "lat": 30.2662390, "lon": -97.7552293 },
+    { "lat": 30.2662232, "lon": -97.7552159 },
+    { "lat": 30.2662015, "lon": -97.7552011 },
+    { "lat": 30.2661787, "lon": -97.7551940 },
+    { "lat": 30.2661585, "lon": -97.7551937 },
+    { "lat": 30.2661401, "lon": -97.7551973 },
+    { "lat": 30.2661171, "lon": -97.7552030 },
+    { "lat": 30.2660963, "lon": -97.7552161 },
+    { "lat": 30.2660723, "lon": -97.7552409 },
+    { "lat": 30.2659871, "lon": -97.7553697 }
+  ],
+  "tags": {
+    "access": "yes",
+    "bicycle": "designated",
+    "bridge": "yes",
+    "dog": "leashed",
+    "foot": "designated",
+    "highway": "cycleway",
+    "horse": "no",
+    "layer": "2",
+    "maxspeed": "10 mph",
+    "motor_vehicle": "no",
+    "name": "Pfluger Pedestrian Bridge",
+    "segregated": "no",
+    "small_electric_vehicle": "no",
+    "smoothness": "excellent",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1406446799,
+  "bounds": {
+    "minlat": 30.2752051,
+    "minlon": -97.7390943,
+    "maxlat": 30.2752904,
+    "maxlon": -97.7389953
+  },
+  "geometry": [
+    { "lat": 30.2752715, "lon": -97.7390859 },
+    { "lat": 30.2752814, "lon": -97.7390753 },
+    { "lat": 30.2752879, "lon": -97.7390616 },
+    { "lat": 30.2752904, "lon": -97.7390462 },
+    { "lat": 30.2752887, "lon": -97.7390307 },
+    { "lat": 30.2752822, "lon": -97.7390155 },
+    { "lat": 30.2752717, "lon": -97.7390037 },
+    { "lat": 30.2752584, "lon": -97.7389967 },
+    { "lat": 30.2752439, "lon": -97.7389953 },
+    { "lat": 30.2752297, "lon": -97.7389997 },
+    { "lat": 30.2752177, "lon": -97.7390093 },
+    { "lat": 30.2752091, "lon": -97.7390230 },
+    { "lat": 30.2752051, "lon": -97.7390393 },
+    { "lat": 30.2752060, "lon": -97.7390562 },
+    { "lat": 30.2752117, "lon": -97.7390717 },
+    { "lat": 30.2752208, "lon": -97.7390834 },
+    { "lat": 30.2752325, "lon": -97.7390911 },
+    { "lat": 30.2752458, "lon": -97.7390943 },
+    { "lat": 30.2752592, "lon": -97.7390925 },
+    { "lat": 30.2752715, "lon": -97.7390859 }
+  ],
+  "tags": {
+    "historic": "memorial",
+    "inscription": "named of fallen Law Enforcement Officers from the State of Texas. Updated yearly.",
+    "material": "stone",
+    "memorial": "stone",
+    "name": "Texas Peace Officers Memorial",
+    "wikidata": "Q56475508",
+    "wikipedia": "en:Texas Peace Officers' Memorial"
+  }
+},
+{
+  "type": "way",
+  "id": 1516623066,
+  "bounds": {
+    "minlat": 30.2659818,
+    "minlon": -97.7554969,
+    "maxlat": 30.2660192,
+    "maxlon": -97.7554665
+  },
+  "geometry": [
+    { "lat": 30.2659818, "lon": -97.7554969 },
+    { "lat": 30.2660192, "lon": -97.7554665 }
+  ],
+  "tags": {
+    "access": "yes",
+    "bridge": "yes",
+    "dog": "leashed",
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "down",
+    "layer": "1",
+    "name": "Pfluger Pedestrian Bridge",
+    "small_electric_vehicle": "no",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 1516691723,
+  "bounds": {
+    "minlat": 30.2660420,
+    "minlon": -97.7554477,
+    "maxlat": 30.2660710,
+    "maxlon": -97.7554236
+  },
+  "geometry": [
+    { "lat": 30.2660420, "lon": -97.7554477 },
+    { "lat": 30.2660710, "lon": -97.7554236 }
+  ],
+  "tags": {
+    "access": "yes",
+    "bridge": "yes",
+    "covered": "yes",
+    "dog": "leashed",
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "down",
+    "layer": "1",
+    "name": "Pfluger Pedestrian Bridge",
+    "small_electric_vehicle": "no",
+    "surface": "concrete",
+    "tactile_paving": "no"
+  }
+},
+{
+  "type": "relation",
+  "id": 9429067,
+  "bounds": {
+    "minlat": 30.2645899,
+    "minlon": -97.7567618,
+    "maxlat": 30.2669074,
+    "maxlon": -97.7550647
+  },
+  "tags": {
+    "layer": "2",
+    "man_made": "bridge",
+    "name": "Pfluger Pedestrian Bridge",
+    "type": "multipolygon",
+    "wikidata": "Q21161747",
+    "wikipedia": "en:James D. Pfluger Pedestrian and Bicycle Bridge"
+  }
+},
+{
+  "type": "relation",
+  "id": 11654072,
+  "bounds": {
+    "minlat": 30.2604968,
+    "minlon": -97.7428005,
+    "maxlat": 30.2607191,
+    "maxlon": -97.7424959
+  },
+  "tags": {
+    "area": "yes",
+    "floating": "yes",
+    "man_made": "pier",
+    "type": "multipolygon"
+  }
+}
+
+  ]
+}

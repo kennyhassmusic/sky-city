@@ -1,0 +1,3504 @@
+{
+ "assets": {
+  "PK_AonCenter": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_AonCenter.glb",
+   "tris": 782,
+   "bbox_min_m": [
+    -40.0,
+    -40.0,
+    -0.1
+   ],
+   "bbox_max_m": [
+    40.0,
+    40.0,
+    346.0
+   ],
+   "size_m": [
+    80.0,
+    80.0,
+    346.1
+   ],
+   "materials": [
+    "M_RoofFlat",
+    "M_GlassDark",
+    "M_Marble",
+    "M_Granite"
+   ],
+   "what": "Aon Center: 346 m white shaft with chevron piers",
+   "removes": "two City Sample buildings (41, 59 m)",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    518.2,
+    -251.9
+   ],
+   "collide": "none",
+   "zone": {
+    "poly": [
+     [
+      478.0,
+      -292.0
+     ],
+     [
+      558.0,
+      -292.0
+     ],
+     [
+      558.0,
+      -212.0
+     ],
+     [
+      478.0,
+      -212.0
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       498.0,
+       -249.1
+      ],
+      [
+       523.0,
+       -249.1
+      ],
+      [
+       523.0,
+       -224.1
+      ],
+      [
+       498.0,
+       -224.1
+      ]
+     ],
+     [
+      [
+       529.35,
+       -286.75
+      ],
+      [
+       529.05,
+       -261.75
+      ],
+      [
+       504.05,
+       -262.05
+      ],
+      [
+       504.35,
+       -287.05
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_AonCenter_Col": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_AonCenter_Col.glb",
+   "tris": 34,
+   "bbox_min_m": [
+    -29.3,
+    -29.3,
+    0.0
+   ],
+   "bbox_max_m": [
+    29.3,
+    29.3,
+    341.0
+   ],
+   "size_m": [
+    58.6,
+    58.6,
+    341.0
+   ],
+   "materials": [
+    "M_Concrete"
+   ],
+   "what": "invisible collider for PK_AonCenter",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    518.2,
+    -251.9
+   ],
+   "collide": "hidden"
+  },
+  "PK_ArtInstitute": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_ArtInstitute.glb",
+   "tris": 11888,
+   "bbox_min_m": [
+    -123.52,
+    -215.002,
+    -0.55
+   ],
+   "bbox_max_m": [
+    264.054,
+    37.0,
+    23.5
+   ],
+   "size_m": [
+    387.574,
+    252.002,
+    24.05
+   ],
+   "materials": [
+    "M_Limestone",
+    "M_GlassDark",
+    "M_RoofFlat",
+    "M_Glass",
+    "M_Granite",
+    "M_Concrete",
+    "M_WheelWhite"
+   ],
+   "what": "Art Institute of Chicago: Allerton Building (1893) with central pavilion, grand stair, lion pedestals; later wings; Gunsaulus Hall; Modern Wing + flying carpet; Nichols Bridgeway",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    342.0,
+    -884.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      304.8,
+      -1008.0
+     ],
+     [
+      558.0,
+      -1008.0
+     ],
+     [
+      558.0,
+      -752.0
+     ],
+     [
+      304.8,
+      -752.0
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       406.94,
+       -773.75
+      ],
+      [
+       427.93,
+       -773.24
+      ],
+      [
+       427.46,
+       -754.25
+      ],
+      [
+       406.47,
+       -754.76
+      ]
+     ],
+     [
+      [
+       402.14,
+       -800.75
+      ],
+      [
+       423.13,
+       -800.24
+      ],
+      [
+       422.66,
+       -781.25
+      ],
+      [
+       401.67,
+       -781.76
+      ]
+     ],
+     [
+      [
+       406.61,
+       -851.7
+      ],
+      [
+       431.6,
+       -851.09
+      ],
+      [
+       430.99,
+       -826.1
+      ],
+      [
+       406.0,
+       -826.71
+      ]
+     ],
+     [
+      [
+       432.29,
+       -893.02
+      ],
+      [
+       431.91,
+       -862.02
+      ],
+      [
+       402.91,
+       -862.38
+      ],
+      [
+       403.29,
+       -893.38
+      ]
+     ],
+     [
+      [
+       405.79,
+       -962.72
+      ],
+      [
+       448.79,
+       -962.27
+      ],
+      [
+       448.41,
+       -925.28
+      ],
+      [
+       405.41,
+       -925.73
+      ]
+     ],
+     [
+      [
+       409.39,
+       -999.18
+      ],
+      [
+       434.38,
+       -998.61
+      ],
+      [
+       433.81,
+       -973.62
+      ],
+      [
+       408.82,
+       -974.19
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_ArtInstituteLions": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_ArtInstituteLions.glb",
+   "tris": 4752,
+   "bbox_min_m": [
+    -19.633,
+    32.65,
+    2.5
+   ],
+   "bbox_max_m": [
+    18.633,
+    36.43,
+    4.87
+   ],
+   "size_m": [
+    38.266,
+    3.78,
+    2.37
+   ],
+   "materials": [
+    "M_LionBronze"
+   ],
+   "what": "Art Institute lions (Kemeys 1894, public domain), stylised, on the pedestals",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    342.0,
+    -884.0
+   ],
+   "collide": "complex"
+  },
+  "PK_ArtInstituteSteps": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_ArtInstituteSteps.glb",
+   "tris": 108,
+   "bbox_min_m": [
+    -15.5,
+    31.6,
+    -0.3
+   ],
+   "bbox_max_m": [
+    14.5,
+    37.0,
+    2.2
+   ],
+   "size_m": [
+    30.0,
+    5.4,
+    2.5
+   ],
+   "materials": [
+    "M_Granite"
+   ],
+   "what": "visible stair treads of PK_ArtInstitute (no collision; hidden ramps in the main mesh)",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    342.0,
+    -884.0
+   ],
+   "collide": "none"
+  },
+  "PK_AuditoriumBuilding": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_AuditoriumBuilding.glb",
+   "tris": 15596,
+   "bbox_min_m": [
+    -26.4,
+    -54.8,
+    0.0
+   ],
+   "bbox_max_m": [
+    27.325,
+    55.023,
+    71.2
+   ],
+   "size_m": [
+    53.725,
+    109.823,
+    71.2
+   ],
+   "materials": [
+    "M_Granite",
+    "M_GlassDark",
+    "M_Limestone",
+    "M_RoofFlat"
+   ],
+   "what": "Auditorium Building (Sullivan): 10 storeys, arcades, 17-storey tower",
+   "removes": "three City Sample towers on the block",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    214.0,
+    -1268.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      159.0,
+      -1294.5
+     ],
+     [
+      269.0,
+      -1294.5
+     ],
+     [
+      269.0,
+      -1240.5
+     ],
+     [
+      159.0,
+      -1240.5
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       175.41,
+       -1238.48
+      ],
+      [
+       175.79,
+       -1269.48
+      ],
+      [
+       204.79,
+       -1269.12
+      ],
+      [
+       204.41,
+       -1238.12
+      ]
+     ],
+     [
+      [
+       229.61,
+       -1235.53
+      ],
+      [
+       230.81,
+       -1284.52
+      ],
+      [
+       273.79,
+       -1283.47
+      ],
+      [
+       272.59,
+       -1234.48
+      ]
+     ],
+     [
+      [
+       208.18,
+       -1272.37
+      ],
+      [
+       187.18,
+       -1272.63
+      ],
+      [
+       187.42,
+       -1291.63
+      ],
+      [
+       208.42,
+       -1291.37
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_BPBridge": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_BPBridge.glb",
+   "tris": 8384,
+   "bbox_min_m": [
+    -93.691,
+    -87.322,
+    -1.0
+   ],
+   "bbox_max_m": [
+    7.671,
+    55.799,
+    7.45
+   ],
+   "size_m": [
+    101.362,
+    143.121,
+    8.45
+   ],
+   "materials": [
+    "M_WoodLight",
+    "M_Stainless",
+    "M_Steel",
+    "M_Concrete"
+   ],
+   "what": "BP Pedestrian Bridge: 285 m deck, crest 6.2 m over Columbus Drive, 8 piers",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    595.3,
+    -523.0
+   ],
+   "collide": "complex",
+   "ground_probe_plan_m": [
+    538.0,
+    -613.0
+   ]
+  },
+  "PK_BoardOfTrade": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_BoardOfTrade.glb",
+   "tris": 8086,
+   "bbox_min_m": [
+    -74.91,
+    -113.406,
+    0.0
+   ],
+   "bbox_max_m": [
+    47.206,
+    32.607,
+    192.0
+   ],
+   "size_m": [
+    122.116,
+    146.013,
+    192.0
+   ],
+   "materials": [
+    "M_RoofFlat",
+    "M_GlassDark",
+    "M_Limestone",
+    "M_Roof",
+    "M_Steel",
+    "M_Glass",
+    "M_Concrete"
+   ],
+   "what": "Chicago Board of Trade Building (184 m + Ceres), annex, east block, TransUnion building",
+   "removes": "seven City Sample towers on the block",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    -370.5,
+    -1097.9
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      -403.0,
+      -1173.0
+     ],
+     [
+      -257.0,
+      -1173.0
+     ],
+     [
+      -257.0,
+      -1050.5
+     ],
+     [
+      -403.0,
+      -1050.5
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       -348.74,
+       -1109.3
+      ],
+      [
+       -299.74,
+       -1108.7
+      ],
+      [
+       -300.26,
+       -1065.7
+      ],
+      [
+       -349.26,
+       -1066.3
+      ]
+     ],
+     [
+      [
+       -355.84,
+       -1150.35
+      ],
+      [
+       -376.83,
+       -1150.86
+      ],
+      [
+       -376.36,
+       -1169.85
+      ],
+      [
+       -355.37,
+       -1169.34
+      ]
+     ],
+     [
+      [
+       -311.74,
+       -1118.75
+      ],
+      [
+       -332.73,
+       -1119.26
+      ],
+      [
+       -332.26,
+       -1138.25
+      ],
+      [
+       -311.27,
+       -1137.74
+      ]
+     ],
+     [
+      [
+       -373.08,
+       -1086.84
+      ],
+      [
+       -352.09,
+       -1086.36
+      ],
+      [
+       -352.52,
+       -1067.36
+      ],
+      [
+       -373.51,
+       -1067.84
+      ]
+     ],
+     [
+      [
+       -396.67,
+       -1090.46
+      ],
+      [
+       -395.92,
+       -1121.45
+      ],
+      [
+       -366.93,
+       -1120.74
+      ],
+      [
+       -367.68,
+       -1089.75
+      ]
+     ],
+     [
+      [
+       -323.36,
+       -1139.13
+      ],
+      [
+       -354.35,
+       -1139.88
+      ],
+      [
+       -353.64,
+       -1168.87
+      ],
+      [
+       -322.65,
+       -1168.12
+      ]
+     ],
+     [
+      [
+       -338.22,
+       -1119.37
+      ],
+      [
+       -359.22,
+       -1119.63
+      ],
+      [
+       -358.98,
+       -1138.63
+      ],
+      [
+       -337.98,
+       -1138.37
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_CarbideCarbon": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_CarbideCarbon.glb",
+   "tris": 1424,
+   "bbox_min_m": [
+    -12.605,
+    -19.704,
+    0.0
+   ],
+   "bbox_max_m": [
+    12.803,
+    19.804,
+    153.0
+   ],
+   "size_m": [
+    25.408,
+    39.508,
+    153.0
+   ],
+   "materials": [
+    "M_RoofFlat",
+    "M_GraniteBlack",
+    "M_GlassDark",
+    "M_MosaicGreen",
+    "M_GoldLeaf"
+   ],
+   "what": "Carbide & Carbon Building: black granite, green terra cotta, gold crown ~153 m",
+   "removes": "a 103 m City Sample tower",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    231.3,
+    -105.3
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      211.5,
+      -118.0
+     ],
+     [
+      251.0,
+      -118.0
+     ],
+     [
+      251.0,
+      -92.5
+     ],
+     [
+      211.5,
+      -92.5
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       228.5,
+       -113.3
+      ],
+      [
+       249.5,
+       -113.3
+      ],
+      [
+       249.5,
+       -94.3
+      ],
+      [
+       228.5,
+       -94.3
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_ChicagoPicasso": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_ChicagoPicasso.glb",
+   "tris": 674,
+   "bbox_min_m": [
+    -26.7,
+    -28.6,
+    -0.1
+   ],
+   "bbox_max_m": [
+    27.3,
+    9.4,
+    14.9
+   ],
+   "size_m": [
+    54.0,
+    38.0,
+    15.0
+   ],
+   "materials": [
+    "M_Granite",
+    "M_TowerBlack",
+    "M_CorTen",
+    "M_Steel",
+    "M_SignBulb"
+   ],
+   "what": "Chicago Picasso (stylised), 15.2 m Cor-Ten on its plinth; Daley Plaza paving; Eternal Flame",
+   "removes": "City Sample 215 m tower (-186.4, -448.8) and 16 m lowrise (-171.1, -418.9) on the plaza",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    -180.6,
+    -435.3
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      -191.0,
+      -463.0
+     ],
+     [
+      -151.0,
+      -463.0
+     ],
+     [
+      -151.0,
+      -407.0
+     ],
+     [
+      -191.0,
+      -407.0
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       -196.9,
+       -458.3
+      ],
+      [
+       -175.9,
+       -458.3
+      ],
+      [
+       -175.9,
+       -439.3
+      ],
+      [
+       -196.9,
+       -439.3
+      ]
+     ],
+     [
+      [
+       -153.48,
+       -430.74
+      ],
+      [
+       -160.46,
+       -400.54
+      ],
+      [
+       -188.72,
+       -407.06
+      ],
+      [
+       -181.74,
+       -437.26
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_ChicagoTheatre": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_ChicagoTheatre.glb",
+   "tris": 1643,
+   "bbox_min_m": [
+    -9.2,
+    -49.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    42.0,
+    4.47,
+    27.8
+   ],
+   "size_m": [
+    51.2,
+    53.67,
+    27.8
+   ],
+   "materials": [
+    "M_RoofFlat",
+    "M_TerraCotta",
+    "M_Brick",
+    "M_GlassDark",
+    "M_SignRed",
+    "M_SignBulb",
+    "M_Steel"
+   ],
+   "what": "Chicago Theatre: 6-storey terra cotta front with the great arch, 18 m CHICAGO vertical sign, marquee; Page Brothers Building",
+   "removes": "City Sample towers 146 m (12.4, -237.6) and 120 m (42.5, -231.5) on the site",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    6.8,
+    -253.6
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      6.0,
+      -263.5
+     ],
+     [
+      56.5,
+      -263.5
+     ],
+     [
+      56.5,
+      -211.0
+     ],
+     [
+      6.0,
+      -211.0
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       -0.4,
+       -225.41
+      ],
+      [
+       0.21,
+       -250.4
+      ],
+      [
+       25.2,
+       -249.79
+      ],
+      [
+       24.59,
+       -224.8
+      ]
+     ],
+     [
+      [
+       32.0,
+       -241.0
+      ],
+      [
+       53.0,
+       -241.0
+      ],
+      [
+       53.0,
+       -222.0
+      ],
+      [
+       32.0,
+       -222.0
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_CongressPlaza": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_CongressPlaza.glb",
+   "tris": 3096,
+   "bbox_min_m": [
+    -48.8,
+    -21.6,
+    0.0
+   ],
+   "bbox_max_m": [
+    50.6,
+    18.7,
+    15.6
+   ],
+   "size_m": [
+    99.4,
+    40.3,
+    15.6
+   ],
+   "materials": [
+    "M_Granite",
+    "M_LionBronze",
+    "M_Limestone"
+   ],
+   "what": "Congress Plaza: The Bowman and The Spearman (stylised) on granite pedestals, two 15.6 m pylons",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    372.0,
+    -1307.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      350.0,
+      -1290.0
+     ],
+     [
+      362.0,
+      -1290.0
+     ],
+     [
+      362.0,
+      -1272.0
+     ],
+     [
+      350.0,
+      -1272.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ],
+    "extra": [
+     [
+      [
+       351.0,
+       -1342.0
+      ],
+      [
+       364.0,
+       -1342.0
+      ],
+      [
+       364.0,
+       -1325.0
+      ],
+      [
+       351.0,
+       -1325.0
+      ]
+     ],
+     [
+      [
+       382.0,
+       -1265.0
+      ],
+      [
+       394.0,
+       -1265.0
+      ],
+      [
+       394.0,
+       -1254.0
+      ],
+      [
+       382.0,
+       -1254.0
+      ]
+     ],
+     [
+      [
+       383.0,
+       -1358.0
+      ],
+      [
+       395.0,
+       -1358.0
+      ],
+      [
+       395.0,
+       -1346.0
+      ],
+      [
+       383.0,
+       -1346.0
+      ]
+     ]
+    ]
+   },
+   "ground_probe_plan_m": [
+    338.0,
+    -1268.0
+   ]
+  },
+  "PK_CrownFountain": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_CrownFountain.glb",
+   "tris": 2528,
+   "bbox_min_m": [
+    -35.708,
+    -8.557,
+    -0.1
+   ],
+   "bbox_max_m": [
+    35.708,
+    8.557,
+    15.49
+   ],
+   "size_m": [
+    71.416,
+    17.114,
+    15.59
+   ],
+   "materials": [
+    "M_GraniteBlack",
+    "M_Water",
+    "M_LEDDark",
+    "M_LEDMid",
+    "M_LEDSkin",
+    "M_LEDBright",
+    "M_Steel",
+    "M_GlassBlock"
+   ],
+   "what": "Crown Fountain (stylised): 2 glass-brick towers 15.24 x 7.0 x 4.9 m, 71 x 15 m black granite pool, generic stylised face on the inner LED screens",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    335.5,
+    -671.3
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      326.0,
+      -709.0
+     ],
+     [
+      346.0,
+      -709.0
+     ],
+     [
+      346.0,
+      -633.0
+     ],
+     [
+      326.0,
+      -633.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   },
+   "ground_probe_plan_m": [
+    318.0,
+    -671.0
+   ]
+  },
+  "PK_CrownFountainWater": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_CrownFountainWater.glb",
+   "tris": 400,
+   "bbox_min_m": [
+    -27.766,
+    -4.445,
+    0.1
+   ],
+   "bbox_max_m": [
+    27.766,
+    4.445,
+    15.2
+   ],
+   "size_m": [
+    55.532,
+    8.89,
+    15.1
+   ],
+   "materials": [
+    "M_WaterJet"
+   ],
+   "what": "Crown Fountain water sheets and spouts (no collision)",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    335.5,
+    -671.3
+   ],
+   "collide": "none",
+   "ground_probe_plan_m": [
+    318.0,
+    -671.0
+   ]
+  },
+  "PK_CulturalCenter": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_CulturalCenter.glb",
+   "tris": 13610,
+   "bbox_min_m": [
+    -59.4,
+    -25.12,
+    0.0
+   ],
+   "bbox_max_m": [
+    57.4,
+    24.616,
+    34.6
+   ],
+   "size_m": [
+    116.8,
+    49.735,
+    34.6
+   ],
+   "materials": [
+    "M_Limestone",
+    "M_GlassDark",
+    "M_RoofFlat",
+    "M_Glass"
+   ],
+   "what": "Chicago Cultural Center: 5-storey limestone block, arches, colonnade, cornice, porticos",
+   "removes": "three City Sample towers on the block",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    233.0,
+    -407.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      208.5,
+      -463.5
+     ],
+     [
+      258.0,
+      -463.5
+     ],
+     [
+      258.0,
+      -350.5
+     ],
+     [
+      208.5,
+      -350.5
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       209.65,
+       -428.85
+      ],
+      [
+       209.95,
+       -453.85
+      ],
+      [
+       234.95,
+       -453.55
+      ],
+      [
+       234.65,
+       -428.55
+      ]
+     ],
+     [
+      [
+       211.94,
+       -363.53
+      ],
+      [
+       212.46,
+       -406.52
+      ],
+      [
+       249.46,
+       -406.07
+      ],
+      [
+       248.94,
+       -363.08
+      ]
+     ],
+     [
+      [
+       241.85,
+       -435.74
+      ],
+      [
+       242.36,
+       -456.73
+      ],
+      [
+       261.35,
+       -456.26
+      ],
+      [
+       260.84,
+       -435.27
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_Flamingo": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_Flamingo.glb",
+   "tris": 208,
+   "bbox_min_m": [
+    -17.1,
+    -8.9,
+    -0.1
+   ],
+   "bbox_max_m": [
+    22.9,
+    24.1,
+    16.396
+   ],
+   "size_m": [
+    40.0,
+    33.0,
+    16.496
+   ],
+   "materials": [
+    "M_Granite",
+    "M_CalderRed",
+    "M_Steel"
+   ],
+   "what": "Flamingo (Calder, stylised stand-in) 16 m; Federal Plaza paving",
+   "removes": "City Sample 211 m tower (-166.3, -961.9) on the plaza",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    -155.9,
+    -967.9
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      -181.0,
+      -986.0
+     ],
+     [
+      -146.0,
+      -986.0
+     ],
+     [
+      -146.0,
+      -944.0
+     ],
+     [
+      -181.0,
+      -944.0
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       -151.61,
+       -977.22
+      ],
+      [
+       -151.99,
+       -946.22
+      ],
+      [
+       -180.99,
+       -946.58
+      ],
+      [
+       -180.61,
+       -977.58
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_FourSeasons": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_FourSeasons.glb",
+   "tris": 720,
+   "bbox_min_m": [
+    -29.0,
+    -14.9,
+    -0.1
+   ],
+   "bbox_max_m": [
+    15.0,
+    21.1,
+    6.27
+   ],
+   "size_m": [
+    44.0,
+    36.0,
+    6.37
+   ],
+   "materials": [
+    "M_Granite",
+    "M_Water",
+    "M_MosaicBlue",
+    "M_MosaicWhite",
+    "M_MosaicRed",
+    "M_MosaicYellow",
+    "M_MosaicGreen",
+    "M_Steel",
+    "M_Glass"
+   ],
+   "what": "Four Seasons (Chagall, stylised mosaic box) + glass canopy; Chase Tower Plaza paving and pool",
+   "removes": "City Sample 292 m tower (-171.1, -728.7) on the plaza",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    -164.9,
+    -715.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      -187.0,
+      -745.0
+     ],
+     [
+      -149.0,
+      -745.0
+     ],
+     [
+      -149.0,
+      -701.0
+     ],
+     [
+      -187.0,
+      -701.0
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       -186.42,
+       -743.39
+      ],
+      [
+       -155.42,
+       -743.01
+      ],
+      [
+       -155.78,
+       -714.01
+      ],
+      [
+       -186.78,
+       -714.39
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_GrantParkRail": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_GrantParkRail.glb",
+   "tris": 28522,
+   "bbox_min_m": [
+    -656.69,
+    -45.299,
+    -0.05
+   ],
+   "bbox_max_m": [
+    545.053,
+    47.399,
+    12.0
+   ],
+   "size_m": [
+    1201.743,
+    92.698,
+    12.05
+   ],
+   "materials": [
+    "M_Gravel",
+    "M_Timber",
+    "M_Steel",
+    "M_Railing",
+    "M_RoofFlat",
+    "M_Brick"
+   ],
+   "what": "Metra Electric / South Shore tracks through Grant Park at grade: ballast, rails, catenary; 33 runs",
+   "removes": "22 City Sample towers that stood on the rail strip inside Grant Park",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    430.0,
+    -1300.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      383.0,
+      -1975.0
+     ],
+     [
+      475.0,
+      -1975.0
+     ],
+     [
+      475.0,
+      -1006.0
+     ],
+     [
+      383.0,
+      -1006.0
+     ]
+    ],
+    "clear": [
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       406.94,
+       -773.75
+      ],
+      [
+       427.93,
+       -773.24
+      ],
+      [
+       427.46,
+       -754.25
+      ],
+      [
+       406.47,
+       -754.76
+      ]
+     ],
+     [
+      [
+       402.14,
+       -800.75
+      ],
+      [
+       423.13,
+       -800.24
+      ],
+      [
+       422.66,
+       -781.25
+      ],
+      [
+       401.67,
+       -781.76
+      ]
+     ],
+     [
+      [
+       406.61,
+       -851.7
+      ],
+      [
+       431.6,
+       -851.09
+      ],
+      [
+       430.99,
+       -826.1
+      ],
+      [
+       406.0,
+       -826.71
+      ]
+     ],
+     [
+      [
+       432.29,
+       -893.02
+      ],
+      [
+       431.91,
+       -862.02
+      ],
+      [
+       402.91,
+       -862.38
+      ],
+      [
+       403.29,
+       -893.38
+      ]
+     ],
+     [
+      [
+       405.79,
+       -962.72
+      ],
+      [
+       448.79,
+       -962.27
+      ],
+      [
+       448.41,
+       -925.28
+      ],
+      [
+       405.41,
+       -925.73
+      ]
+     ],
+     [
+      [
+       409.39,
+       -999.18
+      ],
+      [
+       434.38,
+       -998.61
+      ],
+      [
+       433.81,
+       -973.62
+      ],
+      [
+       408.82,
+       -974.19
+      ]
+     ],
+     [
+      [
+       417.13,
+       -1070.35
+      ],
+      [
+       448.12,
+       -1069.64
+      ],
+      [
+       447.47,
+       -1040.65
+      ],
+      [
+       416.48,
+       -1041.36
+      ]
+     ],
+     [
+      [
+       411.47,
+       -1123.19
+      ],
+      [
+       448.47,
+       -1122.81
+      ],
+      [
+       448.13,
+       -1089.81
+      ],
+      [
+       411.13,
+       -1090.19
+      ]
+     ],
+     [
+      [
+       443.85,
+       -1163.48
+      ],
+      [
+       430.98,
+       -1142.05
+      ],
+      [
+       409.55,
+       -1154.92
+      ],
+      [
+       422.42,
+       -1176.35
+      ]
+     ],
+     [
+      [
+       449.2,
+       -1192.8
+      ],
+      [
+       436.1,
+       -1171.5
+      ],
+      [
+       414.8,
+       -1184.6
+      ],
+      [
+       427.9,
+       -1205.9
+      ]
+     ],
+     [
+      [
+       451.03,
+       -1209.71
+      ],
+      [
+       414.03,
+       -1210.09
+      ],
+      [
+       414.37,
+       -1243.09
+      ],
+      [
+       451.37,
+       -1242.71
+      ]
+     ],
+     [
+      [
+       439.11,
+       -1247.82
+      ],
+      [
+       414.12,
+       -1248.39
+      ],
+      [
+       414.69,
+       -1273.38
+      ],
+      [
+       439.68,
+       -1272.81
+      ]
+     ],
+     [
+      [
+       425.12,
+       -1367.83
+      ],
+      [
+       456.1,
+       -1366.75
+      ],
+      [
+       455.08,
+       -1337.77
+      ],
+      [
+       424.1,
+       -1338.85
+      ]
+     ],
+     [
+      [
+       420.12,
+       -1403.54
+      ],
+      [
+       441.11,
+       -1402.85
+      ],
+      [
+       440.48,
+       -1383.86
+      ],
+      [
+       419.49,
+       -1384.55
+      ]
+     ],
+     [
+      [
+       454.66,
+       -1496.74
+      ],
+      [
+       433.67,
+       -1497.47
+      ],
+      [
+       434.34,
+       -1516.46
+      ],
+      [
+       455.33,
+       -1515.73
+      ]
+     ],
+     [
+      [
+       457.16,
+       -1519.27
+      ],
+      [
+       432.17,
+       -1520.14
+      ],
+      [
+       433.04,
+       -1545.13
+      ],
+      [
+       458.03,
+       -1544.26
+      ]
+     ],
+     [
+      [
+       457.86,
+       -1619.74
+      ],
+      [
+       436.87,
+       -1620.47
+      ],
+      [
+       437.54,
+       -1639.46
+      ],
+      [
+       458.53,
+       -1638.73
+      ]
+     ],
+     [
+      [
+       457.26,
+       -1641.84
+      ],
+      [
+       436.27,
+       -1642.57
+      ],
+      [
+       436.94,
+       -1661.56
+      ],
+      [
+       457.93,
+       -1660.83
+      ]
+     ],
+     [
+      [
+       459.56,
+       -1683.64
+      ],
+      [
+       438.57,
+       -1684.37
+      ],
+      [
+       439.24,
+       -1703.36
+      ],
+      [
+       460.23,
+       -1702.63
+      ]
+     ],
+     [
+      [
+       458.76,
+       -1711.04
+      ],
+      [
+       437.77,
+       -1711.77
+      ],
+      [
+       438.44,
+       -1730.76
+      ],
+      [
+       459.43,
+       -1730.03
+      ]
+     ],
+     [
+      [
+       423.18,
+       -1864.04
+      ],
+      [
+       422.41,
+       -1843.06
+      ],
+      [
+       403.42,
+       -1843.76
+      ],
+      [
+       404.19,
+       -1864.74
+      ]
+     ],
+     [
+      [
+       433.47,
+       -1903.14
+      ],
+      [
+       432.72,
+       -1872.15
+      ],
+      [
+       403.73,
+       -1872.86
+      ],
+      [
+       404.48,
+       -1903.85
+      ]
+     ]
+    ]
+   },
+   "ground_probe_plan_m": [
+    482.0,
+    -1400.0
+   ]
+  },
+  "PK_GreatLakesFountain": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_GreatLakesFountain.glb",
+   "tris": 1106,
+   "bbox_min_m": [
+    -6.5,
+    -3.2,
+    0.0
+   ],
+   "bbox_max_m": [
+    6.5,
+    6.0,
+    3.888
+   ],
+   "size_m": [
+    13.0,
+    9.2,
+    3.888
+   ],
+   "materials": [
+    "M_Granite",
+    "M_Water",
+    "M_LionBronze"
+   ],
+   "what": "Fountain of the Great Lakes (stylised): five figures with shells in a pool",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    365.0,
+    -968.6
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      358.0,
+      -976.0
+     ],
+     [
+      369.0,
+      -976.0
+     ],
+     [
+      369.0,
+      -961.0
+     ],
+     [
+      358.0,
+      -961.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   },
+   "ground_probe_plan_m": [
+    352.0,
+    -985.0
+   ]
+  },
+  "PK_HaroldWashingtonLibrary": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_HaroldWashingtonLibrary.glb",
+   "tris": 3010,
+   "bbox_min_m": [
+    -56.942,
+    -33.814,
+    0.0
+   ],
+   "bbox_max_m": [
+    56.838,
+    33.943,
+    54.0
+   ],
+   "size_m": [
+    113.78,
+    67.758,
+    54.0
+   ],
+   "materials": [
+    "M_RoofFlat",
+    "M_Granite",
+    "M_Brick",
+    "M_GlassDark",
+    "M_Verdigris",
+    "M_Glass"
+   ],
+   "what": "Harold Washington Library: red brick, great arches, glass roof, green ornaments",
+   "removes": "five City Sample towers on the block",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    -34.4,
+    -1242.7
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      -67.0,
+      -1298.0
+     ],
+     [
+      -2.0,
+      -1298.0
+     ],
+     [
+      -2.0,
+      -1187.5
+     ],
+     [
+      -67.0,
+      -1187.5
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       -28.09,
+       -1263.98
+      ],
+      [
+       -27.71,
+       -1294.98
+      ],
+      [
+       1.29,
+       -1294.62
+      ],
+      [
+       0.91,
+       -1263.62
+      ]
+     ],
+     [
+      [
+       -17.13,
+       -1234.92
+      ],
+      [
+       -16.87,
+       -1255.92
+      ],
+      [
+       2.13,
+       -1255.68
+      ],
+      [
+       1.87,
+       -1234.68
+      ]
+     ],
+     [
+      [
+       -68.72,
+       -1202.66
+      ],
+      [
+       -67.67,
+       -1245.65
+      ],
+      [
+       -30.68,
+       -1244.74
+      ],
+      [
+       -31.73,
+       -1201.75
+      ]
+     ],
+     [
+      [
+       -29.43,
+       -1201.8
+      ],
+      [
+       -28.77,
+       -1222.79
+      ],
+      [
+       -9.77,
+       -1222.2
+      ],
+      [
+       -10.43,
+       -1201.21
+      ]
+     ],
+     [
+      [
+       -51.43,
+       -1261.72
+      ],
+      [
+       -51.17,
+       -1282.72
+      ],
+      [
+       -32.17,
+       -1282.48
+      ],
+      [
+       -32.43,
+       -1261.48
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_HealdSquare": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_HealdSquare.glb",
+   "tris": 414,
+   "bbox_min_m": [
+    -2.0,
+    -4.0,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.0,
+    4.0,
+    4.93
+   ],
+   "size_m": [
+    4.0,
+    8.0,
+    4.93
+   ],
+   "materials": [
+    "M_Granite",
+    "M_LionBronze"
+   ],
+   "what": "Heald Square Monument (stylised): three standing bronzes on a granite base",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    79.8,
+    -39.3
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      74.0,
+      -43.0
+     ],
+     [
+      86.0,
+      -43.0
+     ],
+     [
+      86.0,
+      -35.5
+     ],
+     [
+      74.0,
+      -35.5
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   }
+  },
+  "PK_LakePointTower": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_LakePointTower.glb",
+   "tris": 24424,
+   "bbox_min_m": [
+    -35.731,
+    -43.336,
+    0.0
+   ],
+   "bbox_max_m": [
+    31.935,
+    120.832,
+    197.5
+   ],
+   "size_m": [
+    67.665,
+    164.168,
+    197.5
+   ],
+   "materials": [
+    "M_Lawn",
+    "M_Concrete",
+    "M_GarageOpening",
+    "M_Timber",
+    "M_Hedge",
+    "M_Water",
+    "M_RoofFlat",
+    "M_TintedGlass",
+    "M_TowerBlack"
+   ],
+   "what": "Lake Point Tower: 3-wing curved glass tower 197 m on its 12 m podium with the rooftop park",
+   "removes": "five City Sample towers on the podium",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    1283.5,
+    441.0
+   ],
+   "collide": "none",
+   "zone": {
+    "poly": [
+     [
+      1161.0,
+      403.5
+     ],
+     [
+      1328.5,
+      403.5
+     ],
+     [
+      1328.5,
+      474.5
+     ],
+     [
+      1161.0,
+      474.5
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       1210.7,
+       466.22
+      ],
+      [
+       1189.7,
+       465.78
+      ],
+      [
+       1190.1,
+       446.78
+      ],
+      [
+       1211.1,
+       447.22
+      ]
+     ],
+     [
+      [
+       1248.43,
+       406.54
+      ],
+      [
+       1291.42,
+       407.06
+      ],
+      [
+       1290.97,
+       444.06
+      ],
+      [
+       1247.98,
+       443.54
+      ]
+     ],
+     [
+      [
+       1238.14,
+       464.26
+      ],
+      [
+       1213.14,
+       463.74
+      ],
+      [
+       1213.66,
+       438.74
+      ],
+      [
+       1238.66,
+       439.26
+      ]
+     ],
+     [
+      [
+       1265.08,
+       465.75
+      ],
+      [
+       1244.1,
+       464.83
+      ],
+      [
+       1244.92,
+       445.85
+      ],
+      [
+       1265.9,
+       446.77
+      ]
+     ],
+     [
+      [
+       1218.85,
+       408.05
+      ],
+      [
+       1243.85,
+       408.35
+      ],
+      [
+       1243.55,
+       433.35
+      ],
+      [
+       1218.55,
+       433.05
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_LakePointTower_Col": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_LakePointTower_Col.glb",
+   "tris": 278,
+   "bbox_min_m": [
+    -35.474,
+    -43.082,
+    0.0
+   ],
+   "bbox_max_m": [
+    31.68,
+    120.576,
+    192.2
+   ],
+   "size_m": [
+    67.154,
+    163.658,
+    192.2
+   ],
+   "materials": [
+    "M_Concrete"
+   ],
+   "what": "invisible collider for PK_LakePointTower",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    1283.5,
+    441.0
+   ],
+   "collide": "hidden"
+  },
+  "PK_LincolnHeadOfState": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_LincolnHeadOfState.glb",
+   "tris": 1030,
+   "bbox_min_m": [
+    -10.0,
+    -24.0,
+    -0.3
+   ],
+   "bbox_max_m": [
+    13.0,
+    24.0,
+    13.9
+   ],
+   "size_m": [
+    23.0,
+    48.0,
+    14.2
+   ],
+   "materials": [
+    "M_Granite",
+    "M_LionBronze",
+    "M_Marble",
+    "M_Railing"
+   ],
+   "what": "Seated Lincoln (stylised) on its exedra platform, steps, two lamp columns",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    518.0,
+    -1140.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      492.0,
+      -1152.0
+     ],
+     [
+      544.0,
+      -1152.0
+     ],
+     [
+      544.0,
+      -1125.0
+     ],
+     [
+      492.0,
+      -1125.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   }
+  },
+  "PK_LincolnHeadOfStateSteps": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_LincolnHeadOfStateSteps.glb",
+   "tris": 96,
+   "bbox_min_m": [
+    -10.0,
+    -24.0,
+    -0.3
+   ],
+   "bbox_max_m": [
+    -2.0,
+    24.0,
+    1.6
+   ],
+   "size_m": [
+    8.0,
+    48.0,
+    1.9
+   ],
+   "materials": [
+    "M_Granite"
+   ],
+   "what": "visible steps of PK_LincolnHeadOfState",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    518.0,
+    -1140.0
+   ],
+   "collide": "none"
+  },
+  "PK_LoganMonument": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_LoganMonument.glb",
+   "tris": 1678,
+   "bbox_min_m": [
+    -16.0,
+    -16.0,
+    0.0
+   ],
+   "bbox_max_m": [
+    16.0,
+    16.0,
+    13.841
+   ],
+   "size_m": [
+    32.0,
+    32.0,
+    13.841
+   ],
+   "materials": [
+    "M_Lawn",
+    "M_Granite",
+    "M_LionBronze"
+   ],
+   "what": "Logan Monument: mound, granite pedestal, equestrian with flag (stylised), ~15 m",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    359.3,
+    -1873.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      342.0,
+      -1890.0
+     ],
+     [
+      376.0,
+      -1890.0
+     ],
+     [
+      376.0,
+      -1856.0
+     ],
+     [
+      342.0,
+      -1856.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   }
+  },
+  "PK_LurieGarden": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_LurieGarden.glb",
+   "tris": 12824,
+   "bbox_min_m": [
+    -49.067,
+    -54.547,
+    -0.1
+   ],
+   "bbox_max_m": [
+    46.504,
+    55.6,
+    4.9
+   ],
+   "size_m": [
+    95.57,
+    110.147,
+    5.0
+   ],
+   "materials": [
+    "M_Hedge",
+    "M_Steel",
+    "M_Salvia",
+    "M_Verdigris",
+    "M_Grasses",
+    "M_Lawn",
+    "M_Water",
+    "M_WoodLight"
+   ],
+   "what": "Lurie Garden: 4.6 m shoulder hedge (north + west), dark and light plates, seam boardwalk",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    505.0,
+    -675.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      449.0,
+      -628.0
+     ],
+     [
+      561.0,
+      -628.0
+     ],
+     [
+      561.0,
+      -726.0
+     ],
+     [
+      449.0,
+      -726.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   }
+  },
+  "PK_MaggieDaley": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_MaggieDaley.glb",
+   "tris": 4965,
+   "bbox_min_m": [
+    -159.0,
+    -161.3,
+    -6.076
+   ],
+   "bbox_max_m": [
+    128.6,
+    63.009,
+    13.137
+   ],
+   "size_m": [
+    287.6,
+    224.309,
+    19.213
+   ],
+   "materials": [
+    "M_Ice",
+    "M_ClimbGrey",
+    "M_Concrete",
+    "M_Lawn",
+    "M_Glass",
+    "M_Rubber",
+    "M_WheelWhite",
+    "M_Timber",
+    "M_Membrane",
+    "M_Stainless",
+    "M_PaintYellow",
+    "M_Railing",
+    "M_Granite"
+   ],
+   "what": "Maggie Daley Park: climbing wall (12 m), skating ribbon, fieldhouse, play-garden features",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    700.0,
+    -500.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      634.0,
+      -492.0
+     ],
+     [
+      758.0,
+      -492.0
+     ],
+     [
+      758.0,
+      -400.0
+     ],
+     [
+      634.0,
+      -400.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ],
+    "extra": [
+     [
+      [
+       680.0,
+       -403.0
+      ],
+      [
+       768.0,
+       -403.0
+      ],
+      [
+       768.0,
+       -391.0
+      ],
+      [
+       680.0,
+       -391.0
+      ]
+     ],
+     [
+      [
+       848.0,
+       -376.0
+      ],
+      [
+       864.0,
+       -376.0
+      ],
+      [
+       864.0,
+       -369.0
+      ],
+      [
+       848.0,
+       -369.0
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_MillenniumPavilions": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_MillenniumPavilions.glb",
+   "tris": 246,
+   "bbox_min_m": [
+    -173.25,
+    -69.9,
+    0.0
+   ],
+   "bbox_max_m": [
+    176.6,
+    47.05,
+    13.5
+   ],
+   "size_m": [
+    349.85,
+    116.95,
+    13.5
+   ],
+   "materials": [
+    "M_GlassDark",
+    "M_TowerBlack",
+    "M_Steel",
+    "M_RoofFlat",
+    "M_Glass",
+    "M_Concrete"
+   ],
+   "what": "Exelon Pavilions x4, Harris Theater entrance + stage house, Cycle Center roof",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    490.0,
+    -550.0
+   ],
+   "collide": "complex"
+  },
+  "PK_MiroChicago": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_MiroChicago.glb",
+   "tris": 982,
+   "bbox_min_m": [
+    -3.0,
+    -3.5,
+    0.0
+   ],
+   "bbox_max_m": [
+    3.0,
+    3.5,
+    12.1
+   ],
+   "size_m": [
+    6.0,
+    7.0,
+    12.1
+   ],
+   "materials": [
+    "M_Granite",
+    "M_Concrete",
+    "M_PaintYellow",
+    "M_MosaicYellow",
+    "M_MosaicRed",
+    "M_MosaicBlue",
+    "M_MosaicGreen"
+   ],
+   "what": "Miro's Chicago (stylised stand-in), 12 m",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    -213.6,
+    -496.6
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      -218.5,
+      -500.0
+     ],
+     [
+      -208.5,
+      -500.0
+     ],
+     [
+      -208.5,
+      -490.0
+     ],
+     [
+      -218.5,
+      -490.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   }
+  },
+  "PK_OlivePark": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_OlivePark.glb",
+   "tris": 2628,
+   "bbox_min_m": [
+    -124.4,
+    -67.0,
+    -0.3
+   ],
+   "bbox_max_m": [
+    122.8,
+    73.6,
+    1.6
+   ],
+   "size_m": [
+    247.2,
+    140.6,
+    1.9
+   ],
+   "materials": [
+    "M_Concrete",
+    "M_ParkPaver",
+    "M_GraniteDark"
+   ],
+   "what": "Milton Lee Olive Park: 5 pool copings, walks, memorial",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    1450.0,
+    780.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      1376.0,
+      655.0
+     ],
+     [
+      1520.0,
+      655.0
+     ],
+     [
+      1520.0,
+      905.0
+     ],
+     [
+      1376.0,
+      905.0
+     ]
+    ],
+    "clear": []
+   }
+  },
+  "PK_OliveParkJets": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_OliveParkJets.glb",
+   "tris": 250,
+   "bbox_min_m": [
+    -99.871,
+    -53.1,
+    0.5
+   ],
+   "bbox_max_m": [
+    102.871,
+    49.1,
+    7.5
+   ],
+   "size_m": [
+    202.741,
+    102.2,
+    7.0
+   ],
+   "materials": [
+    "M_WaterJet"
+   ],
+   "what": "Olive Park fountain jets (no collision)",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    1450.0,
+    780.0
+   ],
+   "collide": "none"
+  },
+  "PK_PathsGrantNorth": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_PathsGrantNorth.glb",
+   "tris": 20142,
+   "bbox_min_m": [
+    -294.927,
+    -360.408,
+    -0.08
+   ],
+   "bbox_max_m": [
+    306.047,
+    297.879,
+    0.063
+   ],
+   "size_m": [
+    600.975,
+    658.288,
+    0.143
+   ],
+   "materials": [
+    "M_ParkPaver"
+   ],
+   "what": "park footpaths from OSM, 109 runs",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    600.0,
+    -1000.0
+   ],
+   "collide": "none",
+   "ground_probe_plan_m": [
+    660.0,
+    -1060.0
+   ]
+  },
+  "PK_PathsGrantSouth": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_PathsGrantSouth.glb",
+   "tris": 32604,
+   "bbox_min_m": [
+    -369.249,
+    -357.8,
+    -0.08
+   ],
+   "bbox_max_m": [
+    360.952,
+    289.905,
+    0.063
+   ],
+   "size_m": [
+    730.202,
+    647.705,
+    0.143
+   ],
+   "materials": [
+    "M_ParkPaver"
+   ],
+   "what": "park footpaths from OSM, 193 runs",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    600.0,
+    -1600.0
+   ],
+   "collide": "none",
+   "ground_probe_plan_m": [
+    700.0,
+    -1450.0
+   ]
+  },
+  "PK_PathsMillennium": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_PathsMillennium.glb",
+   "tris": 20364,
+   "bbox_min_m": [
+    -207.449,
+    -682.945,
+    -0.08
+   ],
+   "bbox_max_m": [
+    364.977,
+    256.862,
+    0.063
+   ],
+   "size_m": [
+    572.426,
+    939.807,
+    0.143
+   ],
+   "materials": [
+    "M_ParkPaver"
+   ],
+   "what": "park footpaths from OSM, 173 runs",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    560.0,
+    -540.0
+   ],
+   "collide": "none",
+   "ground_probe_plan_m": [
+    420.0,
+    -600.0
+   ]
+  },
+  "PK_Peristyle": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_Peristyle.glb",
+   "tris": 6670,
+   "bbox_min_m": [
+    -30.0,
+    -17.0,
+    -0.1
+   ],
+   "bbox_max_m": [
+    14.0,
+    17.0,
+    12.1
+   ],
+   "size_m": [
+    44.0,
+    34.0,
+    12.2
+   ],
+   "materials": [
+    "M_Limestone",
+    "M_Water",
+    "M_Granite"
+   ],
+   "what": "Millennium Monument peristyle: 20 pairs of Doric columns on a half ring r 9.6-12.3 m, entablature 10.4 m, fountain pool r 6.4 m, Wrigley Square paving",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    329.9,
+    -397.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      310.0,
+      -428.0
+     ],
+     [
+      350.0,
+      -428.0
+     ],
+     [
+      350.0,
+      -381.0
+     ],
+     [
+      310.0,
+      -381.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   },
+   "ground_probe_plan_m": [
+    330.0,
+    -418.0
+   ]
+  },
+  "PK_PetrilloShell": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_PetrilloShell.glb",
+   "tris": 198,
+   "bbox_min_m": [
+    -15.9,
+    -15.85,
+    0.0
+   ],
+   "bbox_max_m": [
+    15.9,
+    15.038,
+    14.048
+   ],
+   "size_m": [
+    31.8,
+    30.888,
+    14.048
+   ],
+   "materials": [
+    "M_Concrete",
+    "M_Marble",
+    "M_GraniteBlack",
+    "M_Steel",
+    "M_Railing"
+   ],
+   "what": "Petrillo Music Shell: stage house, side walls, sloping canopy on a truss frame, faces east",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    640.0,
+    -962.5
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      622.0,
+      -980.0
+     ],
+     [
+      660.0,
+      -980.0
+     ],
+     [
+      660.0,
+      -945.0
+     ],
+     [
+      622.0,
+      -945.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   }
+  },
+  "PK_PritzkerPavilion": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_PritzkerPavilion.glb",
+   "tris": 9431,
+   "bbox_min_m": [
+    -186.503,
+    -52.0,
+    -0.1
+   ],
+   "bbox_max_m": [
+    24.0,
+    50.0,
+    42.3
+   ],
+   "size_m": [
+    210.503,
+    102.0,
+    42.4
+   ],
+   "materials": [
+    "M_Concrete",
+    "M_WoodLight",
+    "M_SeatRed",
+    "M_Steel",
+    "M_Railing",
+    "M_Stainless",
+    "M_GranitePromenade",
+    "M_ParkPaver",
+    "M_Lawn"
+   ],
+   "what": "Jay Pritzker Pavilion: stage house, 30 x 15 m orchestra shell, stainless headdress (stylised Gehry ribbons, 42 m), 4,000 raked seats, sound desk, lawn + promenade",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    492.5,
+    -458.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      440.0,
+      -462.0
+     ],
+     [
+      548.0,
+      -462.0
+     ],
+     [
+      548.0,
+      -648.0
+     ],
+     [
+      440.0,
+      -648.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ],
+    "extra": [
+     [
+      [
+       440.0,
+       -437.0
+      ],
+      [
+       548.0,
+       -437.0
+      ],
+      [
+       548.0,
+       -462.0
+      ],
+      [
+       440.0,
+       -462.0
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_PritzkerTrellis": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_PritzkerTrellis.glb",
+   "tris": 15640,
+   "bbox_min_m": [
+    -183.928,
+    -49.45,
+    0.0
+   ],
+   "bbox_max_m": [
+    -3.738,
+    47.45,
+    22.82
+   ],
+   "size_m": [
+    180.19,
+    96.9,
+    22.82
+   ],
+   "materials": [
+    "M_PipeWhite",
+    "M_Railing",
+    "M_Concrete"
+   ],
+   "what": "Pritzker Pavilion trellis: pipe arches over the Great Lawn, 44 pylons",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    492.5,
+    -458.0
+   ],
+   "collide": "complex"
+  },
+  "PK_SpiritOfMusic": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_SpiritOfMusic.glb",
+   "tris": 318,
+   "bbox_min_m": [
+    -1.4,
+    -6.896,
+    0.0
+   ],
+   "bbox_max_m": [
+    5.9,
+    6.896,
+    5.87
+   ],
+   "size_m": [
+    7.3,
+    13.792,
+    5.87
+   ],
+   "materials": [
+    "M_Granite",
+    "M_LionBronze"
+   ],
+   "what": "Spirit of Music (stylised): figure with lyre on a pedestal, curved exedra",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    354.0,
+    -1564.8
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      345.0,
+      -1572.0
+     ],
+     [
+      363.0,
+      -1572.0
+     ],
+     [
+      363.0,
+      -1558.0
+     ],
+     [
+      345.0,
+      -1558.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   }
+  },
+  "PK_StockExchangeArch": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_StockExchangeArch.glb",
+   "tris": 334,
+   "bbox_min_m": [
+    -1.1,
+    -4.7,
+    0.0
+   ],
+   "bbox_max_m": [
+    2.1,
+    4.7,
+    11.6
+   ],
+   "size_m": [
+    3.2,
+    9.4,
+    11.6
+   ],
+   "materials": [
+    "M_TerraCotta"
+   ],
+   "what": "Chicago Stock Exchange Arch (Sullivan, 1894)",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    549.0,
+    -761.0
+   ],
+   "collide": "complex",
+   "zone": {
+    "poly": [
+     [
+      542.0,
+      -766.0
+     ],
+     [
+      556.0,
+      -766.0
+     ],
+     [
+      556.0,
+      -756.0
+     ],
+     [
+      542.0,
+      -756.0
+     ]
+    ],
+    "clear": [
+     "props"
+    ]
+   }
+  },
+  "PK_TwoPrudential": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_TwoPrudential.glb",
+   "tris": 1428,
+   "bbox_min_m": [
+    -21.9,
+    -20.9,
+    0.0
+   ],
+   "bbox_max_m": [
+    34.2,
+    20.8,
+    303.0
+   ],
+   "size_m": [
+    56.1,
+    41.7,
+    303.0
+   ],
+   "materials": [
+    "M_RoofFlat",
+    "M_Granite",
+    "M_GlassDark",
+    "M_Steel"
+   ],
+   "what": "Two Prudential Plaza: 40 m square shaft, chevron crown, spire to 303 m",
+   "removes": "a 39 m City Sample building",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    421.0,
+    -243.0
+   ],
+   "collide": "none",
+   "zone": {
+    "poly": [
+     [
+      399.0,
+      -266.0
+     ],
+     [
+      443.0,
+      -266.0
+     ],
+     [
+      443.0,
+      -207.5
+     ],
+     [
+      399.0,
+      -207.5
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       445.69,
+       -246.82
+      ],
+      [
+       445.31,
+       -215.82
+      ],
+      [
+       416.31,
+       -216.18
+      ],
+      [
+       416.69,
+       -247.18
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_TwoPrudential_Col": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_TwoPrudential_Col.glb",
+   "tris": 34,
+   "bbox_min_m": [
+    -20.5,
+    -20.5,
+    0.0
+   ],
+   "bbox_max_m": [
+    20.5,
+    20.5,
+    240.0
+   ],
+   "size_m": [
+    41.0,
+    41.0,
+    240.0
+   ],
+   "materials": [
+    "M_Concrete"
+   ],
+   "what": "invisible collider for PK_TwoPrudential",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    421.0,
+    -243.0
+   ],
+   "collide": "hidden"
+  },
+  "PK_VistaTower": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_VistaTower.glb",
+   "tris": 402,
+   "bbox_min_m": [
+    -23.6,
+    -53.0,
+    0.0
+   ],
+   "bbox_max_m": [
+    17.87,
+    53.072,
+    349.5
+   ],
+   "size_m": [
+    41.47,
+    106.072,
+    349.5
+   ],
+   "materials": [
+    "M_GlassTeal",
+    "M_Stainless",
+    "M_RoofFlat"
+   ],
+   "what": "St. Regis Chicago: three stacked-frustum glass towers 349/259/179 m",
+   "removes": "three City Sample towers",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    873.6,
+    -35.6
+   ],
+   "collide": "none",
+   "zone": {
+    "poly": [
+     [
+      819.0,
+      -61.0
+     ],
+     [
+      928.5,
+      -61.0
+     ],
+     [
+      928.5,
+      -10.5
+     ],
+     [
+      819.0,
+      -10.5
+     ]
+    ],
+    "clear": [
+     "props",
+     "buildings"
+    ],
+    "buildings": [
+     [
+      [
+       907.9,
+       -50.4
+      ],
+      [
+       907.9,
+       -19.4
+      ],
+      [
+       878.9,
+       -19.4
+      ],
+      [
+       878.9,
+       -50.4
+      ]
+     ],
+     [
+      [
+       824.3,
+       -11.71
+      ],
+      [
+       824.91,
+       -36.7
+      ],
+      [
+       849.9,
+       -36.09
+      ],
+      [
+       849.29,
+       -11.1
+      ]
+     ],
+     [
+      [
+       948.35,
+       -28.95
+      ],
+      [
+       923.35,
+       -28.65
+      ],
+      [
+       923.05,
+       -53.65
+      ],
+      [
+       948.05,
+       -53.95
+      ]
+     ]
+    ]
+   }
+  },
+  "PK_VistaTower_Col": {
+   "file": "SourceArt/Landmarks/parks/meshes/PK_VistaTower_Col.glb",
+   "tris": 48,
+   "bbox_min_m": [
+    -23.6,
+    -53.0,
+    0.0
+   ],
+   "bbox_max_m": [
+    17.881,
+    53.077,
+    349.0
+   ],
+   "size_m": [
+    41.481,
+    106.077,
+    349.0
+   ],
+   "materials": [
+    "M_Concrete"
+   ],
+   "what": "invisible collider for PK_VistaTower",
+   "frame": "plan-local (x east, y north) turned -90 deg: place in Unreal at the origin with NO rotation",
+   "origin_plan_m": [
+    873.6,
+    -35.6
+   ],
+   "collide": "hidden"
+  }
+ },
+ "conventions": {
+  "frame": "every asset is plan-local (Saved/Mashup/plan_v3.json: x east, y north, metres) about origin_plan_m, already turned for Unreal: place at Unreal (X = y*100, Y = x*100) with NO rotation, Z = traced ground",
+  "collide": "complex = complex-as-simple collision; none = visual only; hidden = invisible collider (hidden in game)",
+  "zone": "plan polygon to clear of street props/trees ('props') and City Sample building instances ('buildings')",
+  "generator": "Scripts/landmarks/blender_chicago_parks.py"
+ }
+}

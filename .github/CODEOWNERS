@@ -1,0 +1,31 @@
+# Code owners must approve pull requests that touch their paths (branch protection: "require review from code owners").
+# Later lines take priority over earlier ones. Kenny's GitHub account: confirm @kennyhassmusic before going public.
+
+# Default: Kenny reviews everything
+*                                   @kennyhassmusic
+
+# Sensitive: always Kenny, even after other owners are added below (see SECURITY.md)
+/LICENSE                            @kennyhassmusic
+/LICENSE-ASSETS.md                  @kennyhassmusic
+/CLA.md                             @kennyhassmusic
+/SECURITY.md                        @kennyhassmusic
+/GOVERNANCE.md                      @kennyhassmusic
+/CREDITS_AND_LICENCES.txt           @kennyhassmusic
+/.github/                           @kennyhassmusic
+/.gitattributes                     @kennyhassmusic
+/.gitignore                         @kennyhassmusic
+/Config/                            @kennyhassmusic
+/*.uproject                         @kennyhassmusic
+/Plugins/                           @kennyhassmusic
+/Source/**/*.Build.cs               @kennyhassmusic
+/Source/*.Target.cs                 @kennyhassmusic
+/Scripts/build/                     @kennyhassmusic
+/launch.sh                          @kennyhassmusic
+# anything the editor runs by itself when it starts
+/Content/Python/                    @kennyhassmusic
+**/init_unreal.py                   @kennyhassmusic
+
+# Per-area owners: add collaborators as they take ownership of an area (paths to confirm against the repo).
+# /Source/SkyCity/SkysterTraffic.*  @kennyhassmusic @traffic-owner
+# /Scripts/roads/                   @kennyhassmusic @citygen-owner
+# /Scripts/landmarks/               @kennyhassmusic @landmarks-owner

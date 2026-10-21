@@ -1,0 +1,767 @@
+<title>Sky City Street Mashup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a full-height map workspace; control rail on the right, stacked under the map on phones. */
+:root {
+  --bg: #e9ebe6; --land: #f4f3ef; --panel: #fbfbf8; --ink: #1d2227; --muted: #5d6871; --line: #d6d9d3;
+  --chicago: #2c5d8f; --austin: #bf5700; --water: #bcd8e6; --park: #d2e5c6; --rail: #7d858c; --seam: #1d2227;
+  --accent: #bf5700; --accent-ink: #ffffff; --ok: #2f7d4f;
+  --p-land: #efece4; --p-water: #a9cfe0; --p-park: #cfe2bf; --p-sand: #ecdcb0; --p-casing: #b9b2a3; --p-bridge: #5c5548;
+  --p-minor: #ffffff; --p-mid: #fbf3d5; --p-major: #f6d98a; --p-highway: #e8a54b; --p-ped: #d9d4c8; --p-rail: #4a4f57; --p-label: #3d3830;
+  --sk-road: #d6262b; --sk-water: #1f6fd1; --sk-park: #2f9a3e; --sk-remove: #222222; --sk-pin: #8a2be2;
+  --display: "Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1316; --land: #161b1f; --panel: #1a2025; --ink: #e6e9ec; --muted: #98a3ad; --line: #2b333a;
+  --chicago: #84b8ea; --austin: #ff8a3d; --water: #1d3b4b; --park: #1d3322; --rail: #77818a; --seam: #e6e9ec;
+  --accent: #ff8a3d; --accent-ink: #1a1208; --ok: #5cc48a;
+  --p-land: #1b1f22; --p-water: #1e4a5e; --p-park: #22382a; --p-sand: #5a4d33; --p-casing: #0f1214; --p-bridge: #d9d2c3;
+  --p-minor: #565c62; --p-mid: #6d6a5a; --p-major: #a8894a; --p-highway: #d08a3a; --p-ped: #3a3f44; --p-rail: #c9ccd1; --p-label: #e6e2d8;
+  --sk-road: #ff5a5f; --sk-water: #5aa8ff; --sk-park: #5fd16f; --sk-remove: #f2f2f2; --sk-pin: #c38bff; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1316; --land: #161b1f; --panel: #1a2025; --ink: #e6e9ec; --muted: #98a3ad; --line: #2b333a;
+  --chicago: #84b8ea; --austin: #ff8a3d; --water: #1d3b4b; --park: #1d3322; --rail: #77818a; --seam: #e6e9ec;
+  --accent: #ff8a3d; --accent-ink: #1a1208; --ok: #5cc48a;
+  --p-land: #1b1f22; --p-water: #1e4a5e; --p-park: #22382a; --p-sand: #5a4d33; --p-casing: #0f1214; --p-bridge: #d9d2c3;
+  --p-minor: #565c62; --p-mid: #6d6a5a; --p-major: #a8894a; --p-highway: #d08a3a; --p-ped: #3a3f44; --p-rail: #c9ccd1; --p-label: #e6e2d8;
+  --sk-road: #ff5a5f; --sk-water: #5aa8ff; --sk-park: #5fd16f; --sk-remove: #f2f2f2; --sk-pin: #c38bff; color-scheme: dark }
+html, body { height: 100%; }
+.kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.kind { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: transparent; color: var(--ink);
+  border-radius: 6px; padding: 7px 8px; font: 500 13px var(--body); cursor: pointer; text-align: left; }
+.kind[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.kind i { width: 16px; height: 4px; border-radius: 2px; flex: 0 0 auto; }
+.pins { display: flex; flex-direction: column; gap: 6px; }
+.pin { display: grid; grid-template-columns: 22px 1fr 26px; gap: 6px; align-items: center; }
+.pin b { width: 22px; height: 22px; border-radius: 50%; background: var(--sk-pin); color: #fff; display: grid; place-items: center; font: 600 12px var(--mono); }
+.pin input { min-width: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--land); color: var(--ink); padding: 6px 8px; font: 13px var(--body); }
+.pin button { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 16px; }
+.btnrow { display: flex; gap: 8px; flex-wrap: wrap; }
+.ghost { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 6px; padding: 7px 12px; font: 500 13px var(--body); cursor: pointer; }
+.ghost.warn { border-color: #c0392b; color: #c0392b; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.45 var(--body); }
+.app { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 0; }
+.map { position: relative; min-width: 0; background: var(--land); overflow: hidden; touch-action: none; }
+canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+canvas.dragging { cursor: grabbing; }
+.legend { position: absolute; left: max(12px, env(safe-area-inset-left, 0px)); top: 12px; display: flex; gap: 10px; flex-wrap: wrap;
+  background: color-mix(in srgb, var(--panel) 88%, transparent); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px;
+  font: 600 15px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 14px; height: 4px; border-radius: 2px; display: inline-block; }
+.attrib { position: absolute; right: 8px; bottom: 6px; font: 11px var(--body); color: var(--muted);
+  background: color-mix(in srgb, var(--land) 80%, transparent); padding: 2px 6px; border-radius: 4px; }
+.attrib a { color: inherit; }
+aside { background: var(--panel); border-left: 1px solid var(--line); overflow-y: auto; display: flex; flex-direction: column; gap: 18px;
+  padding-block: 18px 24px; padding-left: 18px; padding-right: max(18px, env(safe-area-inset-right, 0px)); }
+h1 { font: 800 30px/1 var(--display); letter-spacing: .02em; text-transform: uppercase; margin: 0; text-wrap: balance; }
+h1 .c { color: var(--chicago); } h1 .a { color: var(--austin); }
+.lede { color: var(--muted); margin: 6px 0 0; }
+section { display: flex; flex-direction: column; gap: 8px; }
+h2 { font: 600 16px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--ink); padding: 8px 6px; font: 500 13px var(--body); cursor: pointer; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--panel); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row { display: flex; align-items: center; gap: 10px; }
+.row label { flex: 0 0 76px; color: var(--muted); font-size: 13px; }
+.row input[type="range"] { flex: 1; min-width: 0; accent-color: var(--accent); }
+.row output { flex: 0 0 52px; text-align: right; font: 500 12px var(--mono); font-variant-numeric: tabular-nums; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 5px 10px; font: 500 12px var(--body); cursor: pointer; }
+.chip:hover { border-color: var(--muted); }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.checks label { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.checks input { accent-color: var(--accent); }
+.readout { font: 12px/1.6 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+textarea { width: 100%; box-sizing: border-box; min-height: 64px; resize: vertical; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--land); color: var(--ink); padding: 8px; font: 13px/1.4 var(--body); }
+select { border: 1px solid var(--line); border-radius: 6px; background: var(--land); color: var(--ink); padding: 6px 8px; font: 13px var(--body); }
+.save { border: 0; border-radius: 6px; background: var(--accent); color: var(--accent-ink); padding: 11px 14px; font: 800 18px/1 var(--display);
+  letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.save:disabled { opacity: .5; cursor: default; }
+.status { font-size: 12px; color: var(--muted); min-height: 1.4em; }
+.status.ok { color: var(--ok); }
+.hint { font-size: 12px; color: var(--muted); margin: 0; }
+kbd { font: 11px var(--mono); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; grid-template-rows: 62vh auto; height: auto; }
+  .map { height: 62vh; }
+  aside { border-left: 0; border-top: 1px solid var(--line); overflow: visible; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="app">
+  <div class="map" id="mapWrap">
+    <canvas id="map" aria-label="Street map of Chicago with Austin overlaid"></canvas>
+    <div class="legend" aria-hidden="true" id="legendLayout" hidden>
+      <span><i class="swatch" style="background:var(--chicago)"></i>Chicago</span>
+      <span><i class="swatch" style="background:var(--austin)"></i>Austin</span>
+    </div>
+    <div class="legend" aria-hidden="true" id="legendPlan">
+      <span><i class="swatch" style="background:var(--p-highway)"></i>Expressway</span>
+      <span><i class="swatch" style="background:var(--p-major)"></i>Main road</span>
+      <span><i class="swatch" style="background:var(--p-rail)"></i>The L</span>
+    </div>
+    <div class="attrib">Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a></div>
+  </div>
+  <aside>
+    <div>
+      <h1><span class="c">Chicago</span> × <span class="a">Austin</span></h1>
+      <p class="lede" id="lede">The integrated city: one street network, one lakefront. Sketch what you want changed and save it for Claude.</p>
+    </div>
+
+    <div class="seg" role="group" aria-label="Which view">
+      <button id="screenPlan" aria-pressed="true">Integrated map</button>
+      <button id="screenLayout" aria-pressed="false">Layout tool</button>
+    </div>
+
+    <div id="planPanel" style="display:flex;flex-direction:column;gap:18px">
+      <section>
+        <h2>Drag tool</h2>
+        <div class="seg" role="group" aria-label="What dragging the map does">
+          <button id="pToolPan" aria-pressed="false">Pan</button>
+          <button id="pToolPen" aria-pressed="true">Sketch</button>
+          <button id="pToolPin" aria-pressed="false">Pin a note</button>
+        </div>
+        <p class="hint">Scroll or pinch to zoom. Hold <kbd>Space</kbd> to pan while sketching.</p>
+      </section>
+      <section>
+        <h2>Pen</h2>
+        <div class="kinds" role="group" aria-label="What the pen draws">
+          <button class="kind" data-kind="road" aria-pressed="true"><i style="background:var(--sk-road)"></i>Road here</button>
+          <button class="kind" data-kind="water" aria-pressed="false"><i style="background:var(--sk-water)"></i>Water here</button>
+          <button class="kind" data-kind="park" aria-pressed="false"><i style="background:var(--sk-park)"></i>Park / beach</button>
+          <button class="kind" data-kind="remove" aria-pressed="false"><i style="background:var(--sk-remove)"></i>Remove this</button>
+        </div>
+        <div class="btnrow"><button class="ghost" id="undo">Undo</button><button class="ghost" id="clearSketch">Clear sketch</button></div>
+      </section>
+      <section>
+        <h2>Pinned notes</h2>
+        <div class="pins" id="pins"><p class="hint" id="noPins">Choose <b>Pin a note</b>, tap the map, then type what you want there.</p></div>
+      </section>
+      <section>
+        <h2>Anything else</h2>
+        <textarea id="sketchNotes" placeholder="Big-picture wishes, like 'more curves near the river' or 'a jump off the pier'"></textarea>
+        <button class="save" id="saveSketch">Save sketch for Claude</button>
+        <div class="status" id="sketchStatus" role="status"></div>
+      </section>
+    </div>
+
+    <div id="layoutPanel" style="display:none;flex-direction:column;gap:18px">
+    <section>
+      <h2>Mix</h2>
+      <div class="seg" role="group" aria-label="Mix mode">
+        <button id="modeOverlay" aria-pressed="true">Overlay</button>
+        <button id="modeStitch" aria-pressed="false">Stitch</button>
+      </div>
+      <p class="hint" id="modeHint">Both cities drawn together. Turn down Austin to see Chicago underneath.</p>
+      <div class="row" id="opacityRow"><label for="opacity">Austin</label><input id="opacity" type="range" min="0" max="100" value="85"><output id="opacityOut">85%</output></div>
+    </section>
+
+    <section>
+      <h2>Drag tool</h2>
+      <div class="seg" role="group" aria-label="What dragging the map does">
+        <button id="toolPan" aria-pressed="false">Pan</button>
+        <button id="toolAustin" aria-pressed="true">Move Austin</button>
+        <button id="toolSeam" aria-pressed="false">Move seam</button>
+        <button id="toolFrame" aria-pressed="false">Move area</button>
+      </div>
+      <p class="hint">Scroll or pinch to zoom. Hold <kbd>Space</kbd> to pan with any tool.</p>
+    </section>
+
+    <section>
+      <h2>Austin</h2>
+      <div class="row"><label for="rot">Rotate</label><input id="rot" type="range" min="-180" max="180" step="1" value="0"><output id="rotOut">0°</output></div>
+      <div class="chips">
+        <button class="chip" data-preset="loop">Loop + downtown Austin</button>
+        <button class="chip" data-preset="rivers">Rivers lined up</button>
+        <button class="chip" data-preset="cross">Rivers crossing</button>
+        <button class="chip" data-preset="lake">Capitol on the lake</button>
+      </div>
+      <div class="readout" id="austinOut"></div>
+    </section>
+
+    <section id="seamSection" hidden>
+      <h2>Seam</h2>
+      <div class="row"><label for="seamAngle">Angle</label><input id="seamAngle" type="range" min="0" max="179" step="1" value="0"><output id="seamOut">0°</output></div>
+      <div class="chips"><button class="chip" id="swapSides">Swap sides</button></div>
+      <p class="hint" id="seamHint"></p>
+    </section>
+
+    <section>
+      <h2>Play area</h2>
+      <div class="row"><label for="frameSize">Size</label>
+        <select id="frameSize"><option value="0">Hidden</option><option value="2000">2 × 2 km</option><option value="3000" selected>3 × 3 km</option><option value="4000">4 × 4 km</option></select>
+      </div>
+      <p class="hint">The square Claude builds first. Drag it with <b>Move area</b>.</p>
+    </section>
+
+    <section>
+      <h2>Show</h2>
+      <div class="checks">
+        <label><input type="checkbox" id="lyrRoads" checked>Streets</label>
+        <label><input type="checkbox" id="lyrRail" checked>L and rail</label>
+        <label><input type="checkbox" id="lyrWater" checked>Water</label>
+        <label><input type="checkbox" id="lyrParks" checked>Parks</label>
+        <label><input type="checkbox" id="lyrLabels" checked>Landmarks</label>
+        <label><input type="checkbox" id="lyrGrid">1 km grid</label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Notes for Claude</h2>
+      <textarea id="notes" placeholder="Anything to keep or change, like 'keep Navy Pier' or 'Capitol at the end of Congress'"></textarea>
+      <button class="save" id="save">Save this layout</button>
+      <div class="status" id="status" role="status"></div>
+      <p class="hint">After saving a new layout, ask Claude to rebuild the integrated map from it.</p>
+    </section>
+    </div>
+  </aside>
+</div>
+
+<script type="application/json" id="cityData">__CITY_DATA__</script>
+<script type="application/json" id="planData">__PLAN_DATA__</script>
+<script>
+(() => {
+  const DATA = JSON.parse(document.getElementById("cityData").textContent).cities;
+  const canvas = document.getElementById("map");
+  const wrap = document.getElementById("mapWrap");
+  const ctx = canvas.getContext("2d");
+  const $ = (id) => document.getElementById(id);
+
+  // ---- state (metres; x east, y north) ----
+  const S = {
+    mode: "overlay", tool: "austin", opacity: 0.85,
+    austin: { x: 0, y: 0, rot: 0 },
+    seam: { x: 0, y: 0, angle: 0, chicagoSide: "south" },
+    frame: { size: 3000, x: 0, y: 0 },
+    layers: { roads: true, rail: true, water: true, parks: true, labels: true, grid: false },
+    view: { cx: 0, cy: 400, scale: 0.14 },
+  };
+
+  // ---- cached geometry: one Path2D per layer per city, in that city's own metres ----
+  function pathFromLines(lines, getPts) {
+    const p = new Path2D();
+    for (const l of lines) {
+      const c = getPts(l);
+      if (c.length < 4) continue;
+      p.moveTo(c[0], c[1]);
+      for (let i = 2; i < c.length; i += 2) p.lineTo(c[i], c[i + 1]);
+    }
+    return p;
+  }
+  function pathFromRings(rings) {
+    const p = new Path2D();
+    for (const c of rings) {
+      if (c.length < 6) continue;
+      p.moveTo(c[0], c[1]);
+      for (let i = 2; i < c.length; i += 2) p.lineTo(c[i], c[i + 1]);
+      p.closePath();
+    }
+    return p;
+  }
+  const GEO = {};
+  for (const [name, c] of Object.entries(DATA)) {
+    const roads = {};
+    for (const [cls, lines] of Object.entries(c.roads)) roads[cls] = pathFromLines(lines, (l) => l[1]);
+    GEO[name] = {
+      roads, water: pathFromRings(c.water.outer), islands: pathFromRings(c.water.inner), parks: pathFromRings(c.parks),
+      L: pathFromLines(c.rail.L, (l) => l), subway: pathFromLines(c.rail.subway, (l) => l), rail: pathFromLines(c.rail.rail, (l) => l),
+      bldg: pathFromRings(c.landmarks.filter((l) => l[3].length).map((l) => l[3])),
+      labels: c.landmarks.map((l) => ({ name: l[0], x: l[1], y: l[2] })), bbox: c.bbox,
+    };
+  }
+  const ROAD_W = { ped: 0.5, minor: 0.9, mid: 1.3, major: 1.8, highway: 3.0 };
+  const ROAD_ORDER = ["ped", "minor", "mid", "major", "highway"];
+
+  // ---- colours from theme tokens ----
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    for (const k of ["land", "ink", "muted", "line", "chicago", "austin", "water", "park", "rail", "seam", "accent", "panel",
+      "p-land", "p-water", "p-park", "p-sand", "p-casing", "p-bridge", "p-minor", "p-mid", "p-major", "p-highway", "p-ped", "p-rail", "p-label",
+      "sk-road", "sk-water", "sk-park", "sk-remove", "sk-pin"]) C[k] = cs.getPropertyValue("--" + k).trim();
+  }
+  readColors();
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); draw(); });
+  new MutationObserver(() => { readColors(); draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  // ---- view transform ----
+  let W = 0, H = 0, DPR = 1;
+  function resize() {
+    const r = wrap.getBoundingClientRect();
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+    draw();
+  }
+  new ResizeObserver(resize).observe(wrap);
+  const toScreen = (x, y) => [W / 2 + (x - S.view.cx) * S.view.scale, H / 2 - (y - S.view.cy) * S.view.scale];
+  const toWorld = (sx, sy) => [S.view.cx + (sx - W / 2) / S.view.scale, S.view.cy - (sy - H / 2) / S.view.scale];
+  function setViewTransform() {
+    const k = S.view.scale * DPR;
+    ctx.setTransform(k, 0, 0, -k, (W / 2 - S.view.cx * S.view.scale) * DPR, (H / 2 + S.view.cy * S.view.scale) * DPR);
+  }
+  function austinMatrix() { // city metres -> world metres
+    const t = S.austin.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
+    return [c, s, -s, c, S.austin.x, S.austin.y];
+  }
+  const austinToWorld = (x, y) => { const m = austinMatrix(); return [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]]; };
+
+  // ---- drawing ----
+  function drawCity(name, color, alpha) {
+    const g = GEO[name], k = S.view.scale;
+    const zoomW = Math.min(2.4, Math.max(0.55, k / 0.18));
+    ctx.globalAlpha = alpha;
+    // water outlines overlap (river + harbour + lake pieces), so fill them as a union, then cut islands back out
+    if (S.layers.water) { ctx.fillStyle = C.water; ctx.fill(g.water); ctx.fillStyle = C.land; ctx.fill(g.islands); }
+    if (S.layers.parks) { ctx.fillStyle = C.park; ctx.fill(g.parks); }
+    if (S.layers.roads) {
+      ctx.strokeStyle = color; ctx.lineCap = "round"; ctx.lineJoin = "round";
+      for (const cls of ROAD_ORDER) {
+        if (!g.roads[cls]) continue;
+        ctx.lineWidth = ROAD_W[cls] * zoomW / k;
+        ctx.globalAlpha = alpha * (cls === "ped" ? 0.45 : cls === "minor" ? 0.75 : 1);
+        ctx.stroke(g.roads[cls]);
+      }
+      ctx.globalAlpha = alpha;
+    }
+    if (S.layers.rail) {
+      ctx.strokeStyle = C.rail; ctx.lineWidth = 1.1 * zoomW / k; ctx.setLineDash([6 / k, 4 / k]); ctx.stroke(g.rail);
+      ctx.strokeStyle = color; ctx.lineWidth = 3.2 * zoomW / k; ctx.setLineDash([]); ctx.stroke(g.L);
+      ctx.lineWidth = 1.6 * zoomW / k; ctx.setLineDash([2 / k, 4 / k]); ctx.stroke(g.subway); ctx.setLineDash([]);
+    }
+    if (S.layers.labels) { ctx.fillStyle = color; ctx.fill(g.bldg); }
+    ctx.globalAlpha = 1;
+  }
+  function seamClip(side) { // clip to one side of the seam line, in world coords
+    const a = S.seam.angle * Math.PI / 180, dx = Math.cos(a), dy = Math.sin(a), nx = -dy, ny = dx, L = 60000;
+    const sgn = side === "a" ? 1 : -1, sx = S.seam.x, sy = S.seam.y;
+    const p = new Path2D();
+    p.moveTo(sx - dx * L, sy - dy * L); p.lineTo(sx + dx * L, sy + dy * L);
+    p.lineTo(sx + dx * L + nx * L * sgn, sy + dy * L + ny * L * sgn); p.lineTo(sx - dx * L + nx * L * sgn, sy - dy * L + ny * L * sgn);
+    p.closePath();
+    ctx.clip(p);
+  }
+  // which side ("a" = left of the seam's direction) faces north-ish, for wording
+  function chicagoSideKey() { return S.seam.chicagoSide === "south" ? "b" : "a"; }
+
+  // ---- integrated map (the plan built from the saved layout) + sketch layer ----
+  const PLAN = JSON.parse(document.getElementById("planData").textContent);
+  const flatOf = (pts) => pts.flat();
+  const PG = {
+    parks: pathFromRings(PLAN.parks.map(flatOf)), sand: pathFromRings((PLAN.beaches || []).map(flatOf)),
+    water: pathFromRings(PLAN.water.outer.map(flatOf)), islands: pathFromRings(PLAN.water.inner.map(flatOf)),
+    roads: {}, bridges: {},
+    L: pathFromLines(PLAN.rail.filter((r) => r.kind === "L").map((r) => flatOf(r.pts)), (l) => l),
+    rail: pathFromLines(PLAN.rail.filter((r) => r.kind === "rail").map((r) => flatOf(r.pts)), (l) => l),
+    bldg: pathFromRings(PLAN.landmarks.filter((l) => l.outline.length).map((l) => flatOf(l.outline))),
+  };
+  for (const cls of ROAD_ORDER) {
+    PG.roads[cls] = pathFromLines(PLAN.roads.filter((r) => r.cls === cls).map((r) => flatOf(r.pts)), (l) => l);
+    PG.bridges[cls] = pathFromLines((PLAN.bridges || []).filter((r) => r.cls === cls).map((r) => flatOf(r.pts)), (l) => l);
+  }
+  const ROAD_M = { ped: 3, minor: 9, mid: 12, major: 16, highway: 26 };     // real widths in metres
+  const ROAD_PX = { ped: 0.6, minor: 1.1, mid: 1.6, major: 2.4, highway: 4 };  // minimum on screen
+  const SK = { strokes: [], pins: [], history: [] };
+  const SK_COL = { road: "sk-road", water: "sk-water", park: "sk-park", remove: "sk-remove" };
+
+  function drawPlan() {
+    if (!W) return;
+    const k = S.view.scale, w = (cls, extra = 0) => Math.max(ROAD_PX[cls] / k, ROAD_M[cls]) + extra / k;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = C["p-land"]; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    setViewTransform();
+    ctx.fillStyle = C["p-park"]; ctx.fill(PG.parks);
+    ctx.fillStyle = C["p-sand"]; ctx.fill(PG.sand);
+    ctx.fillStyle = C["p-water"]; ctx.fill(PG.water);
+    ctx.fillStyle = C["p-land"]; ctx.fill(PG.islands);
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    for (const cls of ROAD_ORDER) { if (cls === "ped") continue; ctx.strokeStyle = C["p-casing"]; ctx.lineWidth = w(cls, 1.6); ctx.stroke(PG.roads[cls]); }
+    for (const cls of ROAD_ORDER) { ctx.strokeStyle = C["p-" + cls]; ctx.lineWidth = w(cls); ctx.stroke(PG.roads[cls]); }
+    ctx.lineCap = "butt";
+    for (const cls of ROAD_ORDER) { ctx.strokeStyle = C["p-bridge"]; ctx.lineWidth = w(cls, 3); ctx.stroke(PG.bridges[cls]); ctx.strokeStyle = C["p-" + cls]; ctx.lineWidth = w(cls); ctx.stroke(PG.bridges[cls]); }
+    ctx.lineCap = "round";
+    ctx.strokeStyle = C["p-rail"]; ctx.lineWidth = Math.max(2.6 / k, 6); ctx.stroke(PG.L);
+    ctx.lineWidth = Math.max(1 / k, 2); ctx.setLineDash([5 / k, 3 / k]); ctx.stroke(PG.rail); ctx.setLineDash([]);
+    ctx.fillStyle = C["p-label"]; ctx.fill(PG.bldg);
+    // play area
+    const [px0, py0, px1, py1] = PLAN.playArea;
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 2 / k; ctx.setLineDash([12 / k, 6 / k]); ctx.strokeRect(px0, py0, px1 - px0, py1 - py0); ctx.setLineDash([]);
+    // sketch strokes
+    for (const s of SK.strokes) {
+      if (s.pts.length < 2) continue;
+      ctx.strokeStyle = C[SK_COL[s.kind]]; ctx.globalAlpha = 0.85; ctx.lineWidth = (s.kind === "remove" ? 5 : 4) / k;
+      if (s.kind === "remove") ctx.setLineDash([9 / k, 5 / k]);
+      ctx.beginPath(); ctx.moveTo(s.pts[0][0], s.pts[0][1]);
+      for (let i = 1; i < s.pts.length; i++) ctx.lineTo(s.pts[i][0], s.pts[i][1]);
+      ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+    // labels, pins, scale, north (screen space)
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const disp = getComputedStyle(document.documentElement).getPropertyValue("--display");
+    ctx.font = "600 13px " + disp; ctx.textBaseline = "middle";
+    for (const l of PLAN.landmarks) {
+      const [sx, sy] = toScreen(l.pos[0], l.pos[1]);
+      if (sx < -60 || sy < -20 || sx > W + 60 || sy > H + 20) continue;
+      ctx.fillStyle = C["p-label"]; ctx.beginPath(); ctx.arc(sx, sy, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = C["p-land"]; ctx.strokeText(l.name.toUpperCase(), sx + 6, sy); ctx.fillText(l.name.toUpperCase(), sx + 6, sy);
+    }
+    SK.pins.forEach((p, i) => {
+      const [sx, sy] = toScreen(p.x, p.y);
+      ctx.fillStyle = C["sk-pin"]; ctx.beginPath(); ctx.arc(sx, sy, 11, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.font = "600 12px " + getComputedStyle(document.documentElement).getPropertyValue("--mono");
+      ctx.textAlign = "center"; ctx.fillText(String(i + 1), sx, sy + 0.5); ctx.textAlign = "start";
+    });
+    drawScale(); drawNorth();
+  }
+  function draw() { if (S.screen === "plan") drawPlan(); else drawLayout(); }
+
+  function drawLayout() {
+    if (!W) return;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = C.land; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const k = S.view.scale;
+    // 1 km grid
+    if (S.layers.grid) {
+      setViewTransform();
+      const [x0, y1] = toWorld(0, 0), [x1, y0] = toWorld(W, H);
+      ctx.strokeStyle = C.line; ctx.lineWidth = 1 / k; ctx.beginPath();
+      for (let x = Math.floor(x0 / 1000) * 1000; x <= x1; x += 1000) { ctx.moveTo(x, y0); ctx.lineTo(x, y1); }
+      for (let y = Math.floor(y0 / 1000) * 1000; y <= y1; y += 1000) { ctx.moveTo(x0, y); ctx.lineTo(x1, y); }
+      ctx.stroke();
+    }
+    const am = austinMatrix();
+    if (S.mode === "overlay") {
+      setViewTransform(); drawCity("chicago", C.chicago, 1);
+      setViewTransform(); ctx.transform(...am); drawCity("austin", C.austin, S.opacity);
+    } else {
+      const cs = chicagoSideKey(), as = cs === "a" ? "b" : "a";
+      ctx.save(); setViewTransform(); seamClip(cs); drawCity("chicago", C.chicago, 1); ctx.restore();
+      ctx.save(); setViewTransform(); seamClip(as); ctx.transform(...am); drawCity("austin", C.austin, 1); ctx.restore();
+      // seam line + handle
+      setViewTransform();
+      const a = S.seam.angle * Math.PI / 180, L = 60000;
+      ctx.strokeStyle = C.seam; ctx.lineWidth = 1.5 / k; ctx.setLineDash([10 / k, 6 / k]);
+      ctx.beginPath(); ctx.moveTo(S.seam.x - Math.cos(a) * L, S.seam.y - Math.sin(a) * L); ctx.lineTo(S.seam.x + Math.cos(a) * L, S.seam.y + Math.sin(a) * L); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = C.seam; ctx.beginPath(); ctx.arc(S.seam.x, S.seam.y, 6 / k, 0, Math.PI * 2); ctx.fill();
+    }
+    // play area
+    if (S.frame.size > 0) {
+      setViewTransform();
+      const h = S.frame.size / 2;
+      ctx.strokeStyle = C.accent; ctx.lineWidth = 2 / k; ctx.setLineDash([]);
+      ctx.strokeRect(S.frame.x - h, S.frame.y - h, S.frame.size, S.frame.size);
+    }
+    // labels in screen space
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    if (S.layers.labels) {
+      ctx.font = "600 13px " + getComputedStyle(document.documentElement).getPropertyValue("--display");
+      ctx.textBaseline = "middle";
+      const put = (lbl, wx, wy, color) => {
+        const [sx, sy] = toScreen(wx, wy);
+        if (sx < -50 || sy < -20 || sx > W + 50 || sy > H + 20) return;
+        ctx.fillStyle = color; ctx.beginPath(); ctx.arc(sx, sy, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = C.land; ctx.strokeText(lbl.toUpperCase(), sx + 6, sy);
+        ctx.fillText(lbl.toUpperCase(), sx + 6, sy);
+      };
+      const showAustin = S.mode === "stitch" || S.opacity > 0.05;
+      for (const l of GEO.chicago.labels) if (S.mode === "overlay" || onSide(l.x, l.y, chicagoSideKey())) put(l.name, l.x, l.y, C.chicago);
+      if (showAustin) for (const l of GEO.austin.labels) {
+        const [wx, wy] = austinToWorld(l.x, l.y);
+        if (S.mode === "overlay" || !onSide(wx, wy, chicagoSideKey())) put(l.name, wx, wy, C.austin);
+      }
+    }
+    // play-area label, scale bar, north arrows
+    if (S.frame.size > 0) {
+      const h = S.frame.size / 2, [fx, fy] = toScreen(S.frame.x - h, S.frame.y + h);
+      ctx.font = "600 12px " + getComputedStyle(document.documentElement).getPropertyValue("--display");
+      ctx.fillStyle = C.accent; ctx.textBaseline = "bottom"; ctx.fillText("PLAY AREA " + (S.frame.size / 1000) + " KM", fx + 2, fy - 4);
+    }
+    drawScale(); drawNorth();
+  }
+  function onSide(x, y, side) {
+    const a = S.seam.angle * Math.PI / 180, nx = -Math.sin(a), ny = Math.cos(a);
+    const d = (x - S.seam.x) * nx + (y - S.seam.y) * ny;
+    return side === "a" ? d >= 0 : d < 0;
+  }
+  function drawScale() {
+    const steps = [100, 200, 250, 500, 1000, 2000];
+    let m = steps[0];
+    for (const s of steps) if (s * S.view.scale <= 160) m = s;
+    const px = m * S.view.scale, x = 16, y = H - 22;
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y - 5); ctx.lineTo(x, y); ctx.lineTo(x + px, y); ctx.lineTo(x + px, y - 5); ctx.stroke();
+    ctx.fillStyle = C.ink; ctx.font = "500 11px " + getComputedStyle(document.documentElement).getPropertyValue("--mono"); ctx.textBaseline = "bottom";
+    ctx.fillText(m >= 1000 ? (m / 1000) + " km" : m + " m", x + px + 6, y + 1);
+  }
+  function drawNorth() {
+    const arrow = (cx, cy, angDeg, color, label) => {
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(-angDeg * Math.PI / 180);
+      ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(5, 6); ctx.lineTo(0, 3); ctx.lineTo(-5, 6); ctx.closePath(); ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = color; ctx.font = "600 11px " + getComputedStyle(document.documentElement).getPropertyValue("--display"); ctx.textBaseline = "top";
+      ctx.fillText(label, cx - 4, cy + 10);
+    };
+    arrow(W - 26, 58, 0, S.screen === "plan" ? C["p-label"] : C.chicago, "N");
+    if (S.screen !== "plan" && S.austin.rot !== 0) arrow(W - 52, 58, S.austin.rot, C.austin, "N");
+  }
+
+  // ---- UI wiring ----
+  function setPressed(ids, on) { for (const id of ids) $(id).setAttribute("aria-pressed", String(id === on)); }
+  function setMode(m) {
+    S.mode = m; setPressed(["modeOverlay", "modeStitch"], m === "overlay" ? "modeOverlay" : "modeStitch");
+    $("opacityRow").hidden = m !== "overlay"; $("seamSection").hidden = m !== "stitch"; $("toolSeam").disabled = m !== "stitch";
+    $("modeHint").textContent = m === "overlay" ? "Both cities drawn together. Turn down Austin to see Chicago underneath."
+      : "Chicago on one side of the seam, Austin on the other. Drag the seam or turn it.";
+    if (m !== "stitch" && S.tool === "seam") setTool("austin");
+    updateReadouts(); draw();
+  }
+  function setTool(t) { S.tool = t; setPressed(["toolPan", "toolAustin", "toolSeam", "toolFrame"], { pan: "toolPan", austin: "toolAustin", seam: "toolSeam", frame: "toolFrame" }[t]); }
+  $("modeOverlay").onclick = () => setMode("overlay");
+  $("modeStitch").onclick = () => setMode("stitch");
+  $("toolPan").onclick = () => setTool("pan");
+  $("toolAustin").onclick = () => setTool("austin");
+  $("toolSeam").onclick = () => setTool("seam");
+  $("toolFrame").onclick = () => setTool("frame");
+  $("opacity").oninput = (e) => { S.opacity = e.target.value / 100; updateReadouts(); draw(); };
+  $("rot").oninput = (e) => { S.austin.rot = +e.target.value; updateReadouts(); draw(); };
+  $("seamAngle").oninput = (e) => { S.seam.angle = +e.target.value; updateReadouts(); draw(); };
+  $("swapSides").onclick = () => { S.seam.chicagoSide = S.seam.chicagoSide === "south" ? "north" : "south"; updateReadouts(); draw(); };
+  $("frameSize").onchange = (e) => { S.frame.size = +e.target.value; draw(); };
+  for (const [id, key] of [["lyrRoads", "roads"], ["lyrRail", "rail"], ["lyrWater", "water"], ["lyrParks", "parks"], ["lyrLabels", "labels"], ["lyrGrid", "grid"]])
+    $(id).onchange = (e) => { S.layers[key] = e.target.checked; draw(); };
+  // Congress Ave turned to point east, Capitol set down on the lakefront just past Buckingham Fountain
+  function capitolOnLake() {
+    const cap = GEO.austin.labels.find((l) => l.name === "Texas State Capitol") || { x: 0, y: 1800 };
+    const fountain = GEO.chicago.labels.find((l) => l.name === "Buckingham Fountain") || { x: 700, y: -1400 };
+    const rx = cap.y, ry = -cap.x; // rotated -90 degrees
+    return { x: Math.round(fountain.x + 250 - rx), y: Math.round(fountain.y - ry), rot: -90 };
+  }
+  const PRESETS = {
+    // the Loop south of the river, downtown Austin north of it, joined along the water
+    loop: () => ({ mode: "stitch", austin: { x: 0, y: 0, rot: 0 }, seam: { x: 0, y: 0, angle: 0, chicagoSide: "south" } }),
+    rivers: () => ({ mode: "overlay", austin: { x: 0, y: 0, rot: 0 } }),   // Lady Bird Lake laid along the main branch
+    cross: () => ({ mode: "overlay", austin: { x: 0, y: 0, rot: 90 } }),   // Lady Bird Lake running north-south
+    lake: () => ({ mode: "overlay", austin: capitolOnLake() }),
+  };
+  function applyPreset(name) {
+    const p = PRESETS[name]();
+    Object.assign(S.austin, p.austin); $("rot").value = S.austin.rot;
+    if (p.seam) { Object.assign(S.seam, p.seam); $("seamAngle").value = S.seam.angle; }
+    setMode(p.mode);
+  }
+  for (const b of document.querySelectorAll("[data-preset]")) b.onclick = () => applyPreset(b.dataset.preset);
+  function updateReadouts() {
+    $("opacityOut").textContent = Math.round(S.opacity * 100) + "%";
+    $("rotOut").textContent = S.austin.rot + "°";
+    $("seamOut").textContent = S.seam.angle + "°";
+    const ew = S.austin.x >= 0 ? "east" : "west", ns = S.austin.y >= 0 ? "north" : "south";
+    $("austinOut").textContent = `Congress Ave bridge sits ${(Math.abs(S.austin.x) / 1000).toFixed(2)} km ${ew}, ${(Math.abs(S.austin.y) / 1000).toFixed(2)} km ${ns} of the State St bridge; turned ${S.austin.rot}°.`;
+    $("seamHint").textContent = `Chicago keeps the ${S.seam.chicagoSide === "south" ? "right/south" : "left/north"} side of the seam.`;
+  }
+
+  // ---- pointer: pan / move Austin / move seam / move area, wheel + pinch zoom ----
+  const pts = new Map();
+  let spaceDown = false, last = null, pinch = null;
+  addEventListener("keydown", (e) => { if (e.code === "Space" && e.target === document.body) { spaceDown = true; e.preventDefault(); } });
+  addEventListener("keyup", (e) => { if (e.code === "Space") spaceDown = false; });
+  let drawing = null;
+  canvas.addEventListener("pointerdown", (e) => {
+    canvas.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.offsetX, e.offsetY]);
+    if (pts.size === 2) {
+      const [a, b] = [...pts.values()]; pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), scale: S.view.scale };
+      if (drawing) { SK.strokes.pop(); drawing = null; }   // a second finger means zoom, not draw
+    }
+    last = [e.offsetX, e.offsetY]; canvas.classList.add("dragging");
+    if (S.screen === "plan" && pts.size === 1 && !spaceDown) {
+      const w = toWorld(e.offsetX, e.offsetY);
+      if (S.ptool === "pen") { drawing = { kind: S.kind, pts: [w] }; SK.strokes.push(drawing); draw(); }
+      else if (S.ptool === "pin") { SK.pins.push({ x: w[0], y: w[1], text: "" }); SK.history.push("pin"); renderPins(true); draw(); }
+    }
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!pts.has(e.pointerId)) return;
+    pts.set(e.pointerId, [e.offsetX, e.offsetY]);
+    if (pts.size === 2 && pinch) {
+      const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, pinch.scale * d / pinch.d / S.view.scale); return;
+    }
+    const dx = (e.offsetX - last[0]) / S.view.scale, dy = -(e.offsetY - last[1]) / S.view.scale;
+    if (drawing) {
+      const w = toWorld(e.offsetX, e.offsetY), lp = drawing.pts[drawing.pts.length - 1];
+      if (Math.hypot(w[0] - lp[0], w[1] - lp[1]) * S.view.scale >= 3) { drawing.pts.push(w); draw(); }
+      last = [e.offsetX, e.offsetY];
+      return;
+    }
+    last = [e.offsetX, e.offsetY];
+    const tool = spaceDown ? "pan" : (S.screen === "plan" ? (S.ptool === "pan" ? "pan" : "none") : S.tool);
+    if (tool === "pan") { S.view.cx -= dx; S.view.cy -= dy; }
+    else if (tool === "austin") { S.austin.x += dx; S.austin.y += dy; updateReadouts(); }
+    else if (tool === "seam") { S.seam.x += dx; S.seam.y += dy; }
+    else if (tool === "frame") { S.frame.x += dx; S.frame.y += dy; }
+    draw();
+  });
+  const end = (e) => {
+    pts.delete(e.pointerId); if (pts.size < 2) pinch = null; if (!pts.size) canvas.classList.remove("dragging");
+    if (drawing) {
+      if (drawing.pts.length < 2) SK.strokes.pop(); else SK.history.push("stroke");
+      drawing = null; draw();
+    }
+  };
+  canvas.addEventListener("pointerup", end); canvas.addEventListener("pointercancel", end);
+  function zoomAt(sx, sy, f) {
+    const [wx, wy] = toWorld(sx, sy);
+    S.view.scale = Math.min(3, Math.max(0.04, S.view.scale * f));
+    S.view.cx = wx - (sx - W / 2) / S.view.scale; S.view.cy = wy + (sy - H / 2) / S.view.scale;
+    draw();
+  }
+  canvas.addEventListener("wheel", (e) => { e.preventDefault(); zoomAt(e.offsetX, e.offsetY, Math.exp(-e.deltaY * 0.0015)); }, { passive: false });
+
+  // ---- save for Claude (db) ----
+  let db = null;
+  const status = $("status");
+  function snapshot() {
+    const r = (v) => Math.round(v);
+    return {
+      mode: S.mode, austin: { x: r(S.austin.x), y: r(S.austin.y), rotationDeg: S.austin.rot }, austinOpacity: S.opacity,
+      seam: { x: r(S.seam.x), y: r(S.seam.y), angleDeg: S.seam.angle, chicagoSide: S.seam.chicagoSide },
+      playArea: { sizeM: S.frame.size, x: r(S.frame.x), y: r(S.frame.y) },
+      notes: $("notes").value.trim(),
+      units: "metres; x east, y north; origin = Chicago State St bridge; Austin origin = Congress Ave bridge",
+      savedAt: new Date().toISOString(),
+    };
+  }
+  function apply(d) {
+    if (!d) return;
+    if (d.austin) { S.austin.x = d.austin.x ?? 0; S.austin.y = d.austin.y ?? 0; S.austin.rot = d.austin.rotationDeg ?? 0; $("rot").value = S.austin.rot; }
+    if (typeof d.austinOpacity === "number") { S.opacity = d.austinOpacity; $("opacity").value = Math.round(d.austinOpacity * 100); }
+    if (d.seam) { Object.assign(S.seam, { x: d.seam.x ?? 0, y: d.seam.y ?? 0, angle: d.seam.angleDeg ?? 0, chicagoSide: d.seam.chicagoSide || "south" }); $("seamAngle").value = S.seam.angle; }
+    if (d.playArea) { S.frame = { size: d.playArea.sizeM ?? 3000, x: d.playArea.x ?? 0, y: d.playArea.y ?? 0 }; $("frameSize").value = String(S.frame.size); }
+    if (typeof d.notes === "string") $("notes").value = d.notes;
+    setMode(d.mode === "stitch" ? "stitch" : "overlay");
+  }
+  $("save").onclick = async () => {
+    const snap = snapshot();
+    if (!db) {
+      try { await navigator.clipboard.writeText(JSON.stringify(snap)); status.textContent = "Saving isn't available here, so the layout was copied. Paste it to Claude."; }
+      catch { status.textContent = "Saving isn't available here. Tell Claude the numbers under Austin instead."; }
+      return;
+    }
+    $("save").disabled = true; status.className = "status"; status.textContent = "Saving…";
+    try {
+      await db.doc("layouts/current").set(snap);
+      status.className = "status ok"; status.textContent = "Saved for Claude at " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) + ".";
+    } catch (err) {
+      status.textContent = err && err.code === "not_granted" ? "This page wasn't allowed to save. Check the page's permissions and try again." : "Couldn't save just now. Try again in a moment.";
+    } finally { $("save").disabled = false; }
+  };
+  (async () => {
+    try {
+      db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+      if (db) { const doc = await db.doc("layouts/current").get(); if (doc.exists) { apply(doc.data()); status.textContent = "Loaded your last saved layout."; } }
+    } catch { /* page still works without saving */ }
+  })();
+
+  // ---- integrated-map screen: tools, pins, undo, save sketch ----
+  function setScreen(name) {
+    S.screen = name;
+    setPressed(["screenPlan", "screenLayout"], name === "plan" ? "screenPlan" : "screenLayout");
+    $("planPanel").style.display = name === "plan" ? "flex" : "none";
+    $("layoutPanel").style.display = name === "plan" ? "none" : "flex";
+    $("legendPlan").hidden = name !== "plan"; $("legendLayout").hidden = name === "plan";
+    $("lede").textContent = name === "plan"
+      ? "The integrated city: one street network, one lakefront. Sketch what you want changed and save it for Claude."
+      : "Both downtowns at true scale. Slide and turn Austin over Chicago until the mashup feels right, then save it.";
+    draw();
+  }
+  $("screenPlan").onclick = () => setScreen("plan");
+  $("screenLayout").onclick = () => setScreen("layout");
+  function setPTool(t) { S.ptool = t; setPressed(["pToolPan", "pToolPen", "pToolPin"], { pan: "pToolPan", pen: "pToolPen", pin: "pToolPin" }[t]); }
+  $("pToolPan").onclick = () => setPTool("pan");
+  $("pToolPen").onclick = () => setPTool("pen");
+  $("pToolPin").onclick = () => setPTool("pin");
+  for (const b of document.querySelectorAll(".kind")) b.onclick = () => {
+    S.kind = b.dataset.kind; for (const o of document.querySelectorAll(".kind")) o.setAttribute("aria-pressed", String(o === b)); setPTool("pen");
+  };
+  function renderPins(focusLast) {
+    const box = $("pins");
+    box.querySelectorAll(".pin").forEach((n) => n.remove());
+    $("noPins").hidden = SK.pins.length > 0;
+    SK.pins.forEach((p, i) => {
+      const row = document.createElement("div"); row.className = "pin";
+      const badge = document.createElement("b"); badge.textContent = String(i + 1);
+      const input = document.createElement("input"); input.id = "pin-" + i; input.value = p.text; input.placeholder = "What goes here?";
+      input.oninput = () => { p.text = input.value; };
+      const del = document.createElement("button"); del.setAttribute("aria-label", "Remove pin " + (i + 1)); del.textContent = "×";
+      del.onclick = () => { SK.pins.splice(i, 1); renderPins(false); draw(); };
+      row.append(badge, input, del); box.append(row);
+      if (focusLast && i === SK.pins.length - 1) setTimeout(() => input.focus(), 0);
+    });
+  }
+  $("undo").onclick = () => {
+    const last = SK.history.pop();
+    if (last === "stroke") SK.strokes.pop();
+    else if (last === "pin") { SK.pins.pop(); renderPins(false); }
+    draw();
+  };
+  let clearArmed = false;
+  $("clearSketch").onclick = () => {
+    if (!clearArmed) { clearArmed = true; $("clearSketch").textContent = "Tap again to clear"; $("clearSketch").classList.add("warn");
+      setTimeout(() => { clearArmed = false; $("clearSketch").textContent = "Clear sketch"; $("clearSketch").classList.remove("warn"); }, 3000); return; }
+    SK.strokes.length = 0; SK.pins.length = 0; SK.history.length = 0; clearArmed = false;
+    $("clearSketch").textContent = "Clear sketch"; $("clearSketch").classList.remove("warn"); renderPins(false); draw();
+  };
+  const skStatus = $("sketchStatus");
+  $("saveSketch").onclick = async () => {
+    const r = (v) => Math.round(v);
+    const doc = {
+      strokes: SK.strokes.map((s) => ({ kind: s.kind, pts: s.pts.map((p) => [r(p[0]), r(p[1])]) })),
+      pins: SK.pins.map((p, i) => ({ n: i + 1, x: r(p.x), y: r(p.y), text: p.text.trim() })),
+      notes: $("sketchNotes").value.trim(), plan: "v2",
+      kinds: "road = add a road here, water = add water, park = park or beach, remove = take this away",
+      units: "metres; x east, y north; origin = Chicago State St bridge", savedAt: new Date().toISOString(),
+    };
+    if (!db) {
+      try { await navigator.clipboard.writeText(JSON.stringify(doc)); skStatus.textContent = "Saving isn't available here, so the sketch was copied. Paste it to Claude."; }
+      catch { skStatus.textContent = "Saving isn't available here. Describe the changes to Claude instead."; }
+      return;
+    }
+    $("saveSketch").disabled = true; skStatus.className = "status"; skStatus.textContent = "Saving…";
+    try {
+      await db.doc("sketches/current").set(doc);
+      skStatus.className = "status ok"; skStatus.textContent = "Saved for Claude at " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) + ".";
+    } catch (err) {
+      skStatus.textContent = err && err.code === "not_granted" ? "This page wasn't allowed to save. Check the page's permissions and try again." : "Couldn't save just now. Try again in a moment.";
+    } finally { $("saveSketch").disabled = false; }
+  };
+  (async () => {
+    try {
+      const dbs = window.claude && window.claude.use ? await window.claude.use("db") : null;
+      if (!dbs) return;
+      const d = await dbs.doc("sketches/current").get();
+      if (d.exists) {
+        const v = d.data();
+        SK.strokes = (v.strokes || []).map((s) => ({ kind: s.kind, pts: s.pts }));
+        SK.pins = (v.pins || []).map((p) => ({ x: p.x, y: p.y, text: p.text || "" }));
+        SK.history = SK.strokes.map(() => "stroke");
+        if (typeof v.notes === "string") $("sketchNotes").value = v.notes;
+        renderPins(false); draw(); skStatus.textContent = "Loaded your last saved sketch.";
+      }
+    } catch { /* sketching still works without saving */ }
+  })();
+
+  setTool("austin"); applyPreset("loop");
+  S.screen = "plan"; S.ptool = "pen"; S.kind = "road";
+  { const [px0, py0, px1, py1] = PLAN.playArea; S.view.cx = (px0 + px1) / 2; S.view.cy = (py0 + py1) / 2; S.view.scale = 0.2; }
+  setScreen("plan"); resize();
+})();
+</script>
