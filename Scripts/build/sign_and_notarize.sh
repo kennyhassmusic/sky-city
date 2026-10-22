@@ -6,7 +6,7 @@
 set -euo pipefail
 APP="$1"
 ID="Developer ID Application: Kenny Hass Music LLC (F89LBX9V56)"
-ENT="$(cd "$(dirname "$0")/../.." && pwd)/Build/Mac/Resources/Sandbox.NoNet.entitlements"
+ENT="$(cd "$(dirname "$0")" && pwd)/SkyCity.entitlements"   # the sandbox, plus the Course Builder's local MCP server
 [ -d "$APP" ] || { echo "no app at $APP"; exit 1; }
 xattr -cr "$APP"
 # inner code first: dylibs, bundles, then any other executables (deepest paths first)

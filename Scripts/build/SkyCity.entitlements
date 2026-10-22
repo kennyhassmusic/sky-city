@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Sky City runs in the macOS app sandbox. -->
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<!-- The Course Builder's LLM link: a local MCP server on 127.0.0.1:47800 (off until the player turns it on).
+	     The game binds to the loopback address only, so nothing outside this Mac can reach it. -->
+	<key>com.apple.security.network.server</key>
+	<true/>
+</dict>
+</plist>
