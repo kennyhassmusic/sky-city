@@ -9,3 +9,4 @@ void ASkyCourseRace::Begin(ASkyCourseTrack*, const FSkyCourse&, ASkysterCar*, in
 void ASkyCourseRace::End() { bRunning = false; }
 TArray<ASkyCourseRace::FResult> ASkyCourseRace::GetResults() const { return {}; }
 void ASkyCourseRace::DrawHud(AHUD*, UCanvas*, float) {}
+FString ASkyCourseRace::TestResultsJson() const { return TEXT("[]"); }

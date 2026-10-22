@@ -45,3 +45,11 @@ ASkyCourseBuilderPawn::ASkyCourseBuilderPawn()
 }
 void ASkyCourseBuilderPawn::Tick(float DeltaSeconds) { Super::Tick(DeltaSeconds); }
 void ASkyCourseBuilderPawn::DrawHud(AHUD*, UCanvas*, float) {}
+bool ASkyCourseMode::TestSetCourseJson(const FString& Json, FString& OutErrors)
+{
+	FSkyCourse C;
+	TArray<FString> Errors;
+	if (!SkyCourse::Parse(Json, C, Errors) || !SetCourse(C, Errors)) { OutErrors = FString::Join(Errors, TEXT("\n")); return false; }
+	return true;
+}
+FString ASkyCourseMode::TestGetCourseJson() const { return SkyCourse::Write(Course); }

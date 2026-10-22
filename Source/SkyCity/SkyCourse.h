@@ -207,6 +207,9 @@ public:
 	/** Red trim glows brighter as cars pass (like the unveil's LED bars); call with the cars' positions (Unreal cm). */
 	void UpdateGlow(const TArray<FVector>& Cars, float Dt);
 	void Clear();
+	/** Test hook (editor Python): bake and build a course from JSON here; returns a JSON summary (valid, errors, warnings,
+	 *  length, segments, gates, bounds). BuildArea empty = no limit. */
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") FString TestBuildJson(const FString& Json);
 private:
 	FSkyBaked Baked;
 	UPROPERTY() TArray<TObjectPtr<class UProceduralMeshComponent>> SegMeshes;
@@ -234,6 +237,8 @@ public:
 	bool IsRunning() const { return bRunning; }
 	struct FResult { FString Name; bool bPlayer = false; int32 Lap = 0; double Time = -1; TArray<double> LapTimes; TArray<double> Splits; int32 Place = 0; bool bFinished = false; };
 	TArray<FResult> GetResults() const;
+	/** Test hook: the results as JSON. */
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") FString TestResultsJson() const;
 	double BestLap() const { return Best; }
 	/** Race HUD: countdown, lap x/y, time, splits, position, "take the left branch" hints, wrong-way warnings. */
 	void DrawHud(AHUD* Hud, UCanvas* Canvas, float S);
@@ -289,6 +294,13 @@ public:
 
 	/** Build-mode and race HUD (called by ASkysterHUD every frame, before the car's own HUD). */
 	void DrawHud(AHUD* Hud, UCanvas* Canvas, float S);
+
+	// --- test hooks (editor Python) ---
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") bool TestSetCourseJson(const FString& Json, FString& OutErrors);
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") FString TestGetCourseJson() const;
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") bool TestSetMcp(bool bOn) { return SetMcpEnabled(bOn); }
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") void TestStartDrive(int32 Opponents) { StartTestDrive(Opponents); }
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") void TestStopDrive() { StopTestDrive(); }
 
 private:
 	FSkyCourse Course;

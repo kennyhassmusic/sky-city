@@ -9,3 +9,4 @@ void ASkyCourseTrack::ShowPreview(const FSkyPiece*, const FSkyFrame&, int32, boo
 void ASkyCourseTrack::Highlight(int32) {}
 void ASkyCourseTrack::UpdateGlow(const TArray<FVector>&, float) {}
 void ASkyCourseTrack::Clear() {}
+FString ASkyCourseTrack::TestBuildJson(const FString&) { return TEXT("{\"valid\":false,\"errors\":[\"not implemented yet\"]}"); }
