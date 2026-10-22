@@ -10,9 +10,8 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-concurrency:
-  group: lfs-mirror
-  cancel-in-progress: false
+# No concurrency group on purpose: GitHub would cancel a waiting run when a newer one queues, and each push's run only
+# copies that push's files. Overlapping runs are harmless (same bytes, checked by R2).
 jobs:
   mirror:
     runs-on: ubuntu-latest
