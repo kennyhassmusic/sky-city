@@ -115,7 +115,7 @@ async function planDownloads(objects, request, env, uploader) {
   // on GitHub. Big batches (a fresh clone) skip the checks to stay inside the free plan's 50 calls per request.
   const missing = [];
   if (valid.length <= MAX_CHECKS && (uploader || (await allowed(env.CHECK_LIMIT, request)))) {
-    const heads = await Promise.all(valid.map((i) => env.BUCKET.head(keyFor(objects[i].oid)).catch(() => "error")));
+    const heads = await Promise.all(valid.map((i) => headObject(env, objects[i].oid).catch(() => "error")));
     heads.forEach((head, n) => {
       const i = valid[n];
       if (head === null || (head !== "error" && head.size !== objects[i].size)) missing.push(i);
@@ -154,7 +154,14 @@ async function planUploads(objects, request, env) {
   const out = new Array(objects.length);
   const valid = validate(objects, out);
   const checked = valid.slice(0, MAX_CHECKS); // anything past the limit is simply uploaded again (same bytes)
-  const heads = await Promise.all(checked.map((i) => env.BUCKET.head(keyFor(objects[i].oid)).catch(() => null)));
+  const heads = await Promise.all(
+    checked.map((i) =>
+      headObject(env, objects[i].oid).catch((err) => {
+        console.error("head failed", objects[i].oid, String(err));
+        return null; // can't tell: upload it again (same bytes)
+      }),
+    ),
+  );
   const present = new Set(checked.filter((i, n) => heads[n] && heads[n].size === objects[i].size));
   const verifyHref = `${new URL(request.url).origin}/${REPO}/objects/verify`;
   const auth = request.headers.get("Authorization");
@@ -240,7 +247,7 @@ async function verify(request, env) {
   if (typeof oid !== "string" || !OID.test(oid) || !Number.isSafeInteger(size)) {
     return lfsError(422, "Invalid object.");
   }
-  const head = await env.BUCKET.head(keyFor(oid));
+  const head = await headObject(env, oid);
   if (!head) return lfsError(404, "The upload did not arrive in R2. Push again.");
   if (head.size !== size) {
     await env.BUCKET.delete(keyFor(oid));
@@ -423,6 +430,15 @@ function oidBase64(oid) {
 
 function keyFor(oid) {
   return `${REPO}/${oid}`;
+}
+
+// R2 now and then answers a lookup with "internal error, please try again" (10001); one retry clears it.
+async function headObject(env, oid) {
+  try {
+    return await env.BUCKET.head(keyFor(oid));
+  } catch {
+    return await env.BUCKET.head(keyFor(oid));
+  }
 }
 
 async function isUploader(request, env) {
