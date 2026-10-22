@@ -1279,7 +1279,9 @@ void ASkysterCar::DriveOnSurface(double H, FDriverInput& S)
 	double Nf = 0, Nr = 0;
 	if (bGrip)
 	{
-		const double Load = FMath::Max(G * 0.25, -Gn + G * SUCTION * Fans * Handling.FanGrip + G * Handling.Aero * FMath::Square(VF / MAX_SPEED));
+		// on Course Builder track, the press of a loop or corkscrew (TrackPress, from the last step) loads the tyres too
+		const double Load = FMath::Max(G * 0.25, -Gn + G * SUCTION * Fans * Handling.FanGrip + G * Handling.Aero * FMath::Square(VF / MAX_SPEED)
+			+ (bTrack ? TrackPress : 0.0));
 		const double Shift = FMath::Clamp(AccelLong * Handling.CgH / WHEELBASE, -0.4 * Load, 0.4 * Load);
 		Nf = Load * Handling.CgF - Shift;
 		Nr = Load * (1 - Handling.CgF) + Shift;

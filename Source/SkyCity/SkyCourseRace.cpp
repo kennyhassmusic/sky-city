@@ -40,6 +40,11 @@ static TAutoConsoleVariable<float> CVarAutopilot(TEXT("SkyCourse.RaceAutopilot")
 	TEXT("Test: the race drives the player's car with the AI driver at this skill (0 = off, 0.3-1.2)."));
 static TAutoConsoleVariable<FString> CVarSkills(TEXT("SkyCourse.RaceSkills"), TEXT(""),
 	TEXT("Test: the opponents' skills, comma separated (e.g. 0.5,0.8,1.1); empty = spread round the race's skill."));
+// AI tuning (read when a race begins)
+static TAutoConsoleVariable<float> CVarCorkV(TEXT("SkyCourse.AI.CorkV"), 36.f,
+	TEXT("AI: the speed (m/s) it drives a corkscrew at, every skill alike (it held on between about 34 and 42 in tests)."));
+static TAutoConsoleVariable<float> CVarJumpAim(TEXT("SkyCourse.AI.JumpAim"), 0.5f,
+	TEXT("AI: where on a jump's landing pad it aims, as a share of the pad's length (6 to 10 m in)."));
 
 // Opponents: an invented name, a stand-in body and a paint, so the racers are easy to tell apart.
 namespace
@@ -146,10 +151,19 @@ void FSkyCourseRaceImpl::Prepare()
 		for (int32 b = 0; b < B.Splits[i].LeadSegs.Num(); ++b)
 		{
 			const int32 L = B.Splits[i].LeadSegs[b];
-			if (X.IsValidIndex(L)) { X[L].Split = i; X[L].Branch = b; }
+			if (!X.IsValidIndex(L)) continue;
+			X[L].Split = i;
+			X[L].Branch = b;
+			// its slot across the deck before the fork (the AI gets over to that side in time)
+			if (X[L].Prev.Num() && B.Segs[L].Frames.Num())
+			{
+				const FSkyFrame& Pf = B.Segs[X[L].Prev[0]].Frames.Last();
+				X[L].ForkOff = (float)FVector::DotProduct(B.Segs[L].Frames[0].P - Pf.P, Pf.L);
+			}
 		}
 	}
 	for (int32 s = 0; s < NS; ++s) PrepareSeg(s);
+	LimitTransitions();
 
 	// gates: the frame each one stands on
 	GateFrame.SetNum(B.Gates.Num());
@@ -262,11 +276,11 @@ void FSkyCourseRaceImpl::PrepareSeg(int32 s)
 		// the deck rolls round an axis above it: speed presses the car in when it's upside down. The bend limit's
 		// bank term misreads the rolled deck, and the centre line doesn't turn across the deck anyway
 		// in PIE tests the car held on between about 75 and 95 mph: slower it slid off the side as the deck rolled past
-		// vertical, faster it came off upside down
-		for (float& V : Sx.VMax) V = 42.f;
-		const double Pitch = (Piece && Piece->Turns > 0.1) ? Piece->Length / Piece->Turns : 60.0;
-		const double Rh = FMath::Clamp(0.35 * Pitch, 0.6, 4.0);
-		Sx.NeedV = (float)FMath::Clamp(3.0 * FMath::Sqrt(G * Rh), 34.0, 40.0);
+		// vertical, faster it came off upside down. Every skill drives it at the one speed (SkyCourse.AI.CorkV)
+		const double Vc = FMath::Clamp((double)CVarCorkV.GetValueOnGameThread(), 25.0, 60.0);
+		for (float& V : Sx.VMax) V = (float)(Vc + 1.5);
+		Sx.bCork = true;
+		Sx.NeedV = (float)Vc;
 		Sx.NeedAt = 0;
 		return;
 	}
@@ -294,16 +308,83 @@ void FSkyCourseRaceImpl::PrepareSeg(int32 s)
 		Sx.bJump = true;
 		Sx.NeedAt = G0 - 1;
 		Sx.LandAt = G1 + 1;
-		if (V0 > 0 && V0 < 85) Sx.NeedV = (float)(V0 * 1.04 + 1.0);
-		else if (V1 > 0) { Sx.NeedV = (float)(V1 * 1.04 + 1.0); Sx.bHop = true; }
+		// aim several metres onto the pad (a share of its length, 6-10 m in), so a little slow or fast still lands on it:
+		// the take-off speed whose flight path (the frames' ballistic formula, from the lip) comes down there. Coming
+		// down just past the edge isn't enough: the car's nose (1.5 m ahead of its wheels' contact, 0.2 m up) catches
+		// the pad's face and it drops into the gap (PIE, 22 Oct: 45.8 m/s over a 45.5 m/s gap)
+		const double PadLen = Sx.Cum[N - 1] - Sx.Cum[G1 + 1];
+		const double AimIn = FMath::Clamp(PadLen * (double)CVarJumpAim.GetValueOnGameThread(), 6.0, 10.0);
+		int32 Aim = G1 + 1;
+		while (Aim < N - 1 && Sx.Cum[Aim] - Sx.Cum[G1 + 1] < AimIn) ++Aim;
+		Sx.AimAt = Aim;
+		double Da, Dza;
+		Rel(Fr[Aim], Da, Dza);
+		const double Den = 2.0 * C * C * (Da * Sn / FMath::Max(C, 0.1) - Dza);
+		if (V0 > 0 && V0 < 85)
+		{
+			const double Va = Den > 1e-3 ? FMath::Sqrt(G * Da * Da / Den) : V0 * 1.08;
+			Sx.MinV = (float)V0;
+			Sx.NeedV = (float)FMath::Clamp(Va, V0 + 2.0, V0 * 1.15 + 2.0);
+		}
+		else if (V1 > 0) { Sx.MinV = (float)V1; Sx.NeedV = (float)(V1 * 1.04 + 1.0); Sx.bHop = true; }
 		else { Sx.NeedV = 95.f; Sx.bHop = true; }
 		// and no faster than a little over that: faster lands further down the pad, with less deck left to brake on
 		// before whatever comes next (and the car can't brake in the air)
-		if (!Sx.bHop) Sx.CapV = Sx.NeedV + 3.f;
+		if (!Sx.bHop) Sx.CapV = Sx.NeedV + 2.f;
 		(void)DE; (void)DzE;
-		Note(FString::Printf(TEXT("jump seg %d: gap %.1f m, rise %.1f m, lip %.0f deg: needs %.0f m/s%s%s"), s, D, Dz, FMath::RadiansToDegrees(Th),
-			Sx.NeedV, Sx.bHop ? TEXT(" and a jump at the lip") : TEXT(""), Sx.CapV > 0 ? *FString::Printf(TEXT(", at most %.0f"), Sx.CapV) : TEXT("")));
+		Note(FString::Printf(TEXT("jump seg %d: gap %.1f m, rise %.1f m, lip %.0f deg, pad %.0f m: clears it from %.1f m/s, aims %.0f m in at %.1f m/s%s%s"), s, D, Dz,
+			FMath::RadiansToDegrees(Th), PadLen, Sx.MinV, AimIn, Sx.NeedV, Sx.bHop ? TEXT(" and a jump at the lip") : TEXT(""),
+			Sx.CapV > 0 ? *FString::Printf(TEXT(", at most %.1f"), Sx.CapV) : TEXT("")));
 	}
+}
+
+// Where the track's bend changes sharply (a curve's start or end, an S-bend where a fork's lead-in hands over to its
+// branch), a car runs a little wide or tight while its steering catches up (~0.25 s of lag): about v^2 dK t^2 / 2. On a
+// narrow deck that's the edge (a one-lane branch's S-bend at 60 m/s threw cars off it, 22 Oct), so slow to where it
+// stays within the deck, less a car's half width and a margin. Across segment joins too (each segment's curvature is
+// worked out on its own frames).
+void FSkyCourseRaceImpl::LimitTransitions()
+{
+	constexpr double Lag = 0.25;
+	constexpr int32 Span = 8;   // frames (4 m) each side
+	auto KAt = [this](int32 Sg, int32 I) { const FSegX& Sx = X[Sg]; return Sx.KL.IsValidIndex(I) ? (double)Sx.KL[I] : 0.0; };
+	auto Limit = [&](double Dk, double Width) { const double Room = FMath::Max(0.6, Width * 0.5 - 1.5); return Dk > 1e-4 ? FMath::Sqrt(2.0 * Room / (Dk * Lag * Lag)) : MAX_SPEED; };
+	TArray<TArray<float>> Lim;
+	Lim.SetNum(B.Segs.Num());
+	for (int32 s = 0; s < B.Segs.Num(); ++s) Lim[s].Init((float)MAX_SPEED, B.Segs[s].Frames.Num());
+	for (int32 s = 0; s < B.Segs.Num(); ++s)
+	{
+		const TArray<FSkyFrame>& Fr = B.Segs[s].Frames;
+		const int32 N = Fr.Num();
+		if (B.Segs[s].Kind == ESkySeg::Piece && (B.Segs[s].Type == ESkyPiece::Loop || B.Segs[s].Type == ESkyPiece::Corkscrew)) continue;   // planned on their own
+		for (int32 i = 0; i < N; ++i)
+		{
+			const double Dk = FMath::Abs(KAt(s, FMath::Min(N - 1, i + Span)) - KAt(s, FMath::Max(0, i - Span)));
+			Lim[s][i] = FMath::Min(Lim[s][i], (float)Limit(Dk, Fr[i].Width));
+		}
+		// into each following segment
+		for (int32 n : B.Segs[s].Next)
+		{
+			if (!B.Segs.IsValidIndex(n) || B.Segs[n].Frames.Num() < 2) continue;
+			const int32 M = B.Segs[n].Frames.Num();
+			for (int32 k = 0; k < Span; ++k)
+			{
+				const double Before = KAt(s, FMath::Max(0, N - 1 - Span + k)), After = KAt(n, FMath::Min(M - 1, k + 1));
+				const double Dk = FMath::Abs(After - Before);
+				const double W = FMath::Min(Fr.Last().Width, B.Segs[n].Frames[0].Width);
+				const float V = (float)Limit(Dk, W);
+				Lim[s][FMath::Max(0, N - 1 - Span + k)] = FMath::Min(Lim[s][FMath::Max(0, N - 1 - Span + k)], V);
+				Lim[n][FMath::Min(M - 1, k)] = FMath::Min(Lim[n][FMath::Min(M - 1, k)], V);
+			}
+		}
+	}
+	int32 Hits = 0;
+	for (int32 s = 0; s < B.Segs.Num(); ++s)
+	{
+		FSegX& Sx = X[s];
+		for (int32 i = 0; i < Sx.VMax.Num() && i < Lim[s].Num(); ++i) if (Lim[s][i] < Sx.VMax[i]) { Sx.VMax[i] = Lim[s][i]; ++Hits; }
+	}
+	if (Hits) UE_LOG(LogSkyRace, Log, TEXT("race: %d frames slowed for sharp bend changes on narrow deck"), Hits);
 }
 
 int32 FSkyCourseRaceImpl::NearestOnSeg(int32 Sg, const FVector& P) const
@@ -472,6 +553,7 @@ bool FSkyCourseRaceImpl::Begin(ASkyCourseTrack* InTrack, const FSkyCourse& InCou
 	Opponents = FMath::Clamp(Opponents, 0, SkyCourse::MaxOpponents);
 	Skill = FMath::Clamp(Skill, 0.3, 1.2);
 	Events.Reset();
+	Traces.Reset();
 	T = 0;
 	Phase = EPhase::Countdown;
 	Prepare();
@@ -978,13 +1060,26 @@ void FSkyCourseRaceImpl::Recover(FRacer& R, ASkysterCar& Car, double Dt)
 		{
 			const int32 Sp = R.WrongSplit;
 			const int32 Lead = B.Splits[Sp].LeadSegs.Num() ? B.Splits[Sp].LeadSegs[0] : 0;
-			// the split's entrance: 10 m before the branches part
-			int32 Sg = Lead, I = 0;
-			if (X[Lead].Prev.Num()) { Sg = X[Lead].Prev[0]; I = FMath::Max(0, B.Segs[Sg].Frames.Num() - 1 - 20); }
 			// it chooses again at that split: the branch its lap (or the gates) say, not the closed one it went into
 			R.Entered[Sp] = false;
 			BuildRoute(R, ChoiceFor(R, R.Lap));
-			RespawnAt(R, Sg, I, 0.0, TEXT("wrong way at a split"));
+			// the split's entrance: 10 m before the branches part (the player, in the middle, to choose again). A car
+			// the race drives goes 30 m back, lined up on the slot its branch leaves from: from a standstill 10 m short
+			// of the fork, in its own lane, it couldn't get across to a branch on the far side, and went wrong again
+			// (and again: one car 48 times in a test)
+			const bool bAuto = Drives(R);
+			int32 Sg = Lead, I = 0;
+			if (X[Lead].Prev.Num()) { Sg = X[Lead].Prev[0]; I = FMath::Max(0, B.Segs[Sg].Frames.Num() - 1 - (bAuto ? 60 : 20)); }
+			double Lat = TNumericLimits<double>::Max();
+			if (bAuto && R.Route.Choice.IsValidIndex(Sp) && B.Splits[Sp].LeadSegs.IsValidIndex(R.Route.Choice[Sp]))
+			{
+				const int32 Mine = B.Splits[Sp].LeadSegs[R.Route.Choice[Sp]];
+				const FSkyFrame& Fs = B.Segs[Sg].Frames[I];
+				const FSkyFrame& Fe = B.Segs[Sg].Frames.Last();
+				// the slot's offset at the fork, carried back to this frame (the segment before a split runs straight)
+				Lat = X[Mine].ForkOff + FVector::DotProduct(Fe.P - Fs.P, Fs.L);
+			}
+			RespawnAt(R, Sg, I, 0.0, TEXT("wrong way at a split"), Lat);
 		}
 		return;
 	}
@@ -1011,14 +1106,18 @@ void FSkyCourseRaceImpl::Recover(FRacer& R, ASkysterCar& Car, double Dt)
 	{
 		R.SlowT = Car.Speed < 2.0 ? R.SlowT + Dt : 0.0;
 		if (R.SlowT > 3.0) { Respawn(R, TEXT("stuck")); return; }
-		// going nowhere (spinning against a rail, sliding back down a wall)
+		// going nowhere (spinning against a rail, sliding back down a wall). The distance it drove too: round the lap's
+		// end into the start piece the progress can read wrong for a moment, and a car doing 33 m/s was put back once
 		if (R.AI.WatchP < -100.0) R.AI.WatchP = R.Progress;   // just put back on the track: measure from here
+		R.AI.WatchDist += Car.Speed * Dt;
 		if ((R.AI.WatchT += Dt) > 6.0)
 		{
 			const double Moved = (R.Progress - R.AI.WatchP) * R.Route.LapLen();
+			const double Drove = R.AI.WatchDist;
 			R.AI.WatchT = 0;
+			R.AI.WatchDist = 0;
 			R.AI.WatchP = R.Progress;
-			if (Moved < 10.0) { Respawn(R, TEXT("no progress")); return; }
+			if (Moved < 10.0 && Drove < 120.0) { Respawn(R, TEXT("no progress")); return; }
 		}
 	}
 }
@@ -1027,6 +1126,7 @@ void FSkyCourseRaceImpl::Respawn(FRacer& R, const TCHAR* Why)
 {
 	ASkysterCar* Car = R.Car.Get();
 	if (!Car) return;
+	if (Drives(R)) DumpTrace(R, Why);
 	if (R.SafeSeg == INDEX_NONE)
 	{
 		// before the start line: back to its grid slot
@@ -1041,7 +1141,7 @@ void FSkyCourseRaceImpl::Respawn(FRacer& R, const TCHAR* Why)
 
 // Put the car on the deck Ahead metres along the course from a frame, in its lane (the player in the middle), facing
 // along the track, stopped (SpawnAt finds the deck under the point, resets the speed, a third of a tank).
-void FSkyCourseRaceImpl::RespawnAt(FRacer& R, int32 Sg, int32 I, double Ahead, const TCHAR* Why)
+void FSkyCourseRaceImpl::RespawnAt(FRacer& R, int32 Sg, int32 I, double Ahead, const TCHAR* Why, double Lat)
 {
 	ASkysterCar* Car = R.Car.Get();
 	if (!Car || !B.Segs.IsValidIndex(Sg)) return;
@@ -1057,7 +1157,8 @@ void FSkyCourseRaceImpl::RespawnAt(FRacer& R, int32 Sg, int32 I, double Ahead, c
 		I = 0;
 	}
 	const FSkyFrame& F = B.Segs[Sg].Frames[I];
-	const double Off = R.bPlayer ? 0.0 : R.Lane * FMath::Max(0.0, F.Width * 0.5 - 1.6);
+	const double Off = Lat < 1e9 ? FMath::Clamp(Lat, -FMath::Max(0.0, F.Width * 0.5 - 1.6), FMath::Max(0.0, F.Width * 0.5 - 1.6))
+		: R.bPlayer ? 0.0 : R.Lane * FMath::Max(0.0, F.Width * 0.5 - 1.6);
 	const FVector P = F.P + F.L * Off + F.U * 0.8;
 	const double Yaw = -FMath::RadiansToDegrees(FMath::Atan2(F.F.Y, F.F.X));
 	Car->TestTeleport(SkyCourse::ToUE(P), (float)Yaw);
@@ -1071,6 +1172,19 @@ void FSkyCourseRaceImpl::AfterTeleport(FRacer& R, const TCHAR* Why, const TCHAR*
 {
 	ASkysterCar* Car = R.Car.Get();
 	FitRoute(R);
+	// put back before a split it had already gone into this lap (a fall in a branch, back to the last checkpoint): it
+	// chooses again there, by the gates as they show now (else it drives back into a branch they've since closed)
+	if (R.Ri != INDEX_NONE)
+	{
+		bool bAny = false;
+		for (int32 i = 0; i < B.Splits.Num(); ++i)
+		{
+			if (!R.Entered.IsValidIndex(i) || !R.Entered[i] || !R.Route.Choice.IsValidIndex(i) || !B.Splits[i].LeadSegs.IsValidIndex(R.Route.Choice[i])) continue;
+			const int32 Li = R.Route.Segs.Find(B.Splits[i].LeadSegs[R.Route.Choice[i]]);
+			if (Li != INDEX_NONE && Li > R.Ri) { R.Entered[i] = false; bAny = true; }
+		}
+		if (bAny && Drives(R)) RefreshChoice(R);
+	}
 	if (Car) R.Prev = Car->Pos;
 	R.OffT = R.SlowT = R.DeadT = R.WrongT = 0;
 	R.WrongSplit = INDEX_NONE;
@@ -1078,7 +1192,13 @@ void FSkyCourseRaceImpl::AfterTeleport(FRacer& R, const TCHAR* Why, const TCHAR*
 	++R.Respawns;
 	R.AI.Steer = 0;
 	R.AI.HopT = -1;
+	R.AI.JumpSeg = INDEX_NONE;
+	R.AI.bLineSet = false;
+	R.AI.bYawSet = false;
+	R.AI.YawRate = 0;
+	R.AI.TraceNum = 0;
 	R.AI.WatchT = 0;
+	R.AI.WatchDist = 0;
 	R.AI.WatchP = -1000.0;   // re-measured once the tracker has it at its new place
 	Note(FString::Printf(TEXT("%s back on the track at %s (%s)"), *R.Name, Where, Why));
 }
@@ -1115,6 +1235,7 @@ void FSkyCourseRaceImpl::Contacts()
 				}
 			}
 			if (Over <= 0) continue;
+			Racers[a].BumpT = Racers[b].BumpT = T;
 			auto Along = [](const ASkysterCar* C, const FVector& V) { if (!C->bGrounded) return V; const FVector P = V - C->Up * FVector::DotProduct(V, C->Up); return P.SizeSquared() > 1e-6 ? P.GetSafeNormal() : V; };
 			const FVector Na = Along(A, N), Nb = Along(Bc, -N);
 			A->Pos += Na * (Over * 0.5);
@@ -1233,6 +1354,9 @@ FString FSkyCourseRaceImpl::ResultsJson() const
 	TArray<TSharedPtr<FJsonValue>> Ev;
 	for (const FString& E : Events) Ev.Add(MakeShared<FJsonValueString>(E));
 	Root->SetArrayField(TEXT("events"), Ev);
+	TArray<TSharedPtr<FJsonValue>> Tr;
+	for (const FString& E : Traces) Tr.Add(MakeShared<FJsonValueString>(E));
+	Root->SetArrayField(TEXT("traces"), Tr);
 	FString Out;
 	FJsonSerializer::Serialize(Root, TJsonWriterFactory<>::Create(&Out));
 	return Out;

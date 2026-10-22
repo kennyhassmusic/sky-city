@@ -1,0 +1,173 @@
+{
+ "format": "skycity-course",
+ "version": 1,
+ "name": "Canyon Run",
+ "author": "race agent",
+ "start": {
+  "x": 1640,
+  "y": -3400,
+  "z": 11.25,
+  "yaw": 0
+ },
+ "lanes": 2,
+ "skin": "unveil",
+ "laps": 3,
+ "opponents": 3,
+ "skill": 0.8,
+ "pieces": [
+  {
+   "type": "start"
+  },
+  {
+   "type": "straight",
+   "length": 30
+  },
+  {
+   "type": "ramp",
+   "length": 40,
+   "rise": 10
+  },
+  {
+   "type": "straight",
+   "length": 10
+  },
+  {
+   "type": "jump",
+   "gap": 34,
+   "drop": -10
+  },
+  {
+   "type": "straight",
+   "length": 20
+  },
+  {
+   "type": "checkpoint"
+  },
+  {
+   "type": "curve",
+   "angle": 90,
+   "radius": 60,
+   "bank": 20
+  },
+  {
+   "type": "straight",
+   "length": 20
+  },
+  {
+   "type": "wallride",
+   "length": 55,
+   "side": "right"
+  },
+  {
+   "type": "straight",
+   "length": 25
+  },
+  {
+   "type": "curve",
+   "angle": 90,
+   "radius": 60,
+   "bank": 20
+  },
+  {
+   "type": "lanes",
+   "lanes": 3,
+   "length": 20
+  },
+  {
+   "type": "split",
+   "length": 40,
+   "gate": "lights",
+   "merge_length": 30,
+   "merge_lanes": 2,
+   "branches": [
+    {
+     "lanes": 1,
+     "angle": 22,
+     "laps": [
+      1
+     ],
+     "pieces": [
+      {
+       "type": "curve",
+       "angle": -22,
+       "radius": 100,
+       "bank": 10
+      },
+      {
+       "type": "ramp",
+       "length": 25,
+       "rise": 5
+      },
+      {
+       "type": "ramp",
+       "length": 25,
+       "rise": -5
+      }
+     ]
+    },
+    {
+     "lanes": 1,
+     "angle": 0,
+     "laps": [
+      2
+     ],
+     "pieces": [
+      {
+       "type": "straight",
+       "length": 20
+      },
+      {
+       "type": "booster",
+       "length": 10
+      },
+      {
+       "type": "straight",
+       "length": 57
+      }
+     ]
+    },
+    {
+     "lanes": 1,
+     "angle": -22,
+     "laps": [
+      3
+     ],
+     "pieces": [
+      {
+       "type": "curve",
+       "angle": 22,
+       "radius": 100,
+       "bank": 10
+      },
+      {
+       "type": "straight",
+       "length": 50
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "checkpoint"
+  },
+  {
+   "type": "curve",
+   "angle": 90,
+   "radius": 30,
+   "bank": 15
+  },
+  {
+   "type": "straight",
+   "length": 160
+  },
+  {
+   "type": "curve",
+   "angle": 90,
+   "radius": 30,
+   "bank": 15
+  },
+  {
+   "type": "close"
+  }
+ ]
+}

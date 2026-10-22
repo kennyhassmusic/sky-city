@@ -113,7 +113,7 @@ namespace SkyTrackImpl
 			L.Trim = Mat(MatEmissive);
 			L.Line = Glow(T, FLinearColor(0.1f, 0.55f, 1.0f), 2.5f);
 			L.Arrow = Glow(T, FLinearColor(0.2f, 1.0f, 0.9f), 8.f);
-			L.LipH = 0.22;
+			L.LipH = 0.08;   // a low light strip: wheels roll over it (a taller lip launched cars that clipped it)
 			L.GlowParam = TEXT("Strength");
 			L.GlowBase = 9.f;
 			break;
@@ -123,7 +123,7 @@ namespace SkyTrackImpl
 			L.Trim = Mat(bNight ? MatLedNight : MatLed);
 			L.Line = Mat(MatLine);
 			L.Arrow = Glow(T, FLinearColor(1.0f, 0.55f, 0.08f), 7.f);
-			L.LipH = 0.3;
+			L.LipH = 0.08;   // the unveil ramp's red edge line as a low strip: wheels roll over it instead of launching
 			L.GlowParam = bNight ? FName(TEXT("Strength")) : FName(TEXT("EmissiveStrength"));
 			L.GlowBase = bNight ? 14.f : 4.f;
 			break;

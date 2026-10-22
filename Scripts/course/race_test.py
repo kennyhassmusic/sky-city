@@ -1,12 +1,15 @@
 """Course Builder race test (the race agent's proof). Run in the editor's Python console:
     py Scripts/course/race_test.py [secs=170] [skills=0.5,0.8,1.1] [autopilot=0.9] [laps=3] [opponents=3]
                                    [drop=1] [drop_at=24] [shots=1] [map=/Game/Maps/McGregor] [tag=race]
+                                   [file=Scripts/course/courses/<course>.json]
 Loads McGregor, starts PIE, and races SkyCourse::Example (a loop, a 36 m jump, a lights split routed by lap: one branch
 on laps 1 and 3, the other on lap 2) in the Course Builder's build area with SkyCourse.RaceTest: the player's car driven
 by the race's test autopilot, plus AI opponents of mixed skill (SkyCourse.RaceSkills). Mid-race one opponent is dropped
 off the side of the track (drop=1) to prove the recovery. Every second the race's results JSON is sampled; at the end
 the whole log (events: gates, laps, branches, respawns, finishes) and the player's best-times file are saved.
 Writes Saved/Course/race_<tag>.json and HighResShots (Saved/Screenshots); a HUD shot (Shot showui) at the results.
+file=: race that course file instead of the example (a path relative to the project, or absolute).
+The output's "respawn_summary" lists each car's respawns with where they happened (segment, piece) and why.
 Without the editor's MCP: the console command SkyCourse.RaceTest does the same by hand."""
 import json, math, os, sys, time, unreal
 
@@ -38,6 +41,9 @@ DROP_AT = float(KV.get("drop_at", 24))
 SHOTS = KV.get("shots", "1") == "1"
 MAP = KV.get("map", "/Game/Maps/McGregor")
 TAG = KV.get("tag", "race")
+FILE = KV.get("file", "")
+if FILE and not os.path.isabs(FILE):
+    FILE = os.path.join(ROOT, FILE)
 OUT = os.path.join(ROOT, "Saved", "Course", f"race_{TAG}.json")
 # the Course Builder's build area on McGregor (Content/SkyCity/Data/course_area.json): start and heading
 AREA = json.load(open(os.path.join(ROOT, "Content", "SkyCity", "Data", "course_area.json")))
@@ -98,15 +104,40 @@ def finish(why):
     if w:
         out["final"] = results(w)
     # the player's best times, saved next to the course file
-    times = os.path.join(ROOT, "Saved", "Courses", "Sky Loop.times.json")
+    name = "Sky Loop"
+    if FILE:
+        try:
+            name = json.load(open(FILE)).get("name", name)
+        except Exception:
+            pass
+    times = os.path.join(ROOT, "Saved", "Courses", f"{name}.times.json")
     out["times_file"] = times
     out["times"] = json.load(open(times)) if os.path.exists(times) else None
+    out["respawn_summary"] = summarize(out.get("final") or st.get("last"))
     save()
     if ues.get_game_world():
         les.editor_request_end_play()
     if st["h"] is not None:
         unreal.unregister_slate_post_tick_callback(st["h"])
         st["h"] = None
+
+
+def summarize(r):
+    """Per car: skill, finished, time, lap times, and each respawn with its place (seg, piece) and reason."""
+    if not r:
+        return None
+    import re
+    cars = {c["name"]: {"skill": round(c["skill"], 2), "finished": c["finished"], "time": round(c["time"], 2), "laps": [round(x, 2) for x in c["lap_times"]],
+                        "respawns": c["respawns"], "where": []} for c in r.get("cars", [])}
+    for e in r.get("events", []):
+        m = re.match(r"\s*([-\d.]+)\s+(\S+) back on the track at (.*?) \((.*)\)$", e)
+        if not m or m.group(2) not in cars:
+            continue
+        why = m.group(4)
+        w = re.search(r"left at seg (\d+) \((\w+)\) frame (\d+)", why)
+        cars[m.group(2)]["where"].append({"t": float(m.group(1)), "seg": int(w.group(1)) if w else None, "piece": w.group(2) if w else None,
+                                          "frame": int(w.group(3)) if w else None, "why": why.split(";")[0]})
+    return cars
 
 
 def tick(dt):
@@ -124,7 +155,10 @@ def tick(dt):
                 st["t0"] = time.time()
                 cmd(w, f"SkyCourse.RaceSkills {SKILLS}")
                 cmd(w, f"SkyCourse.RaceAutopilot {AUTOPILOT}")
-                cmd(w, f"SkyCourse.RaceTest at={START[0]},{START[1]},{START[2]} yaw={YAW} opponents={OPP} laps={LAPS}")
+                if FILE:
+                    cmd(w, f"SkyCourse.RaceTest file={FILE} opponents={OPP} laps={LAPS}")
+                else:
+                    cmd(w, f"SkyCourse.RaceTest at={START[0]},{START[1]},{START[2]} yaw={YAW} opponents={OPP} laps={LAPS}")
                 st["phase"] = "race"
             return
         if not w:
@@ -186,8 +220,16 @@ def tick(dt):
         finish("error")
 
 
+# a run still going from an earlier call (its callback would end this run's PIE): stop it first
+_old = getattr(unreal, "_skycity_race_test_handle", None)
+if _old is not None:
+    try:
+        unreal.unregister_slate_post_tick_callback(_old)
+    except Exception:
+        pass
 if ues.get_game_world():
     les.editor_request_end_play()
 les.load_level(MAP)
 les.editor_request_begin_play()
 st["h"] = unreal.register_slate_post_tick_callback(tick)
+unreal._skycity_race_test_handle = st["h"]

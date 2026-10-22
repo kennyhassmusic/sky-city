@@ -36,12 +36,24 @@ struct FSegX
 	float Len = 0;
 	int32 Split = INDEX_NONE, Branch = INDEX_NONE;   // a split's lead-in to one branch: which split and branch
 	// what the AI must plan for
-	float NeedV = 0;                  // m/s needed at frame NeedAt: a loop's entry, a jump's lip
+	float NeedV = 0;                  // m/s needed at frame NeedAt: a loop's entry, a jump's take-off speed, a corkscrew's
 	float CapV = 0;                   // m/s at most at the lip (a jump that would overshoot); 0 = no limit
 	int32 NeedAt = 0;
 	int32 LandAt = INDEX_NONE;        // a jump: the first deck frame past the gap
+	int32 AimAt = INDEX_NONE;         // a jump: the pad frame its take-off speed lands on
+	float MinV = 0;                   // a jump: the least take-off speed that reaches the pad
+	float ForkOff = 0;                // a split's lead-in: how far left of the main line's middle it leaves the fork (m)
 	bool bHop = false;                // a jump: also jump at the lip
-	bool bLoop = false, bJump = false, bBoost = false;
+	bool bLoop = false, bJump = false, bBoost = false, bCork = false;
+};
+
+/** One tick of an AI car, kept for the last few seconds so a respawn can say what led up to it. */
+struct FAITrace
+{
+	float T = 0, S = 0, Lat = 0, VLat = 0, Vf = 0, Psi = 0, Beta = 0, Roll = 0, Vert = 0;
+	float Steer = 0, Thr = 0, Brk = 0, Want = 0, TargetV = 0, Pitch = 0, Yaw = 0;
+	int16 Seg = 0, Frame = 0;
+	bool bGround = false, bBoost = false, bSlide = false, bBump = false, bYield = false;
 };
 
 /** A car's way round for one lap: the segments it drives, start gate to finish (or back round to the start gate). */
@@ -69,10 +81,22 @@ struct FAIDriver
 	double HopT = -1;                 // s the jump has been held at a lip (-1: not jumping)
 	int32 JumpSeg = INDEX_NONE;       // the jump it last left the deck from
 	double TargetV = 0, NeedV = 0;    // for tests and tuning
-	double WatchT = 0, WatchP = 0;    // progress watchdog
+	double WatchT = 0, WatchP = 0, WatchDist = 0;   // progress watchdog: s, progress and metres driven since it last looked
 	bool bBoost = false;
 	double LaunchLat = 0, LaunchVLat = 0;   // across the deck and sideways speed when it last left the ground (diagnostics)
 	bool bWasGrounded = true;
+	// the lateral controller (SkyCourseAI.cpp)
+	double Line = 0, LineV = 0;       // m left of the middle it's steering for now (eases toward the wanted line), and its rate
+	bool bLineSet = false;
+	int32 LineSeg = INDEX_NONE;       // the segment Line is measured on, and its frame's middle last tick
+	FVector LineP = FVector::ZeroVector;
+	double PrevPsi = 0;               // the nose against the track last tick, for the yaw rate
+	bool bYawSet = false;
+	double YawRate = 0;               // rad/s across the deck, + = left (smoothed)
+	double SlideT = 0;                // s the tail has been out
+	// the last few seconds of driving (a ring), dumped into the log when the car is put back on the track
+	TArray<FAITrace> Trace;
+	int32 TraceHead = 0, TraceNum = 0;
 };
 
 struct FRacer
@@ -105,6 +129,7 @@ struct FRacer
 	// recovery
 	int32 SafeSeg = INDEX_NONE, SafeFrame = 0;   // the last gate passed (INDEX_NONE: its grid slot)
 	double OffT = 0, SlowT = 0, DeadT = 0, WrongT = 0, ReverseT = 0;
+	double BumpT = -99;               // the last time it touched another car (s since Begin)
 	int32 WrongSplit = INDEX_NONE, Respawns = 0, WrongWays = 0;
 	FString OffInfo;                  // where and how it left the track (for the respawn's log line)
 	// shown on the HUD
@@ -159,6 +184,7 @@ public:
 	bool bNewPbLap = false, bNewPbRace = false, bSaved = false;
 	int32 PlayerIdx = INDEX_NONE;
 	TArray<FString> Events;
+	TArray<FString> Traces;           // the AI's last seconds before each respawn (tests and tuning)
 	TArray<FVector> GlowPts;
 	TArray<int32> Order;              // racers by place
 	TArray<uint8> Seen;
@@ -192,7 +218,9 @@ public:
 	void LapDone(FRacer& R, double Tc);
 	void Recover(FRacer& R, ASkysterCar& Car, double Dt);
 	void Respawn(FRacer& R, const TCHAR* Why);
-	void RespawnAt(FRacer& R, int32 Sg, int32 I, double Ahead, const TCHAR* Why);
+	/** Lat: m left of the middle to put it (default: its lane; the player in the middle). */
+	void RespawnAt(FRacer& R, int32 Sg, int32 I, double Ahead, const TCHAR* Why, double Lat = TNumericLimits<double>::Max());
+	void LimitTransitions();
 	void AfterTeleport(FRacer& R, const TCHAR* Why, const TCHAR* Where);
 	void Contacts();
 	void Places();
@@ -202,6 +230,7 @@ public:
 	// SkyCourseAI.cpp
 	void InitAI(FRacer& R, int32 Index);
 	void Drive(FRacer& R, ASkysterCar& Car, double Dt);
+	void DumpTrace(const FRacer& R, const TCHAR* Why);
 	/** A point along a car's route (wrapping into the next lap on a lap course): segment, frame, route distance. */
 	struct FCursor { int32 Ri = INDEX_NONE; int32 Seg = 0; int32 I = 0; double S = 0; };
 	FCursor CursorOf(const FRacer& R) const;
