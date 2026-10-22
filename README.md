@@ -75,6 +75,10 @@ The art (about 2 GB) comes from Sky City's own download server on Cloudflare, se
 
 Anyone can contribute: code, 3D models, landmarks, bug reports, playtesting. Start with **[CONTRIBUTING.md](CONTRIBUTING.md)**, then look for issues labelled **good first issue**.
 
+**Working with an AI assistant?** Hand it **[AGENTS.md](AGENTS.md)** first: setup, the folder map, the rules and what to work on, in one file.
+
+**Want to reuse the art in your own project?** Download the free **Sky City Art Pack** from [itch.io](https://kornontheken.itch.io/sky-city) (noncommercial use with credit; see [docs/ART_PACK.md](docs/ART_PACK.md)). You don't need it to contribute: `git clone` already gets the art.
+
 **High-value help right now:**
 - **Original vehicle models** (sedan, crossover, pickup, semi) to replace placeholder third-party models
 - **Landmarks and Austin sights** built from public references

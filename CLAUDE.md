@@ -8,6 +8,8 @@ Contributors: read CONTRIBUTING.md first. The city's buildings come from Epic's 
 not in this repo (docs/SETUP_CITY_SAMPLE.md). No real brand names or logos in anything you add: the game's
 car brand is the invented **Volta Motors**.
 
+Rules and setup for AI assistants working on a contribution: @AGENTS.md
+
 ## The city (brief, to grow with Kenny)
 
 - Chicago's bones: the Loop's dense grid of towers, the river with its bridges, the elevated L,
