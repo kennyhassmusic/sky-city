@@ -1,0 +1,42 @@
+# lfs-mirror: copies new Git LFS files from GitHub into the Cloudflare R2 bucket that clones download from
+# (tools/lfs-r2-worker, docs/MAINTAINER_SETUP.md). It runs after every push to main, so art merged from a pull
+# request reaches R2 a minute or two later; until then the download server fetches it from GitHub.
+# It only reads git history and runs the mirror script from main: it never runs pull-request code.
+# Run it by hand (Actions > lfs-mirror > Run workflow) to re-check every LFS file in the history.
+name: lfs-mirror
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: lfs-mirror
+  cancel-in-progress: false
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out the history (no LFS files)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        env:
+          GIT_LFS_SKIP_SMUDGE: "1"
+        with:
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: false
+          sparse-checkout: tools/lfs-r2-worker
+      - name: Copy new LFS files to R2
+        env:
+          LFS_UPLOAD_TOKEN: ${{ secrets.LFS_UPLOAD_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = "push" ] && [ -n "$BEFORE" ]; then
+            python3 tools/lfs-r2-worker/mirror.py --source github --range "$BEFORE" "$AFTER"
+          else
+            python3 tools/lfs-r2-worker/mirror.py --source github --all
+          fi

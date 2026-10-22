@@ -53,6 +53,8 @@ cd sky-city
 git lfs pull
 ```
 
+The art (about 2 GB) comes from Sky City's own download server on Cloudflare, set in `.lfsconfig`, so cloning costs nobody anything and there's nothing extra to configure.
+
 1. **Add the City Sample buildings.** They are Epic's content and can't live in this repo, but they're free on Fab. Follow [docs/SETUP_CITY_SAMPLE.md](docs/SETUP_CITY_SAMPLE.md).
 2. **The generated city is already in the repo**, so there's nothing to run first. To change it, edit the generator scripts in `Scripts/` and rerun them (see `CLAUDE.md` for how the scripts are run).
 3. **Open the project**: double-click `SkyCity.uproject` and let the editor compile the C++ module. Open the `SkyCityMashup` map for the city, or `McGregor` / `McGregorNight` for the test site.

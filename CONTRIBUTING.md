@@ -21,7 +21,7 @@ New here? Look for issues labelled **`good first issue`**.
 1. **Check for an issue first.** For anything bigger than a small fix, open or comment on an issue before you start. Nobody likes two people building the same thing.
 2. **Fork** the repository and create a branch from `main`:
    `git checkout -b fix/traffic-signal-timing`
-3. **Make your change.** Keep each pull request focused on one thing.
+3. **Make your change.** Keep each pull request focused on one thing. If it adds or changes art, see [Sending art](#sending-art-git-lfs-files) below.
 4. **Sign the CLA** the first time (see section 6). The bot will ask in your pull request.
 5. **Open a pull request** and fill in the template, including the asset checklist.
 6. **Respond to review.** A maintainer will review it. Most PRs need a round or two of changes, so don't take it personally.
@@ -29,6 +29,16 @@ New here? Look for issues labelled **`good first issue`**.
 ### Branch names
 
 `feature/…`, `fix/…`, `asset/…`, `docs/…`, `tools/…`
+
+### Sending art (Git LFS files)
+
+Everything Git LFS stores (`.uasset`, `.umap`, images, models, sounds, see `.gitattributes`) downloads from Sky City's own read-only server on Cloudflare, which is set in `.lfsconfig`. To send new or changed art in a pull request, upload it to **your fork** on GitHub instead. Run this once in your clone, with your GitHub name:
+
+```bash
+git config lfs.pushurl https://github.com/YOUR-GITHUB-NAME/sky-city.git/info/lfs
+```
+
+Then push as usual. If you forget, the push stops with a message that shows this same command. After your pull request is merged, your art is copied to the download server automatically. Code-only changes need none of this.
 
 ## 3. Asset rules — read before adding content
 
@@ -86,6 +96,9 @@ git lfs unlock Content/Maps/SkyCity.umap     # unlock when your PR is merged or 
 - **Prefer small, separate assets** over editing big shared maps. Use sub-levels and data assets where you can.
 
 Locking needs write access to the main repository. If you're contributing from a fork, say which assets you plan to touch in the issue, so a maintainer can hold the lock for you.
+
+Maintainers: locks live on GitHub, so point Git LFS's uploads and locks there once per clone:
+`git config lfs.pushurl https://github.com/kennyhassmusic/sky-city.git/info/lfs`
 
 ## 5. Code style
 

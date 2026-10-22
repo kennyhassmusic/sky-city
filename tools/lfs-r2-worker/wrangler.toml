@@ -1,0 +1,36 @@
+# Sky City's Git LFS download server: a Cloudflare Worker in front of the R2 bucket.
+# How it works and how to change it: docs/MAINTAINER_SETUP.md ("Git LFS downloads from Cloudflare R2").
+# Deploy from this folder with: npx wrangler@4.151.3 deploy
+name = "sky-city-lfs"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+account_id = "7136906d6651abb8718e09cbaae5ed52"
+workers_dev = true
+preview_urls = false
+
+[vars]
+GITHUB_REPO = "kennyhassmusic/sky-city"
+R2_ACCOUNT_ID = "7136906d6651abb8718e09cbaae5ed52"
+R2_BUCKET_NAME = "sky-city-lfs"
+
+# Secrets (set with `npx wrangler@4.151.3 secret put NAME`, never written down anywhere):
+#   R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY: an R2 key limited to this bucket, used to sign download/upload links
+#   UPLOAD_TOKEN: the password for uploads (the mirror Action and the maintainer's machine have it)
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "sky-city-lfs"
+
+# Per-IP limits. A full clone makes about 50 batch requests.
+[[ratelimits]]
+name = "BATCH_LIMIT"
+namespace_id = "7301"
+simple = { limit = 120, period = 60 }
+
+[[ratelimits]]
+name = "CHECK_LIMIT"
+namespace_id = "7302"
+simple = { limit = 30, period = 60 }
+
+[observability]
+enabled = true

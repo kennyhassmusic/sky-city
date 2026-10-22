@@ -36,7 +36,7 @@ jobs:
             esac
             # anything the editor runs by itself, and the build/CI machinery: needs a maintainer's label
             case "$lower" in
-              */init_unreal.py|init_unreal.py|content/python/*|.github/*|scripts/build/*|*.build.cs|*.target.cs|plugins/*|launch.sh)
+              */init_unreal.py|init_unreal.py|content/python/*|.github/*|scripts/build/*|tools/*|.lfsconfig|*.build.cs|*.target.cs|plugins/*|launch.sh)
                 held="$held\n  $f" ;;
             esac
           done <<< "$files"

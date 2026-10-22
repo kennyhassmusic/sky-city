@@ -1,0 +1,4 @@
+# Git LFS files download from Sky City's own server on Cloudflare R2 (tools/lfs-r2-worker), so clones cost nobody
+# anything. Uploads go to GitHub: see CONTRIBUTING.md, "Sending art".
+[lfs]
+	url = https://sky-city-lfs.goodmorrow.workers.dev/sky-city
