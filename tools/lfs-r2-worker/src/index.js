@@ -63,8 +63,9 @@ async function route(request, env) {
     return githubLocks(request, url, env);
   }
   if (path === `${base}/locks/verify` && request.method === "POST") {
-    // Pre-push asks this before every push whose LFS uploads would come here. Nothing is locked on this server.
-    return lfsJson(200, { ours: [], theirs: [], next_cursor: "" });
+    // Pre-push asks this when a clone's uploads would come here (contributors who haven't set lfs.pushurl).
+    // "Not implemented" makes git-lfs quietly stop asking, instead of suggesting lock checks against this server.
+    return lfsError(501, "Locks are kept on GitHub, not on the download server.");
   }
   if (path.startsWith(`${base}/locks`)) {
     return lfsError(403, LOCK_HELP);
