@@ -40,6 +40,8 @@ git config lfs.pushurl https://github.com/YOUR-GITHUB-NAME/sky-city.git/info/lfs
 
 Then push as usual. If you forget, the push stops with a message that shows this same command. After your pull request is merged, your art is copied to the download server automatically. Code-only changes need none of this.
 
+Keep each file under 100 MB and a pull request's new art under 300 MB in all (the `pr-guard` check enforces this). For anything bigger, share a download link in the pull request instead and Kenny will add it to the download server himself.
+
 ## 3. Asset rules — read before adding content
 
 Sky City must be shippable, both free and possibly paid. One badly licensed model can block a release. So:

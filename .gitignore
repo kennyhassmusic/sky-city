@@ -84,6 +84,8 @@ SKYCITY_AUDIT_REPORT.md
 Thumbs.db
 __pycache__/
 *.pyc
+.wrangler/
+node_modules/
 *.blend1
 *.blend2
 *.tmp

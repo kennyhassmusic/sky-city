@@ -49,3 +49,70 @@ jobs:
             exit 1
           fi
           echo "pr-guard: ok"
+      # Git LFS files pushed to forks count against Sky City's GitHub storage, so very large art waits for a maintainer.
+      # Like the step above, it only reads through the GitHub API: the pull request's blobs and the head commit's tree.
+      - name: Check Git LFS file sizes
+        shell: python
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+          WARN_MB: "25"
+          FILE_MAX_MB: "100"
+          TOTAL_MAX_MB: "300"
+        run: |
+          import base64, json, os, subprocess, sys
+
+          repo, pr, head = os.environ["REPO"], os.environ["PR"], os.environ["HEAD_SHA"]
+          approved = "maintainer-approved" in os.environ.get("LABELS", "").split(",")
+          MB = 1024 * 1024
+          warn, file_max, total_max = (int(os.environ[k]) * MB for k in ("WARN_MB", "FILE_MAX_MB", "TOTAL_MAX_MB"))
+
+          def api(*args):
+              return subprocess.run(["gh", "api", *args], check=True, capture_output=True, text=True).stdout
+
+          def say(kind, text):  # one GitHub annotation; file names can't start a new command line
+              print(f"::{kind}::" + text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))
+
+          try:
+              files = [json.loads(line) for line in api(
+                  f"repos/{repo}/pulls/{pr}/files", "--paginate",
+                  "--jq", '.[] | select(.status != "removed") | {filename, sha} | tojson').splitlines() if line]
+              tree = json.loads(api(f"repos/{repo}/git/trees/{head}?recursive=1"))
+          except subprocess.CalledProcessError as err:
+              say("error", f"Couldn't read the pull request's files from GitHub ({err.stderr.strip()[:200]}). Re-run the check.")
+              sys.exit(1)
+          if tree.get("truncated") or len(files) >= 3000:
+              say("error", "This pull request is too big to check through the API, so a maintainer has to review it.")
+              sys.exit(0 if approved else 1)
+          blob_size = {e["sha"]: e["size"] for e in tree["tree"] if e["type"] == "blob"}
+
+          lfs = {}  # path -> (oid, size) for every LFS pointer the pull request adds or changes
+          for f in files:
+              if blob_size.get(f["sha"], 1024) >= 1024:  # pointers are ~130 bytes
+                  continue
+              text = base64.b64decode(json.loads(api(f"repos/{repo}/git/blobs/{f['sha']}"))["content"]).decode("utf-8", "replace")
+              if not text.startswith("version https://git-lfs"):
+                  continue
+              fields = dict(line.split(" ", 1) for line in text.splitlines() if " " in line)
+              if fields.get("size", "").isdigit():
+                  lfs[f["filename"]] = (fields.get("oid", ""), int(fields["size"]))
+
+          total = sum({oid: size for oid, size in lfs.values()}.values())
+          print(f"Git LFS files in this pull request: {len(lfs)}, {total / MB:.1f} MB in all.")
+          for path, (_, size) in sorted(lfs.items()):
+              if size > warn:
+                  say("warning", f"{path} is {size / MB:.0f} MB (Git LFS).")
+          too_big = sorted(path for path, (_, size) in lfs.items() if size > file_max)
+          if too_big or total > total_max:
+              for path in too_big:
+                  say("error" if not approved else "warning", f"{path} is over {file_max // MB} MB.")
+              if total > total_max:
+                  say("error" if not approved else "warning", f"New Git LFS files total {total / MB:.0f} MB, over {total_max // MB} MB.")
+              print("Very large files use up Sky City's GitHub storage. Please remove them from the pull request and share "
+                    "them as a download link in it instead (any file-sharing service is fine); Kenny will add them to the "
+                    "download server himself. A maintainer can also approve them with the \"maintainer-approved\" label.")
+              sys.exit(0 if approved else 1)
+          print("LFS sizes: ok")
