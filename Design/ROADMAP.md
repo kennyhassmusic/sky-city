@@ -16,6 +16,8 @@ What's being built next, in order. Kenny decides the order; ideas from contribut
 ## Next round: Volta rebrand
 - Replace real carmaker and model names in asset, folder and script names with the game's invented brand,
   Volta Motors, and put the Volta badge on the cars, the chargers, signs and the McGregor event.
+- Then publish the **Art Pack** (`tools/package_art.py`, `docs/ART_PACK.md`): Kenny is holding it until the real car
+  names are gone from the stand-in cars and asset names.
 
 ## Next week: Car Designer
 - Pick a car and paint it: body colour, finish (gloss, matte, metallic, chrome), accent and wheel colours, decals.

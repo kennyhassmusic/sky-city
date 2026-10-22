@@ -4,6 +4,8 @@ Thanks for helping build Sky City! This guide covers how to contribute and the f
 
 **Please read the asset rules (section 3) before adding any model, texture, sound or other content.** They are the rules we are strictest about.
 
+**Using an AI coding assistant?** Give it [AGENTS.md](AGENTS.md) before it touches the repo.
+
 ---
 
 ## 1. Ways to help
