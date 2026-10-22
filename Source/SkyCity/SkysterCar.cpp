@@ -18,6 +18,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/Paths.h"
+#include "SkyCourse.h"
 #include "SkysterFleet.h"
 #include "SkysterHUD.h"
 #include "SkysterTraffic.h"
@@ -58,6 +59,7 @@ namespace SkyP
 	constexpr double D_PITCH = 2.798, D_YAW = 1.886, D_ROLL = 4.47;
 	constexpr double MAX_ANG = 5.5;
 	constexpr double SUCTION = 2.0;
+	constexpr double TRACK_BOOSTER = 45.0;                 // m/s^2 along a Course Builder booster strip
 	constexpr double WHEELBASE = 2.825;
 	constexpr double SIXTY = 26.8224;
 	constexpr double CHARGE_FAST = 80.0 / 15;              // %/s on a fast charger up to 80%
@@ -395,6 +397,13 @@ void ASkysterCar::BeginPlay()
 	}
 	// night maps start with the headlights up
 	if (UGameplayStatics::GetCurrentLevelName(this, true).Contains(TEXT("Night"))) bLights = true;
+	// the Course Builder (Garage X cycles to it: McGregor opened with ?mode=build) runs from its own director actor
+	if (SkyCourse::IsBuildMode(GetWorld()) && !ASkyCourseMode::Get(GetWorld()))
+	{
+		FActorSpawnParameters P;
+		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		GetWorld()->SpawnActor<ASkyCourseMode>(ASkyCourseMode::StaticClass(), FTransform::Identity, P);
+	}
 	Progress.Load();
 	Caps = Skyster::CapsFor(Progress.Level);
 	FuelMult = Progress.FuelMult();
@@ -749,13 +758,16 @@ void ASkysterCar::Garage(const FDriverInput& S)
 	if (S.bNavB) bGarage = false;
 	if (S.bNavX && Maps.Num() > 0)
 	{
-		const FString Here = UGameplayStatics::GetCurrentLevelName(this, true);
+		// entries are map paths, optionally with URL options ("/Game/Maps/McGregor?mode=build" is the Course Builder)
+		const FString Here = UGameplayStatics::GetCurrentLevelName(this, true) + (SkyCourse::IsBuildMode(GetWorld()) ? TEXT("?mode=build") : TEXT(""));
 		int32 Next = 0;
 		for (int32 i = 0; i < Maps.Num(); ++i)
 		{
 			if (FPaths::GetBaseFilename(Maps[i].ToString()) == Here) { Next = (i + 1) % Maps.Num(); break; }
 		}
-		UGameplayStatics::OpenLevel(this, Maps[Next]);
+		FString Level = Maps[Next].ToString(), Options;
+		Maps[Next].ToString().Split(TEXT("?"), &Level, &Options);
+		UGameplayStatics::OpenLevel(this, FName(Level.IsEmpty() ? Maps[Next].ToString() : Level), true, Options);
 	}
 }
 
@@ -1146,6 +1158,7 @@ void ASkysterCar::LeaveSurface()
 {
 	bGrounded = false;
 	Sup.bOn = false;
+	LastSupN = FVector::ZeroVector;
 	// grip handling: a car that leaves the road mid-slide keeps turning
 	W = Handling.bArcade ? FVector::ZeroVector : Sup.N * -YawRate;
 }
@@ -1223,6 +1236,10 @@ void ASkysterCar::DriveOnSurface(double H, FDriverInput& S)
 	else A -= Sgn(VF) * FMath::Min(FMath::Abs(VF) / FMath::Max(H, 1e-3), STOP_DECEL * S.Stop);
 	// the rear thrusters push the body, not the tyres, so grip never limits boost
 	const double Thrust = bBoosting && VF < Caps.Top * Dmg ? BOOST_GROUND : 0.0;
+	// Course Builder track pieces (component tags, Source/SkyCity/SkyCourse.h): a booster strip shoves the car along
+	const UPrimitiveComponent* SupComp = Sup.Comp.Get();
+	const bool bTrack = SupComp && SupComp->ComponentHasTag(TEXT("SkyTrack"));
+	const double Pad = (bTrack && SupComp->ComponentHasTag(TEXT("SkyBoost")) && VF > -1.0 && VF < MAX_SPEED) ? TRACK_BOOSTER : 0.0;
 	bBraking = (bStop && FMath::Abs(VF) > 0.5) || (S.Brake > 0.05 && VF > 0.5);
 	bReversing = VF < -0.5;
 	bBrakeHold = bThrottleHold = false;
@@ -1253,7 +1270,7 @@ void ASkysterCar::DriveOnSurface(double H, FDriverInput& S)
 		|| (bStop && S.Stop > 0.5 && FMath::Abs(VF) < 0.8 && FMath::Abs(VR) < 0.8 && Sup.Kind == ESurface::Ground);   // X holds the car
 	if (!bHoldable)
 	{
-		VF += (A + Thrust + Gf) * H;
+		VF += (A + Thrust + Pad + Gf) * H;
 		VR += Gl * H;
 	}
 	else
@@ -1304,8 +1321,18 @@ void ASkysterCar::DriveOnSurface(double H, FDriverInput& S)
 	// fans: suction keeps the car on walls and ceilings and spins up with speed on the road; detach
 	// when gravity wins (before the fans are unlocked a ramp past vertical drops you)
 	Fans = (Sup.Kind != ESurface::Ground ? 1.0 : 0.15 + 0.45 * Smooth(15, 40, FMath::Abs(VF))) * Caps.Fans;
+	// on Course Builder track a concave curve presses the car into it (v^2 / r, from how fast the surface normal turns
+	// under the car), so a loop holds you if you're fast enough, as on real toy track, even before the fans are unlocked;
+	// off the track nothing changes
+	double Press = 0;
+	if (bTrack && !LastSupN.IsZero())
+	{
+		const double Bend = -FVector::DotProduct(N - LastSupN, F * Sgn(VF)) / FMath::Max(H, 1e-4);   // + when the surface curves up ahead
+		Press = FMath::Max(0.0, Bend) * FMath::Abs(VF);
+	}
+	LastSupN = bTrack ? N : FVector::ZeroVector;
 	const double PullAway = Gn > 0 ? Gn : 0;
-	if (PullAway > G * (Caps.bWalls ? SUCTION : 0.0) * 0.98 + 1e-3)
+	if (PullAway > G * (Caps.bWalls ? SUCTION : 0.0) * 0.98 + Press + 1e-3)
 	{
 		LeaveSurface();
 		Vel += N * 0.5;
@@ -1677,6 +1704,7 @@ void ASkysterCar::Collide(double H, const FVector& PrevPos)
 void ASkysterCar::TransitionTo(const FVector& N, UPrimitiveComponent* Comp, ESurface Kind, const FVector& HitPoint)
 {
 	const double Sp = Vel.Size();
+	LastSupN = FVector::ZeroVector;   // a jump onto a new surface isn't a curve
 	Q = (RotTo(Up, N, 1.0) * Q).GetNormalized();
 	UpdateAxes();
 	if (Kind == ESurface::Wall)

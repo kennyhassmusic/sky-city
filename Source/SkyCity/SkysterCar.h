@@ -85,7 +85,7 @@ public:
 
 	/** Maps the Garage (Menu button) can switch between. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster")
-	TArray<FName> Maps = { FName(TEXT("/Game/Maps/SkyCityMashup")), FName(TEXT("/Game/Maps/McGregor")), FName(TEXT("/Game/Maps/McGregorNight")) };
+	TArray<FName> Maps = { FName(TEXT("/Game/Maps/SkyCityMashup")), FName(TEXT("/Game/Maps/McGregor")), FName(TEXT("/Game/Maps/McGregorNight")), FName(TEXT("/Game/Maps/McGregor?mode=build")) };
 
 	// Scripted input for automated driving tests: while bTestInput is on these replace the pad.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster|Test") bool bTestInput = false;
@@ -333,6 +333,8 @@ private:
 	FSkyProgress Progress;
 	FSkyPickups World;
 	double Cushion = 0, FlyHeading = 0, FlyTurn = 0, FlyClimb = 0, FlyLift = 0;
+	/** The support normal last step while on Course Builder track (zero off it): how fast it turns gives a curve's grip. */
+	FVector LastSupN = FVector::ZeroVector;
 	double SteerAngle = 0, StuckT = 0, TumbleT = 0, DeadT = 0, LastHurt = -9;
 	double YawRate = 0, SlipF = 0, SlipR = 0, AccelLat = 0, AccelLong = 0, Fans = 0;
 	double FuelMult = 1;

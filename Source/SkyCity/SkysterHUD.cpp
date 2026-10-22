@@ -1,4 +1,5 @@
 #include "SkysterHUD.h"
+#include "SkyCourse.h"
 #include "SkysterTraffic.h"
 
 #include "Camera/PlayerCameraManager.h"
@@ -47,6 +48,11 @@ float ASkysterHUD::TextW(const FString& T, float Size)
 void ASkysterHUD::DrawHUD()
 {
 	Super::DrawHUD();
+	// the Course Builder draws its own screens (build mode, the race) under the car's HUD
+	if (Canvas)
+	{
+		if (ASkyCourseMode* Mode = ASkyCourseMode::Get(GetWorld())) Mode->DrawHud(this, Canvas, Canvas->ClipY / 1080.f);
+	}
 	const ASkysterCar* Car = Cast<ASkysterCar>(GetOwningPawn());
 	if (!Car || !Canvas || !Font) return;
 	const float S = Canvas->ClipY / 1080.f; // sized for 1080p, scaled to the window
@@ -222,7 +228,7 @@ void ASkysterHUD::DrawGarage(const ASkysterCar& Car, float S)
 	float Y = Canvas->ClipY * 0.16f;
 	DrawRect(Back, X - 30.f * S, Y - 24.f * S, W + 60.f * S, 780.f * S);
 	Text(TEXT("GARAGE"), X, Y, 1.8f * S, Ink);
-	Text(FString::Printf(TEXT("map: %s"), *UGameplayStatics::GetCurrentLevelName(&Car, true)), X + W, Y + 14.f * S, 0.85f * S, Dim, true);
+	Text(FString::Printf(TEXT("map: %s"), SkyCourse::IsBuildMode(Car.GetWorld()) ? TEXT("Course Builder") : *UGameplayStatics::GetCurrentLevelName(&Car, true)), X + W, Y + 14.f * S, 0.85f * S, Dim, true);
 	Y += 64.f * S;
 	for (int32 i = 0; i < Skyster::NumLevels; ++i)
 	{
@@ -249,7 +255,7 @@ void ASkysterHUD::DrawGarage(const ASkysterCar& Car, float S)
 		Text(TEXT("RB / T: traffic   ·   LB / C: cabs"), X + W, Y + 4.f * S, 0.8f * S, Dim, true);
 		Y += 40.f * S;
 	}
-	Text(TEXT("D-pad left / right: car level (testing)   ·   A: handling   ·   X: next map   ·   Y: reset challenges   ·   B / Menu: back"), X, Y, 0.8f * S, Dim);
+	Text(TEXT("D-pad left / right: car level (testing)   ·   A: handling   ·   X: next map (Sky City, McGregor, night, Course Builder)   ·   Y: reset challenges   ·   B / Menu: back"), X, Y, 0.8f * S, Dim);
 	Y += 40.f * S;
 	Text(TEXT("RT throttle · X brake · LT reverse (air: air brake) · A jump, again + stick = flip · B boost · RB slide · in the air X / RB roll"), X, Y, 0.72f * S, Faint);
 	Y += 28.f * S;
