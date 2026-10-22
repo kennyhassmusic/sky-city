@@ -1,0 +1,227 @@
+{
+ "format": "skycity-course",
+ "version": 1,
+ "name": "Stress",
+ "author": "geometry agent",
+ "start": {
+  "x": 1660,
+  "y": -3420,
+  "z": 12.0,
+  "yaw": 0
+ },
+ "lanes": 1,
+ "skin": "unveil",
+ "laps": 3,
+ "opponents": 0,
+ "skill": 0.8,
+ "pieces": [
+  {
+   "type": "start"
+  },
+  {
+   "type": "straight",
+   "length": 20
+  },
+  {
+   "type": "booster",
+   "length": 10
+  },
+  {
+   "type": "loop",
+   "radius": 8
+  },
+  {
+   "type": "lanes",
+   "lanes": 2,
+   "length": 20,
+   "align": "left"
+  },
+  {
+   "type": "corkscrew",
+   "length": 115,
+   "turns": 1
+  },
+  {
+   "type": "curve",
+   "angle": -60,
+   "radius": 50,
+   "bank": -20
+  },
+  {
+   "type": "wallride",
+   "length": 55,
+   "side": "left"
+  },
+  {
+   "type": "lanes",
+   "lanes": 3,
+   "length": 25
+  },
+  {
+   "type": "ramp",
+   "length": 36,
+   "rise": 12
+  },
+  {
+   "type": "jump",
+   "gap": 24,
+   "drop": -12
+  },
+  {
+   "type": "checkpoint"
+  },
+  {
+   "type": "lanes",
+   "lanes": 4,
+   "length": 30,
+   "align": "right"
+  },
+  {
+   "type": "curve",
+   "angle": 150,
+   "radius": 70,
+   "bank": 20
+  },
+  {
+   "type": "split",
+   "length": 35,
+   "gate": "wall",
+   "merge_length": 30,
+   "merge_lanes": 2,
+   "branches": [
+    {
+     "lanes": 2,
+     "angle": 25,
+     "laps": [
+      2
+     ],
+     "pieces": [
+      {
+       "type": "straight",
+       "length": 20
+      },
+      {
+       "type": "loop",
+       "radius": 12
+      },
+      {
+       "type": "curve",
+       "angle": -25,
+       "radius": 100
+      },
+      {
+       "type": "straight",
+       "length": 20
+      }
+     ]
+    },
+    {
+     "lanes": 1,
+     "angle": 0,
+     "laps": [
+      1
+     ],
+     "pieces": [
+      {
+       "type": "straight",
+       "length": 110
+      }
+     ]
+    },
+    {
+     "lanes": 1,
+     "angle": -35,
+     "laps": [
+      3
+     ],
+     "pieces": [
+      {
+       "type": "curve",
+       "angle": 35,
+       "radius": 100
+      },
+      {
+       "type": "split",
+       "length": 20,
+       "gate": "lights",
+       "branches": [
+        {
+         "lanes": 1,
+         "angle": 8,
+         "pieces": [
+          {
+           "type": "ramp",
+           "length": 30,
+           "rise": 6
+          },
+          {
+           "type": "ramp",
+           "length": 30,
+           "rise": -6
+          }
+         ]
+        },
+        {
+         "lanes": 1,
+         "angle": -20,
+         "pieces": [
+          {
+           "type": "straight",
+           "length": 55
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "checkpoint"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "straight",
+   "length": 30
+  },
+  {
+   "type": "curve",
+   "angle": 90,
+   "radius": 45,
+   "bank": 15
+  },
+  {
+   "type": "straight",
+   "length": 60
+  },
+  {
+   "type": "curve",
+   "angle": 90,
+   "radius": 45,
+   "bank": 15
+  },
+  {
+   "type": "straight",
+   "length": 87
+  },
+  {
+   "type": "curve",
+   "angle": -90,
+   "radius": 45,
+   "bank": 10
+  },
+  {
+   "type": "straight",
+   "length": 290
+  },
+  {
+   "type": "curve",
+   "angle": 180,
+   "radius": 45,
+   "bank": 15
+  },
+  {
+   "type": "close"
+  }
+ ]
+}

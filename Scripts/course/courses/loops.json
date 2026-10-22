@@ -1,0 +1,81 @@
+{
+ "format": "skycity-course",
+ "version": 1,
+ "name": "Loops",
+ "author": "geometry agent",
+ "start": {
+  "x": 1640,
+  "y": -3500,
+  "z": 11.05,
+  "yaw": 0
+ },
+ "lanes": 2,
+ "skin": "neon",
+ "laps": 1,
+ "pieces": [
+  {
+   "type": "start"
+  },
+  {
+   "type": "straight",
+   "length": 30
+  },
+  {
+   "type": "booster",
+   "length": 14
+  },
+  {
+   "type": "loop",
+   "radius": 10
+  },
+  {
+   "type": "straight",
+   "length": 20
+  },
+  {
+   "type": "curve",
+   "angle": 40,
+   "radius": 120,
+   "bank": 10
+  },
+  {
+   "type": "curve",
+   "angle": -40,
+   "radius": 120,
+   "bank": 10
+  },
+  {
+   "type": "booster",
+   "length": 10
+  },
+  {
+   "type": "loop",
+   "radius": 15
+  },
+  {
+   "type": "straight",
+   "length": 40
+  },
+  {
+   "type": "corkscrew",
+   "length": 115,
+   "turns": 1
+  },
+  {
+   "type": "straight",
+   "length": 30
+  },
+  {
+   "type": "wallride",
+   "length": 55,
+   "side": "left"
+  },
+  {
+   "type": "straight",
+   "length": 30
+  },
+  {
+   "type": "finish"
+  }
+ ]
+}

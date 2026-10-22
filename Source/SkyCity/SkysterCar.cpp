@@ -312,9 +312,11 @@ void ASkysterCar::BeginPlay()
 	if (VaporMaterial) VaporFx->SetMaterial(0, VaporMaterial);
 	if (FireMaterial) FireFx->SetMaterial(0, FireMaterial);
 	if (SparkMaterial) SparkFx->SetMaterial(0, SparkMaterial);
-	VaporPool.Init(VaporFx, 2400, true, false, true);
-	FirePool.Init(FireFx, 700, false, false);
-	SparkPool.Init(SparkFx, 600, false, true);
+	// an AI opponent gets smaller particle pools: every pool rewrites all its instances each frame it has particles
+	const int32 PoolDiv = bAIDriver ? 4 : 1;
+	VaporPool.Init(VaporFx, 2400 / PoolDiv, true, false, true);
+	FirePool.Init(FireFx, 700 / PoolDiv, false, false);
+	SparkPool.Init(SparkFx, 600 / PoolDiv, false, true);
 	// the rigged Roadster replaces the old merged body when its parts are imported
 	bRig = RigBody && RigBody->GetStaticMesh() != nullptr && RigWheels.Num() == 4 && RigWheels[0]->GetStaticMesh() != nullptr;
 	if (bRig)
@@ -386,10 +388,20 @@ void ASkysterCar::BeginPlay()
 		for (UStaticMeshComponent* C : { RigBody.Get(), RigWing.Get(), RigPush.Get(), RigSpoiler.Get(), RigPanelL.Get(), RigPanelR.Get(), RigBaffleL.Get(), RigBaffleR.Get() }) if (C) C->SetVisibility(false);
 		for (auto& C : RigWheels) C->SetVisibility(false);
 	}
-	SetVehicle(SkyFleet::GChoice, false);
-	PickLineupModels(GetWorld());
+	if (bAIDriver)
+	{
+		// an AI opponent drives the body its race gave it (TestVehicle), not the player's choice
+		const int32 V = FMath::Max(0, TestVehicle);
+		TestVehicle = -1;
+		SetVehicle(V, false);
+	}
+	else
+	{
+		SetVehicle(SkyFleet::GChoice, false);
+		PickLineupModels(GetWorld());
+	}
 	// Sky City's streets carry traffic (and, switched on, flying Cybercabs): see SkysterTraffic
-	if (UGameplayStatics::GetCurrentLevelName(this, true).Contains(TEXT("SkyCity")))
+	if (!bAIDriver && UGameplayStatics::GetCurrentLevelName(this, true).Contains(TEXT("SkyCity")))
 	{
 		FActorSpawnParameters P;
 		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -398,11 +410,22 @@ void ASkysterCar::BeginPlay()
 	// night maps start with the headlights up
 	if (UGameplayStatics::GetCurrentLevelName(this, true).Contains(TEXT("Night"))) bLights = true;
 	// the Course Builder (Garage X cycles to it: McGregor opened with ?mode=build) runs from its own director actor
-	if (SkyCourse::IsBuildMode(GetWorld()) && !ASkyCourseMode::Get(GetWorld()))
+	if (!bAIDriver && SkyCourse::IsBuildMode(GetWorld()) && !ASkyCourseMode::Get(GetWorld()))
 	{
 		FActorSpawnParameters P;
 		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		GetWorld()->SpawnActor<ASkyCourseMode>(ASkyCourseMode::StaticClass(), FTransform::Identity, P);
+	}
+	if (bAIDriver)
+	{
+		// a Course Builder opponent: the full car minus flight, nothing loaded or saved, no pickups (they're the
+		// player's), no camera of its own
+		Caps = Skyster::CapsFor(Skyster::NumLevels - 1);
+		Caps.bFlight = false;
+		FuelMult = 1;
+		Camera->SetActive(false);
+		SpawnAt(SpawnPosUE, SpawnYawDeg);
+		return;
 	}
 	Progress.Load();
 	Caps = Skyster::CapsFor(Progress.Level);
@@ -427,6 +450,7 @@ void ASkysterCar::ApplyCaps(const FSkyCaps& C)
 
 void ASkysterCar::Toast(const FString& Title, const FString& Sub)
 {
+	if (bAIDriver) return;   // nobody reads an opponent's toasts
 	Toasts.Add({ Title, Sub, SimTime });
 	if (Toasts.Num() > 4) Toasts.RemoveAt(0);
 }
@@ -709,8 +733,8 @@ void ASkysterCar::Tick(float DeltaSeconds)
 	if (bTestFullTank) BoostTank = 100;
 	Simulate(Dt, S);
 	HandleEvents();
-	Progress.Update(Dt, *this);
-	if (bAlive)
+	if (!bAIDriver) Progress.Update(Dt, *this);   // an opponent's stunts aren't the player's challenges
+	if (bAlive && !bAIDriver)
 	{
 		const FString Id = World.CollectAddon(ToUE(Pos), Progress.Owned);
 		if (!Id.IsEmpty() && Progress.Grant(Id))
@@ -734,7 +758,7 @@ void ASkysterCar::Tick(float DeltaSeconds)
 	HurtFlash = FMath::Max(0.0, HurtFlash - Dt * 1.5);
 	ComboShowT = FMath::Max(0.0, ComboShowT - Dt);
 	ApplyToActor(Dt);
-	UpdateCamera(Dt, S);
+	if (!bAIDriver) UpdateCamera(Dt, S);
 	UpdateFX(Dt);
 }
 
@@ -904,7 +928,7 @@ void ASkysterCar::SetVehicle(int32 Index, bool bToast)
 		}
 	}
 	Vehicle = Index;
-	GChoice = Index;
+	if (!bAIDriver) GChoice = Index;   // the player's choice rides through map changes; an opponent's doesn't
 	const FVector F(RIG_FWD, 0, 0);
 	FVector Size = ROADSTER;
 	AltNum = 0;
@@ -1324,13 +1348,30 @@ void ASkysterCar::DriveOnSurface(double H, FDriverInput& S)
 	// on Course Builder track a concave curve presses the car into it (v^2 / r, from how fast the surface normal turns
 	// under the car), so a loop holds you if you're fast enough, as on real toy track, even before the fans are unlocked;
 	// off the track nothing changes
+	// The track is flat triangles, so the support normal only turns when the car crosses an edge: most steps it doesn't
+	// move at all. So the bend is measured against the normal where it last changed, over the distance since, and the
+	// press is held (decaying over ~0.15 s) between edges instead of dropping to zero.
 	double Press = 0;
 	if (bTrack && !LastSupN.IsZero())
 	{
-		const double Bend = -FVector::DotProduct(N - LastSupN, F * Sgn(VF)) / FMath::Max(H, 1e-4);   // + when the surface curves up ahead
-		Press = FMath::Max(0.0, Bend) * FMath::Abs(VF);
+		TrackRun += FMath::Abs(VF) * H;
+		const FVector DN = N - LastSupN;
+		if (DN.SizeSquared() > 1e-8)
+		{
+			const double Curv = FMath::Max(0.0, -FVector::DotProduct(DN, F * Sgn(VF))) / FMath::Max(TrackRun, 0.05);   // 1/r
+			TrackPress = FMath::Max(TrackPress * FMath::Exp(-H / 0.15), Curv * VF * VF);
+			LastSupN = N;
+			TrackRun = 0;
+		}
+		else TrackPress *= FMath::Exp(-H / 0.15);
+		Press = TrackPress;
 	}
-	LastSupN = bTrack ? N : FVector::ZeroVector;
+	else
+	{
+		LastSupN = bTrack ? N : FVector::ZeroVector;
+		TrackPress = 0;
+		TrackRun = 0;
+	}
 	const double PullAway = Gn > 0 ? Gn : 0;
 	if (PullAway > G * (Caps.bWalls ? SUCTION : 0.0) * 0.98 + Press + 1e-3)
 	{
@@ -2526,7 +2567,13 @@ void ASkysterCar::UpdateFX(double Dt)
 			}
 		}
 	}
-	const FVector Cam = Camera ? Camera->GetComponentLocation() : GetActorLocation();
+	FVector Cam = Camera ? Camera->GetComponentLocation() : GetActorLocation();
+	if (bAIDriver)
+	{
+		// an opponent has no camera of its own: its particles face the player's view
+		const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		if (PC && PC->PlayerCameraManager) Cam = PC->PlayerCameraManager->GetCameraLocation();
+	}
 	VaporPool.Update(Dt, Cam);
 	FirePool.Update(Dt, Cam);
 	SparkPool.Update(Dt, Cam);

@@ -1,0 +1,38 @@
+{
+ "format": "skycity-course",
+ "version": 1,
+ "name": "Lead L1 Loop",
+ "start": {
+  "x": 1640,
+  "y": -3600,
+  "z": 11.05,
+  "yaw": 0
+ },
+ "lanes": 2,
+ "skin": "unveil",
+ "laps": 1,
+ "pieces": [
+  {
+   "type": "start"
+  },
+  {
+   "type": "straight",
+   "length": 80
+  },
+  {
+   "type": "booster",
+   "length": 15
+  },
+  {
+   "type": "loop",
+   "radius": 10
+  },
+  {
+   "type": "straight",
+   "length": 60
+  },
+  {
+   "type": "finish"
+  }
+ ]
+}

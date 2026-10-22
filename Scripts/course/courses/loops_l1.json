@@ -1,0 +1,5 @@
+{ "format": "skycity-course", "version": 1, "name": "Loops level 1", "author": "geometry agent",
+  "start": { "x": 1640, "y": -3600, "z": 11.05, "yaw": 0 }, "lanes": 2, "skin": "unveil", "laps": 1,
+  "pieces": [ { "type": "start" }, { "type": "straight", "length": 60 }, { "type": "booster", "length": 14 },
+              { "type": "loop", "radius": 12, "offset": 0 }, { "type": "straight", "length": 50 }, { "type": "booster", "length": 14 },
+              { "type": "loop", "radius": 12 }, { "type": "straight", "length": 50 }, { "type": "finish" } ] }

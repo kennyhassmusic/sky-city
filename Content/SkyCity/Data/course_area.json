@@ -1,0 +1,11 @@
+{
+  "comment": "Course Builder build area on the daytime McGregor map (/Game/Maps/McGregor?mode=build). Course frame: metres, x north, y west (course y = -site x), Unreal cm = (x*100, -y*100, z*100). Site frame (x east, y north, origin = facility centre) x 3040..3640, y 1580..2180: open pasture about 3.4 km north-east of the facility, 600 x 600 m, at least 100 m from any road, fence, building, test stand or the show set (checked against Saved/McGregor/mcgregor_data.json, site_features.json and demo_layout.json by Scripts/course/area_scan.py). The ground there is gently rolling (5.4 to 10.7 m above datum), so the director lays a flat pad at ground_z over the area with a pad_margin m slope back down to the terrain: the course's deck can rely on a flat plane.",
+  "min": [1580.0, -3640.0],
+  "max": [2180.0, -3040.0],
+  "ground_z": 10.75,
+  "start": [1640.0, -3340.0, 11.25],
+  "yaw": 0,
+  "pad": true,
+  "pad_margin": 100,
+  "grid": 50
+}

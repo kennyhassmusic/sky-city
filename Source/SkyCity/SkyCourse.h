@@ -21,6 +21,7 @@ class ASkysterCar;
 class ASkyCourseTrack;
 class ASkyCourseRace;
 class FSkyCourseMcp;
+class FJsonObject;   // added by geometry: so ParsePiece/PieceToJson below take ::FJsonObject in every file (else `class FJsonObject` inside the namespace declares SkyCourse::FJsonObject)
 
 namespace SkyCourse
 {
@@ -230,6 +231,8 @@ class SKYCITY_API ASkyCourseRace : public AActor
 public:
 	ASkyCourseRace();
 	virtual void Tick(float DeltaSeconds) override;
+	/** Ends a running race, so its opponents never outlive it (PIE stopping, map change). */
+	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
 	/** Countdown, then go. Opponents 0-7, Skill 0.3-1.2. */
 	void Begin(ASkyCourseTrack* Track, const FSkyCourse& Course, ASkysterCar* Player, int32 Opponents, double Skill);
 	/** Stop and remove the opponents (the player's car stays). */
@@ -302,11 +305,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") void TestStartDrive(int32 Opponents) { StartTestDrive(Opponents); }
 	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") void TestStopDrive() { StopTestDrive(); }
 
+	// added by builder: bumps on every successful course change (edit, undo, load, MCP), so the builder's UI knows to refresh
+	int32 Revision() const { return CourseRevision; }
+	// added by builder: the build area's ground height (m). The terrain there rolls by 5 m, so the director lays a flat pad at
+	// this height over the whole area (course_area.json); the deck can treat the ground as the plane z = GroundZ().
+	double GroundZ() const;
+	// added by builder: a start piece + a 60 m straight at the area's start spot (Near/Yaw clamped into the area when given)
+	FSkyCourse StarterCourse(const FVector* Near = nullptr, double Yaw = 0) const;
+	// added by builder: a short message on the builder's screen (a toast); safe to call from any mode, ignored when not building
+	void ShowToast(const FString& Title, const FString& Sub = FString(), bool bBad = false);
+	// added by builder: test hook, the director's state as JSON (area, ground, pad, driving, car, mcp, revision)
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") FString TestStateJson() const;
+
 private:
 	FSkyCourse Course;
 	TArray<FSkyCourse> UndoStack;
 	FBox Area = FBox(ForceInit);
 	bool bDriving = false;
+	int32 CourseRevision = 0;                           // added by builder
+	TSharedPtr<struct FSkyCourseModeState> State;       // added by builder: car, park spot, area file, pad, input edges
 	UPROPERTY() TObjectPtr<ASkyCourseTrack> Track;
 	UPROPERTY() TObjectPtr<ASkyCourseRace> Race;
 	UPROPERTY() TObjectPtr<class ASkyCourseBuilderPawn> Builder;
@@ -331,6 +348,22 @@ public:
 	int32 EditSeq = 0;           // the sequence the cursor is on (0 = main line, else a branch)
 	int32 PaletteIndex = 0;      // which piece type is selected
 	FSkyPiece Pending;           // the piece about to be placed, with its settings
+
+	// added by builder: test hooks for editor scripts, like the car's bTestInput. TestPress presses a named button once:
+	// "left" "right" "up" "down" (D-pad), "lb" "rb", "a" "b" "x" "y", "view" "menu", "r3", "undo". TestType types text into
+	// the name box. While bTestInput is on the real pad and keyboard are ignored and the Test* axes (-1..1) drive the camera.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkyCourse|Test") bool bTestInput = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkyCourse|Test") float TestPanX = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkyCourse|Test") float TestPanY = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkyCourse|Test") float TestOrbitX = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkyCourse|Test") float TestOrbitY = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkyCourse|Test") float TestZoom = 0.f;
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") void TestPress(const FString& Button);
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") void TestType(const FString& Text);
+	/** Put the camera at yaw/pitch (deg) and distance (m) from the cursor; bSnap skips the easing. */
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") void TestCamera(double Yaw, double Pitch, double Distance, bool bSnap);
+	/** The builder's state as JSON: palette, pending piece, fit, cursor, menu, sequence, toasts. */
+	UFUNCTION(BlueprintCallable, Category = "SkyCourse|Test") FString TestStateJson() const;
 private:
 	friend class FSkyCourseBuilderImpl;
 	TSharedPtr<class FSkyCourseBuilderImpl> Impl;

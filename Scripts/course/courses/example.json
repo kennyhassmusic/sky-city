@@ -1,0 +1,27 @@
+{
+  "format": "skycity-course", "version": 1,
+  "name": "Sky Loop", "author": "Sky City",
+  "start": { "x": 1640, "y": -3340, "z": 11.05, "yaw": 0 },
+  "lanes": 2, "skin": "unveil", "laps": 3, "opponents": 3, "skill": 0.8,
+  "pieces": [
+    {"type": "start"},
+    {"type": "straight", "length": 40},
+    {"type": "booster", "length": 12},
+    {"type": "loop", "radius": 10},
+    {"type": "straight", "length": 30},
+    {"type": "ramp", "length": 40, "rise": 8},
+    {"type": "straight", "length": 20},
+    {"type": "ramp", "length": 40, "rise": -8},
+    {"type": "straight", "length": 20},
+    {"type": "jump", "gap": 36, "drop": 0},
+    {"type": "straight", "length": 10},
+    {"type": "checkpoint"},
+    {"type": "curve", "angle": 180, "radius": 34, "bank": 20},
+    {"type": "lanes", "lanes": 4, "length": 20, "align": "center"},
+    {"type": "split", "length": 30, "gate": "lights", "merge_length": 25, "merge_lanes": 2, "branches": [{"lanes": 2, "angle": 12, "laps": [1, 3], "pieces": [{"type": "corkscrew", "length": 115, "turns": 1}]}, {"lanes": 2, "angle": -12, "laps": [2], "pieces": [{"type": "wallride", "length": 50, "side": "right"}, {"type": "straight", "length": 65}]}]},
+    {"type": "checkpoint"},
+    {"type": "straight", "length": 75},
+    {"type": "curve", "angle": 180, "radius": 40, "bank": 15},
+    {"type": "close"}
+  ]
+}

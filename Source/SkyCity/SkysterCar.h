@@ -114,6 +114,10 @@ public:
 	/** Test hook: set true and the car toggles self-driving (as D-pad right would). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster|Test") bool bTestFsd = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster|Test") float TestCamElev = 10.f;
+	/** A Course Builder AI opponent (ASkyCourseRace), set before BeginPlay (SpawnActorDeferred, then FinishSpawning): driven
+	 *  through the test-input hooks, with the level 6 car minus flight, and none of the player's things: no saved progress,
+	 *  challenges, toasts, pickups, camera, traffic or course mode. TestVehicle picks its body at BeginPlay. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster|Test") bool bAIDriver = false;
 
 	/** Called by the progress system when the level changes. */
 	void ApplyCaps(const FSkyCaps& C);
@@ -335,6 +339,7 @@ private:
 	double Cushion = 0, FlyHeading = 0, FlyTurn = 0, FlyClimb = 0, FlyLift = 0;
 	/** The support normal last step while on Course Builder track (zero off it): how fast it turns gives a curve's grip. */
 	FVector LastSupN = FVector::ZeroVector;
+	double TrackPress = 0, TrackRun = 0;   // the curve's grip (m/s^2), held between triangle edges; metres since the normal last turned
 	double SteerAngle = 0, StuckT = 0, TumbleT = 0, DeadT = 0, LastHurt = -9;
 	double YawRate = 0, SlipF = 0, SlipR = 0, AccelLat = 0, AccelLong = 0, Fans = 0;
 	double FuelMult = 1;

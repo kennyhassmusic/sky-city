@@ -13,6 +13,17 @@ What's being built next, in order. Kenny decides the order; ideas from contribut
 - A local MCP server in the game, so a player's own LLM (Claude, or any MCP client) can build courses for them while
   they watch: it only edits courses, listens on this computer only, and can't touch files or run code.
 
+### Then: flight and boost pieces (Kenny: right after the MCP link works)
+- **Sky gates:** checkpoint rings floating in the air, flown or jumped through.
+- **Flight gaps:** gaps longer than any jump (up to a few hundred metres), crossed only with boost and flight, with a
+  landing deck on the far side.
+- **Climb walls:** vertical track sections that need the wall-grip fans.
+- **AI opponents that boost and fly** through all of these.
+
+### Then: split-screen multiplayer (Kenny: once he has played the Course Builder, used the MCP link and run a race himself)
+- Two or more players on one Mac, each with a controller and their own view of the screen, racing on Course Builder
+  courses (and free-roaming the city).
+
 ## Next round: Volta rebrand
 - Replace real carmaker and model names in asset, folder and script names with the game's invented brand,
   Volta Motors, and put the Volta badge on the cars, the chargers, signs and the McGregor event.
