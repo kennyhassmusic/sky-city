@@ -30,7 +30,7 @@ A Windows build is planned. If you have a Windows PC and want to help make it ha
 | **Traffic**: ground cars and flying cabs, with signals | Playable |
 | **Game systems**: self-driving mode, mini map, chargers, pickups, 6 levels, Garage | Playable |
 
-**Where it's heading:** easter eggs, achievements, races, and a story in which the player makes flying cars possible.
+**Where it's heading:** a Hot Wheels-style Course Builder (with an MCP server so your LLM can build courses for you), a Car Designer, easter eggs, achievements, races, and a story in which the player makes flying cars possible. See [Design/ROADMAP.md](Design/ROADMAP.md).
 
 ---
 

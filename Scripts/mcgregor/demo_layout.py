@@ -192,7 +192,10 @@ def ix(a, b, c, d):
 X_C = ix(start, ramp, fl[0], fleet_c)
 
 # ---- the line-up: five vehicles side by side along the lane, centred on the green circle, fronts flush
-PARTS = json.load(open(ROOT / "SourceArt/Vehicles/parts.json"))
+PARTS_FILE = ROOT / "SourceArt/Vehicles/parts.json"
+if not PARTS_FILE.exists():
+    PARTS_FILE = ROOT / "Scripts/vehicles/placeholder_parts.json"   # public repo: the stand-ins' parts
+PARTS = json.load(open(PARTS_FILE))
 order = ["Robotaxi", "Cybertruck", "Semi", "ModelY", "Model3"]   # from the near (lane) end
 row_len = sum(PARTS[n]["size_m"][1] for n in order) + 1.15 * (len(order) - 1)
 K = off(fleet_c, U2 + 180, row_len / 2)           # the row's near end

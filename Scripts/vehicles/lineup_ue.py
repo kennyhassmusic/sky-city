@@ -50,7 +50,10 @@ def _skycity_root():
 
 ROOT = _skycity_root()
 OUT = ROOT + "/Saved/MCPScripts/out_lineup.json"
-PARTS = json.load(open(ROOT + "/SourceArt/Vehicles/parts.json"))
+PARTS_FILE = ROOT + "/SourceArt/Vehicles/parts.json"   # the licensed models' parts (not in the public repo)
+if not os.path.exists(PARTS_FILE):
+    PARTS_FILE = ROOT + "/Scripts/vehicles/placeholder_parts.json"   # the stand-ins: same names, sizes and pivots
+PARTS = json.load(open(PARTS_FILE))
 LAYOUT = json.load(open(ROOT + "/Saved/McGregor/demo_layout.json"))
 DIR = "/Game/Vehicles/Tesla"
 PLACE_DIR = "/Game/Vehicles/Placeholder"           # the blocky stand-ins (placeholders_ue.py); same names under <Car>/
@@ -368,7 +371,7 @@ def stage_place():
         a = EAS.spawn_actor_from_object(body, unreal.Vector(x, y, z), unreal.Rotator(roll=0, pitch=0, yaw=yaw))
         a.set_actor_label(f"Lineup_{name}")
         a.set_folder_path("Demo/Lineup")
-        a.tags = [TAG, "SC_Lineup", "NoWallRide"]
+        a.tags = [TAG, "SC_Lineup", "NoWallRide", f"LineupCar:{name}", "LineupPart:Body"]   # the game re-picks the model at play
         a.static_mesh_component.set_collision_profile_name("BlockAll")
         for part, pi in info["parts"].items():
             if part == "Body":
@@ -381,7 +384,7 @@ def stage_place():
             w = EAS.spawn_actor_from_object(wm, unreal.Vector(wx, wy, z + lz), unreal.Rotator(roll=0, pitch=0, yaw=yaw))
             w.set_actor_label(f"Lineup_{name}_{part}")
             w.set_folder_path("Demo/Lineup")
-            w.tags = [TAG, "NoWallRide"]
+            w.tags = [TAG, "NoWallRide", f"LineupCar:{name}", f"LineupPart:{part}"]
             w.static_mesh_component.set_collision_profile_name("NoCollision")
         placed.append(name)
     log("place", placed)

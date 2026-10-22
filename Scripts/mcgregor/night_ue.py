@@ -309,7 +309,10 @@ def override_slot(actor_label, slot_word, mat):
     return n
 
 
-PARTS = json.load(open(ROOT + "/SourceArt/Vehicles/parts.json"))
+PARTS_FILE = ROOT + "/SourceArt/Vehicles/parts.json"
+if not os.path.exists(PARTS_FILE):
+    PARTS_FILE = ROOT + "/Scripts/vehicles/placeholder_parts.json"   # public repo: the stand-ins' parts
+PARTS = json.load(open(PARTS_FILE))
 
 
 def stage_lights():

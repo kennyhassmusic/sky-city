@@ -9,7 +9,9 @@
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/StaticMeshActor.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "GameFramework/PlayerController.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
@@ -97,6 +99,59 @@ namespace SkyRig
 
 static const FVector UPV(0, 0, 1);
 static const FVector DOWNV(0, 0, -1);
+
+// The McGregor line-up is placed with whatever car models the project had (Scripts/vehicles/lineup_ue.py tags each part
+// "LineupCar:<car>" and "LineupPart:<part>"). At play every part takes the model SkyFleet picks now: the licensed one if
+// it's in this build and not listed as a stand-in, otherwise the blocky stand-in. So one map works in the open-source
+// repo (no licensed models), the public build and Kenny's own build. Material overrides (the night map's lit lamps) carry
+// over by slot name.
+static FString SlotBase(const FName& Slot)
+{
+	FString S = Slot.ToString();
+	int32 U;
+	if (S.FindLastChar(TEXT('_'), U) && U + 1 < S.Len() && S.RightChop(U + 1).IsNumeric()) S.LeftInline(U);   // glTF's _001
+	return S;
+}
+
+static void PickLineupModels(UWorld* World)
+{
+	for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
+	{
+		AStaticMeshActor* A = *It;
+		if (!A->ActorHasTag(TEXT("MG_Lineup"))) continue;
+		FString Car, Part;
+		for (const FName& T : A->Tags)
+		{
+			const FString S = T.ToString();
+			if (S.StartsWith(TEXT("LineupCar:"))) Car = S.RightChop(10);
+			else if (S.StartsWith(TEXT("LineupPart:"))) Part = S.RightChop(11);
+		}
+		UStaticMeshComponent* C = A->GetStaticMeshComponent();
+		if (Car.IsEmpty() || Part.IsEmpty() || !C) continue;
+		const FString Want = SkyFleet::MeshPath(*Car, *Part);
+		const UStaticMesh* Have = C->GetStaticMesh();
+		if (Have && Have->GetPathName() == Want) continue;
+		UStaticMesh* M = LoadObject<UStaticMesh>(nullptr, *Want);
+		if (!M) continue;
+		TMap<FString, UMaterialInterface*> Keep;
+		if (Have)
+		{
+			const TArray<FStaticMaterial>& Old = Have->GetStaticMaterials();
+			for (int32 i = 0; i < Old.Num(); ++i)
+			{
+				if (C->OverrideMaterials.IsValidIndex(i) && C->OverrideMaterials[i]) Keep.Add(SlotBase(Old[i].MaterialSlotName), C->OverrideMaterials[i]);
+			}
+		}
+		C->SetMobility(EComponentMobility::Movable);
+		C->EmptyOverrideMaterials();
+		C->SetStaticMesh(M);
+		const TArray<FStaticMaterial>& New = M->GetStaticMaterials();
+		for (int32 i = 0; i < New.Num(); ++i)
+		{
+			if (UMaterialInterface** O = Keep.Find(SlotBase(New[i].MaterialSlotName))) C->SetMaterial(i, *O);
+		}
+	}
+}
 
 static double Damp(double A, double B, double Lambda, double Dt) { return FMath::Lerp(A, B, 1.0 - FMath::Exp(-Lambda * Dt)); }
 static double Smooth(double E0, double E1, double X) { const double T = FMath::Clamp((X - E0) / (E1 - E0), 0.0, 1.0); return T * T * (3 - 2 * T); }
@@ -330,6 +385,7 @@ void ASkysterCar::BeginPlay()
 		for (auto& C : RigWheels) C->SetVisibility(false);
 	}
 	SetVehicle(SkyFleet::GChoice, false);
+	PickLineupModels(GetWorld());
 	// Sky City's streets carry traffic (and, switched on, flying Cybercabs): see SkysterTraffic
 	if (UGameplayStatics::GetCurrentLevelName(this, true).Contains(TEXT("SkyCity")))
 	{
