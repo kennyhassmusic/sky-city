@@ -7,7 +7,8 @@ script imports the meshes and the JPGs, builds one material per slot, and assign
 it. Mesh UVs are already in repeats of the scan size recorded in materials.json.
 
 M_Glass is a plain pane. InteriorCubemap on that slot, and Nanite on LOD0, stay
-hand steps in the editor.
+hand steps in the editor. Wall slots are instances of M_Facade: procedural
+edge wear, sill drips and base dirt, scaled by the mesh vertex colour.
 
 Run in the editor, PIE off:
   py Scripts/city/import_block_ue.py
@@ -127,9 +128,14 @@ def _expr(unreal, editing, mat, cls, x, y):
 
 def _build_materials(unreal, assets, library, editing, record, textures):
     made = {}
+    facade = {}
+    names = _facade_names()
     for slot, ident in SLOTS.items():
         info = textures.get(ident) or {}
         if "color" not in info:
+            continue
+        if slot in names:
+            facade[slot] = info
             continue
         if library.does_asset_exist(MAT_DIR + "/" + slot):
             library.delete_asset(MAT_DIR + "/" + slot)
@@ -150,6 +156,8 @@ def _build_materials(unreal, assets, library, editing, record, textures):
         editing.recompile_material(mat)
         library.save_loaded_asset(mat)
         made[slot] = mat
+    if facade:
+        made.update(_facade_materials().apply(unreal, assets, library, editing, MAT_DIR, facade))
     # A readable pane. InteriorCubemap is applied by hand on top of this slot.
     glass_name = "M_Glass"
     if library.does_asset_exist(MAT_DIR + "/" + glass_name):
@@ -166,8 +174,7 @@ def _build_materials(unreal, assets, library, editing, record, textures):
     library.save_loaded_asset(glass)
     made[glass_name] = glass
     made["M_GlassLit"] = glass
-    # Dress slots are flat colours. The Blender preview blends the CC0 grime; these
-    # are the fallbacks so a slot is not left empty after import.
+    # Dress slots are flat colours. Facade grime is on M_Facade, not these.
     flats = {
         "M_Blind": (0.8, 0.78, 0.72),
         "M_CurtainRed": (0.45, 0.16, 0.14),
@@ -187,6 +194,19 @@ def _build_materials(unreal, assets, library, editing, record, textures):
         library.save_loaded_asset(mat)
         made[name] = mat
     return made
+
+
+def _facade_names():
+    folder = os.path.dirname(os.path.abspath(__file__))
+    if folder not in sys.path:
+        sys.path.insert(0, folder)
+    import facade_grime
+    return facade_grime.FACADE_MATERIALS
+
+
+def _facade_materials():
+    import facade_material_ue
+    return facade_material_ue
 
 
 def _assign(unreal, library, imported, materials):

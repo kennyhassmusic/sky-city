@@ -4,14 +4,18 @@ The city model stays the source of the props and the puddles. This module only
 meshes and shades them. Scans stay out of the GLB: materials name their slots,
 and Scripts/city/import_block_ue.py binds the JPGs.
 
-CC0 overlays (cracked concrete, sparse grass, leak and asphalt-damage decals,
-a manhole, two small HDRIs) are blended here. Signs are original bitmaps.
+Facade grime is procedural (facade_grime.py): curvature, world-aligned drips
+under sills and ledges, and dirt at the base, scaled by the building's wear.
+The leak card and the cracked-concrete multiply are not used on walls.
+Sparse grass, asphalt-damage decals, a manhole and two small HDRIs stay.
+Signs are original bitmaps.
 """
 import math
 import os
 
 import bpy
 
+import facade_grime
 import profiles
 import signs
 
@@ -49,7 +53,7 @@ def extend_library(lib, record, art):
     streak = _map(record, "Leaking006")
     crack = _map(record, "AsphaltDamage001")
     cover = _map(record, "ManholeCover009")
-    lib["streak"] = _decal("M_Streak", art, streak, (0.25, 0.22, 0.18), 0.7)
+    # Walls do not use the leak card. The same map still tints the road oil.
     lib["crack"] = _decal("M_Crack", art, crack, (1.0, 1.0, 1.0), 0.85)
     lib["oil"] = _decal("M_Oil", art, streak, (0.04, 0.035, 0.03), 0.12)
     lib["manhole"] = _decal("M_Manhole", art, cover, (1.0, 1.0, 1.0), 0.55)
@@ -462,12 +466,9 @@ def _ac(mesh, origin, tangent, inward, width, z0, metal):
     mesh.box(centre, tangent, inward, (0, 0, 1), (w, 0.38, 0.32), metal)
 
 
-def _streak_under(mesh, building, facade, bay, origin, tangent, inward, width, z0, lib):
-    import geom
-    h = 0.55 + 0.7 * geom.rnd(int(building.get("seed") or 1), building["id"], int(facade.get("floor") or 0), bay, "streakh")
-    w = max(0.28, width * 0.42)
-    o = _along(origin, tangent, (width - w) / 2.0)
-    _plane(mesh, o, tangent, inward, w, z0 - h, z0 - 0.02, -0.03, lib["streak"])
+def _streak_under(*_args, **_kwargs):
+    """Retired. A leak card reads as a dark cone. Drips live in the facade shader."""
+    return None
 
 
 def _awning(mesh, origin, tangent, inward, width, z, mat):
@@ -730,7 +731,11 @@ def _decal(name, art, maps, tint, rough):
 
 
 def _age_textured(mat, slot, record, art):
-    """Grime, base splash, streaks, edge wear, and a little per-face colour jitter."""
+    """Per-face colour jitter, then facade grime on the wall slots.
+
+    Brick, concrete, plaster and metal use _facade_grime. Grass, asphalt and
+    paving keep their own overlays.
+    """
     nt = mat.node_tree
     bsdf = nt.nodes.get("Principled BSDF")
     if bsdf is None:
@@ -752,22 +757,199 @@ def _age_textured(mat, slot, record, art):
     else:
         hue.inputs["Color"].default_value = bsdf.inputs["Base Color"].default_value
     current = hue.outputs["Color"]
-    grime_rel = (_map(record, "cracked_concrete_wall") or {}).get("color")
-    if slot != "grass" and grime_rel:
-        current = _multiply_image(nt, current, _abs(art, grime_rel), 0.34 if slot in ("brick", "concrete", "plaster", "paving") else 0.22, 0.18)
-    if slot == "grass":
-        grass = (_map(record, "sparse_grass") or {}).get("color")
-        if grass:
-            current = _mix_image(nt, current, _abs(art, grass), 0.5, 0.22)
-        current = _splash(nt, geo, current, 0.45)
-    elif slot == "asphalt":
-        current = _asphalt_wear(nt, geo, current)
-    elif slot in ("brick", "concrete", "plaster", "metal", "paving"):
-        current = _splash(nt, geo, current, 0.62)
-        current = _streaks(nt, geo, current)
-        current = _edges(nt, geo, current)
+    if slot in facade_grime.WALL_SLOTS:
+        # Procedural edge wear, sill drips and base dirt. No photo overlay.
+        current = _facade_grime(nt, geo, current, bsdf)
+    else:
+        grime_rel = (_map(record, "cracked_concrete_wall") or {}).get("color")
+        if slot != "grass" and grime_rel:
+            current = _multiply_image(nt, current, _abs(art, grime_rel), 0.34 if slot == "paving" else 0.22, 0.18)
+        if slot == "grass":
+            grass = (_map(record, "sparse_grass") or {}).get("color")
+            if grass:
+                current = _mix_image(nt, current, _abs(art, grass), 0.5, 0.22)
+            current = _splash(nt, geo, current, 0.45)
+        elif slot == "asphalt":
+            current = _asphalt_wear(nt, geo, current)
+        elif slot == "paving":
+            current = _splash(nt, geo, current, 0.62)
+            current = _streaks(nt, geo, current)
+            current = _edges(nt, geo, current)
     _relink(nt, bsdf.inputs["Base Color"], current)
     _rough_jitter(nt, bsdf, geo)
+
+
+def _facade_grime(nt, geo, color_socket, bsdf):
+    """Edge wear, vertical drips and base dirt, multiplied by vertex-colour wear.
+
+    The red channel is facade_grime.intensity for that building. A mesh with
+    no colour attribute contributes 0, so a shared material stays clean until
+    the mesher paints it. Edges use a short bevel (Pointiness is flat on these
+    quads). The Unreal master uses screen-space curvature for the same job.
+    """
+    wear = _wear_red(nt)
+    edge = _edge_mask(nt, geo)
+    corner = _corner_ao(nt)
+    base = _base_band(nt, geo)
+    drip = _drip_band(nt, geo, edge)
+    # dirt = saturate((corner * CORNER_WEIGHT + base + drip) * wear)
+    dirt = _math(nt, "ADD", _math(nt, "MULTIPLY", corner, b_val=facade_grime.CORNER_WEIGHT), base)
+    dirt = _math(nt, "ADD", dirt, drip)
+    dirt = _math(nt, "MULTIPLY", dirt, wear)
+    dirt = _clamp01(nt, dirt)
+    chip = _clamp01(nt, _math(nt, "MULTIPLY", _math(nt, "MULTIPLY", edge, wear), b_val=facade_grime.CHIP_GAIN))
+    _lift_roughness(nt, bsdf, dirt)
+    soot = _mix_rgba(nt, dirt, color_socket, facade_grime.SOOT, "MULTIPLY")
+    return _mix_rgba(nt, chip, soot, facade_grime.CHIP, "MIX")
+
+
+def _lift_roughness(nt, bsdf, dirt):
+    """Match the Unreal master: dirt pushes roughness toward 1."""
+    if "Roughness" not in bsdf.inputs:
+        return
+    src = _socket_source(nt, bsdf.inputs["Roughness"])
+    if src is None:
+        base = _math(nt, "ADD", a_val=float(bsdf.inputs["Roughness"].default_value), b_val=0.0)
+    else:
+        base = src
+    amount = _clamp01(nt, _math(nt, "MULTIPLY", dirt, b_val=0.35))
+    gap = _math(nt, "SUBTRACT", a_val=1.0, b=base)
+    lifted = _math(nt, "ADD", base, _math(nt, "MULTIPLY", amount, gap))
+    _relink(nt, bsdf.inputs["Roughness"], lifted)
+
+
+def _wear_red(nt):
+    color = nt.nodes.new("ShaderNodeVertexColor")
+    color.layer_name = "Col"
+    split = nt.nodes.new("ShaderNodeSeparateColor")
+    nt.links.new(color.outputs["Color"], split.inputs["Color"])
+    return split.outputs["Red"]
+
+
+def _edge_mask(nt, geo):
+    """Curvature on a coarse wall. A 2-sample bevel disagrees with the face normal only at an edge."""
+    bevel = nt.nodes.new("ShaderNodeBevel")
+    bevel.samples = facade_grime.BEVEL_SAMPLES
+    bevel.inputs["Radius"].default_value = facade_grime.BEVEL_RADIUS
+    dist = nt.nodes.new("ShaderNodeVectorMath")
+    dist.operation = "DISTANCE"
+    nt.links.new(bevel.outputs["Normal"], dist.inputs[0])
+    nt.links.new(geo.outputs["Normal"], dist.inputs[1])
+    return _range(nt, dist.outputs["Value"], facade_grime.EDGE_LO, facade_grime.EDGE_HI, 0.0, 1.0)
+
+
+def _corner_ao(nt):
+    """Concave corners. A flat wall stays near 1 and contributes no dirt."""
+    ao = nt.nodes.new("ShaderNodeAmbientOcclusion")
+    ao.samples = facade_grime.AO_SAMPLES
+    ao.only_local = True
+    ao.inputs["Distance"].default_value = facade_grime.AO_DISTANCE
+    return _range(nt, ao.outputs["AO"], 1.0, 0.55, 0.0, 1.0)
+
+
+def _base_band(nt, geo):
+    z = _pos_z(nt, geo)
+    span = facade_grime.BASE_Z1 - facade_grime.BASE_Z0
+    band = _clamp01(nt, _math(nt, "DIVIDE", _math(nt, "SUBTRACT", a_val=facade_grime.BASE_Z1, b=z), b_val=span))
+    noise = nt.nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = facade_grime.BASE_NOISE
+    nt.links.new(geo.outputs["Position"], noise.inputs["Vector"])
+    broken = _range(nt, noise.outputs["Factor"], 0.0, 1.0, facade_grime.BASE_NOISE_LO, facade_grime.BASE_NOISE_HI)
+    return _math(nt, "MULTIPLY", band, broken)
+
+
+def _drip_band(nt, geo, edge):
+    z = _pos_z(nt, geo)
+    rel = _math(nt, "DIVIDE", _math(nt, "SUBTRACT", z, b_val=facade_grime.GROUND_Z), b_val=facade_grime.FLOOR_H)
+    phase = _math(nt, "FRACT", rel)
+    sill = _height_band(nt, phase, facade_grime.SILL_PEAK, facade_grime.SILL_FADE)
+    ledge = _height_band(nt, phase, facade_grime.LEDGE_PEAK, facade_grime.LEDGE_FADE)
+    band = _math(nt, "MAXIMUM", sill, ledge)
+    streak = _column_streak(nt, geo)
+    broken = _break_noise(nt, geo)
+    cling = _math(nt, "ADD", _math(nt, "MULTIPLY", edge, b_val=facade_grime.CLING_EDGE), b_val=facade_grime.CLING_FLOOR)
+    drip = _math(nt, "MULTIPLY", _math(nt, "MULTIPLY", streak, broken), band)
+    drip = _math(nt, "MULTIPLY", drip, cling)
+    return _math(nt, "MULTIPLY", drip, b_val=facade_grime.DRIP_GAIN)
+
+
+def _height_band(nt, phase, peak, fade):
+    raw = _math(nt, "SUBTRACT", b=phase, a_val=peak)
+    gate = _clamp01(nt, _math(nt, "MULTIPLY", _math(nt, "ADD", raw, b_val=0.001), b_val=1000.0))
+    fall = _clamp01(nt, _math(nt, "DIVIDE", _math(nt, "SUBTRACT", b=raw, a_val=fade), b_val=fade))
+    return _math(nt, "MULTIPLY", gate, fall)
+
+
+def _column_streak(nt, geo):
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(geo.outputs["Position"], sep.inputs["Vector"])
+    comb = nt.nodes.new("ShaderNodeCombineXYZ")
+    nt.links.new(sep.outputs["X"], comb.inputs["X"])
+    nt.links.new(sep.outputs["Y"], comb.inputs["Y"])
+    comb.inputs["Z"].default_value = 0.0
+    noise = nt.nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = facade_grime.COLUMN_SCALE
+    nt.links.new(comb.outputs["Vector"], noise.inputs["Vector"])
+    span = facade_grime.COLUMN_HI - facade_grime.COLUMN_LO
+    return _clamp01(nt, _math(nt, "DIVIDE", _math(nt, "SUBTRACT", noise.outputs["Factor"], b_val=facade_grime.COLUMN_LO), b_val=span))
+
+
+def _break_noise(nt, geo):
+    mapping = nt.nodes.new("ShaderNodeMapping")
+    mapping.inputs["Scale"].default_value = facade_grime.BREAK_SCALE
+    nt.links.new(geo.outputs["Position"], mapping.inputs["Vector"])
+    noise = nt.nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 1.0
+    nt.links.new(mapping.outputs["Vector"], noise.inputs["Vector"])
+    return _range(nt, noise.outputs["Factor"], 0.0, 1.0, facade_grime.BREAK_LO, facade_grime.BREAK_HI)
+
+
+def _pos_z(nt, geo):
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(geo.outputs["Position"], sep.inputs["Vector"])
+    return sep.outputs["Z"]
+
+
+def _math(nt, op, a=None, b=None, a_val=None, b_val=None):
+    node = nt.nodes.new("ShaderNodeMath")
+    node.operation = op
+    if a is not None:
+        nt.links.new(a, node.inputs[0])
+    elif a_val is not None:
+        node.inputs[0].default_value = float(a_val)
+    if b is not None:
+        nt.links.new(b, node.inputs[1])
+    elif b_val is not None:
+        node.inputs[1].default_value = float(b_val)
+    return node.outputs[0]
+
+
+def _range(nt, value, src0, src1, dst0, dst1):
+    node = nt.nodes.new("ShaderNodeMapRange")
+    node.clamp = True
+    node.inputs[1].default_value = float(src0)
+    node.inputs[2].default_value = float(src1)
+    node.inputs[3].default_value = float(dst0)
+    node.inputs[4].default_value = float(dst1)
+    nt.links.new(value, node.inputs[0])
+    return node.outputs[0]
+
+
+def _clamp01(nt, value):
+    node = nt.nodes.new("ShaderNodeClamp")
+    node.inputs[1].default_value = 0.0
+    node.inputs[2].default_value = 1.0
+    nt.links.new(value, node.inputs[0])
+    return node.outputs[0]
+
+
+def _mix_rgba(nt, factor, color_socket, rgba, blend):
+    mix = _mix(nt, blend)
+    nt.links.new(factor, mix.inputs[0])
+    if color_socket is not None:
+        nt.links.new(color_socket, mix.inputs[6])
+    mix.inputs[7].default_value = rgba
+    return mix.outputs[2]
 
 
 def _age_flat(mat, kind):

@@ -162,17 +162,39 @@ def _city_materials(unreal):
     if not library.does_directory_exist(MAT_DIR):
         library.make_directory(MAT_DIR)
     made = {}
+    facade = {}
     for slot, ident in SLOTS.items():
         info = (record.get(ident) or {}).get("maps") or {}
         textures = _textures(unreal, assets, library, ident, info)
         if "color" not in textures:
             continue
-        made[slot] = _textured(unreal, assets, library, editing, slot, textures)
+        if slot in _facade_names():
+            facade[slot] = textures
+        else:
+            made[slot] = _textured(unreal, assets, library, editing, slot, textures)
+    if facade:
+        # One master, instances per wall slot. Wear is the mesh vertex colour.
+        made.update(_facade_materials().apply(unreal, assets, library, editing, MAT_DIR, facade))
     made["M_Glass"] = _glass(unreal, assets, library, editing, "M_Glass")
     made["M_GlassLit"] = made["M_Glass"]
     for name, rgb in FLATS.items():
         made[name] = _flat(unreal, assets, library, editing, name, rgb)
     return made
+
+
+def _facade_names():
+    import os as _os
+    import sys as _sys
+    folder = _os.path.dirname(_os.path.abspath(__file__)) if "__file__" in globals() else _os.path.join(ROOT, "Scripts", "city")
+    if folder not in _sys.path:
+        _sys.path.insert(0, folder)
+    import facade_grime
+    return facade_grime.FACADE_MATERIALS
+
+
+def _facade_materials():
+    import facade_material_ue
+    return facade_material_ue
 
 
 def _textures(unreal, assets, library, ident, maps):

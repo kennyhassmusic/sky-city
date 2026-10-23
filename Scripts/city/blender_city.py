@@ -1020,7 +1020,8 @@ def _install_facades(lib, record):
     bb._facade = _city_facade
     bb._window = _city_window
     realism.build_rooms = _city_rooms
-    # The leak decal reads as a dark cone stuck in the wall. City shots skip it.
+    # Stains are the facade shader, not a card. The city path keeps the no-op
+    # so a later import of the block builder cannot put the cones back.
     realism._streak_under = _no_streak
     bb._parapet = _tall_parapet
     bb._roof = _city_roof
@@ -1988,6 +1989,8 @@ def _join_evaluated(objects, turn):
     materials = {}
     try:
         uv_out = bm.loops.layers.uv.new("UVMap")
+        # Wear survives the join only as a corner colour. Missing colour is clean.
+        color_out = bm.loops.layers.color.new("Col")
         for ob in objects:
             if ob.data is None:
                 continue
@@ -2002,6 +2005,7 @@ def _join_evaluated(objects, turn):
                 part.from_mesh(src)
                 part.transform(turn @ ob.matrix_world)
                 uv_src = part.loops.layers.uv.get("UVMap") or part.loops.layers.uv.active
+                color_src = part.loops.layers.color.get("Col")
                 remap = []
                 for mat in src.materials:
                     key = mat.name if mat else ""
@@ -2022,6 +2026,12 @@ def _join_evaluated(objects, turn):
                     if uv_src is not None:
                         for src_loop, dst_loop in zip(face.loops, made.loops):
                             dst_loop[uv_out].uv = src_loop[uv_src].uv.copy()
+                    if color_src is None:
+                        for dst_loop in made.loops:
+                            dst_loop[color_out] = (0.0, 1.0, 0.0, 1.0)
+                    else:
+                        for src_loop, dst_loop in zip(face.loops, made.loops):
+                            dst_loop[color_out] = src_loop[color_src]
             finally:
                 part.free()
                 if eval_ob is not None:

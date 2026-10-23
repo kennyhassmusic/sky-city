@@ -7,7 +7,8 @@ way out, the same turn the landmark exporter uses, so Unreal's glTF import puts 
 north on +X and plan east on +Y.
 
 Windows are a real recess with a glass pane, a sill and a lintel. Shopfronts open
-into a small room. CC0 grime, leak decals and a sky HDRI are applied in realism.py.
+into a small room. Facade grime is procedural in realism.py (no leak cards).
+A sky HDRI is applied there too.
 Transmission is a transparent mix rather than a refractive shader so a CPU render
 stays practical.
 LOD0 is that module build. LOD1 is one band per floor. LOD2 is the same mass without
@@ -325,6 +326,9 @@ class Mesh(object):
             bmesh.ops.remove_doubles(self.bm, verts=list(self.bm.verts), dist=0.004)
         self.bm.to_mesh(me)
         self.bm.free()
+        # Red is the building wear. Unset meshes stay 0 so a shared wall
+        # material does not stain the street.
+        _paint_grime(me, getattr(self, "grime", None))
         for m in self.mats:
             me.materials.append(m)
         ob = bpy.data.objects.new(self.name, me)
@@ -668,8 +672,30 @@ def build_style(style, buildings, context, lib):
     return groups
 
 
+def _paint_grime(mesh, wear):
+    """Corner colour R is facade wear. The shader reads the Col attribute."""
+    if mesh is None or len(mesh.loops) == 0:
+        return
+    value = 0.0 if wear is None else max(0.0, min(1.0, float(wear)))
+    attr = mesh.color_attributes.get("Col")
+    if attr is None:
+        attr = mesh.color_attributes.new("Col", "BYTE_COLOR", "CORNER")
+    color = (value, 1.0, 0.0, 1.0)
+    try:
+        attr.data.foreach_set("color", list(color) * len(attr.data))
+    except (TypeError, RuntimeError):
+        for item in attr.data:
+            item.color = color
+
+
+def _stamp_grime(mesh, building):
+    import facade_grime
+    mesh.grime = facade_grime.intensity(building)
+
+
 def build_lod0(building, lib, col):
     mesh = Mesh(building["id"] + "_LOD0")
+    _stamp_grime(mesh, building)
     wall = lib.get(building.get("materials", {}).get("wall") or "brick", lib["brick"])
     trim = lib.get(building.get("materials", {}).get("trim") or "plaster", lib["plaster"])
     metal = lib["metal"]
@@ -1060,6 +1086,7 @@ def _balcony(mesh, balcony, trim, metal):
 
 def build_bands(building, lib, col, banded):
     mesh = Mesh(building["id"] + ("_LOD1" if banded else "_LOD2"))
+    _stamp_grime(mesh, building)
     wall = lib.get(building.get("materials", {}).get("wall") or "brick", lib["brick"])
     trim = lib["trim_dark"]
     floors = building.get("floors") or []
@@ -1078,6 +1105,7 @@ def build_bands(building, lib, col, banded):
 def build_far(building, style, lib, col):
     floors = building.get("floors") or []
     mesh = Mesh(building["id"] + "_FAR")
+    _stamp_grime(mesh, building)
     if not floors:
         return mesh.finish(col)
     # One shell: the ground plate up to the roof, plus the baked grid on the walls.

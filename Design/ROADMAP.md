@@ -10,7 +10,6 @@ What's being built next, in order. Kenny decides the order; ideas from contribut
 Deferred from the texture-stretch pass. Do not start these until asked:
 - Floating bases (the census now flags a building whose base is not on the sidewalk)
 - Ground surfaces
-- Grime
 - Roofs
 - Loader floor bugs
 

@@ -24,6 +24,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 - SCALE CHECK: no change
 - Next: when `Art/ai_textures/` lands, the same schema picks it up
 
+## 2026-10-23 06:24 UTC — cursor cloud agent — procedural facade grime
+- State at start: `cursor/citywide-generate-04ef` (PR #6) at `455e8f5`. Grime was still on the Next list.
+- Did: wall slots no longer use the leak card or the cracked-concrete multiply. `Scripts/city/facade_grime.py` maps district age and tier to a 0–1 wear (brand_new and tech near zero, historic_old and distressed heavy). The Blender materials in `Scripts/city/realism.py` read that wear from the mesh colour attribute `Col` and add a short bevel for edge chips, ambient occlusion for corners, world-Z drip bands under sills and ledges, and dirt from the sidewalk up to 1.4 m. `Scripts/city/facade_material_ue.py` builds the same graph as `M_Facade` (vertex colour red times WearScale, screen-space curvature, precomputed AO). `python3 -I Scripts/city/test_facade_grime.py` (6 OK). Cycles preview `artifacts/previews/facade_grime.png`: joined wear 0.05 and 0.896, base luma 0.3618 (brand-new) vs 0.2874 (distressed), glass band 0.3782 vs 0.3727. The city cameras were not re-rendered and the GLBs were not rewritten. The Unreal master was not compiled here (no editor).
+- Found: Pointiness on one quad per wall sits near 0.7 everywhere, so the edge mask is a bevel. A wide bevel painted the sill and the AC unit white; the radius is 3 cm so only the rim chips.
+- Asks for Kenny: run `py Scripts/city/import_city_ue.py` (PIE off) so `M_Facade` compiles. The pin names are resolved in the editor and a missed pin raises.
+- SCALE CHECK: no change
+- Next: still deferred — floating bases, ground surfaces, roofs, loader floor bugs. Do not start them until asked.
+
 ## 2026-10-23 05:50 UTC — cursor cloud agent — Blender 5.2 census and hero sheets
 - State at start: `cursor/citywide-generate-04ef` (PR #6) pinned the mesher to Blender 4.2.15.
 - Did: commit `a59dfa5`. The mesher now requires Blender 5.2.x LTS on Python 3.13 (ran 5.2.3 / 3.13.13) and `--background --factory-startup --python-exit-code 1`. One unit is one metre and the glTF export is 1:1 (a 2 m cube exported with span 2). Booleans use the EXACT solver and are read with `evaluated_get().to_mesh()` (a cube difference came back with 10 faces). Mesh and object operators are rejected at startup. `Scripts/city/census.py` counts non-manifold edges, loose verts, degenerate faces and BVHTree self-intersections, and fails the build when the base is off the sidewalk (`profiles.CURB_RISE`, 0.15 m), or the footprint or height misses the plan. `python3 -I Scripts/city/test_census.py` (4 OK). `SKYCITY_HERO_ONLY=1` meshed three buildings in 88.8 s, census PASS, and wrote Workbench six-view sheets. The city GLBs were not re-exported and the locked cameras were not re-rendered. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`.
