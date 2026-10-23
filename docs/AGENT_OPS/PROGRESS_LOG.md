@@ -24,6 +24,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 - SCALE CHECK: no change
 - Next: when `Art/ai_textures/` lands, the same schema picks it up
 
+## 2026-10-23 04:20 UTC — cursor cloud agent — daylight and dusk previews
+- State at start: `cursor/citywide-generate-04ef` (PR #6) at `67e1f29`. Meshes in `9c82632`. The Cycles frames were crushed; the residential street median luma was 1.
+- Did: commit `a46b4e9` relights `Scripts/city/blender_city.py` only (CC0 Poly Haven `kloofendal_43d_clear_puresky` plus a sun, AgX, no world volume; dusk uses `kiara_9_dusk`, sun elevation 4.5°, windows glowing). Commit `8d07576` adds `artifacts/previews/sky_city_*_{day,dusk}.png`. Cameras stayed the ones in `city_manifest.json`. GLBs were not rewritten. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Test: `python3 -I Scripts/city/test_generate_city.py` (OK). Cycles 24 samples, denoise, 1280×720. Histograms passed at exposure 0: aerial day median 138.2 (crushed 0.001), downtown street day 74.5 (0.011), residential day 126.3 (0.006), downtown street dusk 84.8 (0.012, p95 206.5).
+- Found: the block Filmic grade, a world volume, and generated-coordinate HDRI mapping were what crushed the streets. An unconnected environment vector plus the sun lamp lights the same cameras.
+- Asks for Kenny: none beyond the earlier import note. PIE off, `py Scripts/city/import_city_ue.py`, open `SkyCityGenerated`.
+- SCALE CHECK: no change
+- Next: mesh more of the core when a larger LFS budget is available. Do not start road stages 2–4 or pack polish unless asked.
+
 ## 2026-10-23 04:05 UTC — cursor cloud agent — real meshes for downtown and one residential street
 - State at start: `cursor/citywide-generate-04ef` (PR #6) had the spawn record and cube import. Flat street preview was colour planes.
 - Did: commit `9c82632`. `Scripts/city/blender_city.py` builds LOD0 with the CG block facade, roof and storefront path. Chicago core cluster (14 buildings) and one Austin low-rise street (high beside mid) are chunked GLBs under `SourceArt/CityGen/city/` (about 66 MB, each file under 22 MB). Street surfaces and simple dressing props are in the street chunks. Trees are not meshed. `import_city_ue.py` imports those GLBs into `/Game/Maps/SkyCityGenerated` at the origin and binds the existing CC0 scans. Cycles previews: downtown aerial oblique, downtown street, residential street. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Test: `python3 -I Scripts/city/test_generate_city.py` (OK).
