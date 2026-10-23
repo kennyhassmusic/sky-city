@@ -8,6 +8,11 @@ to that block, and dressing props are simple meshes (no trees).
 The GLB vertices are the block exporter's -90 degree Z turn, baked in, so
 Unreal imports them at the world origin: plan north on +X, plan east on +Y.
 
+A glazed floor is a curtain wall: mullions, a spandrel at each slab, tinted
+reflective glass, and an opaque interior behind every pane. Facade UVs repeat
+at the texture's meters_u and meters_v. Bays are whole modules of bay_m, so a
+window is not stretched to the wall width.
+
 Run:
   blender -b --factory-startup -P Scripts/city/blender_city.py
 Output:
@@ -44,6 +49,7 @@ sys.path.insert(0, os.path.join(ROOT, "Scripts", "roads"))
 import blender_block as bb  # noqa: E402
 import generate_city  # noqa: E402
 import geom  # noqa: E402
+import grammar  # noqa: E402
 import model as model_mod  # noqa: E402
 import profiles  # noqa: E402
 import realism  # noqa: E402
@@ -92,7 +98,9 @@ def main():
     print("CITY core", len(core), "of", _count(city, "chicago_core"),
           "residential", len(residential), "tiers", tier_names, flush=True)
     bb.reset()
-    lib = bb.make_library(bb.load_material_record())
+    record = bb.load_material_record()
+    lib = bb.make_library(record)
+    _install_facades(lib, record)
     protos = _prototypes(lib)
     core_col = bb.collection("CoreBuildings")
     res_col = bb.collection("ResBuildings")
@@ -265,12 +273,272 @@ def _fence(name, style):
     return ob
 
 
+def _metres(mat):
+    """Texture size in metres. materials.json stores uv_m as [meters_u, meters_v]."""
+    if mat is None:
+        return 1.0, 1.0
+    try:
+        keys = mat.keys()
+    except (AttributeError, TypeError):
+        keys = ()
+    try:
+        if "meters_u" in keys:
+            mu = float(mat["meters_u"] or 1.0)
+            mv = float(mat["meters_v"] or mu) if "meters_v" in keys else mu
+        else:
+            raw = mat.get("uv_m") if hasattr(mat, "get") else None
+            if isinstance(raw, (list, tuple)) and len(raw) >= 2:
+                mu, mv = float(raw[0] or 1.0), float(raw[1] or 1.0)
+            elif raw:
+                mu = mv = float(raw)
+            else:
+                mu, mv = 1.0, 1.0
+    except (TypeError, ValueError):
+        mu, mv = 1.0, 1.0
+    return (mu if mu > 1e-4 else 1.0), (mv if mv > 1e-4 else 1.0)
+
+
+def _uv_metres(self, u_len, v_len, mat):
+    """Repeats at real scale. A 3 m scan stays 3 m; it is not stretched across the wall."""
+    mu, mv = _metres(mat)
+    return [(0.0, 0.0), (u_len / mu, 0.0), (u_len / mu, v_len / mv), (0.0, v_len / mv)]
+
+
+def _stamp_scales(lib, record):
+    for slot, ident in bb.SLOT.items():
+        info = record.get(ident) or {}
+        pair = info.get("uv_m") or [2.0, 2.0]
+        if not isinstance(pair, (list, tuple)):
+            pair = [pair, pair]
+        mu = float(info.get("meters_u") or pair[0] or 2.0)
+        mv = float(info.get("meters_v") or (pair[1] if len(pair) > 1 else pair[0]) or mu)
+        mat = lib.get(slot)
+        if mat is not None:
+            mat["meters_u"] = mu
+            mat["meters_v"] = mv
+
+
+def _curtain_glass(name, emit):
+    """Tinted reflective curtain glass. The clear pane was a hole into the floor plates."""
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nt = mat.node_tree
+    bsdf = nt.nodes.get("Principled BSDF")
+    bsdf.inputs["Base Color"].default_value = (0.55, 0.68, 0.74, 1)
+    bsdf.inputs["Roughness"].default_value = 0.045
+    bb._set(bsdf, ("Metallic",), 0.72)
+    bb._set(bsdf, ("Emission Color", "Emission"), (0.75, 0.86, 0.95, 1))
+    bb._set(bsdf, ("Emission Strength",), emit)
+    transp = nt.nodes.new("ShaderNodeBsdfTransparent")
+    mix = nt.nodes.new("ShaderNodeMixShader")
+    mix.inputs["Fac"].default_value = 0.08
+    out = nt.nodes.get("Material Output")
+    nt.links.new(bsdf.outputs["BSDF"], mix.inputs[1])
+    nt.links.new(transp.outputs["BSDF"], mix.inputs[2])
+    for link in list(nt.links):
+        if link.to_node == out:
+            nt.links.remove(link)
+    nt.links.new(mix.outputs["Shader"], out.inputs["Surface"])
+    mat["emit"] = emit
+    return mat
+
+
+def _whole_bays(length, bay_m, pier):
+    """Whole modules of bay_m. Leftover widens the mullions; the glass is never wider than the module."""
+    bay_m = max(1.4, float(bay_m))
+    pier = max(0.08, min(float(pier), bay_m * 0.4))
+    glass = max(0.75, bay_m - pier)
+    count = max(1, int(round(float(length) / bay_m)))
+    need = count * glass + (count + 1) * pier
+    if need > length:
+        glass = (length - (count + 1) * pier) / count
+        if glass < 0.7 and count > 1:
+            count -= 1
+            glass = min(bay_m - pier, (length - (count + 1) * pier) / max(1, count))
+    if glass < 0.45:
+        glass = max(0.35, length * 0.62)
+        pier_w = max(0.06, (length - glass) / 2.0)
+        return 1, glass, pier_w
+    need = count * glass + (count + 1) * pier
+    slack = max(0.0, length - need)
+    pier_w = pier + slack / (count + 1)
+    return count, glass, pier_w
+
+
+def _pane_slots(width, module):
+    """Split one opening into whole panes. A 7 m hole becomes two modules, not one stretched window."""
+    module = max(0.9, float(module))
+    if width <= module * 1.15:
+        return [("pane", 0.0, width)]
+    count = max(2, int(round(width / module)))
+    bar = 0.1
+    pane = module
+    need = count * pane + (count - 1) * bar
+    if need > width:
+        pane = (width - (count - 1) * bar) / count
+    slack = max(0.0, width - (count * pane + (count - 1) * bar))
+    x = slack / 2.0
+    slots = []
+    for i in range(count):
+        slots.append(("pane", x, pane))
+        x += pane
+        if i + 1 < count:
+            slots.append(("bar", x, bar))
+            x += bar
+    return slots
+
+
+def _bay_at(building, facade, along):
+    """The grammar bay that owns this point, so a split pane keeps that room."""
+    bays = max(1, int(facade.get("bays") or 1))
+    opening = float(facade.get("opening_w") or 1.0)
+    pier = float(facade.get("pier_w") or 0.2)
+    pitch = pier + opening
+    bay = int((along - pier) / pitch) if pitch > 1e-4 else 0
+    bay = max(0, min(bays - 1, bay))
+    return grammar.room_of(building, facade, bay), bay
+
+
+def _curtain_pane(mesh, building, facade, along, width, ax, ay, tx, ty, tangent, inward, gz0, gz1, metal, lib):
+    origin = (ax + tx * along, ay + ty * along)
+    room, bay = _bay_at(building, facade, along + width / 2.0)
+    if room is not None:
+        lit = bool(room.get("lit"))
+    else:
+        lit = grammar.bay_lit(building.get("seed") or 1, building["id"], facade.get("floor") or 0, bay)
+    glass = lib["curtain_glass_lit"] if lit else lib["curtain_glass"]
+    panel = lib["interior_lit"] if lit else lib.get("plaster", metal)
+    mid_z = (gz0 + gz1) / 2.0
+    gh = gz1 - gz0
+    centre = (origin[0] + tx * width / 2.0 + inward[0] * 0.07,
+              origin[1] + ty * width / 2.0 + inward[1] * 0.07, mid_z)
+    mesh.box(centre, tangent, inward, (0, 0, 1), (max(0.2, width - 0.02), 0.015, max(0.3, gh)), glass)
+    # Transom in front of the glass, so the bay reads as a frame and not one sheet.
+    bb._span(mesh, origin, tangent, inward, (0, 0, 1), width, 0.1, mid_z - 0.04, mid_z + 0.04, metal)
+    # Opaque room back, tucked behind the mullions and the spandrel. Nothing sees the hollow.
+    back = (origin[0] + tx * width / 2.0 + inward[0] * 0.46,
+            origin[1] + ty * width / 2.0 + inward[1] * 0.46, mid_z)
+    mesh.box(back, tangent, inward, (0, 0, 1), (width + 0.1, 0.05, gh + 0.12), panel)
+    realism.dress_opening(mesh, building, facade, bay, origin, tangent, inward, width, gz0, gz1, 0.4, lib, "curtain")
+
+
+def _curtain_facade(mesh, building, facade, metal, lib):
+    ax, ay = float(facade["a"][0]), float(facade["a"][1])
+    bx, by = float(facade["b"][0]), float(facade["b"][1])
+    length = float(facade["length"] or 1.0) or 1.0
+    tx, ty = (bx - ax) / length, (by - ay) / length
+    nx, ny = float(facade["normal"][0]), float(facade["normal"][1])
+    tangent = (tx, ty, 0.0)
+    inward = (-nx, -ny, 0.0)
+    up = (0.0, 0.0, 1.0)
+    z0 = float(facade["z"]) + profiles.CURB_RISE
+    h = float(facade["h"])
+    count, glass_w, pier_w = _whole_bays(length, building.get("bay_m") or 3.0, building.get("pier_m") or 0.14)
+    bot = min(0.72, max(0.42, h * 0.18))
+    top = min(0.52, max(0.32, h * 0.14))
+    if bot + top + 0.85 > h:
+        bot = h * 0.2
+        top = h * 0.14
+    gz0, gz1 = z0 + bot, z0 + h - top
+    thick = 0.26
+    # Spandrels cover the slab at this floor and the one above. They are metal, not glass.
+    bb._span(mesh, (ax, ay), tangent, inward, up, length, thick, z0, gz0, metal)
+    bb._span(mesh, (ax, ay), tangent, inward, up, length, thick, gz1, z0 + h, metal)
+    cursor = 0.0
+    for i in range(count):
+        bb._span(mesh, (ax + tx * cursor, ay + ty * cursor), tangent, inward, up, pier_w, thick + 0.05, z0, z0 + h, metal)
+        cursor += pier_w
+        _curtain_pane(mesh, building, facade, cursor, glass_w, ax, ay, tx, ty, tangent, inward, gz0, gz1, metal, lib)
+        cursor += glass_w
+    bb._span(mesh, (ax + tx * cursor, ay + ty * cursor), tangent, inward, up,
+             max(0.05, length - cursor), thick + 0.05, z0, z0 + h, metal)
+    cornice = float(facade.get("cornice") or 0)
+    if cornice > 0.05:
+        scale = 0.65 + 0.7 * geom.rnd(int(building.get("seed") or 1), building["id"], int(facade.get("floor") or 0), "cornice")
+        depth = min(0.75, cornice * 0.42 * scale)
+        centre = (ax + tx * length / 2.0 - nx * depth / 2.0,
+                  ay + ty * length / 2.0 - ny * depth / 2.0,
+                  z0 + h - 0.08)
+        mesh.box(centre, tangent, (nx, ny, 0.0), up, (length, depth, 0.16 + 0.14 * scale), metal)
+
+
+def _city_facade(mesh, building, facade, wall, trim, metal, lib):
+    if facade.get("opening") == "curtain":
+        _curtain_facade(mesh, building, facade, metal, lib)
+        return
+    _ORIG_FACADE(mesh, building, facade, wall, trim, metal, lib)
+
+
+def _panel_behind(mesh, building, facade, bay, origin, tangent, inward, width, z0, z1, lib):
+    """Tall towers skip the upper room shells. The pane still needs a solid back."""
+    if float(building.get("height") or 0) < 22:
+        return
+    room = grammar.room_of(building, facade, bay)
+    if room is None:
+        return
+    mat = lib["interior_lit"] if room.get("lit") else lib.get("plaster", lib["interior"])
+    centre = (origin[0] + tangent[0] * width / 2.0 + inward[0] * 1.15,
+              origin[1] + tangent[1] * width / 2.0 + inward[1] * 1.15,
+              (z0 + z1) / 2.0)
+    mesh.box(centre, tangent, inward, (0, 0, 1), (width * 0.98, 0.05, max(0.3, (z1 - z0) * 0.98)), mat)
+
+
+def _city_window(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, z1, recess, lib, kind="window"):
+    module = float(building.get("bay_m") or 3.2) - float(building.get("pier_m") or 0.3)
+    slots = _pane_slots(width, module)
+    if kind in ("door", "storefront") or len(slots) <= 1:
+        _ORIG_WINDOW(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, z1, recess, lib, kind)
+        _panel_behind(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, z1, lib)
+        return
+    ox, oy = origin_xy
+    tx, ty = tangent[0], tangent[1]
+    metal = lib.get("metal", lib["plaster"])
+    for kind_s, along, span in slots:
+        origin = (ox + tx * along, oy + ty * along)
+        if kind_s == "bar":
+            bb._span(mesh, origin, tangent, inward, (0, 0, 1), span, 0.2, z0, z1, metal)
+            continue
+        _ORIG_WINDOW(mesh, building, facade, bay, origin, tangent, inward, span, z0, z1, recess, lib, kind)
+        _panel_behind(mesh, building, facade, bay, origin, tangent, inward, span, z0, z1, lib)
+
+
+def _city_rooms(mesh, building, lib):
+    """Upper floors of a tower are the curtain panels, not an empty office you can see through."""
+    if float(building.get("height") or 0) < 22:
+        return _ORIG_ROOMS(mesh, building, lib)
+    kept = [room for room in (building.get("rooms") or []) if int(room.get("floor") or 0) == 0]
+    if not kept:
+        return None
+    copy = dict(building)
+    copy["rooms"] = kept
+    return _ORIG_ROOMS(mesh, copy, lib)
+
+
+def _install_facades(lib, record):
+    """City-only. The CG block previews keep the original facade builder."""
+    global _ORIG_FACADE, _ORIG_WINDOW, _ORIG_ROOMS
+    _stamp_scales(lib, record)
+    if "curtain_glass" not in lib:
+        lib["curtain_glass"] = _curtain_glass("M_CurtainGlass", 0.04)
+        lib["curtain_glass_lit"] = _curtain_glass("M_CurtainGlassLit", 0.45)
+    _ORIG_FACADE = bb._facade
+    _ORIG_WINDOW = bb._window
+    _ORIG_ROOMS = realism.build_rooms
+    bb.Mesh._uv = _uv_metres
+    bb._facade = _city_facade
+    bb._window = _city_window
+    realism.build_rooms = _city_rooms
+
+
 def _shell(spec, keep_tall_rooms):
-    """Upper floors of a tower keep the window card. The ground floor keeps its rooms."""
-    if keep_tall_rooms or float(spec.get("height") or 0) < 22:
+    """A glass wall slot is the clear shader. The mass and the spandrels need an opaque metal."""
+    del keep_tall_rooms
+    mats = dict(spec.get("materials") or {})
+    if mats.get("wall") != "glass":
         return spec
+    mats["wall"] = "metal"
     copy = dict(spec)
-    copy["rooms"] = [room for room in spec.get("rooms") or [] if int(room.get("floor") or 0) == 0]
+    copy["materials"] = mats
     return copy
 
 
@@ -707,10 +975,15 @@ def _light_city(world, sun_spec, dusk, record):
 
 def _glow(dusk):
     glass, interior = (4.0, 14.0) if dusk else (0.6, 1.2)
-    if "M_GlassLit" in bpy.data.materials:
-        bb.set_emission(bpy.data.materials["M_GlassLit"], glass)
-    if "M_InteriorLit" in bpy.data.materials:
-        bb.set_emission(bpy.data.materials["M_InteriorLit"], interior)
+    curtain = 2.6 if dusk else 0.35
+    for name, strength in (
+        ("M_GlassLit", glass),
+        ("M_InteriorLit", interior),
+        ("M_CurtainGlass", 0.12 if dusk else 0.04),
+        ("M_CurtainGlassLit", curtain),
+    ):
+        if name in bpy.data.materials:
+            bb.set_emission(bpy.data.materials[name], strength)
 
 
 def _png_luma(path):
