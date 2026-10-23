@@ -1,0 +1,192 @@
+{
+ "id": "fac_apartments_distressed_v06",
+ "districts": [
+  "apartments_condos"
+ ],
+ "tiers": [
+  "distressed"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_v06_albedo.png",
+  "normal": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_v06_normal.png",
+  "orm": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_v06_orm.png",
+  "roughness": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_v06_roughness.png",
+  "mask": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_v06_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  2048,
+  2048
+ ],
+ "role": "accent",
+ "suggested_use": "crown",
+ "scale_m": {
+  "width": 6.0,
+  "height": 6.0
+ },
+ "glass_mask": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_v06_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 3.0,
+ "floor_m": 3.0,
+ "windowless": false,
+ "bays_in_tile": 2,
+ "floors_in_tile": 2,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_v06_mask.png",
+   "windows": [
+    {
+     "rect": [
+      0.3965,
+      0.4771,
+      0.5933,
+      0.7515
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.397,
+      0.9531,
+      0.5933,
+      1
+     ],
+     "bay": 0,
+     "floor": 1,
+     "wrap_group": 1
+    },
+    {
+     "rect": [
+      0.397,
+      0,
+      0.5933,
+      0.27
+     ],
+     "bay": 0,
+     "floor": 1,
+     "wrap_group": 1
+    },
+    {
+     "rect": [
+      0.8901,
+      0.4702,
+      1,
+      0.7515
+     ],
+     "bay": 1,
+     "floor": 0,
+     "wrap_group": 2
+    },
+    {
+     "rect": [
+      0,
+      0.4702,
+      0.0869,
+      0.7515
+     ],
+     "bay": 1,
+     "floor": 0,
+     "wrap_group": 2
+    },
+    {
+     "rect": [
+      0.8921,
+      0.9541,
+      1,
+      1
+     ],
+     "bay": 1,
+     "floor": 1,
+     "wrap_group": 3
+    },
+    {
+     "rect": [
+      0.8921,
+      0,
+      1,
+      0.2715
+     ],
+     "bay": 1,
+     "floor": 1,
+     "wrap_group": 3
+    },
+    {
+     "rect": [
+      0,
+      0.9541,
+      0.0874,
+      1
+     ],
+     "bay": 1,
+     "floor": 1,
+     "wrap_group": 3
+    },
+    {
+     "rect": [
+      0,
+      0,
+      0.0874,
+      0.2715
+     ],
+     "bay": 1,
+     "floor": 1,
+     "wrap_group": 3
+    }
+   ],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "index": 1,
+     "rect": [
+      0.5,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      0.5
+     ]
+    },
+    {
+     "index": 1,
+     "rect": [
+      0.0,
+      0.5,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "suggested_use_notes": [
+  "top/crown"
+ ]
+}

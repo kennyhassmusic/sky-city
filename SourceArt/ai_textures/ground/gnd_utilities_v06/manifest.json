@@ -1,0 +1,33 @@
+{
+ "id": "gnd_utilities_v06",
+ "districts": [
+  "utilities"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/utilities/ground/gnd_utilities_v06_albedo.png",
+  "normal": "../../packs/utilities/ground/gnd_utilities_v06_normal.png",
+  "orm": "../../packs/utilities/ground/gnd_utilities_v06_orm.png",
+  "roughness": "../../packs/utilities/ground/gnd_utilities_v06_roughness.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "accent",
+ "suggested_use": "grass",
+ "feature": "grass",
+ "scale_m": {
+  "width": 4.0,
+  "height": 4.0
+ },
+ "projection": "top_down"
+}

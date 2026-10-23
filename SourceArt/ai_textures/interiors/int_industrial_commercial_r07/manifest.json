@@ -1,0 +1,42 @@
+{
+ "id": "int_industrial_commercial_r07",
+ "districts": [
+  "industrial_commercial"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r07_on.png",
+  "lights_off": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r07_off.png",
+  "emissive_mask": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r07_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "mezzanine_office",
+ "room_type": "mezzanine_office",
+ "scale_m": {
+  "width": 6,
+  "height": 5
+ },
+ "depth_m": 8,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.506,
+  0.325
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r07_on.png",
+  "lights_off": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r07_off.png"
+ },
+ "method": "regenerated_room_only"
+}

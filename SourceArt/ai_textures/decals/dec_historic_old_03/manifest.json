@@ -1,0 +1,27 @@
+{
+ "id": "dec_historic_old_03",
+ "role": "accent",
+ "placement": "decal",
+ "tile": false,
+ "feature": "manhole",
+ "suggested_use": "scatter",
+ "districts": [
+  "historic_old"
+ ],
+ "tiers": [],
+ "maps": {
+  "albedo": "../../packs/historic_old/decals/dec_historic_old_03.png"
+ },
+ "alpha": "../../packs/historic_old/decals/dec_historic_old_03.png",
+ "alpha_channel": "A",
+ "size_px": [
+  512,
+  512
+ ],
+ "scale_m": {
+  "width": 0.8,
+  "height": 0.8
+ },
+ "projection": "ground",
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable"
+}

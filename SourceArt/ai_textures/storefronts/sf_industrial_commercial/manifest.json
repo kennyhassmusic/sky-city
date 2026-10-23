@@ -1,0 +1,102 @@
+{
+ "id": "sf_industrial_commercial",
+ "districts": [
+  "industrial_commercial"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/industrial_commercial/storefronts/sf_industrial_commercial_albedo.png",
+  "normal": "../../packs/industrial_commercial/storefronts/sf_industrial_commercial_normal.png",
+  "orm": "../../packs/industrial_commercial/storefronts/sf_industrial_commercial_orm.png",
+  "roughness": "../../packs/industrial_commercial/storefronts/sf_industrial_commercial_roughness.png",
+  "mask": "../../packs/industrial_commercial/storefronts/sf_industrial_commercial_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 6.479,
+  "height": 6.479
+ },
+ "glass_mask": "../../packs/industrial_commercial/storefronts/sf_industrial_commercial_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 6.479,
+ "floor_m": 6.479,
+ "windowless": true,
+ "bays_in_tile": 1,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/industrial_commercial/storefronts/sf_industrial_commercial_mask.png",
+   "windows": [],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "sign_rect": [
+  0.05,
+  0.06,
+  0.68,
+  0.17
+ ],
+ "door_rect": [
+  0.82,
+  0.435,
+  0.93,
+  0.79
+ ],
+ "door_rects": [
+  [
+   0.05,
+   0.2,
+   0.33,
+   0.79
+  ],
+  [
+   0.4,
+   0.2,
+   0.68,
+   0.79
+  ],
+  [
+   0.82,
+   0.435,
+   0.93,
+   0.79
+  ]
+ ]
+}

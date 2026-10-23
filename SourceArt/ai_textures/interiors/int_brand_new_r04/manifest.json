@@ -1,0 +1,42 @@
+{
+ "id": "int_brand_new_r04",
+ "districts": [
+  "brand_new"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/brand_new/interiors/int_brand_new_r04_on.png",
+  "lights_off": "../../packs/brand_new/interiors/int_brand_new_r04_off.png",
+  "emissive_mask": "../../packs/brand_new/interiors/int_brand_new_r04_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "meeting_room",
+ "room_type": "meeting_room",
+ "scale_m": {
+  "width": 4,
+  "height": 3
+ },
+ "depth_m": 5,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.488,
+  0.436
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/brand_new/interiors/int_brand_new_r04_on.png",
+  "lights_off": "../../packs/brand_new/interiors/int_brand_new_r04_off.png"
+ },
+ "method": "regenerated_room_only"
+}

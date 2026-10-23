@@ -1,0 +1,35 @@
+{
+ "id": "gnd_houses_high_v01",
+ "districts": [
+  "houses"
+ ],
+ "tiers": [
+  "high"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/houses/high/ground/gnd_houses_high_v01_albedo.png",
+  "normal": "../../packs/houses/high/ground/gnd_houses_high_v01_normal.png",
+  "orm": "../../packs/houses/high/ground/gnd_houses_high_v01_orm.png",
+  "roughness": "../../packs/houses/high/ground/gnd_houses_high_v01_roughness.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "grass",
+ "feature": "grass",
+ "scale_m": {
+  "width": 4.0,
+  "height": 4.0
+ },
+ "projection": "top_down"
+}

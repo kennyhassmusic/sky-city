@@ -1,0 +1,124 @@
+{
+ "id": "fac_houses_high_v04",
+ "districts": [
+  "houses"
+ ],
+ "tiers": [
+  "high"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/houses/high/facades/fac_houses_high_v04_albedo.png",
+  "normal": "../../packs/houses/high/facades/fac_houses_high_v04_normal.png",
+  "orm": "../../packs/houses/high/facades/fac_houses_high_v04_orm.png",
+  "roughness": "../../packs/houses/high/facades/fac_houses_high_v04_roughness.png",
+  "mask": "../../packs/houses/high/facades/fac_houses_high_v04_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  2048,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 6.0,
+  "height": 3.0
+ },
+ "glass_mask": "../../packs/houses/high/facades/fac_houses_high_v04_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 2.0,
+ "floor_m": 3.0,
+ "windowless": false,
+ "bays_in_tile": 3,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/houses/high/facades/fac_houses_high_v04_mask.png",
+   "windows": [
+    {
+     "rect": [
+      0.0449,
+      0.2441,
+      0.1895,
+      0.9121
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.4106,
+      0.2441,
+      0.6899,
+      0.9121
+     ],
+     "bay": 1,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.9106,
+      0.2441,
+      0.9956,
+      0.9121
+     ],
+     "bay": 2,
+     "floor": 0
+    }
+   ],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      0.3333,
+      1.0
+     ]
+    },
+    {
+     "index": 1,
+     "rect": [
+      0.3333,
+      0.0,
+      0.6667,
+      1.0
+     ]
+    },
+    {
+     "index": 2,
+     "rect": [
+      0.6667,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "suggested_use_notes": [
+  "base floors"
+ ]
+}

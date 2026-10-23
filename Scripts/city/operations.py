@@ -213,8 +213,9 @@ def texture_pack(type_name, root=None, tier=None):
 
     This does not change a city model. `root` is a pack library. The legacy
     `packs/<district>/<tier>/manifest.json` is still read when the library has
-    no set for that district. The default search is Art/ai_textures, then
-    Scripts/city/packs.
+    no set for that district. The default search is SourceArt/ai_textures, then
+    Art/ai_textures, then Scripts/city/packs. A district that still drops to CC0
+    is warned about on stderr, not hidden.
     """
     return district_types.load_pack(type_name, root=root, tier=tier)
 

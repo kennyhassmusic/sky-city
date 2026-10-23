@@ -10,6 +10,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import districts as district_types
 import grammar
 import model as model_mod
 import operations as ops
@@ -135,24 +136,63 @@ def _grammar_building():
     return spec
 
 
+class RepoPacksTest(unittest.TestCase):
+    """The packs that ship in SourceArt/ai_textures, read through the default root.
+
+    Manifests are plain JSON (not LFS), so this resolves even in a checkout that
+    has not pulled the images. Guards the bug where every district silently fell
+    back to CC0 because the loader read a path that did not exist.
+    """
+
+    def _tier_for(self, district):
+        return "high" if district in district_types.TIERED_TYPES else None
+
+    def test_packs_are_installed(self):
+        base = packs._root(None)
+        if base is None:
+            self.skipTest("no texture packs under SourceArt/ai_textures")
+        self.assertTrue((Path(base) / "packs" / "districts.json").is_file())
+
+    def test_every_district_gets_a_pack_facade_not_cc0(self):
+        if packs._root(None) is None:
+            self.skipTest("no texture packs under SourceArt/ai_textures")
+        for district in district_types.TYPE_NAMES:
+            tier = self._tier_for(district)
+            record = ops.texture_pack(district, tier=tier)
+            self.assertEqual(record["source"], "pack", "%s should resolve to a pack" % district)
+            facades = [item for item in record["sets"] if item["kind"] == "facade"]
+            self.assertTrue(facades, "%s has no facade set" % district)
+            self.assertEqual(record["skipped"], [], "%s dropped a manifest: %s" % (district, record["skipped"]))
+
+    def test_assign_stamps_a_pack_body_on_a_building(self):
+        if packs._root(None) is None:
+            self.skipTest("no texture packs under SourceArt/ai_textures")
+        dressed, _ids = ops.assign_textures(_model([_grammar_building()]))
+        pack = dressed["buildings"][0]["pack"]
+        self.assertEqual(pack["source"], "pack")
+        self.assertIsNotNone(pack["facade"]["basic"])
+
+
 class PackLoaderTest(unittest.TestCase):
     def test_missing_library_is_cc0(self):
-        record = ops.texture_pack("tech")
-        self.assertEqual(record["source"], "cc0")
-        self.assertIsNone(record["path"])
-        self.assertEqual(record["sets"], [])
-        self.assertEqual(record["textures"]["concrete"], "concrete_wall_001")
-        self.assertIn("crown", record["mix"]["facade"]["accents"])
-        self.assertIn("pothole", record["mix"]["ground"]["scatter"])
-        city, _ids = ops.assign_textures(_model([_grammar_building()]))
-        pack = city["buildings"][0]["pack"]
-        self.assertEqual(pack["source"], "cc0")
-        front = next(face for face in pack["facade"]["faces"] if face["role"] == "front")
-        self.assertIsNone(front["glass_mask"])
-        self.assertTrue(front["windows"])
-        self.assertTrue(front["bays"])
-        self.assertTrue(front["floors"])
-        self.assertEqual(model_mod.manifest_hash(city), model_mod.manifest_hash(_model([_grammar_building()])))
+        # Packs ship in the repo now; an empty root shows the CC0 fallback.
+        with tempfile.TemporaryDirectory() as empty:
+            record = ops.texture_pack("tech", root=empty)
+            self.assertEqual(record["source"], "cc0")
+            self.assertIsNone(record["path"])
+            self.assertEqual(record["sets"], [])
+            self.assertEqual(record["textures"]["concrete"], "concrete_wall_001")
+            self.assertIn("crown", record["mix"]["facade"]["accents"])
+            self.assertIn("pothole", record["mix"]["ground"]["scatter"])
+            city, _ids = ops.assign_textures(_model([_grammar_building()]), root=empty)
+            pack = city["buildings"][0]["pack"]
+            self.assertEqual(pack["source"], "cc0")
+            front = next(face for face in pack["facade"]["faces"] if face["role"] == "front")
+            self.assertIsNone(front["glass_mask"])
+            self.assertTrue(front["windows"])
+            self.assertTrue(front["bays"])
+            self.assertTrue(front["floors"])
+            self.assertEqual(model_mod.manifest_hash(city), model_mod.manifest_hash(_model([_grammar_building()])))
 
     def test_schema_mix_masks_and_decals(self):
         with tempfile.TemporaryDirectory() as tmp:

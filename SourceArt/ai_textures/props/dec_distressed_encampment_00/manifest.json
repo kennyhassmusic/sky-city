@@ -1,0 +1,30 @@
+{
+ "id": "dec_distressed_encampment_00",
+ "role": "accent",
+ "placement": "decal",
+ "tile": false,
+ "feature": "prop",
+ "suggested_use": "prop_card",
+ "districts": [
+  "apartments_condos",
+  "houses"
+ ],
+ "tiers": [
+  "distressed"
+ ],
+ "maps": {
+  "albedo": "../../packs/common/props/encampment/dec_distressed_encampment_00.png"
+ },
+ "alpha": "../../packs/common/props/encampment/dec_distressed_encampment_00.png",
+ "alpha_channel": "A",
+ "size_px": [
+  512,
+  512
+ ],
+ "scale_m": {
+  "width": 1.5,
+  "height": 1.5
+ },
+ "projection": "card_impostor",
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable"
+}

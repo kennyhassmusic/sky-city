@@ -1,0 +1,42 @@
+{
+ "id": "int_utilities_r05",
+ "districts": [
+  "utilities"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/utilities/interiors/int_utilities_r05_on.png",
+  "lights_off": "../../packs/utilities/interiors/int_utilities_r05_off.png",
+  "emissive_mask": "../../packs/utilities/interiors/int_utilities_r05_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "generator_hall",
+ "room_type": "generator_hall",
+ "scale_m": {
+  "width": 10,
+  "height": 6
+ },
+ "depth_m": 16,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.699,
+  0.303
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/utilities/interiors/int_utilities_r05_on.png",
+  "lights_off": "../../packs/utilities/interiors/int_utilities_r05_off.png"
+ },
+ "method": "regenerated_room_only"
+}

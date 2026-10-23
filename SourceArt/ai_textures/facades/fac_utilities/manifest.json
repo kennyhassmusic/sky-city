@@ -1,0 +1,91 @@
+{
+ "id": "fac_utilities",
+ "districts": [
+  "utilities"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/utilities/facades/fac_utilities_albedo.png",
+  "normal": "../../packs/utilities/facades/fac_utilities_normal.png",
+  "orm": "../../packs/utilities/facades/fac_utilities_orm.png",
+  "roughness": "../../packs/utilities/facades/fac_utilities_roughness.png",
+  "mask": "../../packs/utilities/facades/fac_utilities_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  2048,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 10.0,
+  "height": 5.0
+ },
+ "glass_mask": "../../packs/utilities/facades/fac_utilities_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 3.333333,
+ "floor_m": 5.0,
+ "windowless": true,
+ "bays_in_tile": 3,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/utilities/facades/fac_utilities_mask.png",
+   "windows": [],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      0.3333,
+      1.0
+     ]
+    },
+    {
+     "index": 1,
+     "rect": [
+      0.3333,
+      0.0,
+      0.6667,
+      1.0
+     ]
+    },
+    {
+     "index": 2,
+     "rect": [
+      0.6667,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "suggested_use_notes": [
+  "base floors"
+ ]
+}

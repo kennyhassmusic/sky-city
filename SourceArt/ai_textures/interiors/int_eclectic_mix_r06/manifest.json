@@ -1,0 +1,42 @@
+{
+ "id": "int_eclectic_mix_r06",
+ "districts": [
+  "eclectic_mix"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r06_on.png",
+  "lights_off": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r06_off.png",
+  "emissive_mask": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r06_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "cafe",
+ "room_type": "cafe",
+ "scale_m": {
+  "width": 5,
+  "height": 3.2
+ },
+ "depth_m": 7,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.515,
+  0.54
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r06_on.png",
+  "lights_off": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r06_off.png"
+ },
+ "method": "regenerated_room_only"
+}

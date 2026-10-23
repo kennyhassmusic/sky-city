@@ -1,0 +1,33 @@
+{
+ "id": "gnd_industrial_commercial_v06",
+ "districts": [
+  "industrial_commercial"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/industrial_commercial/ground/gnd_industrial_commercial_v06_albedo.png",
+  "normal": "../../packs/industrial_commercial/ground/gnd_industrial_commercial_v06_normal.png",
+  "orm": "../../packs/industrial_commercial/ground/gnd_industrial_commercial_v06_orm.png",
+  "roughness": "../../packs/industrial_commercial/ground/gnd_industrial_commercial_v06_roughness.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "accent",
+ "suggested_use": "grass",
+ "feature": "grass",
+ "scale_m": {
+  "width": 4.0,
+  "height": 4.0
+ },
+ "projection": "top_down"
+}

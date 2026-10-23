@@ -746,7 +746,9 @@ class DistrictTypeTest(unittest.TestCase):
         self.assertEqual(species, {"honeylocust"})
 
     def test_texture_pack_falls_back_to_cc0(self):
-        missing = ops.texture_pack("tech")
+        # Packs now ship in the repo, so point at an empty root to see the fallback.
+        with tempfile.TemporaryDirectory() as empty:
+            missing = ops.texture_pack("tech", root=empty)
         self.assertEqual(missing["source"], "cc0")
         self.assertIsNone(missing["path"])
         self.assertEqual(missing["textures"]["glass"], "glass")
@@ -954,13 +956,14 @@ class IncomeTierTest(unittest.TestCase):
         for props in (rich_props, poor_props):
             self.assertFalse(any(prop["kind"] in ("person", "pedestrian", "occupant") for prop in props))
 
-        missing = ops.texture_pack("houses", tier="high")
+        with tempfile.TemporaryDirectory() as empty:
+            missing = ops.texture_pack("houses", tier="high", root=empty)
+            tech = ops.texture_pack("tech", root=empty)
         self.assertEqual(missing["source"], "cc0")
         self.assertEqual(missing["tier"], "high")
         self.assertIsNone(missing["path"])
         self.assertEqual(missing["materials"], ["brick", "plaster"])
         self.assertEqual(missing["textures"]["brick"], "brick_wall_001")
-        tech = ops.texture_pack("tech")
         self.assertEqual(tech["source"], "cc0")
         self.assertIsNone(tech["tier"])
         with tempfile.TemporaryDirectory() as tmp:

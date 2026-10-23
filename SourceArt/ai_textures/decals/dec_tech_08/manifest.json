@@ -1,0 +1,27 @@
+{
+ "id": "dec_tech_08",
+ "role": "accent",
+ "placement": "decal",
+ "tile": false,
+ "feature": "hatch",
+ "suggested_use": "scatter",
+ "districts": [
+  "tech"
+ ],
+ "tiers": [],
+ "maps": {
+  "albedo": "../../packs/tech/decals/dec_tech_08.png"
+ },
+ "alpha": "../../packs/tech/decals/dec_tech_08.png",
+ "alpha_channel": "A",
+ "size_px": [
+  512,
+  512
+ ],
+ "scale_m": {
+  "width": 0.4,
+  "height": 0.4
+ },
+ "projection": "ground",
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable"
+}

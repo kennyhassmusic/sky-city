@@ -1,0 +1,42 @@
+{
+ "id": "int_eclectic_mix_r02",
+ "districts": [
+  "eclectic_mix"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r02_on.png",
+  "lights_off": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r02_off.png",
+  "emissive_mask": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r02_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "music_venue",
+ "room_type": "music_venue",
+ "scale_m": {
+  "width": 10,
+  "height": 5
+ },
+ "depth_m": 16,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.503,
+  0.429
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r02_on.png",
+  "lights_off": "../../packs/eclectic_mix/interiors/int_eclectic_mix_r02_off.png"
+ },
+ "method": "regenerated_room_only"
+}

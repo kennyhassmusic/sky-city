@@ -1,7 +1,7 @@
 """Texture-pack loader for the city generator.
 
-The AI packs are not in the repo yet. They are expected under Art/ai_textures/
-(or a root passed to the loader) in this shape:
+The AI packs ship under SourceArt/ai_textures/ (or a root passed to the loader,
+or the legacy Art/ai_textures/) in this shape:
 
   packs/districts.json
   facades/<id>/manifest.json
@@ -72,8 +72,8 @@ def load_library(root=None):
     """Every valid set under the pack root, plus the mix and the rejects.
 
     `root` is a directory that contains the kind folders and packs/districts.json.
-    With no root, Art/ai_textures is used when that folder exists. An empty
-    library is valid: callers then use the CC0 slots.
+    With no root, SourceArt/ai_textures is used when it exists (then the legacy
+    Art/ai_textures). An empty library is valid: callers then use the CC0 slots.
     """
     base = _root(root)
     sets = []
@@ -568,17 +568,29 @@ def _kind_folders(base):
     return found
 
 
+#: Where the AI texture packs live in the repo, newest default first. The loader
+#: resolves the first of these that exists under the project root. Kept as data so
+#: a warning can name the places that were searched.
+PACK_ROOTS = ("SourceArt/ai_textures", "Art/ai_textures")
+
+
 def _root(root):
     if root is not None:
         path = Path(root)
         return path if path.is_dir() else None
-    try:
-        art = skyline.project_root() / "Art" / "ai_textures"
-    except RuntimeError:
-        return None
-    if art.is_dir():
-        return art
+    for base in search_roots():
+        if base.is_dir():
+            return base
     return None
+
+
+def search_roots():
+    """The in-repo locations the loader looks for packs under, in order."""
+    try:
+        project = skyline.project_root()
+    except RuntimeError:
+        return []
+    return [project / rel for rel in PACK_ROOTS]
 
 
 def _read_json(path):

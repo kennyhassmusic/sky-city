@@ -15,15 +15,17 @@ tier_mix such as {high: 20, mid: 50, low: 25, distressed: 5} is a share, not a
 district-type mix. assign_tiers lays those shares out along a seeded axis so a
 neighbourhood changes one step at a time. The same seed rebuilds the same bands.
 
-Texture packs are not in the repo yet. load_pack reads a library under
-Art/ai_textures/ (facade, ground, storefront, interior and decal manifests,
-plus packs/districts.json) and, for older tests, Scripts/city/packs/<district>/<tier>/manifest.json.
+Texture packs ship under SourceArt/ai_textures/ (facade, ground, storefront,
+interior, decal and equipment manifests, plus packs/districts.json); the loader
+also honours the legacy Art/ai_textures/ and Scripts/city/packs/<district>/<tier>/manifest.json.
 A missing library, a bad manifest, or a set that fails the size and scale
-checks falls back to the CC0 material slots. The set schema and the mix
-live in packs.py.
+checks falls back to the CC0 material slots -- but a district that drops to CC0
+while packs are installed is called out with a warning (it points at a wiring or
+coverage gap), not swallowed. The set schema and the mix live in packs.py.
 """
 import json
 import math
+import sys
 from pathlib import Path
 
 import geom
@@ -377,6 +379,7 @@ def load_pack(type_name, root=None, sky=None, tier=None):
             "sets": matched,
             "skipped": list(library.get("skipped") or []),
         }
+    _warn_cc0_fallback(type_name, tier, library)
     return {
         "source": "cc0",
         "district": type_name,
@@ -388,6 +391,26 @@ def load_pack(type_name, root=None, sky=None, tier=None):
         "sets": [],
         "skipped": list(library.get("skipped") or []),
     }
+
+
+def _warn_cc0_fallback(type_name, tier, library):
+    """Say out loud that a district fell back to CC0.
+
+    Silent CC0 hid the bug where the loader read a path that never existed, so
+    every facade quietly lost its pack. We now name the district and either the
+    pack root that holds no set for it (a coverage or wiring gap) or the places
+    that were searched and came up empty (packs not installed).
+    """
+    import packs as texture_packs
+
+    who = type_name if tier is None else "%s/%s" % (type_name, tier)
+    root = library.get("root")
+    if root:
+        where = "no pack set for it under %s" % root
+    else:
+        searched = ", ".join(str(path) for path in texture_packs.search_roots()) or "SourceArt/ai_textures"
+        where = "no texture packs found (looked under %s)" % searched
+    sys.stderr.write("texture packs: district %s falls back to CC0 -- %s\n" % (who, where))
 
 
 def _manifest_path(type_name, root, tier=None):

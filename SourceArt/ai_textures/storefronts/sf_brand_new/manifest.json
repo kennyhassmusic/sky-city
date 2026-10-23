@@ -1,0 +1,131 @@
+{
+ "id": "sf_brand_new",
+ "districts": [
+  "brand_new"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/brand_new/storefronts/sf_brand_new_albedo.png",
+  "normal": "../../packs/brand_new/storefronts/sf_brand_new_normal.png",
+  "orm": "../../packs/brand_new/storefronts/sf_brand_new_orm.png",
+  "roughness": "../../packs/brand_new/storefronts/sf_brand_new_roughness.png",
+  "mask": "../../packs/brand_new/storefronts/sf_brand_new_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 4.34,
+  "height": 4.34
+ },
+ "glass_mask": "../../packs/brand_new/storefronts/sf_brand_new_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 1.446667,
+ "floor_m": 4.34,
+ "windowless": false,
+ "bays_in_tile": 3,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/brand_new/storefronts/sf_brand_new_mask.png",
+   "windows": [
+    {
+     "rect": [
+      0.0195,
+      0.2695,
+      0.335,
+      0.7998
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.335,
+      0.2695,
+      0.4951,
+      0.7998
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.4951,
+      0.2695,
+      0.9805,
+      0.7998
+     ],
+     "bay": 0,
+     "floor": 0
+    }
+   ],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      0.3333,
+      1.0
+     ]
+    },
+    {
+     "index": 1,
+     "rect": [
+      0.3333,
+      0.0,
+      0.6667,
+      1.0
+     ]
+    },
+    {
+     "index": 2,
+     "rect": [
+      0.6667,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "sign_rect": [
+  0.05,
+  0.04,
+  0.95,
+  0.24
+ ],
+ "door_rect": [
+  0.335,
+  0.27,
+  0.495,
+  0.8
+ ]
+}
