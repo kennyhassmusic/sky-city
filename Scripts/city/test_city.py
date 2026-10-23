@@ -321,6 +321,37 @@ class SeederTest(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 seeder.read_json(path)
 
+    def test_surveyed_height_survives_a_rebuild(self):
+        # The seeder's contract: a measured height is a lot tag, and regenerate
+        # honours it instead of inventing a skyline height for that footprint.
+        plan = {
+            "bounds": [0, 0, 200, 200],
+            "districts": [{
+                "name": "chicago_core", "id": "d1",
+                "polygon": [[-20, -20], [140, -20], [140, 100], [-20, 100]],
+            }],
+            "roads": [
+                {"id": "s", "pts": [[0, 0], [120, 0]], "cls": "major", "lanes": 2, "name": "S", "core": True},
+                {"id": "e", "pts": [[120, 0], [120, 80]], "cls": "minor", "lanes": 1, "name": "E", "core": True},
+                {"id": "n", "pts": [[120, 80], [0, 80]], "cls": "mid", "lanes": 2, "name": "N"},
+                {"id": "w", "pts": [[0, 80], [0, 0]], "cls": "major", "lanes": 2, "name": "W", "core": True},
+            ],
+        }
+        buildings = {"buildings": [
+            {"x": 40, "y": 30, "yaw": 0, "w": 22, "d": 16, "h": 77, "district": "chicago_core"},
+        ]}
+        city = seeder.seed_from_plan(plan, buildings, [], seed=1408)
+        city, _ = ops.regenerate(city, "blocks")
+        lot = next(item for item in city["lots"] if geom.point_in_poly((40, 30), item["polygon"]))
+        self.assertEqual(lot["tags"].get("height"), 77)
+        building = next(item for item in city["buildings"] if item.get("lot_id") == lot["id"])
+        self.assertEqual(building["target_height"], 77.0)
+        self.assertGreater(building["height"], 70.0)
+        self.assertLess(building["height"], 85.0)
+        others = [item["height"] for item in city["buildings"] if item["id"] != building["id"]]
+        self.assertTrue(others)
+        self.assertGreater(building["height"], max(others))
+
 
 class SampleStreetTest(unittest.TestCase):
     def test_loop_block_streetscape(self):

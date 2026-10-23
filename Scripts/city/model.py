@@ -4,7 +4,9 @@ Layers, top to bottom: districts, roads, blocks, lots, buildings, streetscape.
 Regenerating a layer rebuilds it from the layers above and then rebuilds everything
 below it. An element with locked set, or with source "hand", is kept and treated as
 a constraint: a generated face that would cover a locked block is not created, and
-a locked building is copied through unchanged.
+a locked building is copied through unchanged. An OSM lot that this rebuild drops
+still lends its surveyed tags (height, levels, roof) to the new lot that contains
+it, which is how a plan keeps a measured height.
 
 The same seed and the same model produce the same manifest hash. Screenshot requests
 and other bookkeeping stay out of that hash.
@@ -171,6 +173,7 @@ def _face_block(model, face, district):
 def _rebuild_lots(model, district_id):
     kept_other = []
     new_lots = []
+    donors = _survey_donors(model, district_id)
     for lot in model.get("lots") or []:
         if district_id and lot.get("district_id") != district_id:
             kept_other.append(lot)
@@ -200,7 +203,7 @@ def _rebuild_lots(model, district_id):
                 "polygon": piece["polygon"],
                 "front_normals": piece["front_normals"],
                 "role": "lot",
-                "tags": {},
+                "tags": _tags_from_donors(piece["polygon"], donors),
             })
         new_lots.extend(existing)
         new_lots.extend(fresh)
@@ -307,6 +310,47 @@ def _merge_district_streetscape(old, built, district_id):
     merged["sections"] = dict(old.get("sections") or {})
     merged["sections"].update(built.get("sections") or {})
     return merged
+
+
+def _survey_donors(model, district_id):
+    """Centroids and tags of OSM lots this rebuild is about to drop.
+
+    seed_from_plan writes one lot per surveyed footprint and says a later
+    regenerate keeps that height. The lot grid replaces those lots, so the
+    tags have to move onto whichever new lot contains the old centroid.
+    """
+    donors = []
+    for lot in model.get("lots") or []:
+        if district_id and lot.get("district_id") != district_id:
+            continue
+        if lot.get("locked") or lot.get("source") == "hand":
+            continue
+        if lot.get("source") != "osm":
+            continue
+        tags = {k: v for k, v in (lot.get("tags") or {}).items() if v not in (None, "")}
+        polygon = lot.get("polygon") or []
+        if not tags or len(polygon) < 3:
+            continue
+        donors.append((geom.centroid(polygon), tags))
+    return donors
+
+
+def _tags_from_donors(polygon, donors):
+    """Tags of the tallest surveyed building whose centre sits in this lot."""
+    hits = []
+    for centre, tags in donors:
+        if geom.point_in_poly(centre, polygon):
+            hits.append(tags)
+    if not hits:
+        return {}
+
+    def _height(tags):
+        try:
+            return float(tags.get("height") or 0)
+        except (TypeError, ValueError):
+            return 0.0
+
+    return dict(max(hits, key=_height))
 
 
 def _overlaps(a, b):

@@ -202,13 +202,16 @@ def stack_floors(footprint, height, style, tags, sky, hero):
     lot_area = abs(geom.poly_area(footprint)) or 1.0
     far_cap = float(sky.get("far") or 0)
     area_sum = 0.0
+    # A surveyed height or level count already won over the skyline. FAR is a
+    # district envelope for generated masses, not a second clip on a measured building.
+    surveyed = tags.get("height") not in (None, "") or tags.get("building:levels") not in (None, "")
     for i in range(total):
         inset = _inset_for(i, total, style)
         poly = geom.offset_polygon(footprint, inset) if inset > 0.05 else [tuple(p) for p in footprint]
         area = abs(geom.poly_area(poly))
         if area < 12.0:
             break
-        if far_cap > 0 and not hero and (area_sum + area) / lot_area > far_cap + 0.05 and floors:
+        if far_cap > 0 and not hero and not surveyed and (area_sum + area) / lot_area > far_cap + 0.05 and floors:
             break
         h = ground_h if i == 0 else floor_h
         use = "ground" if i == 0 else "typical"
