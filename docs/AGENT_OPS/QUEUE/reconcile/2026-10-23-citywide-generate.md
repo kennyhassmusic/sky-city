@@ -3,7 +3,7 @@
 Cloud agent marker for LUCA. Invariants were read from `docs/AGENT_OPS/INVARIANTS.md` before this change. No protected value was edited.
 
 - PR: https://github.com/kennyhassmusic/sky-city/pull/6
-- Commit: facade grime is procedural (see the progress log, 2026-10-23 06:24 UTC). `a59dfa5` pins the mesher to Blender 5.2.x LTS (ran 5.2.3, Python 3.13.13) and adds the census and hero sheets. Mesh export remains `9c6b8bf`. Facade UV code is `a8d7ef8`. The 4.2.15 guard was `d8e6720`. Spawn record remains `35b8bdd`.
+- Commit: `0e7c633` replaces wall leak cards with procedural facade grime. `a59dfa5` pins the mesher to Blender 5.2.x LTS (ran 5.2.3, Python 3.13.13) and adds the census and hero sheets. Mesh export remains `9c6b8bf`. Facade UV code is `a8d7ef8`. The 4.2.15 guard was `d8e6720`. Spawn record remains `35b8bdd`.
 - Branch: `cursor/citywide-generate-04ef`
 - Base: `cursor/road-dressing-stage1-04ef`
 - ALLOW-CHANGE: none
