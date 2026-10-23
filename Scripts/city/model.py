@@ -90,6 +90,7 @@ def streetscape_manifest(model):
             "x": prop.get("x"),
             "y": prop.get("y"),
             "species": prop.get("species"),
+            "label": prop.get("label"),
             "locked": prop.get("locked"),
             "source": prop.get("source"),
             "road_id": prop.get("road_id"),

@@ -115,7 +115,7 @@ def context_buildings(city, sky=None):
 
 
 def cameras(city):
-    """Street eye on the south sidewalk, an aerial from the southeast, dusk on the street eye."""
+    """Eye height of a standing person, a 32 mm lens, focus on the near facade."""
     road = next(r for r in city["roads"] if r["id"] == "road_south")
     sec = (city.get("streetscape") or {}).get("sections", {}).get("road_south") or {}
     width = float(sec.get("width") or 12.0)
@@ -123,26 +123,29 @@ def cameras(city):
     # Stand in the south lanes, looking east and nearly level, so the zebra a few metres
     # ahead stays in frame. A high target drops the paint below the lens.
     eye, _direction = streets.point_on_road(road, 3.5, width * 0.12)
-    target, _d = streets.point_on_road(road, 42.0, width / 2.0 + back + 4.0)
+    target, _d = streets.point_on_road(road, 36.0, width / 2.0 + back + 3.2)
     street = {
         "name": "street",
-        "location": [round(eye[0], 2), round(eye[1], 2), 1.65],
-        "target": [round(target[0], 2), round(target[1], 2), 2.4],
-        "lens": 24,
+        "location": [round(eye[0], 2), round(eye[1], 2), 1.6],
+        "target": [round(target[0], 2), round(target[1], 2), 2.2],
+        "lens": 32,
+        "fstop": 7.0,
         "sun": {"elevation": 28, "rotation": 35, "strength": 1.0},
     }
     aerial = {
         "name": "aerial",
         "location": [78.0, -88.0, 110.0],
         "target": [0.0, 0.0, 24.0],
-        "lens": 32,
+        "lens": 35,
+        "fstop": 0,
         "sun": {"elevation": 32, "rotation": 20, "strength": 1.0},
     }
     dusk = {
         "name": "dusk",
         "location": street["location"],
-        "target": [round(target[0], 2), round(target[1], 2), 14.0],
-        "lens": 28,
+        "target": [round(target[0], 2), round(target[1], 2), 11.0],
+        "lens": 32,
+        "fstop": 7.0,
         "sun": {"elevation": 2.5, "rotation": 70, "strength": 0.35},
     }
     return {"street": street, "aerial": aerial, "dusk": dusk}

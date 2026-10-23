@@ -5,8 +5,9 @@ pan, beveled curb, sidewalk, and a grass parkway where the section calls for one
 Junctions get a curb return, a crosswalk (continental, or ladder on a local street)
 and a curb ramp. The crossing sits past the return so the paint is on asphalt.
 Lane lines, edge lines and stop bars are part of the same data. Furniture is placed
-by spacing, not by hand: lamps, trees of the district's species, drains on the gutter
-line, hydrants and benches. Nothing is placed in the roadway or in the crosswalk.
+by spacing, not by hand: lamps, trees of the district's species, a grate under each
+tree, bins, weeds at the curb, drains, hydrants, benches and a corner blade sign.
+Manholes and puddles are markings in the carriageway, clear of the zebra.
 
 The output is data. Blender and, later, the editor sweep meshes along it.
 """
@@ -15,6 +16,7 @@ import sys
 from pathlib import Path
 
 import geom
+import signs
 
 _ROADS = Path(__file__).resolve().parents[1] / "roads"
 if str(_ROADS) not in sys.path:
@@ -148,6 +150,7 @@ def _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ram
         _furniture(model, road, sec, side, length, trim, district, props)
     _crossings(model, road, sec, length, junctions, district, crosswalks, ramps, props, markings)
     _lane_lines(road, sec, length, junctions, district, markings)
+    _wear(model, road, sec, length, junctions, district, markings)
 
 
 def _block_curb(block, sections):
@@ -209,6 +212,11 @@ def _furniture(model, road, sec, side, length, trim, district, props):
         _scatter(props, road, "tree", start + tree_step * 0.5, end, tree_step, lateral, district, seed, side, trees=trees)
     if sec["core"]:
         _scatter(props, road, "bench", start + 12.0, end, 48.0, bench_lateral, district, seed, side)
+    # A bin sits further back on the walk than the weeds, which hug the curb joint.
+    bin_lat = side * (sec["width"] / 2.0 + back + min(max(sec["sidewalk"], 0.0) * 0.72, 2.6))
+    _scatter(props, road, "bin", start + 8.0, end - 4.0, 38.0, bin_lat, district, seed, side)
+    weed_lat = side * (sec["width"] / 2.0 + back + 0.28)
+    _scatter_some(props, road, "weed", start + 2.5, end, 7.5, weed_lat, district, seed, side, keep=0.5)
 
 
 def _scatter(props, road, kind, start, end, step, lateral, district, seed, side, trees=None):
@@ -236,6 +244,33 @@ def _scatter(props, road, kind, start, end, step, lateral, district, seed, side,
         if kind == "tree" and trees:
             item["species"] = trees[int(geom.rnd(seed, item["id"]) * len(trees)) % len(trees)]
         props.append(item)
+        if kind == "tree":
+            grate = dict(item)
+            grate["id"] = "prop_%s_grate_%d_%d" % (road["id"], 0 if side > 0 else 1, i)
+            grate["kind"] = "grate"
+            grate.pop("species", None)
+            props.append(grate)
+        i += 1
+        s += step
+
+
+def _scatter_some(props, road, kind, start, end, step, lateral, district, seed, side, keep):
+    """Like _scatter, but only some of the stations are used, so weeds stay patchy."""
+    if step <= 0 or end <= start:
+        return
+    i = 0
+    s = start
+    while s <= end + 0.1:
+        if geom.rnd(seed, road["id"], kind, round(s, 1), side) < keep:
+            p, d = point_on_road(road, s, lateral)
+            yaw = math.degrees(math.atan2(d[1], d[0]))
+            props.append({
+                "id": "prop_%s_%s_%d_%d" % (road["id"], kind, 0 if side > 0 else 1, i),
+                "kind": kind, "x": round(p[0], 2), "y": round(p[1], 2),
+                "yaw": round(yaw, 1), "side": side, "toward_road": -side,
+                "road_id": road["id"], "district_id": district,
+                "source": "generated", "locked": False,
+            })
         i += 1
         s += step
 
@@ -299,6 +334,18 @@ def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps,
                 "side": side, "road_id": road["id"], "district_id": district,
                 "source": "generated", "locked": False,
             })
+        # A blade sign on the sidewalk beside the crossing. The word is generic.
+        sign_s = s + 1.8 if s < length / 2.0 else s - 1.8
+        sp, sd = point_on_road(road, sign_s, (W / 2.0 + back + 1.35))
+        word = signs.WORDS[int(geom.rnd(int(model.get("seed") or 1), road["id"], int(s), "sign") * len(signs.WORDS)) % len(signs.WORDS)]
+        props.append({
+            "id": "prop_%s_sign_%d" % (road["id"], int(round(s))),
+            "kind": "sign", "label": word,
+            "x": round(sp[0], 2), "y": round(sp[1], 2),
+            "yaw": round(math.degrees(math.atan2(sd[1], sd[0])), 1),
+            "side": 1, "road_id": road["id"], "district_id": district,
+            "source": "generated", "locked": False,
+        })
         # one hydrant on the left sidewalk, just past the crossing, toward midblock
         hyd_s = s + 3.5 if s < length / 2 else s - 3.5
         hp, hd = point_on_road(road, hyd_s, (W / 2.0 + back + 1.1))
@@ -374,6 +421,51 @@ def _strip(pts, s0, s1, lateral, width):
         return None
     half = width / 2.0
     return _ribbon_sides(sub, lateral + half, lateral - half)
+
+
+def _wear(model, road, sec, length, junctions, district, markings):
+    """A manhole in the lane, and puddles along the gutter. Both stay off the zebra."""
+    pts = [(float(p[0]), float(p[1])) for p in road["polyline"]]
+    if len(pts) < 2 or length < 16:
+        return
+    trim = _end_trim(pts, junctions, sec)
+    s0 = trim[0] + 7.0
+    s1 = length - trim[1] - 7.0
+    if s1 - s0 < 8:
+        return
+    seed = int(model.get("seed") or 1)
+    ms = s0 + (s1 - s0) * 0.46
+    lateral = 1.15 if sec["width"] > 6.0 else 0.55
+    mp, _md = point_on_road(road, ms, lateral)
+    markings.append({
+        "kind": "manhole", "road_id": road["id"], "district_id": district,
+        "material": "M_Manhole", "polygon": _disk(mp, 0.38),
+    })
+    gutter_w = (sec.get("gutter") or {}).get("width_m") or 0.3
+    s = s0 + 3.0
+    n = 0
+    while s < s1 and n < 10:
+        for side in (1.0, -1.0):
+            if geom.rnd(seed, road["id"], round(s, 1), side, "puddle") > 0.55:
+                continue
+            lat = side * (sec["width"] / 2.0 - max(0.2, gutter_w) * 0.4)
+            pp, pd = point_on_road(road, s, lat)
+            markings.append({
+                "kind": "puddle", "road_id": road["id"], "district_id": district,
+                "material": "M_Puddle",
+                "polygon": geom.mark_rect(pp, pd, 1.6, 0.72),
+            })
+        s += 16.0
+        n += 1
+
+
+def _disk(centre, radius, n=8):
+    pts = []
+    for i in range(n):
+        a = math.tau * (i + 0.5) / n
+        pts.append((round(centre[0] + math.cos(a) * radius, 3),
+                    round(centre[1] + math.sin(a) * radius, 3)))
+    return pts
 
 
 def _alley_bollards(model, block, props):

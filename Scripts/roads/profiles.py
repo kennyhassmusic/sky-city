@@ -27,6 +27,12 @@ PARKWAY_W = 2.0
 WALK_OTHER = 1.8
 FURNITURE_W = 1.5
 CURB_RISE = 0.15          # sidewalk above the travel-lane edge
+# A pedestrian door is a leaf, not a whole bay. 0.91 by 2.10 m is a common size.
+# A shopfront has a low bulkhead and a head about 3 m above the sidewalk.
+DOOR_W = 0.91
+DOOR_H = 2.10
+STORE_SILL = 0.40
+STORE_HEAD = 3.05
 GUTTER_DROP = 0.03        # flow line below the travel-lane edge
 CURB_BATTER = 0.04        # how far the top of the face sits back from the flow line
 CURB_TOP_W = 0.15

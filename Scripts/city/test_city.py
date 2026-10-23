@@ -388,7 +388,11 @@ class SampleStreetTest(unittest.TestCase):
         self.assertTrue(sc["ramps"])
         self.assertTrue(any(m["kind"] == "dash" for m in sc["markings"]))
         self.assertTrue(any(m["kind"] == "stop" for m in sc["markings"]))
-        self.assertTrue(all(m.get("material") == "M_LanePaint" for m in sc["markings"]))
+        paint = [m for m in sc["markings"] if m["kind"] in ("dash", "stop", "edge", "centre")]
+        self.assertTrue(paint)
+        self.assertTrue(all(m.get("material") == "M_LanePaint" for m in paint))
+        self.assertTrue(any(m["kind"] == "puddle" and m.get("material") == "M_Puddle" for m in sc["markings"]))
+        self.assertTrue(any(m["kind"] == "manhole" and m.get("material") == "M_Manhole" for m in sc["markings"]))
         south = next(r for r in city["roads"] if r["id"] == "road_south")
         radius = sc["sections"]["road_south"]["curb"]["return_radius_m"]
         south_s = [c["s"] for c in sc["crosswalks"] if c["road_id"] == "road_south"]
@@ -398,6 +402,10 @@ class SampleStreetTest(unittest.TestCase):
         self.assertGreater(min(south_s) - 1.5, radius)
         self.assertTrue(any(p["kind"] == "drain" for p in sc["props"]))
         self.assertTrue(any(p["kind"] == "tree" for p in sc["props"]))
+        self.assertTrue(any(p["kind"] == "grate" for p in sc["props"]))
+        self.assertTrue(any(p["kind"] == "bin" for p in sc["props"]))
+        self.assertTrue(any(p["kind"] == "weed" for p in sc["props"]))
+        self.assertTrue(any(p["kind"] == "sign" and p.get("label") for p in sc["props"]))
         corners = []
         for road in city["roads"]:
             corners.append(tuple(road["polyline"][0]))

@@ -6,8 +6,10 @@ day and dusk previews. The GLBs are in plan metres, turned -90 degrees about Z o
 way out, the same turn the landmark exporter uses, so Unreal's glTF import puts plan
 north on +X and plan east on +Y.
 
-Windows are a real recess with a glass pane and a lit interior plane. Transmission is
-a transparent mix rather than a refractive shader so a CPU render stays practical.
+Windows are a real recess with a glass pane, a sill and a lintel. Shopfronts open
+into a small room. CC0 grime, leak decals and a sky HDRI are applied in realism.py.
+Transmission is a transparent mix rather than a refractive shader so a CPU render
+stays practical.
 LOD0 is that module build. LOD1 is one band per floor. LOD2 is the same mass without
 the bands. The far LOD is a box with the original facade grid.
 
@@ -37,6 +39,7 @@ sys.path.insert(0, os.path.join(ROOT, "Scripts", "roads"))
 import geom  # noqa: E402
 import grammar  # noqa: E402
 import profiles  # noqa: E402
+import realism  # noqa: E402
 
 ART = os.path.join(ROOT, "SourceArt", "CityGen")
 VARIATIONS = os.path.join(ART, "loop_variations.json")
@@ -63,8 +66,8 @@ def main():
     reset()
     lib = make_library(mats)
     street_objects = build_street(data, lib)
-    prototypes = make_prototypes(data)
-    place_props(data, prototypes, street_objects)
+    prototypes = make_prototypes(data, lib)
+    place_props(data, prototypes, street_objects, lib)
     report = {"seed": data["seed"], "hash": data["manifest_hash"], "styles": {}, "renders": []}
     only_styles = [s for s in os.environ.get("SKYCITY_STYLES", "").split(",") if s]
     only_shots = [s for s in os.environ.get("SKYCITY_SHOTS", "").split(",") if s]
@@ -123,6 +126,7 @@ def make_library(record):
     lib["roof"] = flat("M_Roof", (0.18, 0.19, 0.2), 0.7)
     lib["lane"] = flat("M_LanePaint", (0.98, 0.98, 0.97), 0.28)
     set_emission(lib["lane"], 0.55)
+    realism.extend_library(lib, record, ART)
     return lib
 
 
@@ -337,11 +341,12 @@ def build_street(data, lib):
     # Courtyard and a base plane so corners are not holes.
     ground = Mesh("Ground")
     for block in data.get("blocks") or []:
-        ground.prism(block["polygon"], -0.2, 0.16, lib["paving"])
+        ground.prism(block["polygon"], -0.2, profiles.CURB_RISE, lib["paving"])
     ground.prism([[-120, -110], [120, -110], [120, 110], [-120, 110]], -0.45, -0.2, lib["grass"])
     made.append(ground.finish(col))
-    for kind, z, mat_name in (("asphalt", 0.0, "asphalt"), ("sidewalk", 0.16, "paving"),
-                              ("parkway", 0.155, "grass"), ("alley", 0.15, "asphalt")):
+    walk_z = profiles.CURB_RISE
+    for kind, z, mat_name in (("asphalt", 0.0, "asphalt"), ("sidewalk", walk_z, "paving"),
+                              ("parkway", walk_z, "grass"), ("alley", walk_z, "asphalt")):
         mesh = Mesh(kind)
         for poly in sc["surfaces"].get(kind) or []:
             ring = poly["polygon"]
@@ -376,7 +381,19 @@ def build_street(data, lib):
         for mark in cross.get("marks") or []:
             paint.prism(mark["polygon"], 0.03, 0.055, lib["lane"])
     for mark in sc.get("markings") or []:
-        paint.prism(mark["polygon"], 0.028, 0.048, lib["lane"])
+        name = mark.get("material")
+        if name == "M_Puddle":
+            realism.uv_cover(paint, mark["polygon"], 0.022, 0.032, lib["puddle"])
+        elif name == "M_Manhole":
+            realism.uv_cover(paint, mark["polygon"], 0.02, 0.04, lib["manhole"])
+        else:
+            paint.prism(mark["polygon"], 0.028, 0.048, lib["lane"])
+    wear = Mesh("Wear")
+    realism.scatter_decals(wear, data, lib)
+    if wear.bm.faces:
+        made.append(wear.finish(col))
+    else:
+        wear.bm.free()
     if paint.bm.faces:
         made.append(paint.finish(col))
     else:
@@ -473,7 +490,7 @@ def _ramp(mesh, ramp, mat):
               [(0, 0), (1, 0), (1, 1), (0, 1)])
 
 
-def make_prototypes(data):
+def make_prototypes(data, lib):
     import blender_street_kit as kit
     protos = {}
     lamp = kit.street_lamp(do_export=False)
@@ -501,6 +518,7 @@ def make_prototypes(data):
         protos["tree_" + name] = ob
     protos["bench"] = _bench()
     protos["hydrant"] = _hydrant()
+    protos.update(realism.prototypes(lib, Mesh))
     return protos
 
 
@@ -532,21 +550,31 @@ def _hydrant():
     return ob
 
 
-def place_props(data, protos, into):
+def place_props(data, protos, into, lib):
     col = bpy.data.collections["Street"]
-    for prop in data["streetscape"].get("props") or []:
+    props = data["streetscape"].get("props") or []
+    for prop in props:
         kind = prop["kind"]
         if kind == "tree":
             src = protos.get("tree_" + (prop.get("species") or "linden")) or protos.get("tree_linden")
+        elif kind == "sign":
+            src = protos.get("sign_" + (prop.get("label") or "CAFE"))
         else:
             src = protos.get(kind)
         if src is None:
             continue
+        z = 0.02 if kind == "drain" else profiles.CURB_RISE
         ob = bpy.data.objects.new(prop["id"], src.data)
-        ob.location = (prop["x"], prop["y"], 0.16 if kind not in ("drain",) else 0.02)
+        ob.location = (prop["x"], prop["y"], z)
         ob.rotation_euler = (0, 0, _yaw_to_road(prop))
         col.objects.link(ob)
         into.append(ob)
+    wires = Mesh("Wires")
+    realism.wires(wires, props, lib["metal"])
+    if wires.bm.faces:
+        into.append(wires.finish(col))
+    else:
+        wires.bm.free()
 
 
 def _yaw_to_road(prop):
@@ -584,9 +612,10 @@ def build_lod0(building, lib, col):
     wall = lib.get(building.get("materials", {}).get("wall") or "brick", lib["brick"])
     trim = lib.get(building.get("materials", {}).get("trim") or "plaster", lib["plaster"])
     metal = lib["metal"]
+    lift = profiles.CURB_RISE
     for fl in building.get("floors") or []:
         poly = fl["polygon"]
-        z1 = fl["z"] + fl["h"]
+        z1 = fl["z"] + lift + fl["h"]
         # Terrace plate. A setback reads because the plate below is wider.
         mesh.prism(poly, z1 - 0.22, z1, trim if fl.get("cornice") else wall)
     for facade in building.get("facades") or []:
@@ -604,7 +633,8 @@ def _facade(mesh, building, facade, wall, trim, metal, lib):
     tx, ty = (bx - ax) / length, (by - ay) / length
     nx, ny = facade["normal"]
     ix, iy = -nx, -ny
-    z0 = float(facade["z"])
+    # Ground floor meets the sidewalk. The model stores z from the lane edge.
+    z0 = float(facade["z"]) + profiles.CURB_RISE
     h = float(facade["h"])
     recess = float(building.get("recess_m") or 0.15)
     pier_w = float(facade["pier_w"])
@@ -644,16 +674,25 @@ def _facade(mesh, building, facade, wall, trim, metal, lib):
             _span(mesh, origin, tangent, inward, up, inset, thick, z0, z0 + h, wall)
         bay_sill, bay_head = sill, head
         if kind == "door":
-            bay_sill = z0
+            realism.pedestrian_door(mesh, building, facade, i, origin, tangent, inward, bay_w, z0, head, lib)
+            cursor += open_w
+            continue
         elif kind == "transom":
             bay_sill = z0 + h * 0.46
         elif kind == "storefront":
-            bay_sill, bay_head = z0 + h * 0.06, z0 + h * 0.9
+            # A shopfront, not a bay of glass the full storey tall.
+            bay_sill = z0 + profiles.STORE_SILL
+            bay_head = min(head, z0 + profiles.STORE_HEAD)
         if bay_sill > z0 + 0.05:
             _span(mesh, (origin[0] + tx * inset, origin[1] + ty * inset), tangent, inward, up,
                   bay_w, thick, z0, bay_sill, wall)
-        _window(mesh, building, facade, i, (origin[0] + tx * inset, origin[1] + ty * inset),
+        win_o = (origin[0] + tx * inset, origin[1] + ty * inset)
+        _window(mesh, building, facade, i, win_o,
                 tangent, inward, bay_w, bay_sill, bay_head, recess, lib, kind)
+        if kind == "storefront":
+            if bay_head < head - 0.05:
+                _span(mesh, win_o, tangent, inward, up, bay_w, thick, bay_head, head, wall)
+            realism.shop_band(mesh, building, facade, i, win_o, tangent, inward, bay_w, z0, bay_head, lib)
         if kind in ("mullion", "curtain") and bay_w > 1.4:
             bar = min(0.08, bay_w * 0.04)
             _span(mesh, (origin[0] + tx * (inset + bay_w / 2.0 - bar / 2.0),
@@ -665,6 +704,9 @@ def _facade(mesh, building, facade, wall, trim, metal, lib):
         cursor += open_w
     _span(mesh, (ax + tx * cursor, ay + ty * cursor), tangent, inward, up, max(0.05, length - cursor), thick, z0, z0 + h, trim)
     cornice = float(facade.get("cornice") or 0)
+    if int(facade.get("floor") or 0) > 0:
+        mid = (ax + tx * length / 2.0 + nx * 0.06, ay + ty * length / 2.0 + ny * 0.06, z0 + 0.04)
+        mesh.box(mid, tangent, (nx, ny, 0), up, (length, 0.14, 0.07), trim)
     if cornice > 0.05:
         # A ledge proud of the wall. The seed changes how heavy it is from building to building.
         scale = 0.65 + 0.7 * geom.rnd(int(building.get("seed") or 1), building["id"], int(facade.get("floor") or 0), "cornice")
@@ -689,10 +731,11 @@ def _window(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, 
         return
     # Punched openings are deep enough to read from the street. Curtain bays stay shallower
     # but still step back behind the mullion, so the glass is not a decal on the pier.
+    jitter = 0.82 + 0.36 * geom.rnd(int(building.get("seed") or 1), building["id"], int(facade.get("floor") or 0), bay, "depth")
     if facade.get("opening") == "curtain" or kind in ("curtain", "mullion"):
-        depth = max(0.55, recess * 3.0)
+        depth = max(0.55, recess * 3.0) * jitter
     else:
-        depth = max(1.05, recess * 3.2)
+        depth = max(1.05, recess * 3.2) * jitter
     jamb = min(0.16, width * 0.14)
     frame = lib["plaster"]
     # Reveal: the frame steps back from the wall face, which is what makes the opening a hole.
@@ -705,23 +748,32 @@ def _window(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, 
     _span(mesh, (origin_xy[0] - inward[0] * 0.04, origin_xy[1] - inward[1] * 0.04),
           tangent, inward, (0, 0, 1), width, depth + 0.08, z0, z0 + jamb * 0.65, frame)
     # A stone sill proud of the wall, so the recess catches a shadow line.
-    sill_c = (origin_xy[0] + tangent[0] * width / 2.0 - inward[0] * 0.1,
-              origin_xy[1] + tangent[1] * width / 2.0 - inward[1] * 0.1,
-              z0 + jamb * 0.35)
-    mesh.box(sill_c, tangent, inward, (0, 0, 1), (width + 0.08, 0.18, 0.09), frame)
+    sill_c = (origin_xy[0] + tangent[0] * width / 2.0 - inward[0] * 0.12,
+              origin_xy[1] + tangent[1] * width / 2.0 - inward[1] * 0.12,
+              z0 + 0.04)
+    mesh.box(sill_c, tangent, inward, (0, 0, 1), (width + 0.14, 0.28, 0.11), frame)
+    lintel_c = (origin_xy[0] + tangent[0] * width / 2.0 - inward[0] * 0.08,
+                origin_xy[1] + tangent[1] * width / 2.0 - inward[1] * 0.08,
+                z1 - 0.04)
+    mesh.box(lintel_c, tangent, inward, (0, 0, 1), (width + 0.08, 0.2, 0.1), frame)
+    if kind not in ("curtain", "mullion", "storefront") and (z1 - z0) > 0.8:
+        bar = 0.045
+        _span(mesh, origin_xy, tangent, inward, (0, 0, 1), width, 0.08, (z0 + z1) / 2.0 - bar / 2.0, (z0 + z1) / 2.0 + bar / 2.0, frame)
     pane_z = (z0 + z1) / 2.0
     lit = grammar.bay_lit(building.get("seed") or 1, building["id"], facade["floor"], bay)
-    # The room wall fills the opening. Lit bays emit; the glass in front of them is only partly transparent.
-    room = (origin_xy[0] + tangent[0] * width / 2.0 + inward[0] * (depth + 0.06),
-            origin_xy[1] + tangent[1] * width / 2.0 + inward[1] * (depth + 0.06),
-            pane_z)
-    mesh.box(room, tangent, inward, (0, 0, 1), (width * 0.98, 0.06, (z1 - z0) * 0.98),
-             lib["interior_lit"] if lit else lib["interior"])
+    # Shopfronts look into the room built in realism._shop. Other bays keep a back wall.
+    if kind != "storefront":
+        room = (origin_xy[0] + tangent[0] * width / 2.0 + inward[0] * (depth + 0.06),
+                origin_xy[1] + tangent[1] * width / 2.0 + inward[1] * (depth + 0.06),
+                pane_z)
+        mesh.box(room, tangent, inward, (0, 0, 1), (width * 0.98, 0.06, (z1 - z0) * 0.98),
+                 lib["interior_lit"] if lit else lib["interior"])
     centre = (origin_xy[0] + tangent[0] * width / 2.0 + inward[0] * (depth * 0.72),
               origin_xy[1] + tangent[1] * width / 2.0 + inward[1] * (depth * 0.72),
               pane_z)
-    mesh.box(centre, tangent, inward, (0, 0, 1), (max(0.2, width - jamb * 2), 0.015, max(0.3, z1 - z0 - jamb * 2)),
-             lib["glass_lit"] if lit else lib["glass"])
+    glass = lib["glass"] if kind == "storefront" else (lib["glass_lit"] if lit else lib["glass"])
+    mesh.box(centre, tangent, inward, (0, 0, 1), (max(0.2, width - jamb * 2), 0.015, max(0.3, z1 - z0 - jamb * 2)), glass)
+    realism.dress_opening(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, z1, depth, lib, kind)
 
 
 def _roof(mesh, building, wall, trim, metal, roof_mat):
@@ -730,7 +782,7 @@ def _roof(mesh, building, wall, trim, metal, roof_mat):
     if not floors:
         return
     poly = floors[-1]["polygon"]
-    z = float(roof.get("z") or (floors[-1]["z"] + floors[-1]["h"]))
+    z = float(roof.get("z") or (floors[-1]["z"] + floors[-1]["h"])) + profiles.CURB_RISE
     h = float(roof.get("h") or 1.0)
     shape = roof.get("shape") or "flat"
     deck = z
@@ -932,10 +984,10 @@ def _unit(mesh, unit, metal, roof_mat):
 def _balcony(mesh, balcony, trim, metal):
     nx, ny = balcony["normal"]
     w, d = float(balcony["w"]), float(balcony["d"])
-    centre = (balcony["x"] + nx * d / 2.0, balcony["y"] + ny * d / 2.0, balcony["z"] + 0.08)
+    centre = (balcony["x"] + nx * d / 2.0, balcony["y"] + ny * d / 2.0, balcony["z"] + profiles.CURB_RISE + 0.08)
     tangent = (-ny, nx, 0)
     mesh.box(centre, tangent, (nx, ny, 0), (0, 0, 1), (w, d, 0.12), trim)
-    rail_c = (centre[0] + nx * d / 2.0, centre[1] + ny * d / 2.0, balcony["z"] + 0.55)
+    rail_c = (centre[0] + nx * d / 2.0, centre[1] + ny * d / 2.0, balcony["z"] + profiles.CURB_RISE + 0.55)
     mesh.box(rail_c, tangent, (nx, ny, 0), (0, 0, 1), (w, 0.04, 0.08), metal)
 
 
@@ -945,7 +997,7 @@ def build_bands(building, lib, col, banded):
     trim = lib["trim_dark"]
     floors = building.get("floors") or []
     for fl in floors:
-        z0, z1 = fl["z"], fl["z"] + fl["h"]
+        z0, z1 = fl["z"] + profiles.CURB_RISE, fl["z"] + profiles.CURB_RISE + fl["h"]
         if banded and fl["h"] > 0.6:
             mesh.prism(fl["polygon"], z0, z1 - 0.18, wall)
             mesh.prism(fl["polygon"], z1 - 0.18, z1, trim)
@@ -963,9 +1015,9 @@ def build_far(building, style, lib, col):
         return mesh.finish(col)
     # One shell: the ground plate up to the roof, plus the baked grid on the walls.
     poly = floors[0]["polygon"]
-    z1 = floors[-1]["z"] + floors[-1]["h"]
+    z1 = floors[-1]["z"] + profiles.CURB_RISE + floors[-1]["h"]
     mat = facade_material(style)
-    mesh.prism(poly, 0.0, z1, mat)
+    mesh.prism(poly, profiles.CURB_RISE, z1, mat)
     return mesh.finish(col)
 
 
@@ -1004,15 +1056,18 @@ def render_style(style, cameras, visible):
     scene.render.resolution_percentage = 100
     scene.render.image_settings.file_format = "PNG"
     scene.render.film_transparent = False
+    realism.grade(scene)
     world = bpy.data.worlds.new("Sky_" + style)
     scene.world = world
     world.use_nodes = True
     shots = []
+    if os.environ.get("SKYCITY_SHOTS") == "none":
+        return shots
     wanted = [s for s in os.environ.get("SKYCITY_SHOTS", "").split(",") if s] or ["street", "aerial", "dusk"]
     for shot in wanted:
         cam_spec = cameras[shot]
         _look(cam_spec)
-        _sun(world, cam_spec["sun"], dusk=(shot == "dusk"))
+        realism.sky(world, cam_spec["sun"], shot == "dusk", load_material_record(), ART)
         # Dusk turns the occupied windows up. Day keeps a faint glow so a few read as lit offices.
         set_emission(bpy.data.materials["M_GlassLit"], 4.0 if shot == "dusk" else 0.6)
         set_emission(bpy.data.materials["M_InteriorLit"], 14.0 if shot == "dusk" else 1.2)
@@ -1040,8 +1095,13 @@ def _look(spec):
     quat = Vector(direction).to_track_quat("-Z", "Y")
     cam.rotation_euler = quat.to_euler()
     cam.data.lens = float(spec.get("lens") or 32)
-    cam.data.clip_start = 0.2
+    cam.data.clip_start = 0.05
     cam.data.clip_end = 2000
+    try:
+        cam.data.sensor_width = 36.0
+    except (AttributeError, TypeError):
+        pass
+    realism.focus(cam, spec)
     scene.camera = cam
 
 

@@ -112,5 +112,113 @@
     ],
     "source": "ambientCG",
     "licence_url": "https://docs.ambientcg.com/license/"
+  },
+  "cracked_concrete_wall": {
+    "author": "Dimitrios Savva (Photography, processing), Rico Cilliers (Guidance)",
+    "url": "https://polyhaven.com/a/cracked_concrete_wall",
+    "licence": "CC0",
+    "date": "2026-10-23",
+    "maps": {
+      "color": "cracked_concrete_wall/cracked_concrete_wall_color_1k.jpg",
+      "rough": "cracked_concrete_wall/cracked_concrete_wall_rough_1k.jpg"
+    },
+    "uv_m": [
+      1.0,
+      1.0
+    ],
+    "source": "Poly Haven",
+    "role": "overlay"
+  },
+  "sparse_grass": {
+    "author": "Amal Kumar (All)",
+    "url": "https://polyhaven.com/a/sparse_grass",
+    "licence": "CC0",
+    "date": "2026-10-23",
+    "maps": {
+      "color": "sparse_grass/sparse_grass_color_1k.jpg",
+      "rough": "sparse_grass/sparse_grass_rough_1k.jpg"
+    },
+    "uv_m": [
+      2.0,
+      2.0
+    ],
+    "source": "Poly Haven",
+    "role": "overlay"
+  },
+  "kloofendal_43d_clear_puresky": {
+    "author": "Greg Zaal (All)",
+    "url": "https://polyhaven.com/a/kloofendal_43d_clear_puresky",
+    "licence": "CC0",
+    "date": "2026-10-23",
+    "maps": {
+      "hdr": "skies/kloofendal_43d_clear_puresky_1k.hdr"
+    },
+    "source": "Poly Haven",
+    "role": "sky"
+  },
+  "kiara_9_dusk": {
+    "author": "Greg Zaal (All)",
+    "url": "https://polyhaven.com/a/kiara_9_dusk",
+    "licence": "CC0",
+    "date": "2026-10-23",
+    "maps": {
+      "hdr": "skies/kiara_9_dusk_1k.hdr"
+    },
+    "source": "Poly Haven",
+    "role": "sky"
+  },
+  "Leaking006": {
+    "author": "Lennart Demes",
+    "url": "https://ambientcg.com/a/Leaking006",
+    "licence": "CC0",
+    "date": "2026-10-23",
+    "maps": {
+      "color": "Leaking006/Leaking006_color_1k.jpg",
+      "opacity": "Leaking006/Leaking006_opacity_1k.jpg",
+      "rough": "Leaking006/Leaking006_rough_1k.jpg"
+    },
+    "uv_m": [
+      1.0,
+      1.0
+    ],
+    "source": "ambientCG",
+    "role": "decal",
+    "licence_url": "https://docs.ambientcg.com/license/"
+  },
+  "AsphaltDamage001": {
+    "author": "Lennart Demes",
+    "url": "https://ambientcg.com/a/AsphaltDamage001",
+    "licence": "CC0",
+    "date": "2026-10-23",
+    "maps": {
+      "color": "AsphaltDamage001/AsphaltDamage001_color_1k.jpg",
+      "opacity": "AsphaltDamage001/AsphaltDamage001_opacity_1k.jpg",
+      "rough": "AsphaltDamage001/AsphaltDamage001_rough_1k.jpg"
+    },
+    "uv_m": [
+      1.0,
+      1.0
+    ],
+    "source": "ambientCG",
+    "role": "decal",
+    "licence_url": "https://docs.ambientcg.com/license/"
+  },
+  "ManholeCover009": {
+    "author": "Lennart Demes",
+    "url": "https://ambientcg.com/a/ManholeCover009",
+    "licence": "CC0",
+    "date": "2026-10-23",
+    "maps": {
+      "color": "ManholeCover009/ManholeCover009_color_1k.jpg",
+      "opacity": "ManholeCover009/ManholeCover009_opacity_1k.jpg",
+      "rough": "ManholeCover009/ManholeCover009_rough_1k.jpg"
+    },
+    "uv_m": [
+      1.0,
+      1.0
+    ],
+    "source": "ambientCG",
+    "role": "decal",
+    "licence_url": "https://docs.ambientcg.com/license/"
   }
 }

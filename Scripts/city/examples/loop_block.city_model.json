@@ -29632,6 +29632,190 @@
         ]
       },
       {
+        "kind": "manhole",
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "material": "M_Manhole",
+        "polygon": [
+          [
+            -3.169,
+            -43.705
+          ],
+          [
+            -3.375,
+            -43.499
+          ],
+          [
+            -3.665,
+            -43.499
+          ],
+          [
+            -3.871,
+            -43.705
+          ],
+          [
+            -3.871,
+            -43.995
+          ],
+          [
+            -3.665,
+            -44.201
+          ],
+          [
+            -3.375,
+            -44.201
+          ],
+          [
+            -3.169,
+            -43.995
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            -41.8,
+            -51.33
+          ],
+          [
+            -40.2,
+            -51.33
+          ],
+          [
+            -40.2,
+            -50.61
+          ],
+          [
+            -41.8,
+            -50.61
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            -25.8,
+            -51.33
+          ],
+          [
+            -24.2,
+            -51.33
+          ],
+          [
+            -24.2,
+            -50.61
+          ],
+          [
+            -25.8,
+            -50.61
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            6.2,
+            -51.33
+          ],
+          [
+            7.8,
+            -51.33
+          ],
+          [
+            7.8,
+            -50.61
+          ],
+          [
+            6.2,
+            -50.61
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            22.2,
+            -39.39
+          ],
+          [
+            23.8,
+            -39.39
+          ],
+          [
+            23.8,
+            -38.67
+          ],
+          [
+            22.2,
+            -38.67
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            38.2,
+            -39.39
+          ],
+          [
+            39.8,
+            -39.39
+          ],
+          [
+            39.8,
+            -38.67
+          ],
+          [
+            38.2,
+            -38.67
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            38.2,
+            -51.33
+          ],
+          [
+            39.8,
+            -51.33
+          ],
+          [
+            39.8,
+            -50.61
+          ],
+          [
+            38.2,
+            -50.61
+          ]
+        ]
+      },
+      {
         "kind": "stop",
         "road_id": "road_east",
         "district_id": "d_loop",
@@ -29772,6 +29956,118 @@
           [
             56.46,
             -36.1
+          ]
+        ]
+      },
+      {
+        "kind": "manhole",
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "material": "M_Manhole",
+        "polygon": [
+          [
+            59.201,
+            -2.415
+          ],
+          [
+            58.995,
+            -2.209
+          ],
+          [
+            58.705,
+            -2.209
+          ],
+          [
+            58.499,
+            -2.415
+          ],
+          [
+            58.499,
+            -2.705
+          ],
+          [
+            58.705,
+            -2.911
+          ],
+          [
+            58.995,
+            -2.911
+          ],
+          [
+            59.201,
+            -2.705
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            56.58,
+            -29.8
+          ],
+          [
+            56.58,
+            -28.2
+          ],
+          [
+            55.86,
+            -28.2
+          ],
+          [
+            55.86,
+            -29.8
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            64.14,
+            -29.8
+          ],
+          [
+            64.14,
+            -28.2
+          ],
+          [
+            63.42,
+            -28.2
+          ],
+          [
+            63.42,
+            -29.8
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            56.58,
+            -13.8
+          ],
+          [
+            56.58,
+            -12.2
+          ],
+          [
+            55.86,
+            -12.2
+          ],
+          [
+            55.86,
+            -13.8
           ]
         ]
       },
@@ -29964,6 +30260,190 @@
           [
             49.6,
             39.66
+          ]
+        ]
+      },
+      {
+        "kind": "manhole",
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "material": "M_Manhole",
+        "polygon": [
+          [
+            3.991,
+            43.995
+          ],
+          [
+            3.785,
+            44.201
+          ],
+          [
+            3.495,
+            44.201
+          ],
+          [
+            3.289,
+            43.995
+          ],
+          [
+            3.289,
+            43.705
+          ],
+          [
+            3.495,
+            43.499
+          ],
+          [
+            3.785,
+            43.499
+          ],
+          [
+            3.991,
+            43.705
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            43.3,
+            39.69
+          ],
+          [
+            41.7,
+            39.69
+          ],
+          [
+            41.7,
+            38.97
+          ],
+          [
+            43.3,
+            38.97
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            43.3,
+            51.03
+          ],
+          [
+            41.7,
+            51.03
+          ],
+          [
+            41.7,
+            50.31
+          ],
+          [
+            43.3,
+            50.31
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            27.3,
+            39.69
+          ],
+          [
+            25.7,
+            39.69
+          ],
+          [
+            25.7,
+            38.97
+          ],
+          [
+            27.3,
+            38.97
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            -20.7,
+            39.69
+          ],
+          [
+            -22.3,
+            39.69
+          ],
+          [
+            -22.3,
+            38.97
+          ],
+          [
+            -20.7,
+            38.97
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            -20.7,
+            51.03
+          ],
+          [
+            -22.3,
+            51.03
+          ],
+          [
+            -22.3,
+            50.31
+          ],
+          [
+            -20.7,
+            50.31
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            -36.7,
+            51.03
+          ],
+          [
+            -38.3,
+            51.03
+          ],
+          [
+            -38.3,
+            50.31
+          ],
+          [
+            -36.7,
+            50.31
           ]
         ]
       },
@@ -30468,6 +30948,142 @@
           [
             -54.36,
             33.1
+          ]
+        ]
+      },
+      {
+        "kind": "manhole",
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "material": "M_Manhole",
+        "polygon": [
+          [
+            -58.499,
+            2.465
+          ],
+          [
+            -58.705,
+            2.671
+          ],
+          [
+            -58.995,
+            2.671
+          ],
+          [
+            -59.201,
+            2.465
+          ],
+          [
+            -59.201,
+            2.175
+          ],
+          [
+            -58.995,
+            1.969
+          ],
+          [
+            -58.705,
+            1.969
+          ],
+          [
+            -58.499,
+            2.175
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            -66.33,
+            26.8
+          ],
+          [
+            -66.33,
+            25.2
+          ],
+          [
+            -65.61,
+            25.2
+          ],
+          [
+            -65.61,
+            26.8
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            -66.33,
+            10.8
+          ],
+          [
+            -66.33,
+            9.2
+          ],
+          [
+            -65.61,
+            9.2
+          ],
+          [
+            -65.61,
+            10.8
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            -54.39,
+            -5.2
+          ],
+          [
+            -54.39,
+            -6.8
+          ],
+          [
+            -53.67,
+            -6.8
+          ],
+          [
+            -53.67,
+            -5.2
+          ]
+        ]
+      },
+      {
+        "kind": "puddle",
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "material": "M_Puddle",
+        "polygon": [
+          [
+            -66.33,
+            -21.2
+          ],
+          [
+            -66.33,
+            -22.8
+          ],
+          [
+            -65.61,
+            -22.8
+          ],
+          [
+            -65.61,
+            -21.2
           ]
         ]
       }
@@ -30527,6 +31143,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_0_0",
+        "kind": "grate",
+        "x": -38.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_0_1",
         "kind": "tree",
         "x": -29.5,
@@ -30539,6 +31168,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_0_1",
+        "kind": "grate",
+        "x": -29.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_tree_0_2",
@@ -30555,6 +31197,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_0_2",
+        "kind": "grate",
+        "x": -20.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_0_3",
         "kind": "tree",
         "x": -11.5,
@@ -30567,6 +31222,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_0_3",
+        "kind": "grate",
+        "x": -11.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_tree_0_4",
@@ -30583,6 +31251,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_0_4",
+        "kind": "grate",
+        "x": -2.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_0_5",
         "kind": "tree",
         "x": 6.5,
@@ -30595,6 +31276,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_0_5",
+        "kind": "grate",
+        "x": 6.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_tree_0_6",
@@ -30611,6 +31305,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_0_6",
+        "kind": "grate",
+        "x": 15.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_0_7",
         "kind": "tree",
         "x": 24.5,
@@ -30623,6 +31330,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_0_7",
+        "kind": "grate",
+        "x": 24.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_tree_0_8",
@@ -30639,6 +31359,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_0_8",
+        "kind": "grate",
+        "x": 33.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_0_9",
         "kind": "tree",
         "x": 42.5,
@@ -30651,6 +31384,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_0_9",
+        "kind": "grate",
+        "x": 42.5,
+        "y": -37.61,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_bench_0_0",
@@ -30670,6 +31416,123 @@
         "kind": "bench",
         "x": 17.0,
         "y": -36.46,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_bin_0_0",
+        "kind": "bin",
+        "x": -35.0,
+        "y": -36.06,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_bin_0_1",
+        "kind": "bin",
+        "x": 3.0,
+        "y": -36.06,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_0_0",
+        "kind": "weed",
+        "x": -40.5,
+        "y": -38.38,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_0_1",
+        "kind": "weed",
+        "x": -33.0,
+        "y": -38.38,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_0_3",
+        "kind": "weed",
+        "x": -18.0,
+        "y": -38.38,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_0_6",
+        "kind": "weed",
+        "x": 4.5,
+        "y": -38.38,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_0_8",
+        "kind": "weed",
+        "x": 19.5,
+        "y": -38.38,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_0_9",
+        "kind": "weed",
+        "x": 27.0,
+        "y": -38.38,
+        "yaw": 0.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_0_11",
+        "kind": "weed",
+        "x": 42.0,
+        "y": -38.38,
         "yaw": 0.0,
         "side": 1.0,
         "toward_road": -1.0,
@@ -30732,6 +31595,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_1_0",
+        "kind": "grate",
+        "x": -38.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_1_1",
         "kind": "tree",
         "x": -29.5,
@@ -30744,6 +31620,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_1_1",
+        "kind": "grate",
+        "x": -29.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_tree_1_2",
@@ -30760,6 +31649,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_1_2",
+        "kind": "grate",
+        "x": -20.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_1_3",
         "kind": "tree",
         "x": -11.5,
@@ -30772,6 +31674,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_1_3",
+        "kind": "grate",
+        "x": -11.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_tree_1_4",
@@ -30788,6 +31703,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_1_4",
+        "kind": "grate",
+        "x": -2.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_1_5",
         "kind": "tree",
         "x": 6.5,
@@ -30800,6 +31728,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_1_5",
+        "kind": "grate",
+        "x": 6.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_tree_1_6",
@@ -30816,6 +31757,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_1_6",
+        "kind": "grate",
+        "x": 15.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_1_7",
         "kind": "tree",
         "x": 24.5,
@@ -30828,6 +31782,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_1_7",
+        "kind": "grate",
+        "x": 24.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_tree_1_8",
@@ -30844,6 +31811,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_south_grate_1_8",
+        "kind": "grate",
+        "x": 33.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_tree_1_9",
         "kind": "tree",
         "x": 42.5,
@@ -30856,6 +31836,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_south_grate_1_9",
+        "kind": "grate",
+        "x": 42.5,
+        "y": -52.39,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_south_bench_1_0",
@@ -30884,6 +31877,110 @@
         "locked": false
       },
       {
+        "id": "prop_road_south_bin_1_0",
+        "kind": "bin",
+        "x": -35.0,
+        "y": -53.94,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_bin_1_1",
+        "kind": "bin",
+        "x": 3.0,
+        "y": -53.94,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_1_1",
+        "kind": "weed",
+        "x": -33.0,
+        "y": -51.62,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_1_2",
+        "kind": "weed",
+        "x": -25.5,
+        "y": -51.62,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_1_3",
+        "kind": "weed",
+        "x": -18.0,
+        "y": -51.62,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_1_5",
+        "kind": "weed",
+        "x": -3.0,
+        "y": -51.62,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_1_6",
+        "kind": "weed",
+        "x": 4.5,
+        "y": -51.62,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_weed_1_8",
+        "kind": "weed",
+        "x": 19.5,
+        "y": -51.62,
+        "yaw": 0.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_south_drain_0_11",
         "kind": "drain",
         "x": -50.9,
@@ -30902,6 +31999,19 @@
         "y": -50.9,
         "yaw": 0.0,
         "side": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_sign_11",
+        "kind": "sign",
+        "label": "HOTEL",
+        "x": -46.9,
+        "y": -37.31,
+        "yaw": 0.0,
+        "side": 1,
         "road_id": "road_south",
         "district_id": "d_loop",
         "source": "generated",
@@ -30938,6 +32048,19 @@
         "y": -50.9,
         "yaw": 0.0,
         "side": -1.0,
+        "road_id": "road_south",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_south_sign_109",
+        "kind": "sign",
+        "label": "CAFE",
+        "x": 46.9,
+        "y": -37.31,
+        "yaw": 0.0,
+        "side": 1,
         "road_id": "road_south",
         "district_id": "d_loop",
         "source": "generated",
@@ -30996,6 +32119,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_east_grate_0_0",
+        "kind": "grate",
+        "x": 54.86,
+        "y": -26.5,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_east_tree_0_1",
         "kind": "tree",
         "x": 54.86,
@@ -31008,6 +32144,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_east_grate_0_1",
+        "kind": "grate",
+        "x": 54.86,
+        "y": -17.5,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_east_tree_0_2",
@@ -31024,6 +32173,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_east_grate_0_2",
+        "kind": "grate",
+        "x": 54.86,
+        "y": -8.5,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_east_tree_0_3",
         "kind": "tree",
         "x": 54.86,
@@ -31036,6 +32198,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_east_grate_0_3",
+        "kind": "grate",
+        "x": 54.86,
+        "y": 0.5,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_east_tree_0_4",
@@ -31052,6 +32227,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_east_grate_0_4",
+        "kind": "grate",
+        "x": 54.86,
+        "y": 9.5,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_east_tree_0_5",
         "kind": "tree",
         "x": 54.86,
@@ -31066,6 +32254,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_east_grate_0_5",
+        "kind": "grate",
+        "x": 54.86,
+        "y": 18.5,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_east_tree_0_6",
         "kind": "tree",
         "x": 54.86,
@@ -31078,6 +32279,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_east_grate_0_6",
+        "kind": "grate",
+        "x": 54.86,
+        "y": 27.5,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_east_bench_0_0",
@@ -31097,6 +32311,84 @@
         "kind": "bench",
         "x": 53.71,
         "y": 29.0,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_bin_0_0",
+        "kind": "bin",
+        "x": 53.31,
+        "y": -23.0,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_bin_0_1",
+        "kind": "bin",
+        "x": 53.31,
+        "y": 15.0,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_0_0",
+        "kind": "weed",
+        "x": 55.63,
+        "y": -28.5,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_0_2",
+        "kind": "weed",
+        "x": 55.63,
+        "y": -13.5,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_0_5",
+        "kind": "weed",
+        "x": 55.63,
+        "y": 9.0,
+        "yaw": 90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_0_7",
+        "kind": "weed",
+        "x": 55.63,
+        "y": 24.0,
         "yaw": 90.0,
         "side": 1.0,
         "toward_road": -1.0,
@@ -31146,6 +32438,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_east_grate_1_0",
+        "kind": "grate",
+        "x": 65.14,
+        "y": -26.5,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_east_tree_1_1",
         "kind": "tree",
         "x": 65.14,
@@ -31158,6 +32463,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_east_grate_1_1",
+        "kind": "grate",
+        "x": 65.14,
+        "y": -17.5,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_east_tree_1_2",
@@ -31174,6 +32492,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_east_grate_1_2",
+        "kind": "grate",
+        "x": 65.14,
+        "y": -8.5,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_east_tree_1_3",
         "kind": "tree",
         "x": 65.14,
@@ -31186,6 +32517,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_east_grate_1_3",
+        "kind": "grate",
+        "x": 65.14,
+        "y": 0.5,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_east_tree_1_4",
@@ -31202,6 +32546,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_east_grate_1_4",
+        "kind": "grate",
+        "x": 65.14,
+        "y": 9.5,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_east_tree_1_5",
         "kind": "tree",
         "x": 65.14,
@@ -31216,6 +32573,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_east_grate_1_5",
+        "kind": "grate",
+        "x": 65.14,
+        "y": 18.5,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_east_tree_1_6",
         "kind": "tree",
         "x": 65.14,
@@ -31228,6 +32598,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_east_grate_1_6",
+        "kind": "grate",
+        "x": 65.14,
+        "y": 27.5,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_east_bench_1_0",
@@ -31256,6 +32639,110 @@
         "locked": false
       },
       {
+        "id": "prop_road_east_bin_1_0",
+        "kind": "bin",
+        "x": 66.69,
+        "y": -23.0,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_bin_1_1",
+        "kind": "bin",
+        "x": 66.69,
+        "y": 15.0,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_1_1",
+        "kind": "weed",
+        "x": 64.37,
+        "y": -21.0,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_1_2",
+        "kind": "weed",
+        "x": 64.37,
+        "y": -13.5,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_1_3",
+        "kind": "weed",
+        "x": 64.37,
+        "y": -6.0,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_1_5",
+        "kind": "weed",
+        "x": 64.37,
+        "y": 9.0,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_1_6",
+        "kind": "weed",
+        "x": 64.37,
+        "y": 16.5,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_weed_1_7",
+        "kind": "weed",
+        "x": 64.37,
+        "y": 24.0,
+        "yaw": 90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_east_drain_0_8",
         "kind": "drain",
         "x": 56.35,
@@ -31274,6 +32761,19 @@
         "y": -38.9,
         "yaw": 90.0,
         "side": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_sign_8",
+        "kind": "sign",
+        "label": "DINER",
+        "x": 54.56,
+        "y": -34.9,
+        "yaw": 90.0,
+        "side": 1,
         "road_id": "road_east",
         "district_id": "d_loop",
         "source": "generated",
@@ -31310,6 +32810,19 @@
         "y": 38.9,
         "yaw": 90.0,
         "side": -1.0,
+        "road_id": "road_east",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_east_sign_82",
+        "kind": "sign",
+        "label": "BOOKS",
+        "x": 54.56,
+        "y": 34.9,
+        "yaw": 90.0,
+        "side": 1,
         "road_id": "road_east",
         "district_id": "d_loop",
         "source": "generated",
@@ -31381,6 +32894,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_0_0",
+        "kind": "grate",
+        "x": 39.5,
+        "y": 37.96,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_0_1",
         "kind": "tree",
         "x": 29.5,
@@ -31393,6 +32919,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_north_grate_0_1",
+        "kind": "grate",
+        "x": 29.5,
+        "y": 37.96,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_north_tree_0_2",
@@ -31409,6 +32948,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_0_2",
+        "kind": "grate",
+        "x": 19.5,
+        "y": 37.96,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_0_3",
         "kind": "tree",
         "x": 9.5,
@@ -31421,6 +32973,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_north_grate_0_3",
+        "kind": "grate",
+        "x": 9.5,
+        "y": 37.96,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_north_tree_0_4",
@@ -31437,6 +33002,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_0_4",
+        "kind": "grate",
+        "x": -0.5,
+        "y": 37.96,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_0_5",
         "kind": "tree",
         "x": -10.5,
@@ -31449,6 +33027,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_north_grate_0_5",
+        "kind": "grate",
+        "x": -10.5,
+        "y": 37.96,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_north_tree_0_6",
@@ -31465,6 +33056,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_0_6",
+        "kind": "grate",
+        "x": -20.5,
+        "y": 37.96,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_0_7",
         "kind": "tree",
         "x": -30.5,
@@ -31479,6 +33083,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_0_7",
+        "kind": "grate",
+        "x": -30.5,
+        "y": 37.96,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_0_8",
         "kind": "tree",
         "x": -40.5,
@@ -31491,6 +33108,149 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_north_grate_0_8",
+        "kind": "grate",
+        "x": -40.5,
+        "y": 37.96,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_bin_0_0",
+        "kind": "bin",
+        "x": 36.5,
+        "y": 36.36,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_bin_0_1",
+        "kind": "bin",
+        "x": -1.5,
+        "y": 36.36,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_bin_0_2",
+        "kind": "bin",
+        "x": -39.5,
+        "y": 36.36,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_0_0",
+        "kind": "weed",
+        "x": 42.0,
+        "y": 38.68,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_0_1",
+        "kind": "weed",
+        "x": 34.5,
+        "y": 38.68,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_0_3",
+        "kind": "weed",
+        "x": 19.5,
+        "y": 38.68,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_0_6",
+        "kind": "weed",
+        "x": -3.0,
+        "y": 38.68,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_0_8",
+        "kind": "weed",
+        "x": -18.0,
+        "y": 38.68,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_0_9",
+        "kind": "weed",
+        "x": -25.5,
+        "y": 38.68,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_0_11",
+        "kind": "weed",
+        "x": -40.5,
+        "y": 38.68,
+        "yaw": 180.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_north_lamp_1_0",
@@ -31546,6 +33306,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_1_0",
+        "kind": "grate",
+        "x": 39.5,
+        "y": 52.04,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_1_1",
         "kind": "tree",
         "x": 29.5,
@@ -31558,6 +33331,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_north_grate_1_1",
+        "kind": "grate",
+        "x": 29.5,
+        "y": 52.04,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_north_tree_1_2",
@@ -31574,6 +33360,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_1_2",
+        "kind": "grate",
+        "x": 19.5,
+        "y": 52.04,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_1_3",
         "kind": "tree",
         "x": 9.5,
@@ -31586,6 +33385,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_north_grate_1_3",
+        "kind": "grate",
+        "x": 9.5,
+        "y": 52.04,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_north_tree_1_4",
@@ -31602,6 +33414,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_1_4",
+        "kind": "grate",
+        "x": -0.5,
+        "y": 52.04,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_1_5",
         "kind": "tree",
         "x": -10.5,
@@ -31614,6 +33439,19 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_north_grate_1_5",
+        "kind": "grate",
+        "x": -10.5,
+        "y": 52.04,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_north_tree_1_6",
@@ -31630,6 +33468,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_1_6",
+        "kind": "grate",
+        "x": -20.5,
+        "y": 52.04,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_1_7",
         "kind": "tree",
         "x": -30.5,
@@ -31644,6 +33495,19 @@
         "species": "linden"
       },
       {
+        "id": "prop_road_north_grate_1_7",
+        "kind": "grate",
+        "x": -30.5,
+        "y": 52.04,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_north_tree_1_8",
         "kind": "tree",
         "x": -40.5,
@@ -31656,6 +33520,149 @@
         "source": "generated",
         "locked": false,
         "species": "linden"
+      },
+      {
+        "id": "prop_road_north_grate_1_8",
+        "kind": "grate",
+        "x": -40.5,
+        "y": 52.04,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_bin_1_0",
+        "kind": "bin",
+        "x": 36.5,
+        "y": 53.64,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_bin_1_1",
+        "kind": "bin",
+        "x": -1.5,
+        "y": 53.64,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_bin_1_2",
+        "kind": "bin",
+        "x": -39.5,
+        "y": 53.64,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_1_0",
+        "kind": "weed",
+        "x": 42.0,
+        "y": 51.32,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_1_1",
+        "kind": "weed",
+        "x": 34.5,
+        "y": 51.32,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_1_3",
+        "kind": "weed",
+        "x": 19.5,
+        "y": 51.32,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_1_4",
+        "kind": "weed",
+        "x": 12.0,
+        "y": 51.32,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_1_5",
+        "kind": "weed",
+        "x": 4.5,
+        "y": 51.32,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_1_10",
+        "kind": "weed",
+        "x": -33.0,
+        "y": 51.32,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_weed_1_11",
+        "kind": "weed",
+        "x": -40.5,
+        "y": 51.32,
+        "yaw": 180.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_north_drain_0_9",
@@ -31676,6 +33683,19 @@
         "y": 50.6,
         "yaw": 180.0,
         "side": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_sign_10",
+        "kind": "sign",
+        "label": "DINER",
+        "x": 48.4,
+        "y": 37.61,
+        "yaw": 180.0,
+        "side": 1,
         "road_id": "road_north",
         "district_id": "d_loop",
         "source": "generated",
@@ -31712,6 +33732,19 @@
         "y": 50.6,
         "yaw": 180.0,
         "side": -1.0,
+        "road_id": "road_north",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_north_sign_110",
+        "kind": "sign",
+        "label": "MARKET",
+        "x": -48.4,
+        "y": 37.61,
+        "yaw": 180.0,
+        "side": 1,
         "road_id": "road_north",
         "district_id": "d_loop",
         "source": "generated",
@@ -31770,6 +33803,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_west_grate_0_0",
+        "kind": "grate",
+        "x": -52.61,
+        "y": 23.5,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_west_tree_0_1",
         "kind": "tree",
         "x": -52.61,
@@ -31782,6 +33828,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_west_grate_0_1",
+        "kind": "grate",
+        "x": -52.61,
+        "y": 14.5,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_west_tree_0_2",
@@ -31798,6 +33857,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_west_grate_0_2",
+        "kind": "grate",
+        "x": -52.61,
+        "y": 5.5,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_west_tree_0_3",
         "kind": "tree",
         "x": -52.61,
@@ -31810,6 +33882,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_west_grate_0_3",
+        "kind": "grate",
+        "x": -52.61,
+        "y": -3.5,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_west_tree_0_4",
@@ -31826,6 +33911,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_west_grate_0_4",
+        "kind": "grate",
+        "x": -52.61,
+        "y": -12.5,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_west_tree_0_5",
         "kind": "tree",
         "x": -52.61,
@@ -31840,10 +33938,101 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_west_grate_0_5",
+        "kind": "grate",
+        "x": -52.61,
+        "y": -21.5,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_west_bench_0_0",
         "kind": "bench",
         "x": -51.46,
         "y": 16.0,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_bin_0_0",
+        "kind": "bin",
+        "x": -51.06,
+        "y": 20.0,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_bin_0_1",
+        "kind": "bin",
+        "x": -51.06,
+        "y": -18.0,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_weed_0_0",
+        "kind": "weed",
+        "x": -53.38,
+        "y": 25.5,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_weed_0_1",
+        "kind": "weed",
+        "x": -53.38,
+        "y": 18.0,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_weed_0_3",
+        "kind": "weed",
+        "x": -53.38,
+        "y": 3.0,
+        "yaw": -90.0,
+        "side": 1.0,
+        "toward_road": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_weed_0_6",
+        "kind": "weed",
+        "x": -53.38,
+        "y": -19.5,
         "yaw": -90.0,
         "side": 1.0,
         "toward_road": -1.0,
@@ -31893,6 +34082,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_west_grate_1_0",
+        "kind": "grate",
+        "x": -67.39,
+        "y": 23.5,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_west_tree_1_1",
         "kind": "tree",
         "x": -67.39,
@@ -31905,6 +34107,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_west_grate_1_1",
+        "kind": "grate",
+        "x": -67.39,
+        "y": 14.5,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_west_tree_1_2",
@@ -31921,6 +34136,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_west_grate_1_2",
+        "kind": "grate",
+        "x": -67.39,
+        "y": 5.5,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_west_tree_1_3",
         "kind": "tree",
         "x": -67.39,
@@ -31933,6 +34161,19 @@
         "source": "generated",
         "locked": false,
         "species": "elm"
+      },
+      {
+        "id": "prop_road_west_grate_1_3",
+        "kind": "grate",
+        "x": -67.39,
+        "y": -3.5,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
       },
       {
         "id": "prop_road_west_tree_1_4",
@@ -31949,6 +34190,19 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_west_grate_1_4",
+        "kind": "grate",
+        "x": -67.39,
+        "y": -12.5,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_west_tree_1_5",
         "kind": "tree",
         "x": -67.39,
@@ -31963,10 +34217,88 @@
         "species": "elm"
       },
       {
+        "id": "prop_road_west_grate_1_5",
+        "kind": "grate",
+        "x": -67.39,
+        "y": -21.5,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
         "id": "prop_road_west_bench_1_0",
         "kind": "bench",
         "x": -68.54,
         "y": 16.0,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_bin_1_0",
+        "kind": "bin",
+        "x": -68.94,
+        "y": 20.0,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_bin_1_1",
+        "kind": "bin",
+        "x": -68.94,
+        "y": -18.0,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_weed_1_0",
+        "kind": "weed",
+        "x": -66.62,
+        "y": 25.5,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_weed_1_4",
+        "kind": "weed",
+        "x": -66.62,
+        "y": -4.5,
+        "yaw": -90.0,
+        "side": -1.0,
+        "toward_road": 1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_weed_1_7",
+        "kind": "weed",
+        "x": -66.62,
+        "y": -27.0,
         "yaw": -90.0,
         "side": -1.0,
         "toward_road": 1.0,
@@ -31994,6 +34326,19 @@
         "y": 35.9,
         "yaw": -90.0,
         "side": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_sign_11",
+        "kind": "sign",
+        "label": "CAFE",
+        "x": -52.31,
+        "y": 31.9,
+        "yaw": -90.0,
+        "side": 1,
         "road_id": "road_west",
         "district_id": "d_loop",
         "source": "generated",
@@ -32030,6 +34375,19 @@
         "y": -35.9,
         "yaw": -90.0,
         "side": -1.0,
+        "road_id": "road_west",
+        "district_id": "d_loop",
+        "source": "generated",
+        "locked": false
+      },
+      {
+        "id": "prop_road_west_sign_79",
+        "kind": "sign",
+        "label": "CAFE",
+        "x": -52.31,
+        "y": -31.9,
+        "yaw": -90.0,
+        "side": 1,
         "road_id": "road_west",
         "district_id": "d_loop",
         "source": "generated",

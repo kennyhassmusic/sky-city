@@ -11,6 +11,19 @@ import profiles
 
 
 class ProfilesTest(unittest.TestCase):
+    def test_real_street_scale(self):
+        # A 15 cm curb, a walk a person can pass on, and a door that is a door.
+        self.assertAlmostEqual(profiles.CURB_RISE, 0.15, places=2)
+        self.assertGreaterEqual(profiles.WALK_OTHER, 1.5)
+        self.assertLessEqual(profiles.WALK_OTHER, 3.0)
+        self.assertGreaterEqual(profiles.SIDEWALK_CORE, 3.0)
+        self.assertAlmostEqual(profiles.DOOR_W, 0.91, places=2)
+        self.assertAlmostEqual(profiles.DOOR_H, 2.10, places=2)
+        self.assertGreater(profiles.STORE_HEAD, 2.4)
+        self.assertLess(profiles.STORE_HEAD, 3.6)
+        ramp = profiles.curb_ramp_spec()
+        self.assertAlmostEqual(ramp["run_m"], profiles.CURB_RISE * 12.0, delta=0.02)
+
     def test_bevel_climbs_outward(self):
         prof = profiles.street_profile("major")
         self.assertTrue(profiles.face_is_bevel(prof))

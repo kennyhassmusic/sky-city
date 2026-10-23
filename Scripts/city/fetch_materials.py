@@ -32,6 +32,22 @@ AMBIENT = [
     ("PavingStones092", "https://ambientcg.com/a/PavingStones092"),
     ("Grass004", "https://ambientcg.com/a/Grass004"),
 ]
+# Overlays blended on top of the wall and ground scans. Color and roughness only.
+OVERLAYS = [
+    ("cracked_concrete_wall", "https://polyhaven.com/a/cracked_concrete_wall"),
+    ("sparse_grass", "https://polyhaven.com/a/sparse_grass"),
+]
+# One clear day sky and one dusk sky. 1k HDR, not the 4k or 8k files.
+SKIES = [
+    ("kloofendal_43d_clear_puresky", "https://polyhaven.com/a/kloofendal_43d_clear_puresky"),
+    ("kiara_9_dusk", "https://polyhaven.com/a/kiara_9_dusk"),
+]
+# Decals: rain streaks, broken asphalt, a cover. Color plus the opacity mask.
+DECALS = [
+    ("Leaking006", "https://ambientcg.com/a/Leaking006"),
+    ("AsphaltDamage001", "https://ambientcg.com/a/AsphaltDamage001"),
+    ("ManholeCover009", "https://ambientcg.com/a/ManholeCover009"),
+]
 
 
 def main():
@@ -43,6 +59,12 @@ def main():
         record[ident] = fetch_polyhaven(ident, page, dest / ident)
     for ident, page in AMBIENT:
         record[ident] = fetch_ambient(ident, page, dest / ident)
+    for ident, page in OVERLAYS:
+        record[ident] = fetch_overlay(ident, page, dest / ident)
+    for ident, page in SKIES:
+        record[ident] = fetch_sky(ident, page, dest / "skies")
+    for ident, page in DECALS:
+        record[ident] = fetch_decal(ident, page, dest / ident)
     (dest / "materials.json").write_text(json.dumps(record, indent=2) + "\n")
     print("materials", len(record), "->", dest)
 
@@ -90,6 +112,70 @@ def fetch_ambient(ident, page, folder):
         raise RuntimeError("%s zip did not contain Color, NormalGL and Roughness (%s)" % (ident, sorted(maps)))
     return {"author": "Lennart Demes", "url": page, "licence": "CC0", "date": DATE,
             "maps": maps, "uv_m": [2.0, 2.0], "source": "ambientCG",
+            "licence_url": "https://docs.ambientcg.com/license/"}
+
+
+def fetch_overlay(ident, page, folder):
+    """A CC0 scan blended over the walls or the grass, not a slot of its own."""
+    folder.mkdir(parents=True, exist_ok=True)
+    info = _get_json("https://api.polyhaven.com/files/" + ident)
+    meta = _get_json("https://api.polyhaven.com/info/" + ident)
+    dims = meta.get("dimensions") or [2000, 2000]
+    uv = [round(float(dims[0]) / 1000.0, 3), round(float(dims[1]) / 1000.0, 3)]
+    maps = {}
+    for api_name, slot in (("Diffuse", "color"), ("Rough", "rough")):
+        url = _poly_url(info, api_name)
+        name = "%s_%s_1k.jpg" % (ident, slot)
+        path = folder / name
+        if not path.is_file() or path.stat().st_size < 1000:
+            _download(url, path)
+        maps[slot] = "%s/%s" % (ident, name)
+    return {"author": _authors(meta.get("authors") or {}), "url": page, "licence": "CC0",
+            "date": "2026-10-23", "maps": maps, "uv_m": uv, "source": "Poly Haven", "role": "overlay"}
+
+
+def fetch_sky(ident, page, folder):
+    folder.mkdir(parents=True, exist_ok=True)
+    info = _get_json("https://api.polyhaven.com/files/" + ident)
+    meta = _get_json("https://api.polyhaven.com/info/" + ident)
+    url = info["hdri"]["1k"]["hdr"]["url"]
+    name = "%s_1k.hdr" % ident
+    path = folder / name
+    if not path.is_file() or path.stat().st_size < 1000:
+        _download(url, path)
+    return {"author": _authors(meta.get("authors") or {}), "url": page, "licence": "CC0",
+            "date": "2026-10-23", "maps": {"hdr": "skies/%s" % name}, "source": "Poly Haven",
+            "role": "sky"}
+
+
+def fetch_decal(ident, page, folder):
+    """Color and opacity from an ambientCG decal zip. The zip itself is not kept."""
+    folder.mkdir(parents=True, exist_ok=True)
+    blob = _download_bytes("https://ambientcg.com/get?file=%s_1K-JPG.zip" % ident)
+    wanted = {"color": "color", "opacity": "opacity", "roughness": "rough"}
+    maps = {}
+    with zipfile.ZipFile(BytesIO(blob)) as zf:
+        for info in zf.infolist():
+            lower = info.filename.lower()
+            if "preview" in lower or not lower.endswith((".jpg", ".jpeg", ".png")):
+                continue
+            slot = None
+            for token, name in wanted.items():
+                if token in lower:
+                    slot = name
+            if slot is None or slot in maps:
+                continue
+            ext = ".png" if lower.endswith(".png") else ".jpg"
+            name = "%s_%s_1k%s" % (ident, slot, ext)
+            path = folder / name
+            if not path.is_file() or path.stat().st_size < 1000:
+                path.write_bytes(zf.read(info))
+                print("got", path.name, path.stat().st_size)
+            maps[slot] = "%s/%s" % (ident, name)
+    if "color" not in maps:
+        raise RuntimeError("%s zip had no color image (%s)" % (ident, sorted(maps)))
+    return {"author": "Lennart Demes", "url": page, "licence": "CC0", "date": "2026-10-23",
+            "maps": maps, "uv_m": [1.0, 1.0], "source": "ambientCG", "role": "decal",
             "licence_url": "https://docs.ambientcg.com/license/"}
 
 

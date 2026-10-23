@@ -94,6 +94,9 @@ def _import_textures(unreal, assets, library, record):
             src = os.path.join(ART, "materials", rel)
             if not os.path.isfile(src):
                 continue
+            # HDR skies stay in the Blender preview. The editor import binds the JPG scans.
+            if not src.lower().endswith((".jpg", ".jpeg", ".png")):
+                continue
             dest = TEX_DIR + "/" + ident
             task = unreal.AssetImportTask()
             task.set_editor_property("filename", src)
@@ -163,6 +166,26 @@ def _build_materials(unreal, assets, library, editing, record, textures):
     library.save_loaded_asset(glass)
     made[glass_name] = glass
     made["M_GlassLit"] = glass
+    # Dress slots are flat colours. The Blender preview blends the CC0 grime; these
+    # are the fallbacks so a slot is not left empty after import.
+    flats = {
+        "M_Blind": (0.8, 0.78, 0.72),
+        "M_CurtainRed": (0.45, 0.16, 0.14),
+        "M_AwningNavy": (0.12, 0.16, 0.28),
+        "M_Puddle": (0.04, 0.04, 0.045),
+        "M_Manhole": (0.25, 0.25, 0.26),
+        "M_SignCafe": (0.36, 0.16, 0.14),
+    }
+    for name, rgb in flats.items():
+        if library.does_asset_exist(MAT_DIR + "/" + name):
+            library.delete_asset(MAT_DIR + "/" + name)
+        mat = assets.create_asset(name, MAT_DIR, unreal.Material, unreal.MaterialFactoryNew())
+        const = _expr(unreal, editing, mat, unreal.MaterialExpressionConstant3Vector, -200, 0)
+        const.set_editor_property("constant", unreal.LinearColor(rgb[0], rgb[1], rgb[2], 1))
+        editing.connect_material_property(const, "", unreal.MaterialProperty.MP_BASE_COLOR)
+        editing.recompile_material(mat)
+        library.save_loaded_asset(mat)
+        made[name] = mat
     return made
 
 
