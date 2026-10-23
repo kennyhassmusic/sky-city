@@ -43,7 +43,16 @@ def evaluate(lot, style_name, sky, seed, styles=None):
     style = styles[style_name]
     tags = dict(lot.get("tags") or {})
     target = target_height(lot, sky, seed, style, tags)
-    footprint = _coverage_footprint(lot.get("polygon") or [], float(sky.get("coverage") or 1), lot.get("hero"))
+    polygon = [tuple(point) for point in (lot.get("polygon") or [])]
+    # A tier's yard is an inset of the lot. Untyped lots skip this, so their
+    # footprint stays the coverage inset alone.
+    if sky.get("tier") and len(polygon) >= 3:
+        yard = max(float(sky.get("side_setback_m") or 0), float(sky.get("front_setback_m") or 0) * 0.5)
+        if yard > 0.05:
+            shrunk = geom.offset_polygon(polygon, yard)
+            if abs(geom.poly_area(shrunk)) > 18.0:
+                polygon = shrunk
+    footprint = _coverage_footprint(polygon, float(sky.get("coverage") or 1), lot.get("hero"))
     floors, z_top, roof_h = stack_floors(footprint, target, style, tags, sky, lot.get("hero"))
     roof = roof_for(floors[-1]["polygon"] if floors else footprint, z_top, roof_h, style, tags, seed, lot["id"],
                     sky.get("roofs") if sky.get("roofs") else None)
@@ -82,6 +91,8 @@ def evaluate(lot, style_name, sky, seed, styles=None):
     # Wear is recorded only for a typed district, so untyped specs stay byte-identical.
     if sky.get("district_type") and "wear" in sky:
         spec["wear"] = round(float(sky["wear"]), 3)
+    if sky.get("boarded"):
+        spec["boarded"] = True
     return spec
 
 

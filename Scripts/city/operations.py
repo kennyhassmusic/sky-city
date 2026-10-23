@@ -1,7 +1,8 @@
 """Operations the Map Designer and the AI link both call.
 
-add_district, set_skyline, set_district_type, set_mix, assign_districts, draw_road,
-split_block, set_building, lock, unlock, regenerate, screenshot, texture_pack.
+add_district, set_skyline, set_district_type, set_mix, assign_districts, set_tier,
+set_tier_mix, assign_tiers, draw_road, split_block, set_building, lock, unlock,
+regenerate, screenshot, texture_pack.
 Nothing here knows about Unreal or Blender. A later plugin maps these names onto
 buttons and onto the local MCP server. Each change returns (model, touched ids)
 and leaves the caller's model alone. screenshot returns a request and does not
@@ -127,13 +128,93 @@ def assign_districts(model, region=None, mix=None):
     return model, touched
 
 
-def texture_pack(type_name, root=None):
+def set_tier(model, element_id, tier):
+    """Pin one lot, block or district to an income tier. Hand-set, so assign_tiers leaves it.
+
+    The element has to sit in a houses or apartments district. Distressed adds
+    boarded windows or a vacant lot, and an encampment zone with no people.
+    """
+    if tier not in district_types.TIER_NAMES:
+        raise ValueError("unknown income tier %s" % tier)
+    model = copy.deepcopy(model)
+    key, item = model_mod.find(model, element_id)
+    if item is None or key not in ("lots", "blocks", "districts"):
+        raise KeyError("no lot, block or district %s" % element_id)
+    kind = _tier_kind(model, item)
+    if kind not in district_types.TIERED_TYPES:
+        raise ValueError("%s is not in a houses or apartments district" % element_id)
+    sky = skyline.load()
+    types = district_types.table(sky)
+    item["tier_source"] = "hand"
+    district_types._apply_tier_fields(item, types, kind, tier)
+    if tier == "distressed":
+        district_types._mark_distress([item], types, kind)
+    else:
+        district_types._clear_distress(item)
+    _audit(model, "set_tier", [element_id], {"tier": tier})
+    return model, [element_id]
+
+
+def set_tier_mix(model, district_id, weights):
+    """Store an income mix on one houses or apartments district and band its lots.
+
+    The keys are high, mid, low and distressed. Shares must be positive. This
+    mix is hand-set, so a later type assignment does not replace it.
+    """
+    model = copy.deepcopy(model)
+    district = _must(model, district_id, "districts")
+    kind = district.get("district_type")
+    if kind not in district_types.TIERED_TYPES:
+        raise ValueError("%s is not a houses or apartments district" % district_id)
+    clean = _tier_weights(weights)
+    district["tier_mix"] = clean
+    district["tier_mix_source"] = "hand"
+    sky = skyline.load()
+    types = district_types.table(sky)
+    targets = _tier_targets(model, district, kind)
+    touched = district_types.assign_tiers(
+        targets, clean, int(model.get("seed") or 1), district, types, kind)
+    ids = [district_id] + [item for item in touched if item and item != district_id]
+    _audit(model, "set_tier_mix", ids, {"tiers": list(district_types.TIER_NAMES)})
+    return model, ids
+
+
+def assign_tiers(model, district_id=None):
+    """Band houses and apartments lots from their tier mix. Hand tiers stay put."""
+    model = copy.deepcopy(model)
+    sky = skyline.load()
+    types = district_types.table(sky)
+    touched = []
+    seed = int(model.get("seed") or 1)
+    for district in model.get("districts") or []:
+        if district_id and district.get("id") != district_id:
+            continue
+        groups = {}
+        for lot in model.get("lots") or []:
+            if lot.get("district_id") != district.get("id"):
+                continue
+            kind = lot.get("district_type") or district.get("district_type")
+            if kind in district_types.TIERED_TYPES:
+                groups.setdefault(kind, []).append(lot)
+        if not groups and district.get("district_type") in district_types.TIERED_TYPES:
+            groups[district["district_type"]] = _tier_targets(model, district, district["district_type"])
+        for kind, group in groups.items():
+            if not group:
+                continue
+            weights = district_types._tier_weights(district, types, kind)
+            touched.extend(district_types.assign_tiers(group, weights, seed, district, types, kind))
+    _audit(model, "assign_tiers", touched, {"district": district_id or "all"})
+    return model, touched
+
+
+def texture_pack(type_name, root=None, tier=None):
     """The texture pack for a district type, or the CC0 slots when the pack is absent.
 
     This does not change a city model. `root` is the folder that contains
-    `packs/<district>/manifest.json`; the default is Scripts/city.
+    `packs/<district>/manifest.json`. Pass `tier` to read
+    `packs/<district>/<tier>/manifest.json` first. The default root is Scripts/city.
     """
-    return district_types.load_pack(type_name, root=root)
+    return district_types.load_pack(type_name, root=root, tier=tier)
 
 
 def draw_road(model, polyline, cls="minor", lanes=2, oneway=False, core=False,
@@ -288,6 +369,45 @@ def _audit(model, op, ids, detail):
 
 def _hid(prefix, *parts):
     return "%s_%08x" % (prefix, zlib.crc32(repr(parts).encode()) & 0xffffffff)
+
+
+def _tier_kind(model, item):
+    kind = item.get("district_type")
+    if kind in district_types.TIERED_TYPES:
+        return kind
+    district_id = item.get("district_id")
+    if not district_id:
+        return kind
+    for district in model.get("districts") or []:
+        if district.get("id") == district_id:
+            return district.get("district_type")
+    return kind
+
+
+def _tier_targets(model, district, kind):
+    lots = [lot for lot in model.get("lots") or []
+            if lot.get("district_id") == district.get("id")
+            and (lot.get("district_type") in (None, kind))]
+    if lots:
+        return lots
+    return [block for block in model.get("blocks") or []
+            if block.get("district_id") == district.get("id")
+            and (block.get("district_type") in (None, kind))]
+
+
+def _tier_weights(weights):
+    clean = {}
+    for name, weight in (weights or {}).items():
+        if name not in district_types.TIER_NAMES:
+            raise ValueError("unknown income tier %s" % name)
+        amount = float(weight)
+        if amount <= 0:
+            raise ValueError("tier %s needs a positive share" % name)
+        clean[name] = amount
+    missing = [name for name in district_types.TIER_NAMES if name not in clean]
+    if missing:
+        raise ValueError("tier mix needs %s" % ", ".join(missing))
+    return clean
 
 
 def _mix_weights(weights):

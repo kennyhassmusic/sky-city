@@ -125,6 +125,8 @@ def _scalar(s):
         if not inner:
             return []
         return [_scalar(p.strip()) for p in _split_top(inner)]
+    if s.startswith("{") and s.endswith("}"):
+        return _flow_map(s)
     low = s.lower()
     if low in ("true", "yes"):
         return True
@@ -142,6 +144,21 @@ def _scalar(s):
         return float(s)
     except ValueError:
         return s
+
+
+def _flow_map(s):
+    """One-line map, as in `houses: {high: 20, mid: 50, low: 25, distressed: 5}`."""
+    inner = s[1:-1].strip()
+    if not inner:
+        return {}
+    data = {}
+    for part in _split_top(inner):
+        part = part.strip()
+        if not part:
+            continue
+        key, rest = _split_key(part)
+        data[key] = _scalar(rest) if rest else None
+    return data
 
 
 def _split_top(s):

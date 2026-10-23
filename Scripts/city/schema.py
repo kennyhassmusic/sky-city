@@ -52,6 +52,11 @@ def validate(model):
         _element(lot, ids, "lot")
         if len(lot.get("polygon") or []) < 3:
             raise ValueError("lot %s needs a polygon" % lot["id"])
+        tier = lot.get("tier")
+        if tier:
+            import districts as district_types
+            if tier not in district_types.TIER_NAMES:
+                raise ValueError("lot %s has income tier %s" % (lot["id"], tier))
     for building in model["buildings"]:
         _element(building, ids, "building")
         if building.get("role") == "landmark":
@@ -131,6 +136,7 @@ def write_schema_file():
                     "furniture": {"type": "array", "items": {"type": "string"}},
                     "wear": {"type": "number"},
                     "mix": {"type": "object"},
+                    "tier_mix": {"type": "object"},
                 },
             },
             "road": {
@@ -150,7 +156,11 @@ def write_schema_file():
             },
             "lot": {
                 "allOf": [{"$ref": "#/$defs/element"}],
-                "properties": {"polygon": {"$ref": "#/$defs/ring"}, "block_id": {"type": "string"}},
+                "properties": {
+                    "polygon": {"$ref": "#/$defs/ring"},
+                    "block_id": {"type": "string"},
+                    "tier": {"enum": ["high", "mid", "low", "distressed"]},
+                },
             },
             "building": {
                 "allOf": [{"$ref": "#/$defs/element"}],

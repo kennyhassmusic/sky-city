@@ -87,21 +87,26 @@ def for_lot(district, lot, sky):
     """Parameters for one lot. A nested type on the lot replaces the district recipe.
 
     The district skyline still applies, and a pinned style still applies, so a
-    sub-mix changes what is built without throwing away an artist override.
+    sub-mix changes what is built without throwing away an artist override. An
+    income tier then overlays materials, wear, coverage, setbacks and height.
+    A base_height_m the artist already set on the district still wins. A lot
+    with no tier leaves the parameter dict unchanged.
     """
     subtype = (lot or {}).get("district_type")
     if not subtype or subtype == (district or {}).get("district_type"):
-        return for_district(district or {}, sky)
-    shadow = {
-        "id": (district or {}).get("id"),
-        "character": (district or {}).get("character"),
-        "district_type": subtype,
-        "skyline": copy.deepcopy((district or {}).get("skyline") or {}),
-        "style_pinned": bool((district or {}).get("style_pinned")),
-    }
-    if shadow["style_pinned"]:
-        shadow["style"] = (district or {}).get("style")
-    return for_district(shadow, sky)
+        params = for_district(district or {}, sky)
+    else:
+        shadow = {
+            "id": (district or {}).get("id"),
+            "character": (district or {}).get("character"),
+            "district_type": subtype,
+            "skyline": copy.deepcopy((district or {}).get("skyline") or {}),
+            "style_pinned": bool((district or {}).get("style_pinned")),
+        }
+        if shadow["style_pinned"]:
+            shadow["style"] = (district or {}).get("style")
+        params = for_district(shadow, sky)
+    return _overlay_tier(params, district, lot)
 
 
 def _apply_type(params, spec, type_name):
@@ -113,6 +118,39 @@ def _apply_type(params, spec, type_name):
     params["vegetation"] = list(spec.get("vegetation") or [])
     params["wear"] = float(spec.get("wear") or 0)
     params["pack"] = spec.get("pack") or type_name
+
+
+def _overlay_tier(params, district, lot):
+    tier = (lot or {}).get("tier")
+    if not tier:
+        return params
+    if lot.get("materials"):
+        params["materials"] = list(lot["materials"])
+    if lot.get("wear") is not None:
+        params["wear"] = float(lot["wear"])
+    if lot.get("coverage") is not None:
+        params["coverage"] = float(lot["coverage"])
+    if lot.get("front_setback_m") is not None:
+        params["front_setback_m"] = float(lot["front_setback_m"])
+    if lot.get("side_setback_m") is not None:
+        params["side_setback_m"] = float(lot["side_setback_m"])
+    if lot.get("furniture"):
+        params["furniture"] = list(lot["furniture"])
+    for key in ("upkeep", "tree_density", "parked_per_100m"):
+        if lot.get(key) is not None:
+            params[key] = float(lot[key])
+    for key in ("landscaping", "fence", "lighting", "sidewalk"):
+        if lot.get(key) is not None:
+            params[key] = lot[key]
+    if lot.get("gate") is not None:
+        params["gate"] = bool(lot.get("gate"))
+    params["tier"] = tier
+    if lot.get("boarded"):
+        params["boarded"] = True
+    district_sky = (district or {}).get("skyline") or {}
+    if "base_height_m" not in district_sky and lot.get("height_m"):
+        _apply_height(params, lot["height_m"])
+    return params
 
 
 def _apply_height(params, height):

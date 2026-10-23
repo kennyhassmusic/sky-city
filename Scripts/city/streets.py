@@ -57,6 +57,9 @@ def build(model):
                                       "block_id": block["id"]})
             _alley_bollards(model, block, props)
 
+    if any(lot.get("tier") for lot in model.get("lots") or []):
+        _tier_dress(model, surfaces, props)
+
     return {
         "version": 1,
         "sections": {k: _public_section(v) for k, v in sections.items()},
@@ -510,13 +513,203 @@ def _typed_furniture(model, district_id):
     """The furniture list of a typed district, or None when the district has no type.
 
     None means the full default kit. An empty list means the type asked for none.
+    A houses or apartments district scatters the union of its income-tier lists,
+    and the tier dress afterwards keeps only what each lot's tier asked for.
     """
     if not district_id:
         return None
     for district in model.get("districts") or []:
-        if district.get("id") == district_id and district.get("district_type"):
-            return list(district.get("furniture") or [])
+        if district.get("id") != district_id or not district.get("district_type"):
+            continue
+        names = list(district.get("furniture") or [])
+        if district.get("district_type") in ("houses", "apartments_condos"):
+            found = set(names)
+            for lot in model.get("lots") or []:
+                if lot.get("district_id") == district_id and lot.get("tier"):
+                    found.update(lot.get("furniture") or [])
+            return list(found)
+        return names
     return None
+
+
+# Kinds a tier list is allowed to thin. Lamps stay (their lighting changes).
+# Signs and drains stay: they mark the crossing, not the income of the block.
+_TIER_FURNITURE = ("bench", "bin", "grate")
+
+
+def _tier_dress(model, surfaces, props):
+    """Lot tiers drive trees, parked cars, fences, lamps, sidewalks and camps.
+
+    Runs only when some lot already has a tier, so an untyped city is unchanged.
+    Lighting and people are extra prop fields. An encampment is a prop zone
+    with people 0: the generator does not place a person.
+    """
+    lots = [lot for lot in model.get("lots") or [] if lot.get("tier") and lot.get("polygon")]
+    if not lots:
+        return
+    seed = int(model.get("seed") or 1)
+    tiered = set()
+    for district in model.get("districts") or []:
+        if district.get("district_type") in ("houses", "apartments_condos"):
+            tiered.add(district.get("id"))
+    for lot in lots:
+        if lot.get("district_id"):
+            tiered.add(lot.get("district_id"))
+
+    def nearest(x, y, district_id):
+        best = None
+        best_d = 1e18
+        for lot in lots:
+            if district_id and lot.get("district_id") not in (None, district_id):
+                continue
+            centre = geom.centroid(lot["polygon"])
+            distance = (centre[0] - x) ** 2 + (centre[1] - y) ** 2
+            if distance < best_d:
+                best_d = distance
+                best = lot
+        return best
+
+    drop = set()
+    for prop in list(props):
+        if prop.get("district_id") not in tiered:
+            continue
+        lot = nearest(prop.get("x") or 0, prop.get("y") or 0, prop.get("district_id"))
+        if prop.get("kind") == "lamp" and lot and lot.get("lighting"):
+            prop["lighting"] = lot["lighting"]
+        if prop.get("kind") == "tree" and lot:
+            density = float(lot.get("tree_density") or 1)
+            if density < 1.0 and geom.rnd(seed, prop.get("id"), "tree_keep") > density:
+                drop.add(prop.get("id"))
+                drop.add((prop.get("id") or "").replace("_tree_", "_grate_", 1))
+        allowed = set((lot or {}).get("furniture") or [])
+        if lot and allowed and prop.get("kind") in _TIER_FURNITURE and prop.get("kind") not in allowed:
+            drop.add(prop.get("id"))
+    if drop:
+        props[:] = [prop for prop in props if prop.get("id") not in drop]
+
+    for walk in surfaces.get("sidewalk") or []:
+        if walk.get("district_id") not in tiered:
+            continue
+        polygon = walk.get("polygon") or []
+        if len(polygon) < 3:
+            continue
+        centre = geom.centroid(polygon)
+        lot = nearest(centre[0], centre[1], walk.get("district_id"))
+        if lot and lot.get("sidewalk"):
+            walk["condition"] = lot["sidewalk"]
+
+    _parked_vehicles(model, props, nearest, tiered)
+    _lot_fences(lots, props)
+    _encampment_props(lots, props)
+
+
+def _parked_vehicles(model, props, nearest, tiered):
+    index = 0
+    for road in model.get("roads") or []:
+        district_id = road.get("district_id")
+        if district_id not in tiered:
+            continue
+        pts = [(float(point[0]), float(point[1])) for point in road.get("polyline") or []]
+        if len(pts) < 2:
+            continue
+        length = sum(geom.dist(a, b) for a, b in zip(pts, pts[1:]))
+        sec = profiles.preview_section(road.get("cls") or "minor", road.get("lanes") or 2,
+                                        bool(road.get("oneway")), bool(road.get("core")))
+        back = profiles.curb_back_from_flow(road.get("cls") or "minor")
+        for side in (1.0, -1.0):
+            lateral = side * (sec["width"] / 2.0 + back + 0.6)
+            station = 8.0
+            guard = 0
+            while station < length - 6.0 and guard < 400:
+                guard += 1
+                point, tangent = point_on_road(road, station, lateral)
+                lot = nearest(point[0], point[1], district_id)
+                per = float(lot.get("parked_per_100m") or 0) if lot else 0
+                step = 100.0 / per if per > 0 else 18.0
+                centre = geom.centroid(lot["polygon"]) if lot and lot.get("polygon") else None
+                if per > 0 and centre is not None and geom.dist(point, centre) <= 45.0:
+                    yaw = math.degrees(math.atan2(tangent[1], tangent[0]))
+                    props.append({
+                        "id": "prop_%s_parked_%d" % (road["id"], index),
+                        "kind": "parked",
+                        "x": round(point[0], 2),
+                        "y": round(point[1], 2),
+                        "yaw": round(yaw, 1),
+                        "side": side,
+                        "road_id": road["id"],
+                        "district_id": district_id,
+                        "source": "generated",
+                        "locked": False,
+                    })
+                    index += 1
+                station += step
+
+
+def _lot_fences(lots, props):
+    for lot in lots:
+        fence = lot.get("fence") or "open"
+        if fence == "open":
+            continue
+        edge = _front_edge(lot)
+        if edge is None:
+            continue
+        mid = geom.lerp(edge[0], edge[1], 0.5)
+        tangent = geom.sub(edge[1], edge[0])
+        props.append({
+            "id": "prop_%s_fence" % lot["id"],
+            "kind": "fence",
+            "style": fence,
+            "gate": bool(lot.get("gate")),
+            "x": round(mid[0], 2),
+            "y": round(mid[1], 2),
+            "yaw": round(math.degrees(math.atan2(tangent[1], tangent[0])), 1),
+            "district_id": lot.get("district_id"),
+            "source": "generated",
+            "locked": False,
+        })
+
+
+def _encampment_props(lots, props):
+    for lot in lots:
+        zone = lot.get("encampment_zone")
+        if not zone:
+            continue
+        polygon = zone.get("polygon") or lot.get("polygon") or []
+        if len(polygon) < 3:
+            continue
+        centre = geom.centroid(polygon)
+        props.append({
+            "id": "prop_%s_encampment" % lot["id"],
+            "kind": "encampment",
+            "people": 0,
+            "x": round(centre[0], 2),
+            "y": round(centre[1], 2),
+            "polygon": [list(point) for point in polygon],
+            "district_id": lot.get("district_id"),
+            "source": "generated",
+            "locked": False,
+        })
+
+
+def _front_edge(lot):
+    polygon = lot.get("polygon") or []
+    if len(polygon) < 2:
+        return None
+    normal = (lot.get("front_normals") or [[0.0, -1.0]])[0]
+    facing = (float(normal[0]), float(normal[1]))
+    best = None
+    best_dot = -1e9
+    count = len(polygon)
+    for index in range(count):
+        start = (float(polygon[index][0]), float(polygon[index][1]))
+        end = (float(polygon[(index + 1) % count][0]), float(polygon[(index + 1) % count][1]))
+        edge = geom.sub(end, start)
+        outward = geom.unit((edge[1], -edge[0]))
+        score = geom.dot(outward, facing)
+        if score > best_dot:
+            best_dot = score
+            best = (start, end)
+    return best
 
 
 def _trees(model, district_id):

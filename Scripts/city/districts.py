@@ -1,4 +1,4 @@
-"""District types, mix ratios, and texture-pack lookup.
+"""District types, mix ratios, income tiers, and texture-pack lookup.
 
 A type is a recipe: grammar styles, a height range, roofs, material slots, plants,
 wear, and street furniture. skyline.yaml holds one mix for the whole city and
@@ -10,11 +10,18 @@ A type, or a district, may carry a nested mix. The blocks inside that district
 are painted from the nested mix, so one district can hold a sub-mix. Lots inside
 a block use the block's type, or the block's own nested mix when it has one.
 
+Houses and apartments carry four income tiers (high, mid, low, distressed). A
+tier_mix such as {high: 20, mid: 50, low: 25, distressed: 5} is a share, not a
+district-type mix. assign_tiers lays those shares out along a seeded axis so a
+neighbourhood changes one step at a time. The same seed rebuilds the same bands.
+
 Texture packs are not in the repo yet. load_pack reads
-Scripts/city/packs/<district>/manifest.json and, when that file is missing or
-unreadable, returns the type's CC0 material slots instead.
+Scripts/city/packs/<district>/<tier>/manifest.json when a tier is named, then
+packs/<district>/manifest.json, and, when those files are missing or unreadable,
+returns the CC0 material slots instead.
 """
 import json
+import math
 from pathlib import Path
 
 import geom
@@ -32,6 +39,18 @@ TYPE_NAMES = (
     "industrial_commercial",
     "utilities",
 )
+
+# Houses and apartments are painted in income bands. Order is rich to poor,
+# one step at a time, so a gradient never jumps from high to distressed.
+TIER_NAMES = ("high", "mid", "low", "distressed")
+TIERED_TYPES = ("houses", "apartments_condos")
+TIER_KEYS = (
+    "lot_width_m", "lot_depth_m", "front_setback_m", "side_setback_m",
+    "coverage", "height_m", "materials", "wear", "upkeep", "landscaping",
+    "tree_density", "fence", "gate", "parked_per_100m", "furniture",
+    "lighting", "sidewalk",
+)
+DISTRESS_KEYS = ("boarded", "vacant_share", "informal", "encampment")
 
 # Pairs that should not share a boundary. Checked in both directions.
 AVOID = (
@@ -81,6 +100,8 @@ def table(sky):
         for child in (spec.get("mix") or {}):
             if child not in TYPE_NAMES:
                 raise ValueError("district type %s mix names unknown type %s" % (name, child))
+        if name in TIERED_TYPES:
+            _check_tiers(name, spec)
     return raw
 
 
@@ -181,6 +202,12 @@ def apply_type(district, type_name, types, source="generated", keep_style_pin=Tr
     district["trees"] = list(plants)
     district["wear"] = float(spec.get("wear") or 0)
     district["furniture"] = list(spec.get("furniture") or [])
+    if type_name in TIERED_TYPES and spec.get("tier_mix") and district.get("tier_mix_source") != "hand":
+        district["tier_mix"] = {name: float(spec["tier_mix"][name]) for name in TIER_NAMES}
+        district["tier_mix_source"] = "type"
+    elif type_name not in TIERED_TYPES and district.get("tier_mix_source") != "hand":
+        district.pop("tier_mix", None)
+        district.pop("tier_mix_source", None)
     if spec.get("mix") and district.get("mix_source") != "hand":
         district["mix"] = dict(spec["mix"])
         district["mix_source"] = "type"
@@ -262,16 +289,19 @@ def stamp_children(model, district, types, seed, include_lots=True):
         return touched
     if mix and not blocks and lots:
         touched.extend(assign_children(lots, mix, seed, district.get("id"), types, outside=outside))
-        return touched
-    for block in blocks:
-        block_lots = [lot for lot in lots if lot.get("block_id") == block.get("id")]
-        if not block_lots:
-            continue
-        if block.get("mix"):
-            touched.extend(assign_children(
-                block_lots, block["mix"], seed, block.get("id"), types, outside=outside))
-        elif block.get("district_type"):
-            touched.extend(_copy_type(block_lots, block["district_type"]))
+    else:
+        for block in blocks:
+            block_lots = [lot for lot in lots if lot.get("block_id") == block.get("id")]
+            if not block_lots:
+                continue
+            if block.get("mix"):
+                touched.extend(assign_children(
+                    block_lots, block["mix"], seed, block.get("id"), types, outside=outside))
+            elif block.get("district_type"):
+                touched.extend(_copy_type(block_lots, block["district_type"]))
+    if district.get("district_type") in TIERED_TYPES or any(
+            (lot.get("district_type") in TIERED_TYPES) or lot.get("tier") for lot in lots):
+        touched.extend(finish_tiers(lots, district, types, seed))
     return touched
 
 
@@ -294,44 +324,425 @@ def outside_context(model, district):
     return found
 
 
-def load_pack(type_name, root=None, sky=None):
-    """Read packs/<district>/manifest.json, or the CC0 slots when it is missing.
+def load_pack(type_name, root=None, sky=None, tier=None):
+    """Read a texture pack, or the CC0 slots when the pack is missing.
 
     `root` is a directory that contains `packs/`. The default is Scripts/city,
-    next to this file. A missing file, an empty file, or invalid JSON all use
-    the CC0 fallback. An unknown type is an error.
+    next to this file. With a tier, the lookup is packs/<district>/<tier>/manifest.json,
+    then packs/<district>/manifest.json, then CC0. A missing file, an empty file,
+    or invalid JSON falls through to the next step. An unknown type or tier is
+    an error. CC0 materials follow the tier recipe when a tier is named.
     """
     if type_name not in TYPE_NAMES:
         raise ValueError("unknown district type %s" % type_name)
+    if tier is not None and tier not in TIER_NAMES:
+        raise ValueError("unknown income tier %s" % tier)
+    if tier is not None and type_name not in TIERED_TYPES:
+        raise ValueError("%s has no income tiers" % type_name)
     sky = sky or skyline.load()
     types = table(sky)
-    slots = list((types.get(type_name) or {}).get("materials") or [])
-    path = _manifest_path(type_name, root)
-    if path.is_file():
-        try:
-            data = json.loads(path.read_text())
-        except (OSError, ValueError):
-            data = None
-        if isinstance(data, dict):
-            return {
-                "source": "pack",
-                "district": type_name,
-                "materials": list(data.get("materials") or slots),
-                "textures": dict(data.get("textures") or {}),
-                "path": str(path),
-            }
+    spec = types.get(type_name) or {}
+    if tier:
+        slots = list((_recipe(types, type_name, tier).get("materials")) or spec.get("materials") or [])
+    else:
+        slots = list(spec.get("materials") or [])
+    for path in _manifest_candidates(type_name, root, tier):
+        data = _read_manifest(path)
+        if data is None:
+            continue
+        return {
+            "source": "pack",
+            "district": type_name,
+            "tier": tier,
+            "materials": list(data.get("materials") or slots),
+            "textures": dict(data.get("textures") or {}),
+            "path": str(path),
+        }
     return {
         "source": "cc0",
         "district": type_name,
+        "tier": tier,
         "materials": slots,
         "textures": {slot: CC0_TEXTURES.get(slot, slot) for slot in slots},
         "path": None,
     }
 
 
-def _manifest_path(type_name, root):
+def _manifest_path(type_name, root, tier=None):
     base = Path(root) if root else Path(__file__).resolve().parent
-    return base / "packs" / type_name / "manifest.json"
+    folder = base / "packs" / type_name
+    if tier:
+        folder = folder / tier
+    return folder / "manifest.json"
+
+
+def _manifest_candidates(type_name, root, tier):
+    paths = []
+    if tier:
+        paths.append(_manifest_path(type_name, root, tier))
+    paths.append(_manifest_path(type_name, root, None))
+    return paths
+
+
+def _read_manifest(path):
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return None
+    if isinstance(data, dict):
+        return data
+    return None
+
+
+def _check_tiers(name, spec):
+    mix = spec.get("tier_mix") or {}
+    if set(mix) != set(TIER_NAMES):
+        raise ValueError("district type %s tier_mix needs high, mid, low and distressed" % name)
+    for tier, weight in mix.items():
+        if float(weight) <= 0:
+            raise ValueError("district type %s tier %s needs a positive share" % (name, tier))
+    tiers = spec.get("income_tiers") or {}
+    for tier in TIER_NAMES:
+        recipe = tiers.get(tier) or {}
+        for key in TIER_KEYS:
+            if key not in recipe:
+                raise ValueError("district type %s tier %s needs %s" % (name, tier, key))
+        wear = float(recipe.get("wear") or 0)
+        if wear < 0 or wear > 1:
+            raise ValueError("district type %s tier %s wear must be from 0 to 1" % (name, tier))
+        if recipe.get("fence") in (None, ""):
+            raise ValueError("district type %s tier %s needs a fence" % (name, tier))
+    distress = tiers.get("distressed") or {}
+    for key in DISTRESS_KEYS:
+        if key not in distress:
+            raise ValueError("district type %s distressed tier needs %s" % (name, key))
+
+
+def _recipe(types, type_name, tier):
+    spec = (types or {}).get(type_name) or {}
+    recipe = ((spec.get("income_tiers") or {}).get(tier) or {})
+    if not recipe:
+        raise ValueError("district type %s has no %s tier" % (type_name, tier))
+    return recipe
+
+
+def _tier_weights(district, types, kind):
+    """A hand or type mix on this district, otherwise the recipe in skyline.yaml."""
+    if district and district.get("district_type") == kind and district.get("tier_mix"):
+        return {name: float(district["tier_mix"].get(name) or 0) for name in TIER_NAMES}
+    spec = (types or {}).get(kind) or {}
+    mix = spec.get("tier_mix") or {}
+    return {name: float(mix.get(name) or 0) for name in TIER_NAMES}
+
+
+def _axis(district, seed):
+    raw = (district or {}).get("tier_axis")
+    if raw and len(raw) >= 2:
+        vector = (float(raw[0]), float(raw[1]))
+        if geom.hypot(vector) > 1e-8:
+            return geom.unit(vector)
+    angle = geom.rnd(seed, (district or {}).get("id") or "", "tier_axis") * 2.0 * math.pi
+    return (math.cos(angle), math.sin(angle))
+
+
+def _gradient(district, items, seed):
+    """Unit axis plus the low and high projection of the district, else the items."""
+    axis = _axis(district, seed)
+    points = []
+    ring = (district or {}).get("polygon") or []
+    if len(ring) >= 3:
+        points = [(float(point[0]), float(point[1])) for point in ring]
+    else:
+        for item in items or []:
+            polygon = item.get("polygon") or []
+            if len(polygon) >= 3:
+                points.append(geom.centroid(polygon))
+    if not points:
+        return axis, 0.0, 1.0
+    projections = [geom.dot(point, axis) for point in points]
+    low, high = min(projections), max(projections)
+    if high - low < 1e-6:
+        high = low + 1.0
+    return axis, low, high
+
+
+def _project_t(point, axis, low, high):
+    return max(0.0, min(1.0, (geom.dot(point, axis) - low) / (high - low or 1.0)))
+
+
+def _tier_from_t(t, weights):
+    """t = 0 is the rich end. Shares run high, mid, low, distressed."""
+    total = sum(float(weights.get(name) or 0) for name in TIER_NAMES) or 1.0
+    cursor = max(0.0, min(0.999999, float(t)))
+    acc = 0.0
+    for name in TIER_NAMES:
+        acc += float(weights.get(name) or 0) / total
+        if cursor < acc:
+            return name
+    return TIER_NAMES[-1]
+
+
+def _tier_counts(weights, count):
+    """Largest remainder. The counts sum to `count` and follow TIER_NAMES."""
+    count = int(count)
+    shares = {name: 0 for name in TIER_NAMES}
+    if count <= 0:
+        return shares
+    total = sum(float(weights.get(name) or 0) for name in TIER_NAMES)
+    if total <= 0:
+        raise ValueError("tier mix has no positive weights")
+    raw = []
+    for index, name in enumerate(TIER_NAMES):
+        exact = count * float(weights.get(name) or 0) / total
+        whole = int(math.floor(exact))
+        raw.append([name, whole, exact - whole, index])
+    used = sum(item[1] for item in raw)
+    raw.sort(key=lambda item: (-item[2], item[3]))
+    for item in raw:
+        if used >= count:
+            break
+        item[1] += 1
+        used += 1
+    for item in raw:
+        shares[item[0]] = item[1]
+    return shares
+
+
+def _item_point(item):
+    polygon = item.get("polygon") or []
+    if len(polygon) >= 3:
+        return geom.centroid(polygon)
+    return (0.0, 0.0)
+
+
+def assign_tiers(items, weights, seed, district, types, type_name):
+    """Lay income tiers along the district axis. Hand and locked tiers stay put.
+
+    Open items are ordered by projection plus a small seeded nudge, then sliced
+    so the counts match the mix. Low score is the rich end. A later call with
+    the same seed rebuilds the same bands.
+    """
+    seed = int(seed or 1)
+    if type_name not in TIERED_TYPES:
+        return []
+    weights = _tier_weights({"district_type": type_name, "tier_mix": weights}, types, type_name)
+    open_items = [item for item in (items or []) if not _tier_held(item)]
+    if not open_items:
+        return []
+    axis, low, high = _gradient(district, open_items, seed)
+    span = high - low
+    scored = []
+    for item in open_items:
+        centre = _item_point(item)
+        projection = geom.dot(centre, axis)
+        nudge = (geom.rnd(seed, item.get("id") or "", "tier_noise") - 0.5) * 2.0 * span * 0.03
+        score = projection + nudge
+        scored.append((score, item.get("id") or "", item))
+    scored.sort(key=lambda row: (row[0], row[1]))
+    counts = _tier_counts(weights, len(scored))
+    touched = []
+    cursor = 0
+    for name in TIER_NAMES:
+        band = scored[cursor:cursor + counts[name]]
+        cursor += counts[name]
+        for score, _ident, item in band:
+            item["tier_score"] = round(float(score), 4)
+            item["tier_source"] = "generated"
+            _apply_tier_fields(item, types, type_name, name)
+            touched.append(item.get("id"))
+    distressed = [item for _score, _ident, item in scored if item.get("tier") == "distressed"]
+    _mark_distress(distressed, types, type_name)
+    return touched
+
+
+def finish_tiers(items, district, types, seed):
+    """Fill tier fields on lots a frontage plan already labelled, and tier the rest.
+
+    Planned lots keep their tier, so a second pass does not reshuffle a street
+    whose lot widths already follow the gradient. Hand tiers are left alone.
+    """
+    if not items:
+        return []
+    parent_kind = (district or {}).get("district_type")
+    groups = {}
+    for item in items:
+        kind = item.get("district_type") or parent_kind
+        if kind not in TIERED_TYPES:
+            continue
+        groups.setdefault(kind, []).append(item)
+    touched = []
+    for kind, group in groups.items():
+        holder = district if (district or {}).get("district_type") == kind else {
+            "id": (district or {}).get("id"),
+            "polygon": (district or {}).get("polygon"),
+            "tier_axis": (district or {}).get("tier_axis"),
+            "district_type": kind,
+        }
+        weights = _tier_weights(holder, types, kind)
+        pending = [item for item in group if not item.get("tier") and not _tier_held(item)]
+        if pending:
+            touched.extend(assign_tiers(pending, weights, seed, holder, types, kind))
+        for item in group:
+            if item.get("tier") and item.get("front_setback_m") is None and not _tier_held(item):
+                _apply_tier_fields(item, types, kind, item["tier"])
+                if not item.get("tier_source"):
+                    item["tier_source"] = "generated"
+                if item.get("id"):
+                    touched.append(item["id"])
+        distressed = [item for item in group
+                      if item.get("tier") == "distressed" and not _tier_held(item)]
+        _mark_distress(distressed, types, kind)
+    return touched
+
+
+def plan_block(polygon, district, seed, types=None):
+    """Frontage widths for one rectangular block, or None when the block is not tiered.
+
+    The walk follows the long side. Each piece takes the mean lot width of the
+    tier under its centre, with no extra jitter, so a street aligned with the
+    income axis changes width in contiguous bands. Both lot rows share the cuts.
+    """
+    if not district or district.get("district_type") not in TIERED_TYPES:
+        return None
+    frame = geom.rectangle_frame(polygon)
+    if frame is None:
+        return None
+    if types is None:
+        types = table(skyline.load())
+    kind = district["district_type"]
+    weights = _tier_weights(district, types, kind)
+    axis, low, high = _gradient(district, [], int(seed or 1))
+    width = float(frame["width"])
+    depth = float(frame["depth"])
+    pieces = []
+    cursor = 0.0
+    guard = 0
+    while cursor < width - 0.5 and guard < 500:
+        guard += 1
+        probe = min(width - 0.01, cursor + 0.5)
+        world = geom.to_world(probe, depth / 2.0, frame)
+        tier = _tier_from_t(_project_t(world, axis, low, high), weights)
+        recipe = _recipe(types, kind, tier)
+        lot_width = recipe.get("lot_width_m") or [12.0, 12.0]
+        piece = max(4.0, (float(lot_width[0]) + float(lot_width[1])) / 2.0)
+        if width - (cursor + piece) < 4.0:
+            piece = width - cursor
+        elif cursor + piece > width:
+            piece = width - cursor
+        centre = geom.to_world(min(width - 0.01, cursor + piece * 0.5), depth / 2.0, frame)
+        pieces.append({
+            "width": piece,
+            "tier": tier,
+            "tier_score": round(geom.dot(centre, axis), 4),
+        })
+        cursor += piece
+    if not pieces:
+        return None
+    total = sum(piece["width"] for piece in pieces)
+    if abs(total - width) > 1e-6 and total > 0:
+        scale = width / total
+        for piece in pieces:
+            piece["width"] *= scale
+        pieces[-1]["width"] += width - sum(piece["width"] for piece in pieces)
+    return pieces
+
+
+def _apply_tier_fields(item, types, type_name, tier):
+    recipe = _recipe(types, type_name, tier)
+    item["tier"] = tier
+    width = recipe.get("lot_width_m") or [0, 0]
+    depth = recipe.get("lot_depth_m") or [0, 0]
+    height = recipe.get("height_m") or [0, 0]
+    item["lot_width_m"] = [float(width[0]), float(width[1])]
+    item["lot_depth_m"] = [float(depth[0]), float(depth[1])]
+    item["height_m"] = [float(height[0]), float(height[1])]
+    item["target_frontage_m"] = (float(width[0]) + float(width[1])) / 2.0
+    item["front_setback_m"] = float(recipe.get("front_setback_m") or 0)
+    item["side_setback_m"] = float(recipe.get("side_setback_m") or 0)
+    item["coverage"] = float(recipe.get("coverage") or 0)
+    item["wear"] = float(recipe.get("wear") or 0)
+    item["upkeep"] = float(recipe.get("upkeep") or 0)
+    item["landscaping"] = recipe.get("landscaping")
+    item["tree_density"] = float(recipe.get("tree_density") or 0)
+    item["fence"] = recipe.get("fence") or "open"
+    item["gate"] = bool(recipe.get("gate"))
+    item["parked_per_100m"] = float(recipe.get("parked_per_100m") or 0)
+    item["lighting"] = recipe.get("lighting")
+    item["sidewalk"] = recipe.get("sidewalk")
+    item["materials"] = list(recipe.get("materials") or [])
+    item["furniture"] = list(recipe.get("furniture") or [])
+    if tier != "distressed":
+        _clear_distress(item)
+    return item
+
+
+def _clear_distress(item):
+    item["vacant"] = False
+    item["boarded"] = False
+    item["informal"] = False
+    item["encampment"] = False
+    item.pop("encampment_zone", None)
+
+
+def _mark_distress(items, types, type_name):
+    """Boarded houses, vacant lots, a shack, and an encampment zone. No people.
+
+    The poorest lots (highest tier score) are vacated first. A vacant lot can
+    hold an informal shack; an occupied distressed lot keeps its boarded house.
+    """
+    chosen = [item for item in (items or []) if item.get("tier") == "distressed"]
+    if not chosen:
+        return
+    recipe = _recipe(types, type_name, "distressed")
+    chosen.sort(key=lambda item: (-float(item.get("tier_score") or 0), item.get("id") or ""))
+    count = len(chosen)
+    vacant_count = int(round(count * float(recipe.get("vacant_share") or 0)))
+    camp_count = int(round(count * 0.5)) if recipe.get("encampment") else 0
+    if recipe.get("encampment") and camp_count < 1:
+        camp_count = 1
+    for index, item in enumerate(chosen):
+        vacant = index < vacant_count
+        item["vacant"] = vacant
+        item["informal"] = bool(vacant and recipe.get("informal"))
+        item["boarded"] = bool(recipe.get("boarded") and not vacant)
+        if index < camp_count:
+            item["encampment"] = True
+            item["encampment_zone"] = {
+                "kind": "encampment",
+                "people": 0,
+                "polygon": _encampment_polygon(item.get("polygon") or []),
+            }
+        else:
+            item["encampment"] = False
+            item.pop("encampment_zone", None)
+
+
+def _encampment_polygon(polygon):
+    if len(polygon) < 3:
+        return []
+    inset = geom.offset_polygon(polygon, 2.0)
+    if abs(geom.poly_area(inset)) < 8.0:
+        inset = geom.scale_about(polygon, 0.55)
+    return [list(geom.r2(point)) for point in inset]
+
+
+def _tier_held(item):
+    return bool(item.get("locked")) or item.get("tier_source") == "hand"
+
+
+def _strip_tier(item):
+    if _tier_held(item):
+        return
+    for key in (
+        "tier", "tier_source", "tier_score", "target_frontage_m",
+        "lot_width_m", "lot_depth_m", "height_m", "front_setback_m", "side_setback_m",
+        "coverage", "wear", "upkeep", "landscaping", "tree_density", "fence", "gate",
+        "parked_per_100m", "lighting", "sidewalk", "materials", "furniture",
+        "boarded", "vacant", "informal", "encampment", "encampment_zone",
+    ):
+        item.pop(key, None)
 
 
 def _held(item):
@@ -355,6 +766,8 @@ def _copy_type(items, type_name):
             continue
         item["district_type"] = type_name
         item["type_source"] = "generated"
+        if item.get("tier_source") != "hand":
+            _strip_tier(item)
         if item.get("id"):
             touched.append(item["id"])
     return touched

@@ -175,6 +175,9 @@
         },
         "mix": {
           "type": "object"
+        },
+        "tier_mix": {
+          "type": "object"
         }
       }
     },
@@ -237,6 +240,14 @@
         },
         "block_id": {
           "type": "string"
+        },
+        "tier": {
+          "enum": [
+            "high",
+            "mid",
+            "low",
+            "distressed"
+          ]
         }
       }
     },

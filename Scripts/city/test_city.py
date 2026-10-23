@@ -659,6 +659,277 @@ class DistrictTypeTest(unittest.TestCase):
             schema.validate(city)
 
 
+class IncomeTierTest(unittest.TestCase):
+    def test_flow_map_and_tier_recipes(self):
+        parsed = yaml_lite.loads("houses: {high: 20, mid: 50, low: 25, distressed: 5}")
+        self.assertEqual(parsed["houses"], {"high": 20, "mid": 50, "low": 25, "distressed": 5})
+        sky = skyline.load()
+        table = district_types.table(sky)
+        for name in district_types.TIERED_TYPES:
+            spec = table[name]
+            self.assertEqual(spec["tier_mix"], {"high": 20, "mid": 50, "low": 25, "distressed": 5})
+            for tier in district_types.TIER_NAMES:
+                recipe = spec["income_tiers"][tier]
+                for key in district_types.TIER_KEYS:
+                    self.assertIn(key, recipe, "%s %s" % (name, tier))
+                self.assertIsNotNone(recipe["fence"])
+            distress = spec["income_tiers"]["distressed"]
+            for key in district_types.DISTRESS_KEYS:
+                self.assertIn(key, distress)
+            self.assertTrue(distress["boarded"])
+            self.assertTrue(distress["informal"])
+            self.assertTrue(distress["encampment"])
+        self.assertEqual(table["houses"]["income_tiers"]["high"]["fence"], "iron")
+        self.assertEqual(table["houses"]["income_tiers"]["distressed"]["fence"], "open")
+        self.assertEqual(table["houses"]["income_tiers"]["high"]["wear"], 0.05)
+        self.assertEqual(table["houses"]["income_tiers"]["distressed"]["wear"], 0.9)
+
+    def test_assign_tiers_clusters_along_the_axis(self):
+        city = _tier_lots(20)
+        first, _ = ops.assign_tiers(city, "d0")
+        second, _ = ops.assign_tiers(city, "d0")
+        lots = first["lots"]
+        again = second["lots"]
+        self.assertEqual([lot["tier"] for lot in lots], [lot["tier"] for lot in again])
+        counts = {}
+        for lot in lots:
+            counts[lot["tier"]] = counts.get(lot["tier"], 0) + 1
+        self.assertEqual(counts, {"high": 4, "mid": 10, "low": 5, "distressed": 1})
+        order = {"high": 0, "mid": 1, "low": 2, "distressed": 3}
+        ranked = sorted(lots, key=lambda lot: (lot["tier_score"], lot["id"]))
+        indexes = [order[lot["tier"]] for lot in ranked]
+        for left, right in zip(indexes, indexes[1:]):
+            self.assertGreaterEqual(right - left, 0)
+            self.assertLessEqual(right - left, 1)
+        high = next(lot for lot in lots if lot["tier"] == "high")
+        poor = next(lot for lot in lots if lot["tier"] == "distressed")
+        self.assertGreater(high["target_frontage_m"], poor["target_frontage_m"])
+        self.assertAlmostEqual(high["wear"], 0.05)
+        self.assertAlmostEqual(poor["wear"], 0.9)
+        self.assertEqual(high["front_setback_m"], 8)
+        self.assertEqual(high["sidewalk"], "good")
+        self.assertEqual(high["lighting"], "high")
+        self.assertEqual(high["fence"], "iron")
+        self.assertTrue(high["gate"])
+        self.assertEqual(poor["lighting"], "out")
+        self.assertEqual(poor["sidewalk"], "broken")
+        self.assertEqual(poor["fence"], "open")
+        self.assertFalse(poor["gate"])
+        self.assertEqual(poor["encampment_zone"]["people"], 0)
+        self.assertTrue(poor["boarded"])
+        self.assertFalse(poor["vacant"])
+
+    def test_distressed_lots_board_or_sit_empty(self):
+        city = _tier_lots(20)
+        city, _ = ops.set_tier_mix(city, "d0", {"high": 5, "mid": 5, "low": 10, "distressed": 80})
+        distressed = [lot for lot in city["lots"] if lot["tier"] == "distressed"]
+        self.assertGreaterEqual(len(distressed), 4)
+        self.assertTrue(any(lot["vacant"] and lot["informal"] for lot in distressed))
+        self.assertTrue(any(lot["boarded"] and not lot["vacant"] for lot in distressed))
+        for lot in distressed:
+            if lot["vacant"]:
+                self.assertFalse(lot["boarded"])
+            zone = lot.get("encampment_zone")
+            if zone:
+                self.assertEqual(zone["people"], 0)
+                self.assertEqual(zone["kind"], "encampment")
+        self.assertTrue(any(lot.get("encampment_zone") for lot in distressed))
+
+    def test_hand_tier_survives_and_unknown_tiers_fail(self):
+        city = _tier_lots(20)
+        city, _ = ops.assign_tiers(city, "d0")
+        city, _ = ops.set_tier(city, "lot_00", "distressed")
+        pinned = next(lot for lot in city["lots"] if lot["id"] == "lot_00")
+        self.assertEqual(pinned["tier_source"], "hand")
+        self.assertEqual(pinned["encampment_zone"]["people"], 0)
+        again, _ = ops.assign_tiers(city, "d0")
+        kept = next(lot for lot in again["lots"] if lot["id"] == "lot_00")
+        self.assertEqual(kept["tier"], "distressed")
+        self.assertEqual(kept["tier_source"], "hand")
+        with self.assertRaises(ValueError):
+            ops.set_tier(city, "lot_00", "palace")
+        tech = _district_row(1)
+        tech, _ = ops.set_district_type(tech, "d0", "tech")
+        with self.assertRaises(ValueError):
+            ops.set_tier(tech, "d0", "mid")
+        bad = _district_row(1)
+        bad["lots"] = [{
+            "id": "lot_bad", "source": "generated", "locked": False,
+            "district_id": "d0",
+            "polygon": [[0, 0], [8, 0], [8, 8], [0, 8]],
+            "tier": "palace",
+        }]
+        with self.assertRaises(ValueError):
+            schema.validate(bad)
+
+    def test_plan_and_regenerate_change_lot_and_building_size(self):
+        sky = skyline.load()
+        types = district_types.table(sky)
+        district = {
+            "id": "d0", "district_type": "houses", "tier_axis": [1, 0],
+            "polygon": [[0, 0], [180, 0], [180, 40], [0, 40]],
+            "tier_mix": dict(types["houses"]["tier_mix"]),
+        }
+        block = [[0, 0], [180, 0], [180, 40], [0, 40]]
+        pieces = district_types.plan_block(block, district, 1408, types)
+        high = [piece["width"] for piece in pieces if piece["tier"] == "high"]
+        low = [piece["width"] for piece in pieces if piece["tier"] == "low"]
+        self.assertTrue(high and low)
+        self.assertGreater(sum(high) / len(high), sum(low) / len(low))
+        made = lots_mod.subdivide(block, seed=1408, frontages=pieces)
+        self.assertTrue(all(lot.get("tier") for lot in made["lots"]))
+
+        city = _houses_neighbourhood()
+        city, _ = ops.regenerate(city, "blocks")
+        lots = {lot["id"]: lot for lot in city["lots"]}
+        high_lots = [lot for lot in city["lots"] if lot["tier"] == "high"]
+        low_lots = [lot for lot in city["lots"] if lot["tier"] == "low"]
+        self.assertTrue(high_lots and low_lots)
+        self.assertGreater(_mean_span(high_lots), _mean_span(low_lots))
+        high_buildings = [b for b in city["buildings"] if lots[b["lot_id"]]["tier"] == "high"]
+        low_buildings = [b for b in city["buildings"] if lots[b["lot_id"]]["tier"] == "low"]
+        self.assertTrue(high_buildings and low_buildings)
+        self.assertTrue(all(abs(b["wear"] - 0.05) < 1e-6 for b in high_buildings))
+        self.assertTrue(all(abs(b["wear"] - 0.62) < 1e-6 for b in low_buildings))
+        self.assertLess(_mean_cover(high_buildings, lots), _mean_cover(low_buildings, lots))
+
+        heavy = _houses_neighbourhood({"high": 15, "mid": 15, "low": 15, "distressed": 55})
+        heavy, _ = ops.regenerate(heavy, "blocks")
+        by_lot = {lot["id"]: lot for lot in heavy["lots"]}
+        distressed_lots = [lot for lot in heavy["lots"] if lot["tier"] == "distressed"]
+        self.assertTrue(distressed_lots)
+        boarded = [b for b in heavy["buildings"] if b.get("boarded")]
+        sheds = [b for b in heavy["buildings"] if b.get("informal")]
+        self.assertTrue(boarded or sheds)
+        for shed in sheds:
+            self.assertTrue(by_lot[shed["lot_id"]]["vacant"])
+            self.assertFalse(shed.get("boarded"))
+        for building in boarded:
+            self.assertFalse(by_lot[building["lot_id"]]["vacant"])
+
+    def test_tier_streetscape_and_pack_paths(self):
+        rich = _houses_neighbourhood({"high": 97, "mid": 1, "low": 1, "distressed": 1})
+        poor = _houses_neighbourhood({"high": 1, "mid": 1, "low": 1, "distressed": 97})
+        rich, _ = ops.regenerate(rich, "blocks")
+        poor, _ = ops.regenerate(poor, "blocks")
+        rich_props = rich["streetscape"]["props"]
+        poor_props = poor["streetscape"]["props"]
+        rich_trees = sum(1 for prop in rich_props if prop["kind"] == "tree")
+        poor_trees = sum(1 for prop in poor_props if prop["kind"] == "tree")
+        self.assertGreater(rich_trees, poor_trees)
+        self.assertTrue(any(prop["kind"] == "parked" for prop in poor_props))
+        self.assertTrue(any(prop["kind"] == "fence" and prop.get("style") == "iron" for prop in rich_props))
+        self.assertTrue(any(prop.get("lighting") == "high" for prop in rich_props if prop["kind"] == "lamp"))
+        self.assertTrue(any(prop.get("lighting") == "out" for prop in poor_props if prop["kind"] == "lamp"))
+        rich_walks = rich["streetscape"]["surfaces"]["sidewalk"]
+        poor_walks = poor["streetscape"]["surfaces"]["sidewalk"]
+        self.assertTrue(any(walk.get("condition") == "good" for walk in rich_walks))
+        self.assertTrue(any(walk.get("condition") == "broken" for walk in poor_walks))
+        camps = [prop for prop in poor_props if prop["kind"] == "encampment"]
+        self.assertTrue(camps)
+        self.assertTrue(all(prop.get("people") == 0 for prop in camps))
+        for props in (rich_props, poor_props):
+            self.assertFalse(any(prop["kind"] in ("person", "pedestrian", "occupant") for prop in props))
+
+        missing = ops.texture_pack("houses", tier="high")
+        self.assertEqual(missing["source"], "cc0")
+        self.assertEqual(missing["tier"], "high")
+        self.assertIsNone(missing["path"])
+        self.assertEqual(missing["materials"], ["brick", "plaster"])
+        self.assertEqual(missing["textures"]["brick"], "brick_wall_001")
+        tech = ops.texture_pack("tech")
+        self.assertEqual(tech["source"], "cc0")
+        self.assertIsNone(tech["tier"])
+        with tempfile.TemporaryDirectory() as tmp:
+            tier_dir = Path(tmp) / "packs" / "houses" / "high"
+            tier_dir.mkdir(parents=True)
+            (tier_dir / "manifest.json").write_text(json.dumps({
+                "materials": ["glass"], "textures": {"glass": "glass_color.png"},
+            }))
+            found = ops.texture_pack("houses", root=tmp, tier="high")
+            self.assertEqual(found["source"], "pack")
+            self.assertEqual(found["tier"], "high")
+            self.assertEqual(found["materials"], ["glass"])
+            self.assertEqual(found["textures"]["glass"], "glass_color.png")
+            (tier_dir / "manifest.json").write_text("{")
+            (Path(tmp) / "packs" / "houses" / "manifest.json").write_text(json.dumps({
+                "materials": ["metal"], "textures": {"metal": "plate.png"},
+            }))
+            fallen = ops.texture_pack("houses", root=tmp, tier="high")
+            self.assertEqual(fallen["source"], "pack")
+            self.assertEqual(fallen["materials"], ["metal"])
+            (Path(tmp) / "packs" / "houses" / "manifest.json").write_text("{")
+            empty = ops.texture_pack("houses", root=tmp, tier="high")
+            self.assertEqual(empty["source"], "cc0")
+        with self.assertRaises(ValueError):
+            ops.texture_pack("houses", tier="palace")
+        plain = skyline.for_lot(
+            {"character": "downtown", "style": "prewar_masonry", "trees": ["linden", "elm"]},
+            {"id": "lot_a"}, skyline.load())
+        self.assertEqual(plain["base_height_m"], 52)
+        self.assertNotIn("buildings", plain)
+        self.assertNotIn("tier", plain)
+
+
+def _tier_lots(count):
+    city = _district_row(1, width=max(80, count * 12))
+    city, _ = ops.set_district_type(city, "d0", "houses")
+    city["districts"][0]["tier_axis"] = [1, 0]
+    width = city["districts"][0]["polygon"][1][0]
+    lots = []
+    for index in range(count):
+        x0 = 4 + index * ((width - 8) / count)
+        x1 = x0 + ((width - 8) / count) * 0.8
+        lots.append({
+            "id": "lot_%02d" % index,
+            "source": "generated",
+            "locked": False,
+            "district_id": "d0",
+            "polygon": [[x0, 8], [x1, 8], [x1, 36], [x0, 36]],
+            "front_normals": [[0.0, -1.0]],
+            "role": "lot",
+            "tags": {},
+        })
+    city["lots"] = lots
+    return city
+
+
+def _houses_neighbourhood(mix=None, length=200, depth=48):
+    city = model_mod.new_model([-30, -30, length + 40, depth + 40], 1408)
+    city, _ = ops.add_district(
+        city,
+        [[-5, -5], [length + 5, -5], [length + 5, depth + 5], [-5, depth + 5]],
+        character="residential", name="Houses", district_id="d0",
+    )
+    for road in _loop(0, 0, length, depth):
+        city, _ = ops.draw_road(
+            city, road["polyline"], cls=road["cls"], lanes=road["lanes"],
+            oneway=road["oneway"], core=road["core"], name=road["name"],
+            road_id=road["id"], district_id="d0",
+        )
+    city, _ = ops.set_district_type(city, "d0", "houses")
+    city["districts"][0]["tier_axis"] = [1, 0]
+    if mix:
+        city, _ = ops.set_tier_mix(city, "d0", mix)
+    return city
+
+
+def _mean_span(lots):
+    spans = []
+    for lot in lots:
+        xs = [point[0] for point in lot["polygon"]]
+        spans.append(max(xs) - min(xs))
+    return sum(spans) / len(spans)
+
+
+def _mean_cover(buildings, lots):
+    ratios = []
+    for building in buildings:
+        lot_area = abs(geom.poly_area(lots[building["lot_id"]]["polygon"])) or 1.0
+        ratios.append(abs(geom.poly_area(building["footprint"])) / lot_area)
+    return sum(ratios) / len(ratios)
+
+
 def _district_row(count, width=40):
     city = model_mod.new_model([-5, -5, count * width + 5, width + 5], 1408)
     for index in range(count):

@@ -216,7 +216,8 @@ def _rebuild_lots(model, district_id, sky=None):
             continue
         existing = [lot for lot in model.get("lots") or []
                     if lot.get("block_id") == block["id"] and (lot.get("locked") or lot.get("source") == "hand")]
-        made = lots_mod.subdivide(block["polygon"], seed=model.get("seed") or 1)
+        planned = _planned_frontages(model, block)
+        made = lots_mod.subdivide(block["polygon"], seed=model.get("seed") or 1, frontages=planned)
         # alley lives on the block so the streetscape can pave it; refresh it when
         # the block itself is generated. A hand block keeps the alley it was given.
         if not (block.get("locked") or block.get("source") == "hand"):
@@ -228,7 +229,7 @@ def _rebuild_lots(model, district_id, sky=None):
             lot_id = "lot_%s_%s" % (block["id"], piece["tag"])
             if any(lot["id"] == lot_id or _overlaps(piece["polygon"], lot["polygon"]) for lot in existing):
                 continue
-            fresh.append({
+            lot = {
                 "id": lot_id,
                 "source": "generated",
                 "locked": False,
@@ -238,7 +239,12 @@ def _rebuild_lots(model, district_id, sky=None):
                 "front_normals": piece["front_normals"],
                 "role": "lot",
                 "tags": _tags_from_donors(piece["polygon"], donors),
-            })
+            }
+            if piece.get("tier"):
+                lot["tier"] = piece["tier"]
+            if piece.get("tier_score") is not None:
+                lot["tier_score"] = piece["tier_score"]
+            fresh.append(lot)
         _tag_fresh_lots(fresh, block, model, sky)
         new_lots.extend(existing)
         new_lots.extend(fresh)
@@ -268,8 +274,16 @@ def _rebuild_buildings(model, district_id, sky):
         for lot in district_lots:
             if lot["id"] in by_lot:
                 continue
+            if lot.get("vacant") and not lot.get("informal"):
+                continue
             lot_params = skyline.for_lot(district, lot, sky)
-            spec = grammar.evaluate(lot, _lot_style(district, lot, lot_params, seed), lot_params, seed)
+            style_name = _lot_style(district, lot, lot_params, seed)
+            if lot.get("informal"):
+                spec = _informal_building(lot, style_name, lot_params, seed)
+            else:
+                spec = grammar.evaluate(lot, style_name, lot_params, seed)
+                if lot_params.get("boarded"):
+                    spec["boarded"] = True
             spec["district_id"] = district["id"]
             fresh.append(spec)
     model["buildings"] = kept + fresh
@@ -303,26 +317,69 @@ def _stamp_block_mixes(model, district_id, sky):
             district_types.stamp_children(model, district, table, seed, include_lots=False)
 
 
+def _planned_frontages(model, block):
+    """Income-tier lot widths for a houses or apartments block. None keeps even bays."""
+    if block.get("locked") or block.get("source") == "hand":
+        return None
+    parent = next((item for item in model.get("districts") or []
+                   if item.get("id") == block.get("district_id")), None)
+    if not parent or not parent.get("district_type"):
+        return None
+    import districts as district_types
+    return district_types.plan_block(block["polygon"], parent, model.get("seed") or 1)
+
+
+def _informal_building(lot, style_name, params, seed):
+    """A small shack on a vacant distressed lot. It is a building, not a person."""
+    shadow = copy.deepcopy(lot)
+    shadow["building_id"] = "b_%s_shed" % lot["id"]
+    shadow["tags"] = dict(shadow.get("tags") or {})
+    shadow["tags"]["height"] = 3.4
+    shed = copy.deepcopy(params)
+    shed["coverage"] = 0.18
+    shed["far"] = 0
+    shed["boarded"] = False
+    spec = grammar.evaluate(shadow, style_name, shed, seed)
+    spec["informal"] = True
+    spec["boarded"] = False
+    return spec
+
+
 def _tag_fresh_lots(fresh, block, model, sky):
-    """Lots inherit the block's nested type. A block with its own mix is split further."""
+    """Lots inherit the block's nested type. A block with its own mix is split further.
+
+    A houses or apartments district then receives income tiers. Lots a frontage
+    plan already labelled keep that tier; the rest are banded by the mix.
+    """
     if not fresh:
         return
+    parent = next((item for item in model.get("districts") or []
+                   if item.get("id") == block.get("district_id")), None)
     if block.get("mix"):
         import districts as district_types
         table = district_types.table(sky or skyline.load())
-        parent = next((item for item in model.get("districts") or []
-                       if item.get("id") == block.get("district_id")), None)
         outside = district_types.outside_context(model, parent) if parent else []
         district_types.assign_children(
             fresh, block["mix"], int(model.get("seed") or 1), block.get("id"), table, outside=outside)
-        return
-    if not block.get("district_type"):
-        return
-    for lot in fresh:
-        if lot.get("locked") or lot.get("type_source") == "hand":
-            continue
-        lot["district_type"] = block["district_type"]
-        lot["type_source"] = "generated"
+    elif block.get("district_type"):
+        for lot in fresh:
+            if lot.get("locked") or lot.get("type_source") == "hand":
+                continue
+            lot["district_type"] = block["district_type"]
+            lot["type_source"] = "generated"
+    elif parent and parent.get("district_type"):
+        for lot in fresh:
+            if lot.get("locked") or lot.get("type_source") == "hand":
+                continue
+            lot["district_type"] = parent["district_type"]
+            lot["type_source"] = "generated"
+    kind = (parent or {}).get("district_type")
+    tiered = kind in ("houses", "apartments_condos") or any(
+        lot.get("tier") or lot.get("district_type") in ("houses", "apartments_condos") for lot in fresh)
+    if parent and tiered:
+        import districts as district_types
+        table = district_types.table(sky or skyline.load())
+        district_types.finish_tiers(fresh, parent, table, int(model.get("seed") or 1))
 
 
 def _assign_heroes(district_lots, params, seed):
