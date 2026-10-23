@@ -12,6 +12,12 @@ Trees still follow the district's vegetation. An untyped district keeps this ful
 Manholes and puddles are markings in the carriageway, clear of the zebra.
 
 The output is data. Blender and, later, the editor sweep meshes along it.
+
+Regulatory dressing is a separate road layer (Scripts/roads/dressing.py):
+signals, stop and yield signs, street names, turn arrows, the keep-clear box,
+parking stalls, parked cars and bus stops. This file still builds the section,
+the curbs and the everyday furniture. Stages 2–4 of that layer are not built;
+see Scripts/roads/ROADMAP.md.
 """
 import math
 import sys
@@ -24,6 +30,7 @@ _ROADS = Path(__file__).resolve().parents[1] / "roads"
 if str(_ROADS) not in sys.path:
     sys.path.insert(0, str(_ROADS))
 import profiles  # noqa: E402
+import dressing  # noqa: E402
 
 
 def build(model):
@@ -60,6 +67,13 @@ def build(model):
     if any(lot.get("tier") for lot in model.get("lots") or []):
         _tier_dress(model, surfaces, props)
 
+    # The road layer dresses the centrelines this function just measured.
+    # Wear is stamped after the merge so older paint fades with the new paint.
+    added_props, added_marks = dressing.dress(model, sections)
+    props.extend(added_props)
+    markings.extend(added_marks)
+    dressing.finish(markings, props, model)
+
     return {
         "version": 1,
         "sections": {k: _public_section(v) for k, v in sections.items()},
@@ -70,6 +84,7 @@ def build(model):
         "markings": markings,
         "props": props,
         "blocks": blocks_out,
+        "road_layer": {"stage": 1, "module": "Scripts/roads/dressing.py"},
     }
 
 
@@ -598,7 +613,7 @@ def _tier_dress(model, surfaces, props):
         if lot and lot.get("sidewalk"):
             walk["condition"] = lot["sidewalk"]
 
-    _parked_vehicles(model, props, nearest, tiered)
+    # Parked cars are stalls in the road layer, which reads parked_per_100m.
     _lot_fences(lots, props)
     _encampment_props(lots, props)
 
