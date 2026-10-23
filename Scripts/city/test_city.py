@@ -494,9 +494,12 @@ class SampleStreetTest(unittest.TestCase):
         self.assertTrue(sc["ramps"])
         self.assertTrue(any(m["kind"] == "dash" for m in sc["markings"]))
         self.assertTrue(any(m["kind"] == "stop" for m in sc["markings"]))
-        paint = [m for m in sc["markings"] if m["kind"] in ("dash", "stop", "edge", "centre")]
+        paint = [m for m in sc["markings"] if m["kind"] in ("dash", "stop", "edge")]
         self.assertTrue(paint)
         self.assertTrue(all(m.get("material") == "M_LanePaint" for m in paint))
+        centres = [m for m in sc["markings"] if m["kind"] == "centre"]
+        self.assertTrue(centres)
+        self.assertTrue(all(m.get("material") == "M_LanePaintYellow" for m in centres))
         self.assertTrue(any(m["kind"] == "puddle" and m.get("material") == "M_Puddle" for m in sc["markings"]))
         self.assertTrue(any(m["kind"] == "manhole" and m.get("material") == "M_Manhole" for m in sc["markings"]))
         south = next(r for r in city["roads"] if r["id"] == "road_south")
@@ -533,8 +536,20 @@ class SampleStreetTest(unittest.TestCase):
                 tree_s[road["id"]] = step
                 self.assertAlmostEqual(step, 9.0, delta=1.2)
         self.assertTrue(tree_s)
+        dressed = {prop["kind"] for prop in sc["props"]}
+        for kind in ("lamp", "signal", "stop", "yield", "street_name", "bus_stop", "parked", "hydrant", "bench", "bin"):
+            self.assertIn(kind, dressed)
+        mark_kinds = {mark["kind"] for mark in sc["markings"]}
+        for kind in ("arrow", "stall", "keep_clear", "dash", "stop", "centre"):
+            self.assertIn(kind, mark_kinds)
+        self.assertTrue(any(mark["kind"] == "arrow" and mark.get("legend") in ("left", "right") for mark in sc["markings"]))
+        self.assertTrue(any(prop.get("label") == "BUS" for prop in sc["props"] if prop["kind"] == "bus_stop"))
+        names = {prop.get("label") for prop in sc["props"] if prop["kind"] == "street_name"}
+        self.assertTrue(names & {"South Avenue", "North Avenue", "East Street", "West Avenue"})
+        self.assertTrue(all(mark.get("wear") is not None for mark in sc["markings"]))
+        self.assertTrue(sc.get("road_layer", {}).get("stage") == 1)
         for prop in sc["props"]:
-            if prop["kind"] == "drain":
+            if prop["kind"] in ("drain", "parked"):
                 continue
             road = next(r for r in city["roads"] if r["id"] == prop["road_id"]) if prop.get("road_id") else None
             if road is None:
@@ -922,6 +937,10 @@ class IncomeTierTest(unittest.TestCase):
         poor_trees = sum(1 for prop in poor_props if prop["kind"] == "tree")
         self.assertGreater(rich_trees, poor_trees)
         self.assertTrue(any(prop["kind"] == "parked" for prop in poor_props))
+        rich_wear = [mark.get("wear") or 0 for mark in rich["streetscape"]["markings"]]
+        poor_wear = [mark.get("wear") or 0 for mark in poor["streetscape"]["markings"]]
+        self.assertTrue(rich_wear and poor_wear)
+        self.assertGreater(sum(poor_wear) / len(poor_wear), sum(rich_wear) / len(rich_wear))
         self.assertTrue(any(prop["kind"] == "fence" and prop.get("style") == "iron" for prop in rich_props))
         self.assertTrue(any(prop.get("lighting") == "high" for prop in rich_props if prop["kind"] == "lamp"))
         self.assertTrue(any(prop.get("lighting") == "out" for prop in poor_props if prop["kind"] == "lamp"))

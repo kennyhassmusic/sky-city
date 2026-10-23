@@ -126,6 +126,8 @@ def make_library(record):
     lib["roof"] = flat("M_Roof", (0.18, 0.19, 0.2), 0.7)
     lib["lane"] = flat("M_LanePaint", (0.98, 0.98, 0.97), 0.28)
     set_emission(lib["lane"], 0.55)
+    lib["lane_yellow"] = flat("M_LanePaintYellow", (0.92, 0.74, 0.16), 0.32)
+    set_emission(lib["lane_yellow"], 0.35)
     realism.extend_library(lib, record, ART)
     return lib
 
@@ -387,7 +389,8 @@ def build_street(data, lib):
         elif name == "M_Manhole":
             realism.uv_cover(paint, mark["polygon"], 0.02, 0.04, lib["manhole"])
         else:
-            paint.prism(mark["polygon"], 0.028, 0.048, lib["lane"])
+            slot = lib["lane_yellow"] if mark.get("material") == "M_LanePaintYellow" else lib["lane"]
+            paint.prism(mark["polygon"], 0.028, 0.048, slot)
     wear = Mesh("Wear")
     realism.scatter_decals(wear, data, lib)
     if wear.bm.faces:
@@ -518,6 +521,12 @@ def make_prototypes(data, lib):
         protos["tree_" + name] = ob
     protos["bench"] = _bench()
     protos["hydrant"] = _hydrant()
+    protos["signal"] = _signal()
+    protos["stop"] = _blade_sign((0.62, 0.08, 0.07), "SK_Stop")
+    protos["yield"] = _blade_sign((0.86, 0.68, 0.12), "SK_Yield")
+    protos["street_name"] = _blade_sign((0.12, 0.32, 0.22), "SK_StreetName")
+    protos["bus_stop"] = _blade_sign((0.12, 0.28, 0.48), "SK_BusStop")
+    protos["parked"] = _parked_car()
     protos.update(realism.prototypes(lib, Mesh))
     return protos
 
@@ -531,6 +540,50 @@ def _bench():
     for x in (-0.65, 0.65):
         B.box((x, 0, 0.22), (1, 0, 0), (0, 1, 0), (0, 0, 1), (0.06, 0.4, 0.44), steel)
     col = collection("Prototypes")
+    ob = B.finish(col)
+    ob.hide_render = True
+    ob.hide_set(True)
+    return ob
+
+
+def _signal():
+    """A mast arm and three lamp housings. Generic; no city seal."""
+    B = Mesh("SK_Signal")
+    metal = flat("M_SignalPole", (0.2, 0.2, 0.22), 0.4)
+    B.box((0, 0, 2.4), (1, 0, 0), (0, 1, 0), (0, 0, 1), (0.16, 0.16, 4.8), metal)
+    B.box((0, -1.6, 4.7), (1, 0, 0), (0, 1, 0), (0, 0, 1), (0.14, 3.2, 0.14), metal)
+    colours = ((0.7, 0.08, 0.06), (0.75, 0.58, 0.1), (0.1, 0.45, 0.16))
+    for index, rgb in enumerate(colours):
+        lamp = flat("M_SignalLamp%d" % index, rgb, 0.3)
+        B.box((0, -0.55 - index * 0.42, 4.35), (1, 0, 0), (0, 1, 0), (0, 0, 1), (0.28, 0.28, 0.36), lamp)
+    col = bpy.data.collections["Prototypes"]
+    ob = B.finish(col)
+    ob.hide_render = True
+    ob.hide_set(True)
+    return ob
+
+
+def _blade_sign(rgb, name):
+    B = Mesh(name)
+    metal = flat("M_SignPole", (0.22, 0.22, 0.24), 0.4)
+    face = flat("M_" + name, rgb, 0.45)
+    B.box((0, 0, 1.3), (1, 0, 0), (0, 1, 0), (0, 0, 1), (0.08, 0.08, 2.6), metal)
+    B.box((0, -0.28, 2.35), (1, 0, 0), (0, 1, 0), (0, 0, 1), (0.06, 0.72, 0.72), face)
+    col = bpy.data.collections["Prototypes"]
+    ob = B.finish(col)
+    ob.hide_render = True
+    ob.hide_set(True)
+    return ob
+
+
+def _parked_car():
+    """A generic kerb car. No badge, no real make."""
+    B = Mesh("SK_Parked")
+    body = flat("M_ParkedBody", (0.22, 0.28, 0.34), 0.35)
+    glass = flat("M_ParkedGlass", (0.15, 0.18, 0.2), 0.08)
+    B.box((0, 0, 0.45), (1, 0, 0), (0, 1, 0), (0, 0, 1), (4.2, 1.75, 0.7), body)
+    B.box((0.1, 0, 1.0), (1, 0, 0), (0, 1, 0), (0, 0, 1), (2.2, 1.6, 0.55), glass)
+    col = bpy.data.collections["Prototypes"]
     ob = B.finish(col)
     ob.hide_render = True
     ob.hide_set(True)
@@ -563,7 +616,12 @@ def place_props(data, protos, into, lib):
             src = protos.get(kind)
         if src is None:
             continue
-        z = 0.02 if kind == "drain" else profiles.CURB_RISE
+        if kind == "drain":
+            z = 0.02
+        elif kind == "parked":
+            z = 0.28
+        else:
+            z = profiles.CURB_RISE
         ob = bpy.data.objects.new(prop["id"], src.data)
         ob.location = (prop["x"], prop["y"], z)
         ob.rotation_euler = (0, 0, _yaw_to_road(prop))
