@@ -7,7 +7,8 @@ way out, the same turn the landmark exporter uses, so Unreal's glTF import puts 
 north on +X and plan east on +Y.
 
 Windows are a real recess with a glass pane, a sill and a lintel. Shopfronts open
-into a small room. CC0 grime, leak decals and a sky HDRI are applied in realism.py.
+into a small room. Facade grime is procedural in realism.py (no leak cards).
+A sky HDRI is applied there too.
 Transmission is a transparent mix rather than a refractive shader so a CPU render
 stays practical.
 LOD0 is that module build. LOD1 is one band per floor. LOD2 is the same mass without
@@ -61,7 +62,8 @@ SLOT = {
 def main():
     os.makedirs(BLOCKS, exist_ok=True)
     os.makedirs(PREVIEWS, exist_ok=True)
-    data = json.load(open(VARIATIONS))
+    with open(VARIATIONS) as handle:
+        data = json.load(handle)
     mats = load_material_record()
     reset()
     lib = make_library(mats)
@@ -102,7 +104,10 @@ def load_material_record():
     path = os.path.join(ART, "materials", "materials.json")
     if not os.path.isfile(path):
         return {}
-    return json.load(open(path))
+    # Close the handle. An unclosed file warns from the destructor, and the city
+    # mesher treats that warning as a failed build.
+    with open(path) as handle:
+        return json.load(handle)
 
 
 def make_library(record):
@@ -134,7 +139,6 @@ def make_library(record):
 
 def textured(slot, maps, uv_m):
     mat = bpy.data.materials.new("M_" + slot.capitalize())
-    mat.use_nodes = True
     nt = mat.node_tree
     bsdf = nt.nodes.get("Principled BSDF")
     bsdf.inputs["Roughness"].default_value = 0.7
@@ -181,7 +185,6 @@ def _map_path(rel):
 
 def flat(name, rgb, rough):
     mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
     bsdf = mat.node_tree.nodes.get("Principled BSDF")
     bsdf.inputs["Base Color"].default_value = (*rgb, 1)
     bsdf.inputs["Roughness"].default_value = rough
@@ -190,7 +193,6 @@ def flat(name, rgb, rough):
 
 def emissive(name, rgb, strength):
     mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
     bsdf = mat.node_tree.nodes.get("Principled BSDF")
     bsdf.inputs["Base Color"].default_value = (*rgb, 1)
     _set(bsdf, ("Emission Color", "Emission"), (*rgb, 1))
@@ -202,7 +204,6 @@ def emissive(name, rgb, strength):
 def glass_material(name, emit):
     """A pane you can see through, with an optional glow. The recess behind it does the depth."""
     mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
     nt = mat.node_tree
     bsdf = nt.nodes.get("Principled BSDF")
     bsdf.inputs["Base Color"].default_value = (0.55, 0.7, 0.8, 1)
@@ -212,7 +213,10 @@ def glass_material(name, emit):
     _set(bsdf, ("Emission Strength",), emit)
     transp = nt.nodes.new("ShaderNodeBsdfTransparent")
     mix = nt.nodes.new("ShaderNodeMixShader")
-    mix.inputs["Fac"].default_value = 0.42
+    for _name in ("Factor", "Fac"):
+        if _name in mix.inputs:
+            mix.inputs[_name].default_value = 0.42
+            break
     out = nt.nodes.get("Material Output")
     nt.links.new(bsdf.outputs["BSDF"], mix.inputs[1])
     nt.links.new(transp.outputs["BSDF"], mix.inputs[2])
@@ -322,6 +326,9 @@ class Mesh(object):
             bmesh.ops.remove_doubles(self.bm, verts=list(self.bm.verts), dist=0.004)
         self.bm.to_mesh(me)
         self.bm.free()
+        # Red is the building wear. Unset meshes stay 0 so a shared wall
+        # material does not stain the street.
+        _paint_grime(me, getattr(self, "grime", None))
         for m in self.mats:
             me.materials.append(m)
         ob = bpy.data.objects.new(self.name, me)
@@ -665,8 +672,30 @@ def build_style(style, buildings, context, lib):
     return groups
 
 
+def _paint_grime(mesh, wear):
+    """Corner colour R is facade wear. The shader reads the Col attribute."""
+    if mesh is None or len(mesh.loops) == 0:
+        return
+    value = 0.0 if wear is None else max(0.0, min(1.0, float(wear)))
+    attr = mesh.color_attributes.get("Col")
+    if attr is None:
+        attr = mesh.color_attributes.new("Col", "BYTE_COLOR", "CORNER")
+    color = (value, 1.0, 0.0, 1.0)
+    try:
+        attr.data.foreach_set("color", list(color) * len(attr.data))
+    except (TypeError, RuntimeError):
+        for item in attr.data:
+            item.color = color
+
+
+def _stamp_grime(mesh, building):
+    import facade_grime
+    mesh.grime = facade_grime.intensity(building)
+
+
 def build_lod0(building, lib, col):
     mesh = Mesh(building["id"] + "_LOD0")
+    _stamp_grime(mesh, building)
     wall = lib.get(building.get("materials", {}).get("wall") or "brick", lib["brick"])
     trim = lib.get(building.get("materials", {}).get("trim") or "plaster", lib["plaster"])
     metal = lib["metal"]
@@ -1057,6 +1086,7 @@ def _balcony(mesh, balcony, trim, metal):
 
 def build_bands(building, lib, col, banded):
     mesh = Mesh(building["id"] + ("_LOD1" if banded else "_LOD2"))
+    _stamp_grime(mesh, building)
     wall = lib.get(building.get("materials", {}).get("wall") or "brick", lib["brick"])
     trim = lib["trim_dark"]
     floors = building.get("floors") or []
@@ -1075,6 +1105,7 @@ def build_bands(building, lib, col, banded):
 def build_far(building, style, lib, col):
     floors = building.get("floors") or []
     mesh = Mesh(building["id"] + "_FAR")
+    _stamp_grime(mesh, building)
     if not floors:
         return mesh.finish(col)
     # One shell: the ground plate up to the roof, plus the baked grid on the walls.
@@ -1091,7 +1122,6 @@ def facade_material(style):
     if existing:
         return existing
     mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
     bsdf = mat.node_tree.nodes.get("Principled BSDF")
     path = os.path.join(ART, "facades", "T_CG_Facade_%s.png" % style)
     if os.path.isfile(path):
@@ -1123,7 +1153,6 @@ def render_style(style, cameras, visible):
     realism.grade(scene)
     world = bpy.data.worlds.new("Sky_" + style)
     scene.world = world
-    world.use_nodes = True
     shots = []
     if os.environ.get("SKYCITY_SHOTS") == "none":
         return shots

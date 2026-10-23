@@ -56,7 +56,11 @@ git lfs pull
 The art (about 2 GB) comes from Sky City's own download server on Cloudflare, set in `.lfsconfig`, so cloning costs nobody anything and there's nothing extra to configure.
 
 1. **Add the City Sample buildings.** They are Epic's content and can't live in this repo, but they're free on Fab. Follow [docs/SETUP_CITY_SAMPLE.md](docs/SETUP_CITY_SAMPLE.md).
-2. **The generated city is already in the repo**, so there's nothing to run first. To change it, edit the generator scripts in `Scripts/` and rerun them (see `CLAUDE.md` for how the scripts are run).
+2. **The generated city is already in the repo**, so there's nothing to run first. To change it, edit the generator scripts in `Scripts/` and rerun them (see `CLAUDE.md` for how the scripts are run). The city mesher is pinned to **Blender 5.2.x LTS** on **Python 3.13** (tested on 5.2.3). It prints `bpy.app.version` at startup and stops on any other series. One Blender unit is one metre, and the glTF export is 1:1. `primitive_cube_add`'s size is the full edge length (a size of 2 is a 2 m cube). Run it headless so a Python error cannot exit 0. A Python warning, a deprecated-API message, or a missing node or socket fails the build:
+
+```bash
+blender --background --factory-startup --python-exit-code 1 -P Scripts/city/blender_city.py
+```
 3. **Open the project**: double-click `SkyCity.uproject` and let the editor compile the C++ module. Open the `SkyCityMashup` map for the city, or `McGregor` / `McGregorNight` for the test site.
 
 ### What's in this repo, and what isn't
