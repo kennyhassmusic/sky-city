@@ -24,6 +24,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 - SCALE CHECK: no change
 - Next: when `Art/ai_textures/` lands, the same schema picks it up
 
+## 2026-10-23 04:48 UTC — cursor cloud agent — bases, streets and flat roofs
+- State at start: `cursor/citywide-generate-04ef` (PR #6) had curtain-wall daylight frames. Kenny: buildings floated, the ground was one olive plane, facade stains looked like holes, and flat roofs were bare.
+- Did: commit `1eeae41` in `Scripts/city/blender_city.py`. A concrete plinth meets each wall. The fill plane is concrete at street level. Sidewalks follow the ground-floor frontage. Grass stays on the planned parkway. A street camera that is not on asphalt or sidewalk gets a carriageway under it. Leak decals are skipped. Flat roofs keep a parapet at least a metre tall, plus HVAC, a stair bulkhead and a water tank when the roof record lacks them. Commit `44715a5` replaces the city GLBs (about 85 MB, each file under 22 MB, 22 core buildings) and re-renders the same four cameras. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Tests: `python3 -I Scripts/city/test_generate_city.py` (OK), `python3 -I Scripts/city/test_city.py` (46 OK). Histograms at exposure 0: aerial day median 143.3 (crushed 0.000), downtown street day 77.5 (0.007), residential day 132.6 (0.005), downtown street dusk 85.2 (0.006, p95 203.5).
+- Found: both street cameras were standing off the planned asphalt, so the shot laid a carriageway under them. The script cap meshes 22 core buildings; the previous GLBs had 14.
+- Asks for Kenny: PIE off, `py Scripts/city/import_city_ue.py`, open `SkyCityGenerated`. The GLBs are still the downtown cluster and one residential street.
+- SCALE CHECK: no change
+- Next: mesh more of the core when a larger LFS budget is available. Do not start road stages 2–4 or pack polish unless asked.
+
 ## 2026-10-23 04:40 UTC — cursor cloud agent — curtain walls and real-scale bays
 - State at start: `cursor/citywide-generate-04ef` (PR #6) had daylight frames. Kenny: the central tower was a hollow glass cutaway, and some windows were stretched across the wall.
 - Did: commit `dfaf119` in `Scripts/city/blender_city.py`. Glazed floors are mullions, a metal spandrel at each slab, tinted reflective glass, and an opaque interior per pane. Facade UVs use meters_u / meters_v from the texture record. Bay count is round(length / bay_m) and the glass stays within that module. Commit `c365320` replaces the downtown GLBs (about 50 MB, each file under 22 MB) and re-renders the same four cameras. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Tests: `python3 -I Scripts/city/test_generate_city.py` (OK), `python3 -I Scripts/city/test_city.py` (46 OK). Histograms at exposure 0: aerial day median 138.4 (crushed 0.002), downtown street day 66.4 (0.012), residential day 126.1 (0.006), downtown street dusk 86.9 (0.012, p95 203.5).
