@@ -25,7 +25,7 @@ jobs:
           path-to-signatures: signatures/cla.json
           path-to-document: https://github.com/kennyhassmusic/sky-city/blob/main/CLA.md
           branch: cla-signatures
-          allowlist: kennyhassmusic,dependabot[bot]
+          allowlist: kennyhassmusic,dependabot[bot],cursoragent
           custom-notsigned-prcomment: >-
             Thanks for contributing to Sky City! Before we can merge this, please read the
             [Contributor License Agreement](https://github.com/kennyhassmusic/sky-city/blob/main/CLA.md)
