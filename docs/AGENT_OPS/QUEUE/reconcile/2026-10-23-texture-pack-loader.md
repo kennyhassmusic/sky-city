@@ -2,7 +2,8 @@
 
 Cloud agent marker for LUCA. Invariants were read from `docs/AGENT_OPS/INVARIANTS.md` before this change. No protected value was edited.
 
-- PR: opened from branch `cursor/texture-pack-loader-04ef`
+- PR: https://github.com/kennyhassmusic/sky-city/pull/5
+- Commit: `784177c`
 - Branch: `cursor/texture-pack-loader-04ef`
 - Base: `cursor/city-block-realism-04ef`
 - Parent: `cd8b893`
