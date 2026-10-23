@@ -63,6 +63,19 @@ City generator materials (2026-10-22)
     Grass004          https://ambientcg.com/a/Grass004
   T_CG_Facade_* window grids are original drawings for the far LOD, not photographs.
 
+City generator weathering (2026-10-23)
+  Extra CC0 scans blended in the block preview. JPG or HDR, 1k. No zip archives kept.
+  Poly Haven, CC0, https://polyhaven.com/license
+    cracked_concrete_wall   Dimitrios Savva (Photography, processing), Rico Cilliers (Guidance). https://polyhaven.com/a/cracked_concrete_wall
+    sparse_grass            Amal Kumar. https://polyhaven.com/a/sparse_grass
+    kloofendal_43d_clear_puresky  Greg Zaal. https://polyhaven.com/a/kloofendal_43d_clear_puresky
+    kiara_9_dusk            Greg Zaal. https://polyhaven.com/a/kiara_9_dusk
+  ambientCG, CC0, Lennart Demes, https://docs.ambientcg.com/license/
+    Leaking006              https://ambientcg.com/a/Leaking006
+    AsphaltDamage001        https://ambientcg.com/a/AsphaltDamage001
+    ManholeCover009         https://ambientcg.com/a/ManholeCover009
+  T_CG_Sign_* panels are original lettering, not a downloaded font or a real business.
+
 Generative AI
   Code, generated 3D content, in-game text and some sounds were made with the help of generative AI (Claude).
 

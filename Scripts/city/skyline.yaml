@@ -89,6 +89,288 @@ characters:
       far: 0
       hero_count: 0
 
+# First-class district types. Heights are metres [low, high]. buildings name grammar
+# styles. materials name CC0 slots. pack is the folder under Scripts/city/packs:
+# packs/<type>/manifest.json, or packs/<type>/<tier>/ for an income tier, filled in
+# later by an AI texture set. wear is 0 (just built) to 1 (heavily weathered).
+# furniture is what the streetscape may
+# scatter once a district has a type; trees come from vegetation.
+# A mix on a type is a sub-mix: blocks inside that district are painted from it.
+district_types:
+  brand_new:
+    buildings: [glass_curtain, modern_mixed]
+    height_m: [18, 72]
+    roofs: [flat, setback]
+    materials: [concrete, glass, metal]
+    pack: brand_new
+    vegetation: [honeylocust, linden]
+    wear: 0.05
+    furniture: [lamp, bench, bin, grate]
+  historic_old:
+    buildings: [prewar_masonry, art_deco, brick_walkup]
+    height_m: [12, 48]
+    roofs: [parapet, mansard, gabled]
+    materials: [brick, plaster]
+    pack: historic_old
+    vegetation: [elm, linden]
+    wear: 0.75
+    furniture: [lamp, bench, hydrant, bin]
+  eclectic_mix:
+    buildings: [prewar_masonry, modern_mixed, art_deco, brick_walkup]
+    height_m: [10, 55]
+    roofs: [parapet, flat, gabled, mansard]
+    materials: [brick, concrete, plaster]
+    pack: eclectic_mix
+    vegetation: [linden, elm, liveoak]
+    wear: 0.45
+    furniture: [lamp, bench, bin, grate]
+    mix:
+      historic_old: 40
+      brand_new: 35
+      tech: 25
+  tech:
+    buildings: [glass_curtain, modern_mixed]
+    height_m: [24, 96]
+    roofs: [flat, setback]
+    materials: [glass, metal, concrete]
+    pack: tech
+    vegetation: [honeylocust]
+    wear: 0.08
+    furniture: [lamp, bin, grate]
+  green_renewable:
+    buildings: [modern_mixed, texas_lowrise]
+    height_m: [8, 36]
+    roofs: [hipped, flat]
+    materials: [plaster, concrete]
+    pack: green_renewable
+    vegetation: [liveoak, honeylocust]
+    wear: 0.15
+    furniture: [lamp, bench, grate]
+  # Income tiers. The ratio the brief writes as
+  # houses: {high: 20, mid: 50, low: 25, distressed: 5}
+  # is tier_mix below. Weights are shares. Bands run from high to distressed
+  # along a seeded axis so a neighbourhood changes one step at a time.
+  houses:
+    buildings: [texas_lowrise, brick_walkup]
+    height_m: [6, 12]
+    roofs: [gabled, hipped]
+    materials: [brick, plaster]
+    pack: houses
+    vegetation: [liveoak, elm]
+    wear: 0.35
+    furniture: [lamp, bin]
+    tier_mix:
+      high: 20
+      mid: 50
+      low: 25
+      distressed: 5
+    income_tiers:
+      high:
+        lot_width_m: [22, 32]
+        lot_depth_m: [34, 48]
+        front_setback_m: 8
+        side_setback_m: 3.5
+        coverage: 0.28
+        height_m: [7, 11]
+        materials: [brick, plaster]
+        wear: 0.05
+        upkeep: 0.94
+        landscaping: formal
+        tree_density: 1.45
+        fence: iron
+        gate: true
+        parked_per_100m: 8
+        furniture: [lamp, bench, bin, grate]
+        lighting: high
+        sidewalk: good
+      mid:
+        lot_width_m: [14, 20]
+        lot_depth_m: [28, 36]
+        front_setback_m: 5
+        side_setback_m: 1.8
+        coverage: 0.42
+        height_m: [6, 9]
+        materials: [brick, plaster]
+        wear: 0.28
+        upkeep: 0.7
+        landscaping: lawn
+        tree_density: 1.0
+        fence: wood
+        gate: true
+        parked_per_100m: 18
+        furniture: [lamp, bin]
+        lighting: standard
+        sidewalk: worn
+      low:
+        lot_width_m: [10, 14]
+        lot_depth_m: [22, 30]
+        front_setback_m: 2.5
+        side_setback_m: 0.9
+        coverage: 0.62
+        height_m: [5, 8]
+        materials: [brick, concrete]
+        wear: 0.62
+        upkeep: 0.35
+        landscaping: sparse
+        tree_density: 0.55
+        fence: chain
+        gate: false
+        parked_per_100m: 32
+        furniture: [lamp, bin]
+        lighting: dim
+        sidewalk: cracked
+      distressed:
+        lot_width_m: [8, 12]
+        lot_depth_m: [18, 26]
+        front_setback_m: 1.2
+        side_setback_m: 0.4
+        coverage: 0.78
+        height_m: [4, 7]
+        materials: [concrete, brick]
+        wear: 0.9
+        upkeep: 0.1
+        landscaping: bare
+        tree_density: 0.2
+        fence: open
+        gate: false
+        parked_per_100m: 6
+        furniture: [lamp]
+        lighting: out
+        sidewalk: broken
+        boarded: true
+        vacant_share: 0.45
+        informal: true
+        encampment: true
+  apartments_condos:
+    buildings: [modern_mixed, brick_walkup, glass_curtain]
+    height_m: [14, 42]
+    roofs: [flat, parapet, setback]
+    materials: [concrete, brick, glass]
+    pack: apartments_condos
+    vegetation: [linden, honeylocust]
+    wear: 0.2
+    furniture: [lamp, bench, bin, grate]
+    tier_mix:
+      high: 20
+      mid: 50
+      low: 25
+      distressed: 5
+    income_tiers:
+      high:
+        lot_width_m: [40, 64]
+        lot_depth_m: [36, 52]
+        front_setback_m: 6
+        side_setback_m: 4
+        coverage: 0.34
+        height_m: [28, 48]
+        materials: [glass, concrete]
+        wear: 0.04
+        upkeep: 0.93
+        landscaping: formal
+        tree_density: 1.3
+        fence: iron
+        gate: true
+        parked_per_100m: 10
+        furniture: [lamp, bench, bin, grate]
+        lighting: high
+        sidewalk: good
+      mid:
+        lot_width_m: [28, 40]
+        lot_depth_m: [30, 42]
+        front_setback_m: 4
+        side_setback_m: 2.2
+        coverage: 0.48
+        height_m: [16, 32]
+        materials: [concrete, brick]
+        wear: 0.22
+        upkeep: 0.68
+        landscaping: lawn
+        tree_density: 0.9
+        fence: iron
+        gate: true
+        parked_per_100m: 16
+        furniture: [lamp, bench, bin]
+        lighting: standard
+        sidewalk: worn
+      low:
+        lot_width_m: [18, 28]
+        lot_depth_m: [24, 34]
+        front_setback_m: 2
+        side_setback_m: 1.2
+        coverage: 0.64
+        height_m: [12, 22]
+        materials: [brick, concrete]
+        wear: 0.58
+        upkeep: 0.32
+        landscaping: sparse
+        tree_density: 0.45
+        fence: chain
+        gate: false
+        parked_per_100m: 28
+        furniture: [lamp, bin]
+        lighting: dim
+        sidewalk: cracked
+      distressed:
+        lot_width_m: [14, 22]
+        lot_depth_m: [20, 30]
+        front_setback_m: 1
+        side_setback_m: 0.5
+        coverage: 0.74
+        height_m: [10, 16]
+        materials: [concrete, brick]
+        wear: 0.88
+        upkeep: 0.12
+        landscaping: bare
+        tree_density: 0.15
+        fence: open
+        gate: false
+        parked_per_100m: 5
+        furniture: [lamp]
+        lighting: out
+        sidewalk: broken
+        boarded: true
+        vacant_share: 0.4
+        informal: true
+        encampment: true
+  industrial_commercial:
+    buildings: [industrial, modern_mixed]
+    height_m: [8, 24]
+    roofs: [flat, gabled]
+    materials: [concrete, metal]
+    pack: industrial_commercial
+    vegetation: [honeylocust]
+    wear: 0.55
+    furniture: [lamp, bin]
+  utilities:
+    buildings: [industrial]
+    height_m: [6, 18]
+    roofs: [flat, gabled]
+    materials: [concrete, metal]
+    pack: utilities
+    vegetation: [honeylocust]
+    wear: 0.4
+    furniture: [lamp]
+
+# Mix ratios are weights, not percents: 40, 30, 30 is the same as 4, 3, 3.
+# city is the fallback. regions.<name> wins when assign_districts is given that
+# region. downtown here is a region name, not the downtown character.
+mix:
+  city:
+    tech: 20
+    historic_old: 15
+    eclectic_mix: 12
+    apartments_condos: 15
+    houses: 15
+    green_renewable: 8
+    brand_new: 8
+    industrial_commercial: 5
+    utilities: 2
+  regions:
+    downtown:
+      tech: 40
+      eclectic_mix: 30
+      apartments_condos: 30
+
 # The one-block study. Four readings of the same lots and the same height field.
 variations:
   - prewar_masonry

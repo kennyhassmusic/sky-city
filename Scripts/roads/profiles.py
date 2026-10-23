@@ -27,6 +27,12 @@ PARKWAY_W = 2.0
 WALK_OTHER = 1.8
 FURNITURE_W = 1.5
 CURB_RISE = 0.15          # sidewalk above the travel-lane edge
+# A pedestrian door is a leaf, not a whole bay. 0.91 by 2.10 m is a common size.
+# A shopfront has a low bulkhead and a head about 3 m above the sidewalk.
+DOOR_W = 0.91
+DOOR_H = 2.10
+STORE_SILL = 0.40
+STORE_HEAD = 3.05
 GUTTER_DROP = 0.03        # flow line below the travel-lane edge
 CURB_BATTER = 0.04        # how far the top of the face sits back from the flow line
 CURB_TOP_W = 0.15
@@ -153,11 +159,13 @@ def carve_gutters(elems, cls, under=False):
 
 
 def preview_section(cls, lanes, oneway, core):
-    """Cross-section for one block, using the same widths as design_section's common cases.
+    """Cross-section for one block. The element list matches roadnet.design_section.
 
-    This is the downtown / neighbourhood case (no expressway deck, no roundabout, no
-    "does it fit between the buildings" shrink). The full city still goes through
-    roadnet.design_section, which calls carve_gutters on the way out.
+    Same lane and parking widths, same centre treatment, same gutter carve. An odd
+    two-way arterial gets a 3.3 m two-way left-turn lane, not a 0.3 m double yellow
+    plus an extra through lane. This does not apply the "does it fit" shrink, a
+    roundabout, a frontage road, or lanes under a deck: those still live in roadnet,
+    because they need the surrounding buildings.
     """
     lanes = max(1, int(lanes))
     lw = LANE_W[cls]
@@ -174,18 +182,37 @@ def preview_section(cls, lanes, oneway, core):
         park = (False, True)     # one loading lane on the right
     else:
         park = (True, True)
+    centre = None
     if oneway:
+        n_f = lanes
+        n_b = 0
+    else:
+        if lanes == 1:
+            lanes = 2
+        if cls == "major" and lanes % 2 == 1 and lanes >= 3:
+            centre = ("twltl", 3.3)
+            n_f = n_b = (lanes - 1) // 2
+        else:
+            n_f = n_b = lanes // 2
+            if cls in ("major", "mid"):
+                centre = ("dy", 0.3)
+            elif cls == "highway":
+                centre = ("barrier", 1.0)
+    if cls == "highway":
+        if oneway:
+            elems = [["shoulder", 1.2, 0]] + [["lane", lw, 1]] * n_f + [["shoulder", 3.0, 0]]
+        else:
+            elems = ([["shoulder", 3.0, 0]] + [["lane", lw, -1]] * n_b
+                     + [["barrier", 1.0, 0]] + [["lane", lw, 1]] * n_f + [["shoulder", 3.0, 0]])
+    elif oneway:
         elems = (([["parking", pw, 0]] if park[0] else [])
-                 + [["lane", lw, 1]] * lanes
+                 + [["lane", lw, 1]] * n_f
                  + ([["parking", pw, 0]] if park[1] else []))
     else:
-        n = max(2, lanes)
-        n_b = n // 2
-        n_f = n - n_b
         elems = (([["parking", pw, 0]] if park[0] else [])
                  + [["lane", lw, -1]] * n_b)
-        if cls in ("major", "mid"):
-            elems.append(["dy", 0.3, 0])
+        if centre:
+            elems.append([centre[0], centre[1], 0])
         elems += [["lane", lw, 1]] * n_f + ([["parking", pw, 0]] if park[1] else [])
     elems, gutter = carve_gutters(elems, cls, False)
     if cls == "highway":

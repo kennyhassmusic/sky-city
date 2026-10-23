@@ -1,17 +1,17 @@
 {
   "seed": 1408,
-  "hash": "c8394de4404e6823f3a73c1534a03cc11829db0d928e22218ce14d892ff1425a",
+  "hash": "3b867770796a5ab07187d1c962f2f6a6d91a00b6b8eab4b6466ccbabdf50632b",
   "styles": {
     "prewar_masonry": {
       "bytes": {
-        "LOD0": 36381220,
-        "LOD1": 619772,
-        "LOD2": 424932,
-        "FAR": 35912,
-        "web": 1120168
+        "LOD0": 45633848,
+        "LOD1": 620348,
+        "LOD2": 425544,
+        "FAR": 36356,
+        "web": 1467768
       },
       "tris": {
-        "LOD0": 284977,
+        "LOD0": 329837,
         "LOD1": 3966,
         "LOD2": 2571,
         "FAR": 144
@@ -19,46 +19,46 @@
     },
     "glass_curtain": {
       "bytes": {
-        "LOD0": 29824312,
-        "LOD1": 579428,
-        "LOD2": 399352,
-        "FAR": 35880,
-        "web": 1079816
+        "LOD0": 38685432,
+        "LOD1": 596356,
+        "LOD2": 417640,
+        "FAR": 36332,
+        "web": 1443776
       },
       "tris": {
-        "LOD0": 234702,
-        "LOD1": 3676,
-        "LOD2": 2396,
+        "LOD0": 281138,
+        "LOD1": 3776,
+        "LOD2": 2506,
         "FAR": 144
       }
     },
     "art_deco": {
       "bytes": {
-        "LOD0": 28988508,
-        "LOD1": 609452,
-        "LOD2": 416644,
-        "FAR": 35888,
-        "web": 1109840
+        "LOD0": 36048804,
+        "LOD1": 613660,
+        "LOD2": 423092,
+        "FAR": 36320,
+        "web": 1461080
       },
       "tris": {
-        "LOD0": 229005,
-        "LOD1": 3890,
-        "LOD2": 2510,
+        "LOD0": 260914,
+        "LOD1": 3899,
+        "LOD2": 2539,
         "FAR": 144
       }
     },
     "modern_mixed": {
       "bytes": {
-        "LOD0": 33624568,
-        "LOD1": 627780,
-        "LOD2": 429544,
-        "FAR": 35920,
-        "web": 1128176
+        "LOD0": 42498908,
+        "LOD1": 542992,
+        "LOD2": 345404,
+        "FAR": 36316,
+        "web": 1390392
       },
       "tris": {
-        "LOD0": 264202,
-        "LOD1": 4006,
-        "LOD2": 2591,
+        "LOD0": 308398,
+        "LOD1": 3516,
+        "LOD2": 2131,
         "FAR": 144
       }
     }
@@ -66,51 +66,51 @@
   "renders": [
     {
       "file": "CG_prewar_masonry_street_day.png",
-      "seconds": 23.7
+      "seconds": 59.2
     },
     {
       "file": "CG_prewar_masonry_aerial_day.png",
-      "seconds": 19.1
+      "seconds": 40.2
     },
     {
       "file": "CG_prewar_masonry_street_dusk.png",
-      "seconds": 29.5
+      "seconds": 86.8
     },
     {
       "file": "CG_glass_curtain_street_day.png",
-      "seconds": 25.7
+      "seconds": 66.0
     },
     {
       "file": "CG_glass_curtain_aerial_day.png",
-      "seconds": 22.8
+      "seconds": 46.4
     },
     {
       "file": "CG_glass_curtain_street_dusk.png",
-      "seconds": 35.0
+      "seconds": 92.5
     },
     {
       "file": "CG_art_deco_street_day.png",
-      "seconds": 25.7
+      "seconds": 60.0
     },
     {
       "file": "CG_art_deco_aerial_day.png",
-      "seconds": 20.9
+      "seconds": 40.4
     },
     {
       "file": "CG_art_deco_street_dusk.png",
-      "seconds": 32.4
+      "seconds": 85.1
     },
     {
       "file": "CG_modern_mixed_street_day.png",
-      "seconds": 25.4
+      "seconds": 61.8
     },
     {
       "file": "CG_modern_mixed_aerial_day.png",
-      "seconds": 21.6
+      "seconds": 43.0
     },
     {
       "file": "CG_modern_mixed_street_dusk.png",
-      "seconds": 33.7
+      "seconds": 88.6
     }
   ]
 }

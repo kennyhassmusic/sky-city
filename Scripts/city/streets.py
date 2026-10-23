@@ -3,9 +3,13 @@
 Every road gets the cross-section in Scripts/roads/profiles.py: carriageway, gutter
 pan, beveled curb, sidewalk, and a grass parkway where the section calls for one.
 Junctions get a curb return, a crosswalk (continental, or ladder on a local street)
-and a curb ramp. Furniture is placed by spacing, not by hand: lamps, trees of the
-district's species, drains on the gutter line, hydrants and benches. Nothing is
-placed in the roadway or in the crosswalk.
+and a curb ramp. The crossing sits past the return so the paint is on asphalt.
+Lane lines, edge lines and stop bars are part of the same data. Furniture is placed
+by spacing, not by hand: lamps, trees of the district's species, a grate under each
+tree, bins, weeds at the curb, drains, hydrants, benches and a corner blade sign.
+A district that has a district type scatters only the furniture named on that type.
+Trees still follow the district's vegetation. An untyped district keeps this full kit.
+Manholes and puddles are markings in the carriageway, clear of the zebra.
 
 The output is data. Blender and, later, the editor sweep meshes along it.
 """
@@ -14,6 +18,7 @@ import sys
 from pathlib import Path
 
 import geom
+import signs
 
 _ROADS = Path(__file__).resolve().parents[1] / "roads"
 if str(_ROADS) not in sys.path:
@@ -32,12 +37,13 @@ def build(model):
     curb_paths = []
     crosswalks = []
     ramps = []
+    markings = []
     props = []
     blocks_out = []
 
     for road in roads:
         sec = sections[road["id"]]
-        _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ramps, props)
+        _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ramps, props, markings)
 
     for block in model.get("blocks") or []:
         loop = _block_curb(block, sections)
@@ -51,6 +57,9 @@ def build(model):
                                       "block_id": block["id"]})
             _alley_bollards(model, block, props)
 
+    if any(lot.get("tier") for lot in model.get("lots") or []):
+        _tier_dress(model, surfaces, props)
+
     return {
         "version": 1,
         "sections": {k: _public_section(v) for k, v in sections.items()},
@@ -58,6 +67,7 @@ def build(model):
         "curb_paths": curb_paths,
         "crosswalks": crosswalks,
         "ramps": ramps,
+        "markings": markings,
         "props": props,
         "blocks": blocks_out,
     }
@@ -93,7 +103,7 @@ def inner_sign(road, toward):
     return 1.0 if geom.dot(v, left) >= 0 else -1.0
 
 
-def _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ramps, props):
+def _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ramps, props, markings):
     pts = [(float(p[0]), float(p[1])) for p in road["polyline"]]
     if len(pts) < 2:
         return
@@ -143,7 +153,9 @@ def _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ram
             "cls": road.get("cls") or "minor",
         })
         _furniture(model, road, sec, side, length, trim, district, props)
-    _crossings(model, road, sec, length, junctions, district, crosswalks, ramps, props)
+    _crossings(model, road, sec, length, junctions, district, crosswalks, ramps, props, markings)
+    _lane_lines(road, sec, length, junctions, district, markings)
+    _wear(model, road, sec, length, junctions, district, markings)
 
 
 def _block_curb(block, sections):
@@ -200,14 +212,30 @@ def _furniture(model, road, sec, side, length, trim, district, props):
     lateral = side * (sec["width"] / 2.0 + back + (sec["furniture_w"] * 0.7 if sec["furniture_w"] else sec["parkway_w"] * 0.5))
     bench_lateral = side * (sec["width"] / 2.0 + back + min(sec["sidewalk"] * 0.55, 2.2))
     seed = int(model.get("seed") or 1)
-    _scatter(props, road, "lamp", start, end, lamp_step, lateral, district, seed, side)
+    furn = _typed_furniture(model, district)
+
+    def wants(kind):
+        return furn is None or kind in furn
+
+    if wants("lamp"):
+        _scatter(props, road, "lamp", start, end, lamp_step, lateral, district, seed, side)
     if trees and sec["sidewalk"] > 0:
-        _scatter(props, road, "tree", start + tree_step * 0.5, end, tree_step, lateral, district, seed, side, trees=trees)
-    if sec["core"]:
+        _scatter(props, road, "tree", start + tree_step * 0.5, end, tree_step, lateral, district, seed, side,
+                 trees=trees, grate=wants("grate"))
+    # Untyped core streets keep their benches. A typed district gets a bench only
+    # when its furniture list asks for one, including on a street that is not core.
+    if (furn is None and sec["core"]) or (furn is not None and wants("bench")):
         _scatter(props, road, "bench", start + 12.0, end, 48.0, bench_lateral, district, seed, side)
+    # A bin sits further back on the walk than the weeds, which hug the curb joint.
+    bin_lat = side * (sec["width"] / 2.0 + back + min(max(sec["sidewalk"], 0.0) * 0.72, 2.6))
+    if wants("bin"):
+        _scatter(props, road, "bin", start + 8.0, end - 4.0, 38.0, bin_lat, district, seed, side)
+    if wants("weed"):
+        weed_lat = side * (sec["width"] / 2.0 + back + 0.28)
+        _scatter_some(props, road, "weed", start + 2.5, end, 7.5, weed_lat, district, seed, side, keep=0.5)
 
 
-def _scatter(props, road, kind, start, end, step, lateral, district, seed, side, trees=None):
+def _scatter(props, road, kind, start, end, step, lateral, district, seed, side, trees=None, grate=True):
     if step <= 0 or end <= start:
         return
     i = 0
@@ -232,14 +260,42 @@ def _scatter(props, road, kind, start, end, step, lateral, district, seed, side,
         if kind == "tree" and trees:
             item["species"] = trees[int(geom.rnd(seed, item["id"]) * len(trees)) % len(trees)]
         props.append(item)
+        if kind == "tree" and grate:
+            tree_grate = dict(item)
+            tree_grate["id"] = "prop_%s_grate_%d_%d" % (road["id"], 0 if side > 0 else 1, i)
+            tree_grate["kind"] = "grate"
+            tree_grate.pop("species", None)
+            props.append(tree_grate)
         i += 1
         s += step
 
 
-def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps, props):
+def _scatter_some(props, road, kind, start, end, step, lateral, district, seed, side, keep):
+    """Like _scatter, but only some of the stations are used, so weeds stay patchy."""
+    if step <= 0 or end <= start:
+        return
+    i = 0
+    s = start
+    while s <= end + 0.1:
+        if geom.rnd(seed, road["id"], kind, round(s, 1), side) < keep:
+            p, d = point_on_road(road, s, lateral)
+            yaw = math.degrees(math.atan2(d[1], d[0]))
+            props.append({
+                "id": "prop_%s_%s_%d_%d" % (road["id"], kind, 0 if side > 0 else 1, i),
+                "kind": kind, "x": round(p[0], 2), "y": round(p[1], 2),
+                "yaw": round(yaw, 1), "side": side, "toward_road": -side,
+                "road_id": road["id"], "district_id": district,
+                "source": "generated", "locked": False,
+            })
+        i += 1
+        s += step
+
+
+def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps, props, markings):
     pts = [(float(p[0]), float(p[1])) for p in road["polyline"]]
     radius = sec["curb"]["return_radius_m"]
-    inset = max(8.0, radius * 0.55) + profiles.CONTINENTAL["width_m"] / 2.0
+    # The whole zebra sits on the straight asphalt, past the curb-return trim.
+    inset = radius + profiles.CONTINENTAL["width_m"] / 2.0 + 0.8
     if length < inset * 2 + 6:
         return
     kind = "ladder" if (road.get("cls") or "minor") == "minor" else "continental"
@@ -250,6 +306,7 @@ def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps,
         ends.append(length - inset)
     W = sec["width"]
     back = profiles.curb_back_from_flow(road.get("cls") or "minor")
+    furn = _typed_furniture(model, district)
     for s in ends:
         p, d = point_on_road(road, s, 0.0)
         marks = []
@@ -263,6 +320,17 @@ def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps,
         crosswalks.append({
             "road_id": road["id"], "district_id": district, "kind": kind,
             "s": round(s, 2), "marks": marks,
+        })
+        # Stop bar on the mid-block side of the zebra, so it sits on asphalt with the bars.
+        gap = profiles.CONTINENTAL["width_m"] / 2.0 + profiles.CONTINENTAL["stop_gap_m"]
+        gap += profiles.CONTINENTAL["stop_bar_m"] / 2.0
+        bar_s = s + gap if s < length / 2.0 else s - gap
+        bp, bd = point_on_road(road, bar_s, 0.0)
+        gutter_w = (sec.get("gutter") or {}).get("width_m") or 0.0
+        markings.append({
+            "kind": "stop", "road_id": road["id"], "district_id": district,
+            "material": "M_LanePaint",
+            "polygon": geom.mark_rect(bp, bd, profiles.CONTINENTAL["stop_bar_m"], max(1.2, W - 2.0 * gutter_w)),
         })
         # ramps on both curbs, and a drain on the gutter just upstream of the crossing
         for side in (1.0, -1.0):
@@ -283,16 +351,140 @@ def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps,
                 "side": side, "road_id": road["id"], "district_id": district,
                 "source": "generated", "locked": False,
             })
-        # one hydrant on the left sidewalk, just past the crossing, toward midblock
-        hyd_s = s + 3.5 if s < length / 2 else s - 3.5
-        hp, hd = point_on_road(road, hyd_s, (W / 2.0 + back + 1.1))
+        # A blade sign on the sidewalk beside the crossing. The word is generic.
+        sign_s = s + 1.8 if s < length / 2.0 else s - 1.8
+        sp, sd = point_on_road(road, sign_s, (W / 2.0 + back + 1.35))
+        word = signs.WORDS[int(geom.rnd(int(model.get("seed") or 1), road["id"], int(s), "sign") * len(signs.WORDS)) % len(signs.WORDS)]
         props.append({
-            "id": "prop_%s_hydrant_%d" % (road["id"], int(s)),
-            "kind": "hydrant", "x": round(hp[0], 2), "y": round(hp[1], 2),
-            "yaw": round(math.degrees(math.atan2(hd[1], hd[0])), 1),
+            "id": "prop_%s_sign_%d" % (road["id"], int(round(s))),
+            "kind": "sign", "label": word,
+            "x": round(sp[0], 2), "y": round(sp[1], 2),
+            "yaw": round(math.degrees(math.atan2(sd[1], sd[0])), 1),
             "side": 1, "road_id": road["id"], "district_id": district,
             "source": "generated", "locked": False,
         })
+        # one hydrant on the left sidewalk, just past the crossing, toward midblock.
+        # A typed district gets one only when its furniture list names it.
+        if furn is None or "hydrant" in furn:
+            hyd_s = s + 3.5 if s < length / 2 else s - 3.5
+            hp, hd = point_on_road(road, hyd_s, (W / 2.0 + back + 1.1))
+            props.append({
+                "id": "prop_%s_hydrant_%d" % (road["id"], int(s)),
+                "kind": "hydrant", "x": round(hp[0], 2), "y": round(hp[1], 2),
+                "yaw": round(math.degrees(math.atan2(hd[1], hd[0])), 1),
+                "side": 1, "road_id": road["id"], "district_id": district,
+                "source": "generated", "locked": False,
+            })
+
+
+def _lane_lines(road, sec, length, junctions, district, markings):
+    """Edge lines, a broken line between lanes, and a double centre line. White, M_LanePaint."""
+    pts = [(float(p[0]), float(p[1])) for p in road["polyline"]]
+    if len(pts) < 2 or length < 8:
+        return
+    trim = _end_trim(pts, junctions, sec)
+    # Keep paint off the zebra. The crossing occupies the return plus the bar depth.
+    pad = profiles.CONTINENTAL["width_m"] / 2.0 + 1.4
+    s0 = trim[0] + (pad if trim[0] > 0 else 0.4)
+    s1 = length - trim[1] - (pad if trim[1] > 0 else 0.4)
+    if s1 - s0 < 4:
+        return
+    cursor = -sec["width"] / 2.0
+    elems = sec["elems"]
+    for index, elem in enumerate(elems):
+        kind = elem[0]
+        width = float(elem[1])
+        if kind in ("dy", "twltl"):
+            for side in (-1.0, 1.0):
+                poly = _strip(pts, s0, s1, cursor + width / 2.0 + side * 0.16, 0.1)
+                if poly:
+                    markings.append({
+                        "kind": "centre", "road_id": road["id"], "district_id": district,
+                        "material": "M_LanePaint", "polygon": poly,
+                    })
+        if index < len(elems) - 1:
+            nxt = elems[index + 1][0]
+            boundary = cursor + width
+            if kind in ("dy", "twltl", "barrier") or nxt in ("dy", "twltl", "barrier"):
+                cursor += width
+                continue
+            if "gutter" in (kind, nxt) or "parking" in (kind, nxt) or "shoulder" in (kind, nxt):
+                poly = _strip(pts, s0, s1, boundary, 0.12)
+                if poly:
+                    markings.append({
+                        "kind": "edge", "road_id": road["id"], "district_id": district,
+                        "material": "M_LanePaint", "polygon": poly,
+                    })
+            elif kind == "lane" and nxt == "lane":
+                dash = 3.0
+                gap = 6.0
+                s = s0
+                n = 0
+                while s + dash <= s1 + 0.05:
+                    poly = _strip(pts, s, min(s1, s + dash), boundary, 0.12)
+                    if poly:
+                        markings.append({
+                            "kind": "dash", "road_id": road["id"], "district_id": district,
+                            "material": "M_LanePaint", "polygon": poly,
+                        })
+                    n += 1
+                    s += dash + gap
+                    if n > 80:
+                        break
+        cursor += width
+
+
+def _strip(pts, s0, s1, lateral, width):
+    sub = _trimmed(pts, s0, s1)
+    if len(sub) < 2:
+        return None
+    half = width / 2.0
+    return _ribbon_sides(sub, lateral + half, lateral - half)
+
+
+def _wear(model, road, sec, length, junctions, district, markings):
+    """A manhole in the lane, and puddles along the gutter. Both stay off the zebra."""
+    pts = [(float(p[0]), float(p[1])) for p in road["polyline"]]
+    if len(pts) < 2 or length < 16:
+        return
+    trim = _end_trim(pts, junctions, sec)
+    s0 = trim[0] + 7.0
+    s1 = length - trim[1] - 7.0
+    if s1 - s0 < 8:
+        return
+    seed = int(model.get("seed") or 1)
+    ms = s0 + (s1 - s0) * 0.46
+    lateral = 1.15 if sec["width"] > 6.0 else 0.55
+    mp, _md = point_on_road(road, ms, lateral)
+    markings.append({
+        "kind": "manhole", "road_id": road["id"], "district_id": district,
+        "material": "M_Manhole", "polygon": _disk(mp, 0.38),
+    })
+    gutter_w = (sec.get("gutter") or {}).get("width_m") or 0.3
+    s = s0 + 3.0
+    n = 0
+    while s < s1 and n < 10:
+        for side in (1.0, -1.0):
+            if geom.rnd(seed, road["id"], round(s, 1), side, "puddle") > 0.55:
+                continue
+            lat = side * (sec["width"] / 2.0 - max(0.2, gutter_w) * 0.4)
+            pp, pd = point_on_road(road, s, lat)
+            markings.append({
+                "kind": "puddle", "road_id": road["id"], "district_id": district,
+                "material": "M_Puddle",
+                "polygon": geom.mark_rect(pp, pd, 1.6, 0.72),
+            })
+        s += 16.0
+        n += 1
+
+
+def _disk(centre, radius, n=8):
+    pts = []
+    for i in range(n):
+        a = math.tau * (i + 0.5) / n
+        pts.append((round(centre[0] + math.cos(a) * radius, 3),
+                    round(centre[1] + math.sin(a) * radius, 3)))
+    return pts
 
 
 def _alley_bollards(model, block, props):
@@ -315,6 +507,209 @@ def _alley_bollards(model, block, props):
             "yaw": round(yaw, 1), "district_id": block.get("district_id"),
             "block_id": block["id"], "source": "generated", "locked": False,
         })
+
+
+def _typed_furniture(model, district_id):
+    """The furniture list of a typed district, or None when the district has no type.
+
+    None means the full default kit. An empty list means the type asked for none.
+    A houses or apartments district scatters the union of its income-tier lists,
+    and the tier dress afterwards keeps only what each lot's tier asked for.
+    """
+    if not district_id:
+        return None
+    for district in model.get("districts") or []:
+        if district.get("id") != district_id or not district.get("district_type"):
+            continue
+        names = list(district.get("furniture") or [])
+        if district.get("district_type") in ("houses", "apartments_condos"):
+            found = set(names)
+            for lot in model.get("lots") or []:
+                if lot.get("district_id") == district_id and lot.get("tier"):
+                    found.update(lot.get("furniture") or [])
+            return list(found)
+        return names
+    return None
+
+
+# Kinds a tier list is allowed to thin. Lamps stay (their lighting changes).
+# Signs and drains stay: they mark the crossing, not the income of the block.
+_TIER_FURNITURE = ("bench", "bin", "grate")
+
+
+def _tier_dress(model, surfaces, props):
+    """Lot tiers drive trees, parked cars, fences, lamps, sidewalks and camps.
+
+    Runs only when some lot already has a tier, so an untyped city is unchanged.
+    Lighting and people are extra prop fields. An encampment is a prop zone
+    with people 0: the generator does not place a person.
+    """
+    lots = [lot for lot in model.get("lots") or [] if lot.get("tier") and lot.get("polygon")]
+    if not lots:
+        return
+    seed = int(model.get("seed") or 1)
+    tiered = set()
+    for district in model.get("districts") or []:
+        if district.get("district_type") in ("houses", "apartments_condos"):
+            tiered.add(district.get("id"))
+    for lot in lots:
+        if lot.get("district_id"):
+            tiered.add(lot.get("district_id"))
+
+    def nearest(x, y, district_id):
+        best = None
+        best_d = 1e18
+        for lot in lots:
+            if district_id and lot.get("district_id") not in (None, district_id):
+                continue
+            centre = geom.centroid(lot["polygon"])
+            distance = (centre[0] - x) ** 2 + (centre[1] - y) ** 2
+            if distance < best_d:
+                best_d = distance
+                best = lot
+        return best
+
+    drop = set()
+    for prop in list(props):
+        if prop.get("district_id") not in tiered:
+            continue
+        lot = nearest(prop.get("x") or 0, prop.get("y") or 0, prop.get("district_id"))
+        if prop.get("kind") == "lamp" and lot and lot.get("lighting"):
+            prop["lighting"] = lot["lighting"]
+        if prop.get("kind") == "tree" and lot:
+            density = float(lot.get("tree_density") or 1)
+            if density < 1.0 and geom.rnd(seed, prop.get("id"), "tree_keep") > density:
+                drop.add(prop.get("id"))
+                drop.add((prop.get("id") or "").replace("_tree_", "_grate_", 1))
+        allowed = set((lot or {}).get("furniture") or [])
+        if lot and allowed and prop.get("kind") in _TIER_FURNITURE and prop.get("kind") not in allowed:
+            drop.add(prop.get("id"))
+    if drop:
+        props[:] = [prop for prop in props if prop.get("id") not in drop]
+
+    for walk in surfaces.get("sidewalk") or []:
+        if walk.get("district_id") not in tiered:
+            continue
+        polygon = walk.get("polygon") or []
+        if len(polygon) < 3:
+            continue
+        centre = geom.centroid(polygon)
+        lot = nearest(centre[0], centre[1], walk.get("district_id"))
+        if lot and lot.get("sidewalk"):
+            walk["condition"] = lot["sidewalk"]
+
+    _parked_vehicles(model, props, nearest, tiered)
+    _lot_fences(lots, props)
+    _encampment_props(lots, props)
+
+
+def _parked_vehicles(model, props, nearest, tiered):
+    index = 0
+    for road in model.get("roads") or []:
+        district_id = road.get("district_id")
+        if district_id not in tiered:
+            continue
+        pts = [(float(point[0]), float(point[1])) for point in road.get("polyline") or []]
+        if len(pts) < 2:
+            continue
+        length = sum(geom.dist(a, b) for a, b in zip(pts, pts[1:]))
+        sec = profiles.preview_section(road.get("cls") or "minor", road.get("lanes") or 2,
+                                        bool(road.get("oneway")), bool(road.get("core")))
+        back = profiles.curb_back_from_flow(road.get("cls") or "minor")
+        for side in (1.0, -1.0):
+            lateral = side * (sec["width"] / 2.0 + back + 0.6)
+            station = 8.0
+            guard = 0
+            while station < length - 6.0 and guard < 400:
+                guard += 1
+                point, tangent = point_on_road(road, station, lateral)
+                lot = nearest(point[0], point[1], district_id)
+                per = float(lot.get("parked_per_100m") or 0) if lot else 0
+                step = 100.0 / per if per > 0 else 18.0
+                centre = geom.centroid(lot["polygon"]) if lot and lot.get("polygon") else None
+                if per > 0 and centre is not None and geom.dist(point, centre) <= 45.0:
+                    yaw = math.degrees(math.atan2(tangent[1], tangent[0]))
+                    props.append({
+                        "id": "prop_%s_parked_%d" % (road["id"], index),
+                        "kind": "parked",
+                        "x": round(point[0], 2),
+                        "y": round(point[1], 2),
+                        "yaw": round(yaw, 1),
+                        "side": side,
+                        "road_id": road["id"],
+                        "district_id": district_id,
+                        "source": "generated",
+                        "locked": False,
+                    })
+                    index += 1
+                station += step
+
+
+def _lot_fences(lots, props):
+    for lot in lots:
+        fence = lot.get("fence") or "open"
+        if fence == "open":
+            continue
+        edge = _front_edge(lot)
+        if edge is None:
+            continue
+        mid = geom.lerp(edge[0], edge[1], 0.5)
+        tangent = geom.sub(edge[1], edge[0])
+        props.append({
+            "id": "prop_%s_fence" % lot["id"],
+            "kind": "fence",
+            "style": fence,
+            "gate": bool(lot.get("gate")),
+            "x": round(mid[0], 2),
+            "y": round(mid[1], 2),
+            "yaw": round(math.degrees(math.atan2(tangent[1], tangent[0])), 1),
+            "district_id": lot.get("district_id"),
+            "source": "generated",
+            "locked": False,
+        })
+
+
+def _encampment_props(lots, props):
+    for lot in lots:
+        zone = lot.get("encampment_zone")
+        if not zone:
+            continue
+        polygon = zone.get("polygon") or lot.get("polygon") or []
+        if len(polygon) < 3:
+            continue
+        centre = geom.centroid(polygon)
+        props.append({
+            "id": "prop_%s_encampment" % lot["id"],
+            "kind": "encampment",
+            "people": 0,
+            "x": round(centre[0], 2),
+            "y": round(centre[1], 2),
+            "polygon": [list(point) for point in polygon],
+            "district_id": lot.get("district_id"),
+            "source": "generated",
+            "locked": False,
+        })
+
+
+def _front_edge(lot):
+    polygon = lot.get("polygon") or []
+    if len(polygon) < 2:
+        return None
+    normal = (lot.get("front_normals") or [[0.0, -1.0]])[0]
+    facing = (float(normal[0]), float(normal[1]))
+    best = None
+    best_dot = -1e9
+    count = len(polygon)
+    for index in range(count):
+        start = (float(polygon[index][0]), float(polygon[index][1]))
+        end = (float(polygon[(index + 1) % count][0]), float(polygon[(index + 1) % count][1]))
+        edge = geom.sub(end, start)
+        outward = geom.unit((edge[1], -edge[0]))
+        score = geom.dot(outward, facing)
+        if score > best_dot:
+            best_dot = score
+            best = (start, end)
+    return best
 
 
 def _trees(model, district_id):

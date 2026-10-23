@@ -62,6 +62,58 @@ def mat(name, rgb=(0.5, 0.5, 0.5), metal=0.0, rough=0.6):
     return m
 
 
+# Leaf clusters and bark from Scripts/streets/make_leaf_textures.py (CC0 ambientCG scans).
+# The flat green on M_Leaves_* is only the fallback when those PNGs are not on disk.
+CLUSTER = {
+    "M_Leaves_liveoak": "T_Leaves_liveoak",
+    "M_Leaves_honeylocust": "T_Leaves_honeylocust",
+    "M_Leaves_linden": "T_Leaves_linden",
+    "M_Leaves_elm": "T_Leaves_elm",
+    "M_Bark": "T_Bark",
+}
+
+
+def bind_cluster(material):
+    """Put the species' CC0 cluster on the material and clip the card to the leaves."""
+    stem = CLUSTER.get(material.name)
+    if not stem or material.get("cluster"):
+        return
+    folder = os.path.join(ROOT, "SourceArt", "StreetKit", "textures")
+    color = os.path.join(folder, stem + "_C.png")
+    if not os.path.isfile(color):
+        return
+    nt = material.node_tree
+    bsdf = nt.nodes.get("Principled BSDF")
+    img = bpy.data.images.load(color, check_existing=True)
+    tex = nt.nodes.new("ShaderNodeTexImage")
+    tex.image = img
+    nt.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
+    if stem.startswith("T_Leaves"):
+        nt.links.new(tex.outputs["Alpha"], bsdf.inputs["Alpha"])
+        material.use_backface_culling = False
+        for attr, value in (("blend_method", "CLIP"), ("shadow_method", "CLIP")):
+            if hasattr(material, attr):
+                try:
+                    setattr(material, attr, value)
+                except TypeError:
+                    pass
+        if hasattr(material, "alpha_threshold"):
+            material.alpha_threshold = 0.45
+    normal = os.path.join(folder, stem + "_N.png")
+    if os.path.isfile(normal):
+        nimg = bpy.data.images.load(normal, check_existing=True)
+        try:
+            nimg.colorspace_settings.name = "Non-Color"
+        except TypeError:
+            pass
+        ntex = nt.nodes.new("ShaderNodeTexImage")
+        ntex.image = nimg
+        nmap = nt.nodes.new("ShaderNodeNormalMap")
+        nt.links.new(ntex.outputs["Color"], nmap.inputs["Color"])
+        nt.links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+    material["cluster"] = stem
+
+
 class Builder:
     """Accumulates geometry into one bmesh with per-face material indices."""
 
@@ -382,6 +434,8 @@ def tree(sp, cards=None, do_export=True):
     B = Builder()
     bark = mat("M_Bark", (0.3, 0.26, 0.22), 0.0, 0.9)
     leaf = mat(leaf_m, (0.2, 0.35, 0.12), 0.0, 0.6)
+    bind_cluster(bark)
+    bind_cluster(leaf)
     trunk_r = 0.24 if sp != "liveoak" else 0.32
     base_z = H - ch
     lean = Vector((rnd.uniform(-0.12, 0.12), rnd.uniform(-0.12, 0.12), 0))
