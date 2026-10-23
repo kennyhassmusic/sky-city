@@ -24,6 +24,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 - SCALE CHECK: no change
 - Next: when `Art/ai_textures/` lands, the same schema picks it up
 
+## 2026-10-23 04:40 UTC — cursor cloud agent — curtain walls and real-scale bays
+- State at start: `cursor/citywide-generate-04ef` (PR #6) had daylight frames. Kenny: the central tower was a hollow glass cutaway, and some windows were stretched across the wall.
+- Did: commit `dfaf119` in `Scripts/city/blender_city.py`. Glazed floors are mullions, a metal spandrel at each slab, tinted reflective glass, and an opaque interior per pane. Facade UVs use meters_u / meters_v from the texture record. Bay count is round(length / bay_m) and the glass stays within that module. Commit `c365320` replaces the downtown GLBs (about 50 MB, each file under 22 MB) and re-renders the same four cameras. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Tests: `python3 -I Scripts/city/test_generate_city.py` (OK), `python3 -I Scripts/city/test_city.py` (46 OK). Histograms at exposure 0: aerial day median 138.4 (crushed 0.002), downtown street day 66.4 (0.012), residential day 126.1 (0.006), downtown street dusk 86.9 (0.012, p95 203.5).
+- Found: a glass wall slot used the clear pane shader, so the slab edges and the empty upper floors showed through. Upper room shells on towers are not built; the pane back is the interior.
+- Asks for Kenny: PIE off, `py Scripts/city/import_city_ue.py`, open `SkyCityGenerated`. The GLBs are still the downtown cluster and one residential street.
+- SCALE CHECK: no change
+- Next: mesh more of the core when a larger LFS budget is available. Do not start road stages 2–4 or pack polish unless asked.
+
 ## 2026-10-23 04:20 UTC — cursor cloud agent — daylight and dusk previews
 - State at start: `cursor/citywide-generate-04ef` (PR #6) at `67e1f29`. Meshes in `9c82632`. The Cycles frames were crushed; the residential street median luma was 1.
 - Did: commit `a46b4e9` relights `Scripts/city/blender_city.py` only (CC0 Poly Haven `kloofendal_43d_clear_puresky` plus a sun, AgX, no world volume; dusk uses `kiara_9_dusk`, sun elevation 4.5°, windows glowing). Commit `8d07576` adds `artifacts/previews/sky_city_*_{day,dusk}.png`. Cameras stayed the ones in `city_manifest.json`. GLBs were not rewritten. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Test: `python3 -I Scripts/city/test_generate_city.py` (OK). Cycles 24 samples, denoise, 1280×720. Histograms passed at exposure 0: aerial day median 138.2 (crushed 0.001), downtown street day 74.5 (0.011), residential day 126.3 (0.006), downtown street dusk 84.8 (0.012, p95 206.5).
