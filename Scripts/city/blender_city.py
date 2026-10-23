@@ -14,18 +14,24 @@ Output:
   SourceArt/CityGen/city/CG_<district>_<index>.glb
   SourceArt/CityGen/city/CG_<district>_street_<index>.glb
   SourceArt/CityGen/city/city_manifest.json
-  /opt/cursor/artifacts/previews/sky_city_downtown_aerial.png
-  /opt/cursor/artifacts/previews/sky_city_downtown_street.png
-  /opt/cursor/artifacts/previews/sky_city_residential_street.png
+  artifacts/previews/sky_city_downtown_aerial_day.png
+  artifacts/previews/sky_city_downtown_street_day.png
+  artifacts/previews/sky_city_residential_street_day.png
+  artifacts/previews/sky_city_downtown_street_dusk.png
 
 SKYCITY_BUDGET_MB (default 220) stops the export. SKYCITY_CORE_MAX and
-SKYCITY_RES_MAX cap how many buildings are even considered.
+SKYCITY_RES_MAX cap how many buildings are even considered. SKYCITY_EXPORT=0
+skips the GLB write and keeps the cameras already stored in city_manifest.json.
+Daylight uses the CC0 Poly Haven sky (kloofendal) plus a sun; dusk uses kiara_9_dusk.
 """
 import json
 import math
 import os
+import shutil
+import struct
 import sys
 import time
+import zlib
 
 import bpy
 
@@ -43,7 +49,11 @@ import profiles  # noqa: E402
 import realism  # noqa: E402
 
 OUT = os.path.join(ROOT, "SourceArt", "CityGen", "city")
+REPO_PREVIEWS = os.path.join(ROOT, "artifacts", "previews")
 PREVIEWS = os.environ.get("SKYCITY_PREVIEWS") or "/opt/cursor/artifacts/previews"
+DAY_EXPOSURE = 0.0
+DUSK_EXPOSURE = 0.0
+DUSK_ELEVATION = 4.5
 BUDGET = int(os.environ.get("SKYCITY_BUDGET_MB", "220")) * 1024 * 1024
 FILE_CAP = 22 * 1024 * 1024
 CORE_MAX = int(os.environ.get("SKYCITY_CORE_MAX", "22"))
@@ -61,6 +71,7 @@ DRESS = {
 def main():
     t0 = time.time()
     os.makedirs(OUT, exist_ok=True)
+    os.makedirs(REPO_PREVIEWS, exist_ok=True)
     os.makedirs(PREVIEWS, exist_ok=True)
     print("CITY build", flush=True)
     city = generate_city.build_from_disk()
@@ -91,8 +102,14 @@ def main():
     res_bounds = _bounds(residential, 22.0)
     core_street = _street(city, core_bounds, lib, protos, "CoreStreet")
     res_street = _street(city, res_bounds, lib, protos, "ResStreet")
-    cams = _cameras(anchor, pair, core, residential)
+    locked = _cameras_from_manifest()
+    cams = locked if locked else _cameras(anchor, pair, core, residential)
+    if locked:
+        print("CITY cameras from manifest", flush=True)
     _render(cams, core_obs, core_street, res_obs, res_street)
+    if os.environ.get("SKYCITY_EXPORT", "1") == "0":
+        print("CITY export skipped", round(time.time() - t0, 1), "s", flush=True)
+        return
     files, spent = _export_all(core, core_obs, core_street, residential, res_obs, res_street)
     manifest = {
         "seed": int(city.get("seed") or generate_city.SEED),
@@ -539,6 +556,20 @@ def _clear_of(specs, point, normal, start):
     return x, y
 
 
+def _cameras_from_manifest():
+    """The three shipped views. Relighting must not recompute them."""
+    path = os.path.join(OUT, "city_manifest.json")
+    if not os.path.isfile(path):
+        return None
+    with open(path) as handle:
+        data = json.load(handle)
+    cams = data.get("cameras") or {}
+    needed = ("downtown_street", "aerial", "residential_street")
+    if not all(key in cams for key in needed):
+        return None
+    return {key: cams[key] for key in needed}
+
+
 def _sun_for(eye, target, elevation):
     """Key light from the camera side, so the facade in frame is the lit one."""
     dx, dy = target[0] - eye[0], target[1] - eye[1]
@@ -608,11 +639,174 @@ def _cameras(anchor, pair, core, residential):
     return {"downtown_street": street, "aerial": aerial, "residential_street": res}
 
 
+def _grade_daylight(scene, exposure):
+    """AgX at a daylight exposure. The block grade (Filmic, 0.15) crushed these frames."""
+    try:
+        scene.view_settings.view_transform = "AgX"
+    except (TypeError, ValueError):
+        scene.view_settings.view_transform = "Filmic"
+    for look in ("None",):
+        try:
+            scene.view_settings.look = look
+            break
+        except (TypeError, ValueError):
+            continue
+    scene.view_settings.exposure = float(exposure)
+    scene.view_settings.gamma = 1.0
+    scene.cycles.volume_bounces = 0
+
+
+def _hdr_path(record, key):
+    rel = (realism._map(record, key) or {}).get("hdr")
+    path = realism._abs(bb.ART, rel)
+    if path and os.path.isfile(path):
+        return path
+    return None
+
+
+def _light_city(world, sun_spec, dusk, record):
+    """CC0 Poly Haven sky plus a sun. The environment vector stays unconnected.
+
+    Generated coordinates turn the HDRI into a flat field, and the block volume
+    blacks out a city-sized clip range. Nishita is only the fallback.
+    """
+    nt = world.node_tree
+    nt.nodes.clear()
+    out = nt.nodes.new("ShaderNodeOutputWorld")
+    bg = nt.nodes.new("ShaderNodeBackground")
+    key = "kiara_9_dusk" if dusk else "kloofendal_43d_clear_puresky"
+    path = _hdr_path(record, key)
+    if path:
+        image = bpy.data.images.load(path, check_existing=True)
+        env = nt.nodes.new("ShaderNodeTexEnvironment")
+        env.image = image
+        nt.links.new(env.outputs["Color"], bg.inputs["Color"])
+        print("SKY", os.path.basename(path), flush=True)
+    else:
+        sky = nt.nodes.new("ShaderNodeTexSky")
+        sky.sky_type = "NISHITA"
+        sky.sun_elevation = math.radians(float(sun_spec["elevation"]))
+        sky.sun_rotation = math.radians(float(sun_spec["rotation"]))
+        sky.sun_disc = True
+        nt.links.new(sky.outputs["Color"], bg.inputs["Color"])
+        print("SKY nishita", sun_spec["elevation"], flush=True)
+    bg.inputs["Strength"].default_value = 0.85 if dusk else 1.0
+    nt.links.new(bg.outputs["Background"], out.inputs["Surface"])
+    light_data = bpy.data.lights.get("Key") or bpy.data.lights.new("Key", "SUN")
+    light = bpy.data.objects.get("Key")
+    if light is None:
+        light = bpy.data.objects.new("Key", light_data)
+        bpy.context.scene.collection.objects.link(light)
+    light.data.energy = 1.8 if dusk else 5.0
+    light.data.angle = math.radians(2.2 if dusk else 0.6)
+    light.data.color = (1.0, 0.55, 0.32) if dusk else (1.0, 0.96, 0.9)
+    elev = math.radians(float(sun_spec["elevation"]))
+    rot = math.radians(float(sun_spec["rotation"]))
+    light.rotation_euler = (math.pi / 2.0 - elev, 0.0, rot)
+
+
+def _glow(dusk):
+    glass, interior = (4.0, 14.0) if dusk else (0.6, 1.2)
+    if "M_GlassLit" in bpy.data.materials:
+        bb.set_emission(bpy.data.materials["M_GlassLit"], glass)
+    if "M_InteriorLit" in bpy.data.materials:
+        bb.set_emission(bpy.data.materials["M_InteriorLit"], interior)
+
+
+def _png_luma(path):
+    """Display-referred luma samples from an 8-bit PNG. Blender writes the view transform into it."""
+    with open(path, "rb") as handle:
+        if handle.read(8) != b"\x89PNG\r\n\x1a\n":
+            raise ValueError("not a png: %s" % path)
+        chunks = []
+        width = height = color_type = None
+        while True:
+            size = struct.unpack(">I", handle.read(4))[0]
+            kind = handle.read(4)
+            data = handle.read(size)
+            handle.read(4)
+            if kind == b"IHDR":
+                width, height, _depth, color_type = struct.unpack(">IIBB", data[:10])
+            elif kind == b"IDAT":
+                chunks.append(data)
+            elif kind == b"IEND":
+                break
+    raw = zlib.decompress(b"".join(chunks))
+    channels = {0: 1, 2: 3, 4: 2, 6: 4}[color_type]
+    stride = width * channels
+    cursor = 0
+    prev = bytearray(stride)
+    samples = []
+
+    def paeth(left, up, up_left):
+        guess = left + up - up_left
+        da, db, dc = abs(guess - left), abs(guess - up), abs(guess - up_left)
+        if da <= db and da <= dc:
+            return left
+        return up if db <= dc else up_left
+
+    for y in range(height):
+        filt = raw[cursor]
+        cursor += 1
+        row = bytearray(raw[cursor:cursor + stride])
+        cursor += stride
+        for x in range(stride):
+            left = row[x - channels] if x >= channels else 0
+            up = prev[x]
+            up_left = prev[x - channels] if x >= channels else 0
+            if filt == 1:
+                row[x] = (row[x] + left) & 255
+            elif filt == 2:
+                row[x] = (row[x] + up) & 255
+            elif filt == 3:
+                row[x] = (row[x] + ((left + up) // 2)) & 255
+            elif filt == 4:
+                row[x] = (row[x] + paeth(left, up, up_left)) & 255
+            elif filt != 0:
+                raise ValueError("png filter %s" % filt)
+        prev = row
+        if y % 2:
+            continue
+        for x in range(0, width, 4):
+            offset = x * channels
+            red = row[offset]
+            green = row[offset + 1] if channels > 1 else red
+            blue = row[offset + 2] if channels > 2 else red
+            samples.append(0.2126 * red + 0.7152 * green + 0.0722 * blue)
+    samples.sort()
+    count = len(samples)
+    crushed = sum(1 for value in samples if value < 12) / count
+    mid = sum(1 for value in samples if 48 <= value <= 200) / count
+    return {
+        "median": samples[count // 2],
+        "crushed": crushed,
+        "mid": mid,
+        "p95": samples[int(count * 0.95)],
+        "mean": sum(samples) / count,
+    }
+
+
+def _midtones_ok(stats, dusk):
+    """Daylight keeps a real midtone body. Dusk may be dimmer, but the sky and windows stay lit."""
+    if dusk:
+        return (stats["crushed"] < 0.55 and stats["median"] >= 30
+                and stats["mid"] >= 0.18 and stats["p95"] >= 140)
+    return stats["crushed"] < 0.45 and stats["median"] >= 55 and stats["mid"] >= 0.25
+
+
+def _publish(path):
+    if os.path.abspath(PREVIEWS) == os.path.abspath(REPO_PREVIEWS):
+        return
+    os.makedirs(PREVIEWS, exist_ok=True)
+    shutil.copy2(path, os.path.join(PREVIEWS, os.path.basename(path)))
+
+
 def _render(cams, core_obs, core_street, res_obs, res_street):
     scene = bpy.context.scene
     scene.render.engine = "CYCLES"
     scene.cycles.device = "CPU"
-    scene.cycles.samples = 16
+    samples = int(os.environ.get("SKYCITY_SAMPLES", "24"))
+    scene.cycles.samples = max(16, min(32, samples))
     scene.cycles.use_denoising = True
     scene.cycles.max_bounces = 6
     scene.cycles.diffuse_bounces = 2
@@ -626,7 +820,6 @@ def _render(cams, core_obs, core_street, res_obs, res_street):
     scene.render.resolution_percentage = 100
     scene.render.image_settings.file_format = "PNG"
     scene.render.film_transparent = False
-    realism.grade(scene)
     world = bpy.data.worlds.new("Sky_City")
     scene.world = world
     world.use_nodes = True
@@ -636,33 +829,52 @@ def _render(cams, core_obs, core_street, res_obs, res_street):
         "downtown_street": core_obs + core_street,
         "residential_street": res_obs + res_street,
     }
-    names = {
-        "aerial": "sky_city_downtown_aerial.png",
-        "downtown_street": "sky_city_downtown_street.png",
-        "residential_street": "sky_city_residential_street.png",
-    }
+    shots = [
+        ("aerial", False, "sky_city_downtown_aerial_day.png"),
+        ("downtown_street", False, "sky_city_downtown_street_day.png"),
+        ("residential_street", False, "sky_city_residential_street_day.png"),
+        ("downtown_street", True, "sky_city_downtown_street_dusk.png"),
+    ]
+    wanted = [item for item in os.environ.get("SKYCITY_SHOTS", "").split(",") if item]
+    if wanted:
+        shots = [shot for shot in shots
+                 if shot[0] in wanted or ("%s_%s" % (shot[0], "dusk" if shot[1] else "day")) in wanted]
     everything = core_obs + core_street + res_obs + res_street
-    wanted = [s for s in os.environ.get("SKYCITY_SHOTS", "").split(",") if s]
-    order = wanted or ["aerial", "downtown_street", "residential_street"]
-    for shot in order:
+    for shot, dusk, name in shots:
         show = set(groups[shot])
         for ob in everything:
             ob.hide_render = ob not in show
         bb._look(cams[shot])
-        # The block haze is tuned for a 100 m lot. At city clip range it blacks out the sky.
-        scene.camera.data.clip_end = 700.0
-        realism.sky(world, cams[shot]["sun"], False, record, bb.ART)
-        for node in world.node_tree.nodes:
-            if node.bl_idname == "ShaderNodeVolumePrincipled":
-                node.inputs["Density"].default_value = 0.00035
-        if "M_GlassLit" in bpy.data.materials:
-            bb.set_emission(bpy.data.materials["M_GlassLit"], 0.6)
-        if "M_InteriorLit" in bpy.data.materials:
-            bb.set_emission(bpy.data.materials["M_InteriorLit"], 1.2)
-        scene.render.filepath = os.path.join(PREVIEWS, names[shot])
-        t0 = time.time()
-        bpy.ops.render.render(write_still=True)
-        print("RENDER", names[shot], round(time.time() - t0, 1), flush=True)
+        scene.camera.data.clip_end = 2000.0
+        sun = dict(cams[shot]["sun"])
+        if dusk:
+            sun["elevation"] = DUSK_ELEVATION
+        _light_city(world, sun, dusk, record)
+        _glow(dusk)
+        exposure = DUSK_EXPOSURE if dusk else DAY_EXPOSURE
+        dest = os.path.join(REPO_PREVIEWS, name)
+        scene.render.filepath = dest
+        passed = False
+        for attempt in range(3):
+            _grade_daylight(scene, exposure)
+            t0 = time.time()
+            bpy.ops.render.render(write_still=True)
+            stats = _png_luma(dest)
+            passed = _midtones_ok(stats, dusk)
+            print("HIST", name, "exposure", round(exposure, 2),
+                  "median", round(stats["median"], 1),
+                  "crushed", round(stats["crushed"], 3),
+                  "mid", round(stats["mid"], 3),
+                  "p95", round(stats["p95"], 1),
+                  "mean", round(stats["mean"], 1),
+                  "PASS" if passed else "RETRY",
+                  round(time.time() - t0, 1), flush=True)
+            if passed or attempt == 2:
+                break
+            exposure += 0.7
+        _publish(dest)
+        if not passed:
+            print("HIST FAIL", name, flush=True)
 
 
 def _export_baked(path, objects):
