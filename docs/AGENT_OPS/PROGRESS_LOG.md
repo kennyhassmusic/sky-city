@@ -24,6 +24,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 - SCALE CHECK: no change
 - Next: when `Art/ai_textures/` lands, the same schema picks it up
 
+## 2026-10-23 05:30 UTC — cursor cloud agent — pin the city mesher to Blender 4.2.15
+- State at start: `cursor/citywide-generate-04ef` (PR #6) at `43f0528`. UV pass already pushed. This add-on was requested after the deferred list was written.
+- Did: commit `d8e6720`. `Scripts/city/blender_city.py` prints `bpy.app.version` and stops unless it is 4.2.15. The run line in `README.md` includes `--python-exit-code 1`. A Python warning (via `warnings.showwarning`, because an "error" filter is ignored inside a destructor), a deprecated-API log line, or a missing node or socket calls `os._exit(1)`. After creation, each material and UV map is required on the object, and each modifier goes through `_add_modifier` and is checked the same way. `load_material_record` closes its file. Blender 4.2.15 smoke: library of 40 materials plus one box (`M_Brick`, `UVMap`, Bevel) exits 0. A missing socket, `warnings.warn`, a "deprecated" stderr line, and a launch without `--python-exit-code 1` each exit 1. The city was not re-rendered. GLBs and the hash are unchanged.
+- Found: `warnings.simplefilter("error")` does not stop the process for a ResourceWarning raised in a file destructor. `showwarning` does.
+- Asks for Kenny: none. The mesh census, and the rest of the Next list in `Design/ROADMAP.md`, stay deferred.
+- SCALE CHECK: no change
+- Next: the deferred list. Do not start it until asked.
+
 ## 2026-10-23 05:20 UTC — cursor cloud agent — per-face facade UVs
 - State at start: `cursor/citywide-generate-04ef` (PR #6) at `a8e211a`. Kenny: brick windows were wide and short, and tower sides were stretched.
 - Did: commits `a4ca888` and `a8d7ef8`. Each face is UV'd from its own width and height (`U = width / meters_u`, `V = height / meters_v`) with one scale on both axes. Whole windows keep the 24×19 lit rect in `T_CG_Facade_*.png`. Leftover length is a pilaster. `python3 -I Scripts/city/test_face_uv.py` checks exported buildings and the Blender build exits if density or window aspect is outside 3%. Commit `9c6b8bf` re-exports the GLBs (47.4 MB, each file under 22 MB) and re-renders downtown street day plus a tower-side close-up. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. UV faces 371996, density fails 0, windows 54448, window fails 0, target aspect 1.2632. Worst density ratio 1.0134 (1.3%). Histograms at exposure 0: downtown street day median 107.3, crushed 0.006, midtones 0.977, p95 193.7; tower side day median 173.1, crushed 0.000, midtones 0.881, p95 212.0.
