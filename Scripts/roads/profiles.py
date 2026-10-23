@@ -153,11 +153,13 @@ def carve_gutters(elems, cls, under=False):
 
 
 def preview_section(cls, lanes, oneway, core):
-    """Cross-section for one block, using the same widths as design_section's common cases.
+    """Cross-section for one block. The element list matches roadnet.design_section.
 
-    This is the downtown / neighbourhood case (no expressway deck, no roundabout, no
-    "does it fit between the buildings" shrink). The full city still goes through
-    roadnet.design_section, which calls carve_gutters on the way out.
+    Same lane and parking widths, same centre treatment, same gutter carve. An odd
+    two-way arterial gets a 3.3 m two-way left-turn lane, not a 0.3 m double yellow
+    plus an extra through lane. This does not apply the "does it fit" shrink, a
+    roundabout, a frontage road, or lanes under a deck: those still live in roadnet,
+    because they need the surrounding buildings.
     """
     lanes = max(1, int(lanes))
     lw = LANE_W[cls]
@@ -174,18 +176,37 @@ def preview_section(cls, lanes, oneway, core):
         park = (False, True)     # one loading lane on the right
     else:
         park = (True, True)
+    centre = None
     if oneway:
+        n_f = lanes
+        n_b = 0
+    else:
+        if lanes == 1:
+            lanes = 2
+        if cls == "major" and lanes % 2 == 1 and lanes >= 3:
+            centre = ("twltl", 3.3)
+            n_f = n_b = (lanes - 1) // 2
+        else:
+            n_f = n_b = lanes // 2
+            if cls in ("major", "mid"):
+                centre = ("dy", 0.3)
+            elif cls == "highway":
+                centre = ("barrier", 1.0)
+    if cls == "highway":
+        if oneway:
+            elems = [["shoulder", 1.2, 0]] + [["lane", lw, 1]] * n_f + [["shoulder", 3.0, 0]]
+        else:
+            elems = ([["shoulder", 3.0, 0]] + [["lane", lw, -1]] * n_b
+                     + [["barrier", 1.0, 0]] + [["lane", lw, 1]] * n_f + [["shoulder", 3.0, 0]])
+    elif oneway:
         elems = (([["parking", pw, 0]] if park[0] else [])
-                 + [["lane", lw, 1]] * lanes
+                 + [["lane", lw, 1]] * n_f
                  + ([["parking", pw, 0]] if park[1] else []))
     else:
-        n = max(2, lanes)
-        n_b = n // 2
-        n_f = n - n_b
         elems = (([["parking", pw, 0]] if park[0] else [])
                  + [["lane", lw, -1]] * n_b)
-        if cls in ("major", "mid"):
-            elems.append(["dy", 0.3, 0])
+        if centre:
+            elems.append([centre[0], centre[1], 0])
         elems += [["lane", lw, 1]] * n_f + ([["parking", pw, 0]] if park[1] else [])
     elems, gutter = carve_gutters(elems, cls, False)
     if cls == "highway":

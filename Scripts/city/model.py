@@ -79,8 +79,38 @@ def manifest(model):
     return rows
 
 
+def streetscape_manifest(model):
+    """Curbs, paint and props. Two cities with the same buildings and different streets must not hash equal."""
+    sc = model.get("streetscape") or {}
+    props = []
+    for prop in sc.get("props") or []:
+        props.append({
+            "id": prop.get("id"),
+            "kind": prop.get("kind"),
+            "x": prop.get("x"),
+            "y": prop.get("y"),
+            "species": prop.get("species"),
+            "locked": prop.get("locked"),
+            "source": prop.get("source"),
+            "road_id": prop.get("road_id"),
+        })
+    props.sort(key=lambda row: row["id"] or "")
+    return {
+        "sections": sc.get("sections") or {},
+        "surfaces": sc.get("surfaces") or {},
+        "curb_paths": sc.get("curb_paths") or [],
+        "crosswalks": sc.get("crosswalks") or [],
+        "ramps": sc.get("ramps") or [],
+        "markings": sc.get("markings") or [],
+        "props": props,
+    }
+
+
 def manifest_hash(model):
-    blob = json.dumps(manifest(model), sort_keys=True, separators=(",", ":"))
+    blob = json.dumps(
+        {"buildings": manifest(model), "streetscape": streetscape_manifest(model)},
+        sort_keys=True, separators=(",", ":"),
+    )
     return hashlib.sha256(blob.encode()).hexdigest()
 
 
@@ -303,7 +333,7 @@ def _merge_district_streetscape(old, built, district_id):
             made = [p for p in new_s.get(name) or [] if belongs(p)]
             out[name] = kept + made
         merged[key] = out
-    for key in ("curb_paths", "crosswalks", "ramps", "props", "blocks"):
+    for key in ("curb_paths", "crosswalks", "ramps", "markings", "props", "blocks"):
         kept = [p for p in old.get(key) or [] if not belongs(p)]
         made = [p for p in built.get(key) or [] if belongs(p)]
         merged[key] = kept + made

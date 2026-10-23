@@ -120,16 +120,14 @@ def cameras(city):
     sec = (city.get("streetscape") or {}).get("sections", {}).get("road_south") or {}
     width = float(sec.get("width") or 12.0)
     back = 0.19
-    # Stand in the south lanes, looking east along the curb, with the block on the left.
-    # That puts the gutter, the bevel and the sidewalk in the foreground and the facades
-    # receding, which is the view the street section has to survive.
-    # s=6 sits just west of the corner crosswalk, so the bars and the curb are in the foreground.
-    eye, _direction = streets.point_on_road(road, 6.0, width * 0.22)
-    target, _d = streets.point_on_road(road, 58.0, width / 2.0 + back + 8.0)
+    # Stand in the south lanes, looking east and nearly level, so the zebra a few metres
+    # ahead stays in frame. A high target drops the paint below the lens.
+    eye, _direction = streets.point_on_road(road, 3.5, width * 0.12)
+    target, _d = streets.point_on_road(road, 42.0, width / 2.0 + back + 4.0)
     street = {
         "name": "street",
         "location": [round(eye[0], 2), round(eye[1], 2), 1.65],
-        "target": [round(target[0], 2), round(target[1], 2), 14.0],
+        "target": [round(target[0], 2), round(target[1], 2), 2.4],
         "lens": 24,
         "sun": {"elevation": 28, "rotation": 35, "strength": 1.0},
     }
@@ -143,7 +141,7 @@ def cameras(city):
     dusk = {
         "name": "dusk",
         "location": street["location"],
-        "target": [round(target[0], 2), round(target[1], 2), 28.0],
+        "target": [round(target[0], 2), round(target[1], 2), 14.0],
         "lens": 28,
         "sun": {"elevation": 2.5, "rotation": 70, "strength": 0.35},
     }

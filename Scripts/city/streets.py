@@ -3,9 +3,10 @@
 Every road gets the cross-section in Scripts/roads/profiles.py: carriageway, gutter
 pan, beveled curb, sidewalk, and a grass parkway where the section calls for one.
 Junctions get a curb return, a crosswalk (continental, or ladder on a local street)
-and a curb ramp. Furniture is placed by spacing, not by hand: lamps, trees of the
-district's species, drains on the gutter line, hydrants and benches. Nothing is
-placed in the roadway or in the crosswalk.
+and a curb ramp. The crossing sits past the return so the paint is on asphalt.
+Lane lines, edge lines and stop bars are part of the same data. Furniture is placed
+by spacing, not by hand: lamps, trees of the district's species, drains on the gutter
+line, hydrants and benches. Nothing is placed in the roadway or in the crosswalk.
 
 The output is data. Blender and, later, the editor sweep meshes along it.
 """
@@ -32,12 +33,13 @@ def build(model):
     curb_paths = []
     crosswalks = []
     ramps = []
+    markings = []
     props = []
     blocks_out = []
 
     for road in roads:
         sec = sections[road["id"]]
-        _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ramps, props)
+        _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ramps, props, markings)
 
     for block in model.get("blocks") or []:
         loop = _block_curb(block, sections)
@@ -58,6 +60,7 @@ def build(model):
         "curb_paths": curb_paths,
         "crosswalks": crosswalks,
         "ramps": ramps,
+        "markings": markings,
         "props": props,
         "blocks": blocks_out,
     }
@@ -93,7 +96,7 @@ def inner_sign(road, toward):
     return 1.0 if geom.dot(v, left) >= 0 else -1.0
 
 
-def _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ramps, props):
+def _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ramps, props, markings):
     pts = [(float(p[0]), float(p[1])) for p in road["polyline"]]
     if len(pts) < 2:
         return
@@ -143,7 +146,8 @@ def _lay_road(model, road, sec, junctions, surfaces, curb_paths, crosswalks, ram
             "cls": road.get("cls") or "minor",
         })
         _furniture(model, road, sec, side, length, trim, district, props)
-    _crossings(model, road, sec, length, junctions, district, crosswalks, ramps, props)
+    _crossings(model, road, sec, length, junctions, district, crosswalks, ramps, props, markings)
+    _lane_lines(road, sec, length, junctions, district, markings)
 
 
 def _block_curb(block, sections):
@@ -236,10 +240,11 @@ def _scatter(props, road, kind, start, end, step, lateral, district, seed, side,
         s += step
 
 
-def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps, props):
+def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps, props, markings):
     pts = [(float(p[0]), float(p[1])) for p in road["polyline"]]
     radius = sec["curb"]["return_radius_m"]
-    inset = max(8.0, radius * 0.55) + profiles.CONTINENTAL["width_m"] / 2.0
+    # The whole zebra sits on the straight asphalt, past the curb-return trim.
+    inset = radius + profiles.CONTINENTAL["width_m"] / 2.0 + 0.8
     if length < inset * 2 + 6:
         return
     kind = "ladder" if (road.get("cls") or "minor") == "minor" else "continental"
@@ -263,6 +268,17 @@ def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps,
         crosswalks.append({
             "road_id": road["id"], "district_id": district, "kind": kind,
             "s": round(s, 2), "marks": marks,
+        })
+        # Stop bar on the mid-block side of the zebra, so it sits on asphalt with the bars.
+        gap = profiles.CONTINENTAL["width_m"] / 2.0 + profiles.CONTINENTAL["stop_gap_m"]
+        gap += profiles.CONTINENTAL["stop_bar_m"] / 2.0
+        bar_s = s + gap if s < length / 2.0 else s - gap
+        bp, bd = point_on_road(road, bar_s, 0.0)
+        gutter_w = (sec.get("gutter") or {}).get("width_m") or 0.0
+        markings.append({
+            "kind": "stop", "road_id": road["id"], "district_id": district,
+            "material": "M_LanePaint",
+            "polygon": geom.mark_rect(bp, bd, profiles.CONTINENTAL["stop_bar_m"], max(1.2, W - 2.0 * gutter_w)),
         })
         # ramps on both curbs, and a drain on the gutter just upstream of the crossing
         for side in (1.0, -1.0):
@@ -293,6 +309,71 @@ def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps,
             "side": 1, "road_id": road["id"], "district_id": district,
             "source": "generated", "locked": False,
         })
+
+
+def _lane_lines(road, sec, length, junctions, district, markings):
+    """Edge lines, a broken line between lanes, and a double centre line. White, M_LanePaint."""
+    pts = [(float(p[0]), float(p[1])) for p in road["polyline"]]
+    if len(pts) < 2 or length < 8:
+        return
+    trim = _end_trim(pts, junctions, sec)
+    # Keep paint off the zebra. The crossing occupies the return plus the bar depth.
+    pad = profiles.CONTINENTAL["width_m"] / 2.0 + 1.4
+    s0 = trim[0] + (pad if trim[0] > 0 else 0.4)
+    s1 = length - trim[1] - (pad if trim[1] > 0 else 0.4)
+    if s1 - s0 < 4:
+        return
+    cursor = -sec["width"] / 2.0
+    elems = sec["elems"]
+    for index, elem in enumerate(elems):
+        kind = elem[0]
+        width = float(elem[1])
+        if kind in ("dy", "twltl"):
+            for side in (-1.0, 1.0):
+                poly = _strip(pts, s0, s1, cursor + width / 2.0 + side * 0.16, 0.1)
+                if poly:
+                    markings.append({
+                        "kind": "centre", "road_id": road["id"], "district_id": district,
+                        "material": "M_LanePaint", "polygon": poly,
+                    })
+        if index < len(elems) - 1:
+            nxt = elems[index + 1][0]
+            boundary = cursor + width
+            if kind in ("dy", "twltl", "barrier") or nxt in ("dy", "twltl", "barrier"):
+                cursor += width
+                continue
+            if "gutter" in (kind, nxt) or "parking" in (kind, nxt) or "shoulder" in (kind, nxt):
+                poly = _strip(pts, s0, s1, boundary, 0.12)
+                if poly:
+                    markings.append({
+                        "kind": "edge", "road_id": road["id"], "district_id": district,
+                        "material": "M_LanePaint", "polygon": poly,
+                    })
+            elif kind == "lane" and nxt == "lane":
+                dash = 3.0
+                gap = 6.0
+                s = s0
+                n = 0
+                while s + dash <= s1 + 0.05:
+                    poly = _strip(pts, s, min(s1, s + dash), boundary, 0.12)
+                    if poly:
+                        markings.append({
+                            "kind": "dash", "road_id": road["id"], "district_id": district,
+                            "material": "M_LanePaint", "polygon": poly,
+                        })
+                    n += 1
+                    s += dash + gap
+                    if n > 80:
+                        break
+        cursor += width
+
+
+def _strip(pts, s0, s1, lateral, width):
+    sub = _trimmed(pts, s0, s1)
+    if len(sub) < 2:
+        return None
+    half = width / 2.0
+    return _ribbon_sides(sub, lateral + half, lateral - half)
 
 
 def _alley_bollards(model, block, props):

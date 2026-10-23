@@ -80,6 +80,20 @@ class ProfilesTest(unittest.TestCase):
         self.assertFalse(core["parkway"])
         self.assertAlmostEqual(core["sidewalk"], profiles.SIDEWALK_CORE, places=2)
 
+    def test_odd_two_way_arterial_matches_design_section(self):
+        # design_section: 3-lane two-way downtown arterial is lane + 3.3 m twltl + lane,
+        # 9.9 m before and after the gutter carve.
+        sec = profiles.preview_section("major", 3, False, True)
+        self.assertEqual([e[0] for e in sec["elems"]], ["gutter", "lane", "twltl", "lane", "gutter"])
+        self.assertAlmostEqual(sec["width"], 9.9, places=2)
+        self.assertAlmostEqual(sec["elems"][2][1], 3.3, places=2)
+        even = profiles.preview_section("major", 2, False, True)
+        self.assertEqual([e[0] for e in even["elems"]], ["gutter", "lane", "dy", "lane", "gutter"])
+        hwy = profiles.preview_section("highway", 2, False, False)
+        self.assertEqual([e[0] for e in hwy["elems"]], ["shoulder", "lane", "barrier", "lane", "shoulder"])
+        self.assertIsNone(hwy["gutter"])
+        self.assertAlmostEqual(hwy["width"], 14.2, places=2)
+
     def test_roadnet_source_calls_carve(self):
         src = pathlib.Path(__file__).resolve().parent / "roadnet.py"
         text = src.read_text()

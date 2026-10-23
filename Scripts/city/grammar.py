@@ -14,7 +14,7 @@ import geom
 import yaml_lite
 from skyline import project_root
 
-SHAPES = ("flat", "gabled", "hipped", "pyramidal", "dome")
+SHAPES = ("flat", "gabled", "hipped", "pyramidal", "dome", "mansard", "setback", "parapet")
 _STYLES = None
 
 
@@ -47,7 +47,7 @@ def evaluate(lot, style_name, sky, seed, styles=None):
     floors, z_top, roof_h = stack_floors(footprint, target, style, tags, sky, lot.get("hero"))
     roof = roof_for(floors[-1]["polygon"] if floors else footprint, z_top, roof_h, style, tags, seed, lot["id"])
     fronts = _fronts(lot)
-    facades = facade_plan(floors, fronts, style)
+    facades = facade_plan(floors, fronts, style, seed, lot["id"])
     built = round(z_top + roof["h"], 2)
     return {
         "id": lot.get("building_id") or ("b_" + lot["id"]),
@@ -258,7 +258,8 @@ def roof_for(footprint, z, roof_h, style, tags, seed, lot_id):
     if shape not in SHAPES:
         shape = "flat"
     units = []
-    kinds = list(style.get("roof_units") or []) if shape == "flat" else []
+    # Units sit on a flat deck. A hip or a gable has no deck to put them on.
+    kinds = list(style.get("roof_units") or []) if shape in ("flat", "parapet", "setback", "mansard") else []
     c = geom.centroid(footprint) if footprint else (0.0, 0.0)
     sx, sy = geom.spans(footprint) if footprint else (10.0, 10.0)
     for kind in kinds:
@@ -277,7 +278,7 @@ def _fronts(lot):
     return [list(names[f]) for f in fronts if f in names] or [[0.0, -1.0]]
 
 
-def facade_plan(floors, fronts, style):
+def facade_plan(floors, fronts, style, seed=1, lot_id="lot"):
     out = []
     bay = float(style["bay_m"])
     pier = float(style["pier_m"])
@@ -310,6 +311,22 @@ def facade_plan(floors, fronts, style):
             if opening_w < 0.4:
                 count = max(1, int(length / (0.4 + pier_w)))
                 opening_w = (length - (count + 1) * pier_w) / max(1, count)
+            kinds = []
+            for bay_i in range(int(count)):
+                roll = geom.rnd(int(seed), lot_id, fi, bay_i, "bay")
+                if opening == "storefront":
+                    kinds.append("door" if bay_i == int(count) // 2 else ("transom" if roll < 0.35 else "storefront"))
+                elif opening == "curtain":
+                    kinds.append("mullion" if roll < 0.45 else "curtain")
+                elif opening == "alley":
+                    kinds.append("blind" if roll < 0.4 else "window")
+                elif roll < 0.14:
+                    kinds.append("blind")
+                elif roll < 0.34:
+                    kinds.append("narrow")
+                else:
+                    kinds.append("window")
+            sill_shift = round((geom.rnd(int(seed), lot_id, fi, "sill") - 0.5) * 0.1, 3)
             out.append({
                 "floor": fi, "z": fl["z"], "h": fl["h"],
                 "a": [round(a[0], 3), round(a[1], 3)],
@@ -321,6 +338,8 @@ def facade_plan(floors, fronts, style):
                 "pier_w": round(pier_w, 3),
                 "cornice": fl.get("cornice") or 0,
                 "door": bool(fl["use"] == "ground" and role == "front"),
+                "bay_kinds": kinds,
+                "sill_shift": sill_shift,
             })
     return out
 

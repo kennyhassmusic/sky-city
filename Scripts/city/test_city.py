@@ -105,6 +105,20 @@ class GrammarTest(unittest.TestCase):
         self.assertLessEqual(len(texas["floors"]), 3)
         self.assertEqual(texas["roof"]["shape"], "hipped")
 
+    def test_study_styles_use_four_roofs(self):
+        sky = _sky()
+        expect = {
+            "prewar_masonry": "parapet",
+            "glass_curtain": "setback",
+            "art_deco": "mansard",
+            "modern_mixed": "hipped",
+        }
+        for style, shape in expect.items():
+            spec = grammar.evaluate(_square_lot(style), style, sky, 2)
+            self.assertEqual(spec["roof"]["shape"], shape)
+            kinds = {k for face in spec["facades"] for k in face.get("bay_kinds") or []}
+            self.assertGreater(len(kinds), 1)
+
     def test_far_clips_a_normal_building_and_not_a_hero(self):
         lot = _square_lot("far", 30)
         sky = _sky(base_height_m=90, far=1.2)
@@ -372,6 +386,16 @@ class SampleStreetTest(unittest.TestCase):
         self.assertTrue(sc["crosswalks"])
         self.assertEqual(kinds.get("road_east"), "ladder")
         self.assertTrue(sc["ramps"])
+        self.assertTrue(any(m["kind"] == "dash" for m in sc["markings"]))
+        self.assertTrue(any(m["kind"] == "stop" for m in sc["markings"]))
+        self.assertTrue(all(m.get("material") == "M_LanePaint" for m in sc["markings"]))
+        south = next(r for r in city["roads"] if r["id"] == "road_south")
+        radius = sc["sections"]["road_south"]["curb"]["return_radius_m"]
+        south_s = [c["s"] for c in sc["crosswalks"] if c["road_id"] == "road_south"]
+        self.assertTrue(south_s)
+        self.assertGreater(min(south_s), radius + 1.0)
+        # The bars themselves start past the curb-return trim.
+        self.assertGreater(min(south_s) - 1.5, radius)
         self.assertTrue(any(p["kind"] == "drain" for p in sc["props"]))
         self.assertTrue(any(p["kind"] == "tree" for p in sc["props"]))
         corners = []
@@ -409,6 +433,18 @@ class SampleStreetTest(unittest.TestCase):
         a = model_mod.manifest_hash(block.build_sample())
         b = model_mod.manifest_hash(block.build_sample())
         self.assertEqual(a, b)
+
+    def test_streetscape_changes_the_hash(self):
+        city = block.build_sample()
+        original = model_mod.manifest_hash(city)
+        moved = copy.deepcopy(city)
+        mark = moved["streetscape"]["markings"][0]
+        p0 = mark["polygon"][0]
+        mark["polygon"][0] = (p0[0] + 4.0, p0[1])
+        self.assertNotEqual(model_mod.manifest_hash(moved), original)
+        hashed = model_mod.streetscape_manifest(city)
+        self.assertTrue(hashed["markings"])
+        self.assertTrue(hashed["props"])
 
 
 def _loop(x0, y0, x1, y1):

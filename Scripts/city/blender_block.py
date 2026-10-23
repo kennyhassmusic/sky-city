@@ -34,6 +34,7 @@ sys.path.insert(0, CITY)
 sys.path.insert(0, os.path.join(ROOT, "Scripts", "streets"))
 sys.path.insert(0, os.path.join(ROOT, "Scripts", "roads"))
 
+import geom  # noqa: E402
 import grammar  # noqa: E402
 import profiles  # noqa: E402
 
@@ -62,7 +63,7 @@ def main():
     reset()
     lib = make_library(mats)
     street_objects = build_street(data, lib)
-    prototypes = make_prototypes()
+    prototypes = make_prototypes(data)
     place_props(data, prototypes, street_objects)
     report = {"seed": data["seed"], "hash": data["manifest_hash"], "styles": {}, "renders": []}
     only_styles = [s for s in os.environ.get("SKYCITY_STYLES", "").split(",") if s]
@@ -102,7 +103,11 @@ def load_material_record():
 
 
 def make_library(record):
-    """Shared Blender materials. Image textures are for the render; GLB export skips images."""
+    """Shared Blender materials. GLBs keep the slot names and do not embed the scans.
+
+    Scripts/city/import_block_ue.py binds these JPGs in the editor. Embedding them in
+    every LOD would copy the same maps into each file and blow the pull-request cap.
+    """
     lib = {}
     for slot, ident in SLOT.items():
         info = record.get(ident) or {}
@@ -116,7 +121,8 @@ def make_library(record):
     lib["curb"] = flat("M_Curb", (0.78, 0.76, 0.72), 0.55)
     lib["interior_lit"] = emissive("M_InteriorLit", (1.0, 0.72, 0.38), 0.4)
     lib["roof"] = flat("M_Roof", (0.18, 0.19, 0.2), 0.7)
-    lib["lane"] = flat("M_LanePaint", (0.92, 0.92, 0.9), 0.4)
+    lib["lane"] = flat("M_LanePaint", (0.98, 0.98, 0.97), 0.28)
+    set_emission(lib["lane"], 0.55)
     return lib
 
 
@@ -133,7 +139,8 @@ def textured(slot, maps, uv_m):
         tex.image = img
         mapping = nt.nodes.new("ShaderNodeMapping")
         coord = nt.nodes.new("ShaderNodeTexCoord")
-        mapping.inputs["Scale"].default_value = (1.0 / uv_m, 1.0 / uv_m, 1.0)
+        # Mesh UVs are already in repeats of uv_m, so the mapping scale stays 1.
+        mapping.inputs["Scale"].default_value = (1.0, 1.0, 1.0)
         nt.links.new(coord.outputs["UV"], mapping.inputs["Vector"])
         nt.links.new(mapping.outputs["Vector"], tex.inputs["Vector"])
         nt.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
@@ -248,50 +255,59 @@ class Mesh(object):
                 loop[self.uv].uv = uv
         f.normal_update()
 
+    def _tile(self, mat):
+        """Metres per texture repeat. UVs are stored in those repeats, not 0-1 per face."""
+        try:
+            scale = float(mat.get("uv_m") or 1.0)
+        except (TypeError, ValueError):
+            scale = 1.0
+        return scale if scale > 1e-4 else 1.0
+
+    def _uv(self, u_len, v_len, mat):
+        s = self._tile(mat)
+        return [(0.0, 0.0), (u_len / s, 0.0), (u_len / s, v_len / s), (0.0, v_len / s)]
+
     def box(self, origin, axis_u, axis_v, axis_w, size, mat):
-        """A box. size is (u, v, w) full extents. origin is the centre."""
+        """A box. size is (u, v, w) full extents. origin is the centre.
+
+        Each face is UV'd in metres divided by the material's scan size, so a 3 m
+        brick repeat tiles across a pier instead of stretching once over it.
+        """
         u, v, w = size
         cu, cv, cw = u / 2.0, v / 2.0, w / 2.0
-        corners = []
-        for su in (-1, 1):
-            for sv in (-1, 1):
-                for sw in (-1, 1):
-                    p = (origin[0] + axis_u[0] * su * cu + axis_v[0] * sv * cv + axis_w[0] * sw * cw,
-                         origin[1] + axis_u[1] * su * cu + axis_v[1] * sv * cv + axis_w[1] * sw * cw,
-                         origin[2] + axis_u[2] * su * cu + axis_v[2] * sv * cv + axis_w[2] * sw * cw)
-                    corners.append(p)
-        # corners index: su, sv, sw with su slowest? I appended su, sv, sw with su outer.
-        # Rebuild explicitly so the winding is obvious.
+
         def at(su, sv, sw):
             return (origin[0] + axis_u[0] * su * cu + axis_v[0] * sv * cv + axis_w[0] * sw * cw,
                     origin[1] + axis_u[1] * su * cu + axis_v[1] * sv * cv + axis_w[1] * sw * cw,
                     origin[2] + axis_u[2] * su * cu + axis_v[2] * sv * cv + axis_w[2] * sw * cw)
+        # (corners, length along the face's first edge, length along the second)
         quads = [
-            ((-1, -1, 1), (1, -1, 1), (1, 1, 1), (-1, 1, 1)),
-            ((-1, 1, -1), (1, 1, -1), (1, -1, -1), (-1, -1, -1)),
-            ((-1, -1, -1), (1, -1, -1), (1, -1, 1), (-1, -1, 1)),
-            ((1, 1, -1), (-1, 1, -1), (-1, 1, 1), (1, 1, 1)),
-            ((1, -1, -1), (1, 1, -1), (1, 1, 1), (1, -1, 1)),
-            ((-1, 1, -1), (-1, -1, -1), (-1, -1, 1), (-1, 1, 1)),
+            (((-1, -1, 1), (1, -1, 1), (1, 1, 1), (-1, 1, 1)), abs(u), abs(v)),
+            (((-1, 1, -1), (1, 1, -1), (1, -1, -1), (-1, -1, -1)), abs(u), abs(v)),
+            (((-1, -1, -1), (1, -1, -1), (1, -1, 1), (-1, -1, 1)), abs(u), abs(w)),
+            (((1, 1, -1), (-1, 1, -1), (-1, 1, 1), (1, 1, 1)), abs(u), abs(w)),
+            (((1, -1, -1), (1, 1, -1), (1, 1, 1), (1, -1, 1)), abs(v), abs(w)),
+            (((-1, 1, -1), (-1, -1, -1), (-1, -1, 1), (-1, 1, 1)), abs(v), abs(w)),
         ]
-        for quad in quads:
-            pts = [at(*c) for c in quad]
-            self.face(pts, mat, [(0, 0), (1, 0), (1, 1), (0, 1)])
+        for quad, lu, lv in quads:
+            self.face([at(*c) for c in quad], mat, self._uv(lu, lv, mat))
 
     def prism(self, poly, z0, z1, mat):
         """Extrude a CCW polygon in plan between two heights."""
         n = len(poly)
         if n < 3 or z1 <= z0:
             return
+        s = self._tile(mat)
         top = [(p[0], p[1], z1) for p in poly]
         bot = [(p[0], p[1], z0) for p in poly]
-        self.face(top, mat, [(p[0] * 0.25, p[1] * 0.25) for p in poly])
-        self.face(list(reversed(bot)), mat, [(p[0] * 0.25, p[1] * 0.25) for p in poly])
+        self.face(top, mat, [(p[0] / s, p[1] / s) for p in poly])
+        self.face(list(reversed(bot)), mat, [(p[0] / s, p[1] / s) for p in poly])
         for i in range(n):
             a, b = poly[i], poly[(i + 1) % n]
+            length = math.hypot(b[0] - a[0], b[1] - a[1])
             self.face(
                 [(a[0], a[1], z0), (b[0], b[1], z0), (b[0], b[1], z1), (a[0], a[1], z1)],
-                mat, [(0, 0), (1, 0), (1, 1), (0, 1)],
+                mat, self._uv(length, z1 - z0, mat),
             )
 
     def finish(self, collection):
@@ -330,26 +346,19 @@ def build_street(data, lib):
         for poly in sc["surfaces"].get(kind) or []:
             ring = poly["polygon"]
             if kind == "asphalt":
-                # Keep the travel lanes. The pan is the curb sweep, not this quad.
                 continue
             mesh.prism(ring, z - 0.04, z, lib[mat_name])
         if mesh.bm.faces:
             made.append(mesh.finish(col))
         else:
             mesh.bm.free()
+    # Full carriageway ribbons, including the square where two roads meet. The old
+    # mesh stopped at the curb-return trim, so the corner in front of the camera was a hole.
+    # Later roads sit a millimetre higher so the overlap does not flicker.
     lanes = Mesh("Lanes")
-    for curb in sc["curb_paths"]:
-        if curb.get("kind") != "straight":
-            continue
-        road_id = curb.get("road_id")
-        sec = sections.get(road_id) or {}
-        gutter = (sec.get("gutter") or {}).get("width_m") or 0.0
-        width = float(sec.get("width") or 0)
-        if width <= 0 or curb.get("side", 1) < 0:
-            continue
-        # One asphalt ribbon per road, between the two lane edges (inside the pans).
-        half = width / 2.0 - gutter
-        lanes.prism(_offset_ribbon(curb["polyline"], half), 0.0, 0.012, lib["asphalt"])
+    for index, poly in enumerate(sc["surfaces"].get("asphalt") or []):
+        top = 0.012 + 0.0015 * index
+        lanes.prism(poly["polygon"], top - 0.03, top, lib["asphalt"])
     if lanes.bm.faces:
         made.append(lanes.finish(col))
     else:
@@ -362,9 +371,12 @@ def build_street(data, lib):
     else:
         curbs.bm.free()
     paint = Mesh("Paint")
+    # Above the tallest asphalt ribbon. M_LanePaint is near-white so the bars read.
     for cross in sc.get("crosswalks") or []:
         for mark in cross.get("marks") or []:
-            paint.prism(mark["polygon"], 0.02, 0.035, lib["paint"])
+            paint.prism(mark["polygon"], 0.03, 0.055, lib["lane"])
+    for mark in sc.get("markings") or []:
+        paint.prism(mark["polygon"], 0.028, 0.048, lib["lane"])
     if paint.bm.faces:
         made.append(paint.finish(col))
     else:
@@ -461,7 +473,7 @@ def _ramp(mesh, ramp, mat):
               [(0, 0), (1, 0), (1, 1), (0, 1)])
 
 
-def make_prototypes():
+def make_prototypes(data):
     import blender_street_kit as kit
     protos = {}
     lamp = kit.street_lamp(do_export=False)
@@ -476,11 +488,17 @@ def make_prototypes():
     boll.hide_render = True
     boll.hide_set(True)
     protos["bollard"] = boll
-    for species in ("linden", "elm", "liveoak", "honeylocust"):
-        ob = kit.tree(species, cards=90, do_export=False)
+    species = sorted({
+        (p.get("species") or "linden")
+        for p in (data.get("streetscape") or {}).get("props") or []
+        if p.get("kind") == "tree"
+    }) or ["linden"]
+    for name in species:
+        # Species card counts (320-440), with the CC0 cluster on M_Leaves_*.
+        ob = kit.tree(name, do_export=False)
         ob.hide_render = True
         ob.hide_set(True)
-        protos["tree_" + species] = ob
+        protos["tree_" + name] = ob
     protos["bench"] = _bench()
     protos["hydrant"] = _hydrant()
     return protos
@@ -593,6 +611,7 @@ def _facade(mesh, building, facade, wall, trim, metal, lib):
     open_w = float(facade["opening_w"])
     bays = int(facade["bays"])
     sill_r, head_r = float(building.get("sill") or 0.3), float(building.get("head") or 0.75)
+    sill_r += float(facade.get("sill_shift") or 0)
     opening = facade["opening"]
     if opening == "storefront":
         sill_r, head_r = 0.02, 0.9
@@ -600,36 +619,60 @@ def _facade(mesh, building, facade, wall, trim, metal, lib):
         sill_r, head_r = 0.06, 0.94
     elif opening == "alley":
         sill_r, head_r = 0.42, 0.72
-    sill = z0 + h * sill_r
-    head = z0 + h * head_r
+    sill = z0 + h * max(0.0, min(0.85, sill_r))
+    head = z0 + h * max(sill_r + 0.2, min(0.98, head_r))
     thick = recess + 0.2
     tangent = (tx, ty, 0)
     inward = (ix, iy, 0)
     up = (0, 0, 1)
     # Top spandrel, full width, so the floors stack as bands.
     _span(mesh, (ax, ay), tangent, inward, up, length, thick, head, z0 + h, wall)
-    door_bay = facade.get("door") and bays > 0
-    door_i = bays // 2 if door_bay else -1
+    kinds = facade.get("bay_kinds") or []
     cursor = 0.0
     for i in range(bays):
-        # pier, then the opening
+        kind = kinds[i] if i < len(kinds) else "window"
         _span(mesh, (ax + tx * cursor, ay + ty * cursor), tangent, inward, up, pier_w, thick, z0, z0 + h, trim)
         cursor += pier_w
-        bay_sill = z0 if i == door_i else sill
+        origin = (ax + tx * cursor, ay + ty * cursor)
+        if kind == "blind":
+            _span(mesh, origin, tangent, inward, up, open_w, thick, z0, z0 + h, wall)
+            cursor += open_w
+            continue
+        bay_w = open_w * (0.58 if kind == "narrow" else 1.0)
+        inset = (open_w - bay_w) / 2.0
+        if inset > 0.02:
+            _span(mesh, origin, tangent, inward, up, inset, thick, z0, z0 + h, wall)
+        bay_sill, bay_head = sill, head
+        if kind == "door":
+            bay_sill = z0
+        elif kind == "transom":
+            bay_sill = z0 + h * 0.46
+        elif kind == "storefront":
+            bay_sill, bay_head = z0 + h * 0.06, z0 + h * 0.9
         if bay_sill > z0 + 0.05:
-            _span(mesh, (ax + tx * cursor, ay + ty * cursor), tangent, inward, up, open_w, thick, z0, bay_sill, wall)
-        _window(mesh, building, facade, i, (ax + tx * cursor, ay + ty * cursor), tangent, inward,
-                open_w, bay_sill, head, recess, lib)
+            _span(mesh, (origin[0] + tx * inset, origin[1] + ty * inset), tangent, inward, up,
+                  bay_w, thick, z0, bay_sill, wall)
+        _window(mesh, building, facade, i, (origin[0] + tx * inset, origin[1] + ty * inset),
+                tangent, inward, bay_w, bay_sill, bay_head, recess, lib, kind)
+        if kind in ("mullion", "curtain") and bay_w > 1.4:
+            bar = min(0.08, bay_w * 0.04)
+            _span(mesh, (origin[0] + tx * (inset + bay_w / 2.0 - bar / 2.0),
+                         origin[1] + ty * (inset + bay_w / 2.0 - bar / 2.0)),
+                  tangent, inward, up, bar, thick * 0.35, bay_sill, bay_head, trim)
+        if inset > 0.02:
+            _span(mesh, (origin[0] + tx * (inset + bay_w), origin[1] + ty * (inset + bay_w)),
+                  tangent, inward, up, inset, thick, z0, z0 + h, wall)
         cursor += open_w
     _span(mesh, (ax + tx * cursor, ay + ty * cursor), tangent, inward, up, max(0.05, length - cursor), thick, z0, z0 + h, trim)
     cornice = float(facade.get("cornice") or 0)
     if cornice > 0.05:
-        # A ledge proud of the wall.
-        depth = min(0.45, cornice * 0.35)
+        # A ledge proud of the wall. The seed changes how heavy it is from building to building.
+        scale = 0.65 + 0.7 * geom.rnd(int(building.get("seed") or 1), building["id"], int(facade.get("floor") or 0), "cornice")
+        depth = min(0.75, cornice * 0.42 * scale)
         centre = (ax + tx * length / 2.0 - nx * depth / 2.0,
                   ay + ty * length / 2.0 - ny * depth / 2.0,
-                  z0 + h - 0.12)
-        mesh.box(centre, tangent, (nx, ny, 0), up, (length, depth, 0.22), trim)
+                  z0 + h - 0.08)
+        mesh.box(centre, tangent, (nx, ny, 0), up, (length, depth, 0.16 + 0.14 * scale), trim)
 
 
 def _span(mesh, origin_xy, tangent, inward, up, length, thick, z0, z1, mat):
@@ -641,13 +684,15 @@ def _span(mesh, origin_xy, tangent, inward, up, length, thick, z0, z1, mat):
     mesh.box(centre, tangent, inward, up, (length, thick, z1 - z0), mat)
 
 
-def _window(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, z1, recess, lib):
+def _window(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, z1, recess, lib, kind="window"):
     if z1 <= z0 + 0.15 or width < 0.2:
         return
-    # Jambs, head and sill of the recess, then the pane, then the lit room.
-    # The grammar recess is the minimum. The frame is built deeper than a decal so the
-    # hole still reads from the street, and the trim stands proud of the brick.
-    depth = max(0.55, recess * 2.0)
+    # Punched openings are deep enough to read from the street. Curtain bays stay shallower
+    # but still step back behind the mullion, so the glass is not a decal on the pier.
+    if facade.get("opening") == "curtain" or kind in ("curtain", "mullion"):
+        depth = max(0.55, recess * 3.0)
+    else:
+        depth = max(1.05, recess * 3.2)
     jamb = min(0.16, width * 0.14)
     frame = lib["plaster"]
     # Reveal: the frame steps back from the wall face, which is what makes the opening a hole.
@@ -688,19 +733,32 @@ def _roof(mesh, building, wall, trim, metal, roof_mat):
     z = float(roof.get("z") or (floors[-1]["z"] + floors[-1]["h"]))
     h = float(roof.get("h") or 1.0)
     shape = roof.get("shape") or "flat"
-    if shape == "flat":
-        mesh.prism(poly, z, z + float(building.get("parapet_m") or 0.4) * 0.15, roof_mat)
-        _parapet(mesh, poly, z, float(building.get("parapet_m") or 0.6), trim)
+    deck = z
+    if shape in ("flat", "parapet"):
+        mesh.prism(poly, z, z + 0.16, roof_mat)
+        _parapet(mesh, poly, z, float(building.get("parapet_m") or 1.1), trim)
+        deck = z
     elif shape == "gabled":
         _gable(mesh, poly, z, h, roof_mat)
+        deck = z + h
     elif shape == "hipped":
-        _gable(mesh, poly, z, h * 0.85, roof_mat)
+        _hip(mesh, poly, z, h, roof_mat)
+        deck = z + h
+    elif shape == "mansard":
+        deck = _mansard(mesh, poly, z, h, roof_mat, trim)
+    elif shape == "setback":
+        deck = _setback_roof(mesh, poly, z, h, roof_mat, trim)
     elif shape == "pyramidal":
         _pyramid(mesh, poly, z, h, roof_mat)
+        deck = z + h
     elif shape == "dome":
         _dome(mesh, poly, z, h, roof_mat)
-    for unit in roof.get("units") or []:
-        _unit(mesh, unit, metal, roof_mat)
+        deck = z + h
+    if shape in ("flat", "parapet", "setback", "mansard"):
+        for unit in roof.get("units") or []:
+            placed = dict(unit)
+            placed["z"] = deck
+            _unit(mesh, placed, metal, roof_mat)
 
 
 def _parapet(mesh, poly, z, height, mat):
@@ -714,6 +772,100 @@ def _parapet(mesh, poly, z, height, mat):
         ox, oy = dy / L, -dx / L
         centre = ((a[0] + b[0]) / 2.0 - ox * 0.12, (a[1] + b[1]) / 2.0 - oy * 0.12, z + height / 2.0)
         mesh.box(centre, (tx, ty, 0), (ox, oy, 0), (0, 0, 1), (L, 0.22, height), mat)
+
+
+def _face_up(mesh, pts, mat):
+    """A roof face whose normal points up. Three or four points."""
+    if len(pts) < 3:
+        return
+    ax = pts[1][0] - pts[0][0]
+    ay = pts[1][1] - pts[0][1]
+    bx = pts[2][0] - pts[0][0]
+    by = pts[2][1] - pts[0][1]
+    if ax * by - ay * bx < 0:
+        pts = list(reversed(pts))
+    if len(pts) == 3:
+        uvs = [(0, 0), (1, 0), (0.5, 1)]
+    else:
+        uvs = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    mesh.face(pts, mat, uvs)
+
+
+def _hip(mesh, poly, z, h, mat):
+    """A hip: ridge along the long axis, triangular ends. Not a gable with the ridge to the eave."""
+    xs = [p[0] for p in poly]
+    ys = [p[1] for p in poly]
+    x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+    sx, sy = x1 - x0, y1 - y0
+    if sx >= sy:
+        inset = sy / 2.0
+        mid = (y0 + y1) / 2.0
+        r0 = (x0 + inset, mid, z + h)
+        r1 = (x1 - inset, mid, z + h)
+        if r1[0] - r0[0] < 0.2:
+            c = ((x0 + x1) / 2.0, mid, z + h)
+            _face_up(mesh, [(x0, y0, z), (x1, y0, z), c], mat)
+            _face_up(mesh, [(x1, y1, z), (x0, y1, z), c], mat)
+            _face_up(mesh, [(x0, y1, z), (x0, y0, z), c], mat)
+            _face_up(mesh, [(x1, y0, z), (x1, y1, z), c], mat)
+            return
+        _face_up(mesh, [(x0, y0, z), (x1, y0, z), r1, r0], mat)
+        _face_up(mesh, [(x1, y1, z), (x0, y1, z), r0, r1], mat)
+        _face_up(mesh, [(x0, y0, z), r0, (x0, y1, z)], mat)
+        _face_up(mesh, [(x1, y0, z), (x1, y1, z), r1], mat)
+    else:
+        inset = sx / 2.0
+        mid = (x0 + x1) / 2.0
+        r0 = (mid, y0 + inset, z + h)
+        r1 = (mid, y1 - inset, z + h)
+        if r1[1] - r0[1] < 0.2:
+            c = (mid, (y0 + y1) / 2.0, z + h)
+            _face_up(mesh, [(x0, y0, z), (x1, y0, z), c], mat)
+            _face_up(mesh, [(x1, y1, z), (x0, y1, z), c], mat)
+            _face_up(mesh, [(x0, y1, z), (x0, y0, z), c], mat)
+            _face_up(mesh, [(x1, y0, z), (x1, y1, z), c], mat)
+            return
+        _face_up(mesh, [(x0, y0, z), (x1, y0, z), r0], mat)
+        _face_up(mesh, [(x1, y1, z), (x0, y1, z), r1], mat)
+        _face_up(mesh, [(x0, y0, z), r0, r1, (x0, y1, z)], mat)
+        _face_up(mesh, [(x1, y0, z), (x1, y1, z), r1, r0], mat)
+
+
+def _mansard(mesh, poly, z, h, mat, trim):
+    """Steep lower slope, then a flat cap with a low parapet. Returns the deck height for roof units."""
+    ring = [tuple(p) for p in poly]
+    span = min(geom.spans(ring))
+    run = min(2.6, max(1.2, span * 0.22))
+    inner = geom.offset_polygon(ring, run)
+    if not inner or len(inner) != len(ring):
+        _hip(mesh, poly, z, h * 0.55, mat)
+        return z + h * 0.55
+    z1 = z + max(2.2, h * 0.72)
+    for i in range(len(ring)):
+        a, b = ring[i], ring[(i + 1) % len(ring)]
+        c, d = inner[i], inner[(i + 1) % len(inner)]
+        _face_up(mesh, [(a[0], a[1], z), (b[0], b[1], z), (d[0], d[1], z1), (c[0], c[1], z1)], mat)
+    mesh.prism(inner, z1, z1 + 0.16, mat)
+    _parapet(mesh, inner, z1 + 0.16, 0.65, trim)
+    return z1 + 0.16
+
+
+def _setback_roof(mesh, poly, z, h, mat, trim):
+    """A flat roof, a parapet, and a penthouse stepped in from the plate."""
+    mesh.prism(poly, z, z + 0.14, mat)
+    _parapet(mesh, poly, z, 0.8, trim)
+    ring = [tuple(p) for p in poly]
+    span = min(geom.spans(ring))
+    run = min(3.4, max(1.6, span * 0.16))
+    inner = geom.offset_polygon(ring, run)
+    pent = max(3.0, h)
+    if not inner or len(inner) < 3:
+        return z
+    mesh.prism(inner, z, z + pent, trim)
+    cap = geom.offset_polygon(inner, min(1.2, run * 0.4))
+    if cap and len(cap) >= 3 and geom.poly_area(cap) > 4.0:
+        mesh.prism(cap, z + pent, z + pent + 1.6, mat)
+    return z + pent
 
 
 def _gable(mesh, poly, z, h, mat):
