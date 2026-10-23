@@ -124,6 +124,57 @@
           "items": {
             "type": "string"
           }
+        },
+        "district_type": {
+          "enum": [
+            "brand_new",
+            "historic_old",
+            "eclectic_mix",
+            "tech",
+            "green_renewable",
+            "houses",
+            "apartments_condos",
+            "industrial_commercial",
+            "utilities"
+          ]
+        },
+        "height_m": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "buildings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "roofs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "materials": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "furniture": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "wear": {
+          "type": "number"
+        },
+        "mix": {
+          "type": "object"
         }
       }
     },

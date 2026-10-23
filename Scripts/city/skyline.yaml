@@ -89,6 +89,119 @@ characters:
       far: 0
       hero_count: 0
 
+# First-class district types. Heights are metres [low, high]. buildings name grammar
+# styles. materials name CC0 slots. pack is the folder under Scripts/city/packs:
+# packs/<type>/manifest.json, filled in later by an AI texture set. wear is 0
+# (just built) to 1 (heavily weathered). furniture is what the streetscape may
+# scatter once a district has a type; trees come from vegetation.
+# A mix on a type is a sub-mix: blocks inside that district are painted from it.
+district_types:
+  brand_new:
+    buildings: [glass_curtain, modern_mixed]
+    height_m: [18, 72]
+    roofs: [flat, setback]
+    materials: [concrete, glass, metal]
+    pack: brand_new
+    vegetation: [honeylocust, linden]
+    wear: 0.05
+    furniture: [lamp, bench, bin, grate]
+  historic_old:
+    buildings: [prewar_masonry, art_deco, brick_walkup]
+    height_m: [12, 48]
+    roofs: [parapet, mansard, gabled]
+    materials: [brick, plaster]
+    pack: historic_old
+    vegetation: [elm, linden]
+    wear: 0.75
+    furniture: [lamp, bench, hydrant, bin]
+  eclectic_mix:
+    buildings: [prewar_masonry, modern_mixed, art_deco, brick_walkup]
+    height_m: [10, 55]
+    roofs: [parapet, flat, gabled, mansard]
+    materials: [brick, concrete, plaster]
+    pack: eclectic_mix
+    vegetation: [linden, elm, liveoak]
+    wear: 0.45
+    furniture: [lamp, bench, bin, grate]
+    mix:
+      historic_old: 40
+      brand_new: 35
+      tech: 25
+  tech:
+    buildings: [glass_curtain, modern_mixed]
+    height_m: [24, 96]
+    roofs: [flat, setback]
+    materials: [glass, metal, concrete]
+    pack: tech
+    vegetation: [honeylocust]
+    wear: 0.08
+    furniture: [lamp, bin, grate]
+  green_renewable:
+    buildings: [modern_mixed, texas_lowrise]
+    height_m: [8, 36]
+    roofs: [hipped, flat]
+    materials: [plaster, concrete]
+    pack: green_renewable
+    vegetation: [liveoak, honeylocust]
+    wear: 0.15
+    furniture: [lamp, bench, grate]
+  houses:
+    buildings: [texas_lowrise, brick_walkup]
+    height_m: [6, 12]
+    roofs: [gabled, hipped]
+    materials: [brick, plaster]
+    pack: houses
+    vegetation: [liveoak, elm]
+    wear: 0.35
+    furniture: [lamp, bin]
+  apartments_condos:
+    buildings: [modern_mixed, brick_walkup, glass_curtain]
+    height_m: [14, 42]
+    roofs: [flat, parapet, setback]
+    materials: [concrete, brick, glass]
+    pack: apartments_condos
+    vegetation: [linden, honeylocust]
+    wear: 0.2
+    furniture: [lamp, bench, bin, grate]
+  industrial_commercial:
+    buildings: [industrial, modern_mixed]
+    height_m: [8, 24]
+    roofs: [flat, gabled]
+    materials: [concrete, metal]
+    pack: industrial_commercial
+    vegetation: [honeylocust]
+    wear: 0.55
+    furniture: [lamp, bin]
+  utilities:
+    buildings: [industrial]
+    height_m: [6, 18]
+    roofs: [flat, gabled]
+    materials: [concrete, metal]
+    pack: utilities
+    vegetation: [honeylocust]
+    wear: 0.4
+    furniture: [lamp]
+
+# Mix ratios are weights, not percents: 40, 30, 30 is the same as 4, 3, 3.
+# city is the fallback. regions.<name> wins when assign_districts is given that
+# region. downtown here is a region name, not the downtown character.
+mix:
+  city:
+    tech: 20
+    historic_old: 15
+    eclectic_mix: 12
+    apartments_condos: 15
+    houses: 15
+    green_renewable: 8
+    brand_new: 8
+    industrial_commercial: 5
+    utilities: 2
+  regions:
+    downtown:
+      tech: 40
+      eclectic_mix: 30
+      apartments_condos: 30
+
 # The one-block study. Four readings of the same lots and the same height field.
 variations:
   - prewar_masonry

@@ -45,11 +45,12 @@ def evaluate(lot, style_name, sky, seed, styles=None):
     target = target_height(lot, sky, seed, style, tags)
     footprint = _coverage_footprint(lot.get("polygon") or [], float(sky.get("coverage") or 1), lot.get("hero"))
     floors, z_top, roof_h = stack_floors(footprint, target, style, tags, sky, lot.get("hero"))
-    roof = roof_for(floors[-1]["polygon"] if floors else footprint, z_top, roof_h, style, tags, seed, lot["id"])
+    roof = roof_for(floors[-1]["polygon"] if floors else footprint, z_top, roof_h, style, tags, seed, lot["id"],
+                    sky.get("roofs") if sky.get("roofs") else None)
     fronts = _fronts(lot)
     facades = facade_plan(floors, fronts, style, seed, lot["id"])
     built = round(z_top + roof["h"], 2)
-    return {
+    spec = {
         "id": lot.get("building_id") or ("b_" + lot["id"]),
         "lot_id": lot["id"],
         "district_id": lot.get("district_id"),
@@ -70,10 +71,7 @@ def evaluate(lot, style_name, sky, seed, styles=None):
         "head": style["head"],
         "tint": list(style.get("tint") or [1, 1, 1]),
         "parapet_m": style.get("parapet_m") or 0.4,
-        "materials": {
-            "wall": style["wall"], "trim": style["trim"],
-            "metal": style.get("metal") or "metal", "glass": "glass",
-        },
+        "materials": _materials(style, sky),
         "footprint": [list(p) for p in (floors[0]["polygon"] if floors else footprint)],
         "floors": floors,
         "roof": roof,
@@ -81,6 +79,22 @@ def evaluate(lot, style_name, sky, seed, styles=None):
         "balconies": balconies(facades, style),
         "lod": {"lod0": "modules", "lod1": "floor_bands", "lod2": "shell", "far": "box", "nanite": True},
     }
+    # Wear is recorded only for a typed district, so untyped specs stay byte-identical.
+    if sky.get("district_type") and "wear" in sky:
+        spec["wear"] = round(float(sky["wear"]), 3)
+    return spec
+
+
+def _materials(style, sky):
+    slots = {
+        "wall": style["wall"], "trim": style["trim"],
+        "metal": style.get("metal") or "metal", "glass": "glass",
+    }
+    palette = list(sky.get("materials") or [])
+    if palette and sky.get("district_type"):
+        slots["palette"] = palette
+        slots["wall"] = palette[0]
+    return slots
 
 
 def target_height(lot, sky, seed, style, tags=None):
@@ -253,8 +267,15 @@ def _mark_cornices(floors, style):
         floors[podium - 1]["cornice"] = float(style.get("cornice_m") or 0) * 0.65
 
 
-def roof_for(footprint, z, roof_h, style, tags, seed, lot_id):
-    shape = tags.get("roof:shape") or style.get("roof") or "flat"
+def roof_for(footprint, z, roof_h, style, tags, seed, lot_id, roofs=None):
+    # An OSM roof:shape tag still wins. A district type's roof list is next.
+    # The style's own roof is the fallback, which is what untyped districts use.
+    shape = tags.get("roof:shape")
+    choices = [name for name in (roofs or []) if name in SHAPES]
+    if not shape and choices:
+        shape = choices[int(geom.rnd(seed, lot_id, "roof_shape") * len(choices)) % len(choices)]
+    if not shape:
+        shape = style.get("roof") or "flat"
     if shape not in SHAPES:
         shape = "flat"
     units = []

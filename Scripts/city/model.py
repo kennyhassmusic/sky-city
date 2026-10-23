@@ -47,9 +47,9 @@ def regenerate(model, layer, district_id=None, sky=None):
     order = ["blocks", "lots", "buildings", "streetscape"]
     for name in order[order.index(layer):]:
         if name == "blocks":
-            _rebuild_blocks(model, district_id)
+            _rebuild_blocks(model, district_id, sky)
         elif name == "lots":
-            _rebuild_lots(model, district_id)
+            _rebuild_lots(model, district_id, sky)
         elif name == "buildings":
             _rebuild_buildings(model, district_id, sky)
         else:
@@ -133,7 +133,7 @@ def find(model, element_id):
     return None, None
 
 
-def _rebuild_blocks(model, district_id):
+def _rebuild_blocks(model, district_id, sky=None):
     faces = network.faces(network.node_roads(model.get("roads") or []))
     kept = []
     for block in model.get("blocks") or []:
@@ -154,6 +154,9 @@ def _rebuild_blocks(model, district_id):
     # a regenerated id that a lock already holds is the lock's copy
     held = {b["id"] for b in kept}
     model["blocks"] = kept + [b for b in fresh if b["id"] not in held]
+    # A district mix is painted onto the blocks it owns. Districts with no mix
+    # are left alone, which keeps the study block and the character tests stable.
+    _stamp_block_mixes(model, district_id, sky)
 
 
 def _covered_by_hand(centre, face, blocks):
@@ -201,7 +204,7 @@ def _face_block(model, face, district):
     }
 
 
-def _rebuild_lots(model, district_id):
+def _rebuild_lots(model, district_id, sky=None):
     kept_other = []
     new_lots = []
     donors = _survey_donors(model, district_id)
@@ -236,6 +239,7 @@ def _rebuild_lots(model, district_id):
                 "role": "lot",
                 "tags": _tags_from_donors(piece["polygon"], donors),
             })
+        _tag_fresh_lots(fresh, block, model, sky)
         new_lots.extend(existing)
         new_lots.extend(fresh)
     model["lots"] = kept_other + new_lots
@@ -264,10 +268,61 @@ def _rebuild_buildings(model, district_id, sky):
         for lot in district_lots:
             if lot["id"] in by_lot:
                 continue
-            spec = grammar.evaluate(lot, params["style"], params, seed)
+            lot_params = skyline.for_lot(district, lot, sky)
+            spec = grammar.evaluate(lot, _lot_style(district, lot, lot_params, seed), lot_params, seed)
             spec["district_id"] = district["id"]
             fresh.append(spec)
     model["buildings"] = kept + fresh
+
+
+def _lot_style(district, lot, params, seed):
+    """One grammar style. A typed district varies across its building list.
+
+    A pinned style, or a district that has no type, keeps the single style the
+    skyline already resolved. The roll is seeded by the lot id so a rebuild
+    repeats it.
+    """
+    buildings = list(params.get("buildings") or [])
+    typed = (lot or {}).get("district_type") or (district or {}).get("district_type")
+    if typed and buildings and not (district or {}).get("style_pinned"):
+        index = int(geom.rnd(seed, lot["id"], "district_style") * len(buildings)) % len(buildings)
+        return buildings[index]
+    return params["style"]
+
+
+def _stamp_block_mixes(model, district_id, sky):
+    if not any(district.get("mix") for district in model.get("districts") or []):
+        return
+    import districts as district_types
+    table = district_types.table(sky or skyline.load())
+    seed = int(model.get("seed") or 1)
+    for district in model.get("districts") or []:
+        if district_id and district["id"] != district_id:
+            continue
+        if district.get("mix"):
+            district_types.stamp_children(model, district, table, seed, include_lots=False)
+
+
+def _tag_fresh_lots(fresh, block, model, sky):
+    """Lots inherit the block's nested type. A block with its own mix is split further."""
+    if not fresh:
+        return
+    if block.get("mix"):
+        import districts as district_types
+        table = district_types.table(sky or skyline.load())
+        parent = next((item for item in model.get("districts") or []
+                       if item.get("id") == block.get("district_id")), None)
+        outside = district_types.outside_context(model, parent) if parent else []
+        district_types.assign_children(
+            fresh, block["mix"], int(model.get("seed") or 1), block.get("id"), table, outside=outside)
+        return
+    if not block.get("district_type"):
+        return
+    for lot in fresh:
+        if lot.get("locked") or lot.get("type_source") == "hand":
+            continue
+        lot["district_type"] = block["district_type"]
+        lot["type_source"] = "generated"
 
 
 def _assign_heroes(district_lots, params, seed):

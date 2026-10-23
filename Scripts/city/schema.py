@@ -35,6 +35,11 @@ def validate(model):
         character = district.get("character") or "custom"
         if character not in CHARACTERS:
             raise ValueError("district %s has character %s" % (district["id"], character))
+        kind = district.get("district_type")
+        if kind:
+            import districts as district_types
+            if kind not in district_types.TYPE_NAMES:
+                raise ValueError("district %s has district type %s" % (district["id"], kind))
     for road in model["roads"]:
         _element(road, ids, "road")
         if len(road.get("polyline") or []) < 2:
@@ -115,6 +120,17 @@ def write_schema_file():
                     "style": {"type": "string"},
                     "skyline": {"type": "object"},
                     "trees": {"type": "array", "items": {"type": "string"}},
+                    "district_type": {"enum": [
+                        "brand_new", "historic_old", "eclectic_mix", "tech", "green_renewable",
+                        "houses", "apartments_condos", "industrial_commercial", "utilities",
+                    ]},
+                    "height_m": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+                    "buildings": {"type": "array", "items": {"type": "string"}},
+                    "roofs": {"type": "array", "items": {"type": "string"}},
+                    "materials": {"type": "array", "items": {"type": "string"}},
+                    "furniture": {"type": "array", "items": {"type": "string"}},
+                    "wear": {"type": "number"},
+                    "mix": {"type": "object"},
                 },
             },
             "road": {

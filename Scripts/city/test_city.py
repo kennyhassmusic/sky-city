@@ -3,6 +3,7 @@
 Run: python3 -I Scripts/city/test_city.py
 """
 import copy
+import json
 import sys
 import tempfile
 import unittest
@@ -10,6 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import block
+import districts as district_types
 import geom
 import grammar
 import lots as lots_mod
@@ -453,6 +455,245 @@ class SampleStreetTest(unittest.TestCase):
         hashed = model_mod.streetscape_manifest(city)
         self.assertTrue(hashed["markings"])
         self.assertTrue(hashed["props"])
+
+
+class DistrictTypeTest(unittest.TestCase):
+    def test_nine_types_and_the_downtown_mix(self):
+        sky = skyline.load()
+        styles = grammar.load_styles()
+        table = district_types.table(sky)
+        self.assertEqual(set(table), set(district_types.TYPE_NAMES))
+        for name in district_types.TYPE_NAMES:
+            spec = table[name]
+            for key in district_types.REQUIRED:
+                self.assertIn(key, spec, name)
+            self.assertGreaterEqual(len(spec["buildings"]), 1)
+            for style_name in spec["buildings"]:
+                self.assertIn(style_name, styles)
+            for shape in spec["roofs"]:
+                self.assertIn(shape, grammar.SHAPES)
+            self.assertGreaterEqual(float(spec["wear"]), 0.0)
+            self.assertLessEqual(float(spec["wear"]), 1.0)
+            self.assertEqual(len(spec["height_m"]), 2)
+            self.assertLess(float(spec["height_m"][0]), float(spec["height_m"][1]))
+        downtown = district_types.resolve_mix(sky, "downtown")
+        self.assertEqual(downtown, {"tech": 40, "eclectic_mix": 30, "apartments_condos": 30})
+        city_mix = district_types.resolve_mix(sky, None)
+        self.assertEqual(city_mix["houses"], 15)
+        self.assertEqual(city_mix["utilities"], 2)
+        self.assertEqual(city_mix["industrial_commercial"], 5)
+        self.assertIn("utilities", district_types.conflicts("houses"))
+        self.assertIn("industrial_commercial", district_types.conflicts("houses"))
+        self.assertIn("houses", district_types.conflicts("utilities"))
+        self.assertIn("apartments_condos", district_types.conflicts("utilities"))
+        self.assertNotIn("tech", district_types.conflicts("houses"))
+
+    def test_untyped_district_keeps_the_character_skyline(self):
+        sky = skyline.load()
+        params = skyline.for_district(
+            {"character": "downtown", "style": "prewar_masonry", "trees": ["linden", "elm"]}, sky)
+        self.assertEqual(params["base_height_m"], 52)
+        self.assertEqual(params["style"], "prewar_masonry")
+        self.assertNotIn("buildings", params)
+        self.assertNotIn("district_type", params)
+
+    def test_type_heights_yield_to_a_district_override(self):
+        sky = skyline.load()
+        district = {
+            "character": "custom", "district_type": "houses",
+            "buildings": ["texas_lowrise", "brick_walkup"],
+            "height_m": [6, 12], "wear": 0.35, "trees": ["liveoak", "elm"],
+            "skyline": {},
+        }
+        params = skyline.for_district(district, sky)
+        self.assertAlmostEqual(params["base_height_m"], 9.0)
+        self.assertAlmostEqual(params["edge_height_m"], 6.0)
+        district["skyline"] = {"base_height_m": 22}
+        params = skyline.for_district(district, sky)
+        self.assertEqual(params["base_height_m"], 22)
+
+    def test_assign_is_seeded_and_keeps_utilities_off_houses(self):
+        mix = {"houses": 40, "utilities": 30, "industrial_commercial": 30, "tech": 40}
+        base = _district_row(6)
+        first, _ = ops.assign_districts(base, mix=mix)
+        second, _ = ops.assign_districts(base, mix=mix)
+        kinds = [district["district_type"] for district in first["districts"]]
+        self.assertEqual(kinds, [district["district_type"] for district in second["districts"]])
+        again, _ = ops.assign_districts(first, mix=mix)
+        self.assertEqual(kinds, [district["district_type"] for district in again["districts"]])
+        for left, right in zip(kinds, kinds[1:]):
+            self.assertNotIn(right, district_types.conflicts(left))
+        self.assertTrue(set(kinds) <= set(mix))
+        # Nothing in the mix is allowed next to houses, so the lighter share wins.
+        forced = _district_row(2)
+        forced, _ = ops.set_district_type(forced, "d0", "houses")
+        forced, _ = ops.assign_districts(
+            forced, mix={"utilities": 1, "industrial_commercial": 5})
+        neighbour = next(district for district in forced["districts"] if district["id"] == "d1")
+        self.assertEqual(neighbour["district_type"], "utilities")
+
+    def test_locked_and_hand_types_stay(self):
+        city = _district_row(3)
+        city["districts"][0]["locked"] = True
+        painted, _ = ops.assign_districts(city, region="downtown")
+        locked = next(district for district in painted["districts"] if district["id"] == "d0")
+        self.assertNotIn("district_type", locked)
+        hand, _ = ops.set_district_type(city, "d1", "green_renewable")
+        painted, _ = ops.assign_districts(hand, region="downtown")
+        kept = next(district for district in painted["districts"] if district["id"] == "d1")
+        self.assertEqual(kept["district_type"], "green_renewable")
+        self.assertEqual(kept["type_source"], "hand")
+        for district in painted["districts"]:
+            if district["id"] == "d0":
+                continue
+            self.assertIn(district["district_type"], ("tech", "eclectic_mix", "apartments_condos", "green_renewable"))
+
+    def test_nested_mix_and_boundary(self):
+        city = _district_row(1, width=80)
+        city["blocks"] = [_block("b%d" % i, "d0", i * 20, 0, 20, 20) for i in range(4)]
+        typed, _ = ops.set_district_type(city, "d0", "eclectic_mix")
+        self.assertEqual(typed["districts"][0]["mix"]["historic_old"], 40)
+        leaves = [block["district_type"] for block in typed["blocks"]]
+        self.assertEqual(len(leaves), 4)
+        self.assertTrue(set(leaves) <= {"historic_old", "brand_new", "tech"})
+        again, _ = ops.set_district_type(city, "d0", "eclectic_mix")
+        self.assertEqual(leaves, [block["district_type"] for block in again["blocks"]])
+
+        # A hand mix replaces the type's mix, and a houses neighbour bans utilities.
+        pair = _district_row(2, width=40)
+        pair, _ = ops.set_district_type(pair, "d0", "houses")
+        pair["blocks"] = [
+            _block("b_near", "d1", 40, 0, 15, 40),
+            _block("b_far", "d1", 72, 5, 8, 30),
+        ]
+        mixed, _ = ops.set_mix(pair, "d1", {"utilities": 50, "tech": 50, "industrial_commercial": 20})
+        near = next(block for block in mixed["blocks"] if block["id"] == "b_near")
+        self.assertEqual(near["district_type"], "tech")
+        self.assertEqual(mixed["districts"][1]["mix_source"], "hand")
+        far = next(block for block in mixed["blocks"] if block["id"] == "b_far")
+        self.assertIn(far["district_type"], ("tech", "utilities", "industrial_commercial"))
+
+    def test_typed_buildings_use_the_recipe(self):
+        city = _district_row(1, width=80)
+        city["blocks"] = [_block("block_a", "d0", 5, 5, 50, 50)]
+        city["lots"] = []
+        for index in range(6):
+            x0 = 8 + (index % 3) * 16
+            y0 = 8 + (index // 3) * 20
+            city["lots"].append({
+                "id": "lot_%d" % index,
+                "source": "generated",
+                "locked": False,
+                "district_id": "d0",
+                "block_id": "block_a",
+                "polygon": [[x0, y0], [x0 + 12, y0], [x0 + 12, y0 + 14], [x0, y0 + 14]],
+                "front_normals": [[0.0, -1.0]],
+                "role": "lot",
+                "tags": {},
+            })
+        city, _ = ops.set_district_type(city, "d0", "tech")
+        city, _ = ops.regenerate(city, "buildings")
+        roofs = set()
+        for building in city["buildings"]:
+            self.assertIn(building["style"], ("glass_curtain", "modern_mixed"))
+            self.assertIn(building["roof"]["shape"], ("flat", "setback"))
+            self.assertAlmostEqual(building["wear"], 0.08)
+            self.assertGreaterEqual(building["target_height"], 24)
+            self.assertLessEqual(building["target_height"], 96)
+            roofs.add(building["roof"]["shape"])
+        self.assertTrue(roofs)
+        pinned, _ = ops.set_skyline(city, "d0", {"style": "prewar_masonry"})
+        pinned, _ = ops.regenerate(pinned, "buildings")
+        self.assertTrue(all(building["style"] == "prewar_masonry" for building in pinned["buildings"]))
+
+    def test_typed_street_furniture(self):
+        plain = _two_streets(None)
+        plain_kinds = {prop["kind"] for prop in plain["streetscape"]["props"]}
+        self.assertIn("hydrant", plain_kinds)
+        self.assertIn("weed", plain_kinds)
+        self.assertIn("bench", plain_kinds)
+        self.assertIn("grate", plain_kinds)
+        typed = _two_streets("tech")
+        props = typed["streetscape"]["props"]
+        kinds = {prop["kind"] for prop in props}
+        self.assertIn("lamp", kinds)
+        self.assertIn("tree", kinds)
+        self.assertIn("grate", kinds)
+        self.assertIn("bin", kinds)
+        self.assertNotIn("hydrant", kinds)
+        self.assertNotIn("weed", kinds)
+        self.assertNotIn("bench", kinds)
+        species = {prop["species"] for prop in props if prop["kind"] == "tree"}
+        self.assertEqual(species, {"honeylocust"})
+
+    def test_texture_pack_falls_back_to_cc0(self):
+        missing = ops.texture_pack("tech")
+        self.assertEqual(missing["source"], "cc0")
+        self.assertIsNone(missing["path"])
+        self.assertEqual(missing["textures"]["glass"], "glass")
+        self.assertEqual(missing["textures"]["concrete"], "concrete_wall_001")
+        self.assertEqual(missing["textures"]["metal"], "metal_plate")
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / "packs" / "tech"
+            folder.mkdir(parents=True)
+            manifest = {
+                "district": "tech",
+                "materials": ["glass", "metal"],
+                "textures": {"glass": "glass_color.png"},
+            }
+            (folder / "manifest.json").write_text(json.dumps(manifest))
+            found = ops.texture_pack("tech", root=tmp)
+            self.assertEqual(found["source"], "pack")
+            self.assertEqual(found["materials"], ["glass", "metal"])
+            self.assertEqual(found["textures"]["glass"], "glass_color.png")
+            (folder / "manifest.json").write_text("{")
+            broken = ops.texture_pack("tech", root=tmp)
+            self.assertEqual(broken["source"], "cc0")
+        with self.assertRaises(ValueError):
+            ops.texture_pack("suburbs")
+        city = _district_row(1)
+        with self.assertRaises(ValueError):
+            ops.set_district_type(city, "d0", "suburbs")
+        city["districts"][0]["district_type"] = "mall"
+        with self.assertRaises(ValueError):
+            schema.validate(city)
+
+
+def _district_row(count, width=40):
+    city = model_mod.new_model([-5, -5, count * width + 5, width + 5], 1408)
+    for index in range(count):
+        x0 = index * width
+        city, _ = ops.add_district(
+            city, [[x0, 0], [x0 + width, 0], [x0 + width, width], [x0, width]],
+            character="custom", name="D%d" % index, district_id="d%d" % index,
+        )
+    return city
+
+
+def _block(ident, district_id, x, y, w, h):
+    return {
+        "id": ident,
+        "source": "generated",
+        "locked": False,
+        "district_id": district_id,
+        "polygon": [[x, y], [x + w, y], [x + w, y + h], [x, y + h]],
+    }
+
+
+def _two_streets(type_name):
+    city = model_mod.new_model([-30, -30, 160, 80], 1408)
+    city, _ = ops.add_district(
+        city, [[-20, -20], [150, -20], [150, 60], [-20, 60]],
+        character="residential", name="Row", district_id="d0",
+    )
+    city, _ = ops.draw_road(
+        city, [[0, 0], [120, 0]], cls="major", lanes=2, core=True, district_id="d0", road_id="h", name="h")
+    city, _ = ops.draw_road(
+        city, [[0, 0], [0, 40]], cls="minor", lanes=1, core=True, district_id="d0", road_id="v", name="v")
+    if type_name:
+        city, _ = ops.set_district_type(city, "d0", type_name)
+    city, _ = ops.regenerate(city, "streetscape")
+    return city
 
 
 def _loop(x0, y0, x1, y1):

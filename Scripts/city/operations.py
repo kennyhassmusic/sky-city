@@ -1,10 +1,12 @@
 """Operations the Map Designer and the AI link both call.
 
-add_district, set_skyline, draw_road, split_block, set_building, lock, unlock,
-regenerate, screenshot. Nothing here knows about Unreal or Blender. A later plugin
-maps these names onto buttons and onto the local MCP server. Each change returns
-(model, touched ids) and leaves the caller's model alone. screenshot returns a
-request and does not change the manifest hash.
+add_district, set_skyline, set_district_type, set_mix, assign_districts, draw_road,
+split_block, set_building, lock, unlock, regenerate, screenshot, texture_pack.
+Nothing here knows about Unreal or Blender. A later plugin maps these names onto
+buttons and onto the local MCP server. Each change returns (model, touched ids)
+and leaves the caller's model alone. screenshot returns a request and does not
+change the manifest hash. texture_pack is a lookup: it returns the pack record
+and does not change the model.
 
 Regeneration is non-destructive: it rebuilds a layer from the layers above it and
 keeps anything locked or drawn by hand.
@@ -12,6 +14,7 @@ keeps anything locked or drawn by hand.
 import copy
 import zlib
 
+import districts as district_types
 import geom
 import grammar
 import model as model_mod
@@ -55,11 +58,82 @@ def set_skyline(model, district_id, updates):
     updates = dict(updates or {})
     if "style" in updates:
         district["style"] = updates.pop("style")
+        district["style_pinned"] = True
     if "trees" in updates:
         district["trees"] = list(updates.pop("trees"))
     district.setdefault("skyline", {}).update(updates)
     _audit(model, "set_skyline", [district_id], {"fields": sorted(updates.keys())})
     return model, [district_id]
+
+
+def set_district_type(model, district_id, type_name):
+    """Give one district a type. Hand-set, so a later assign_districts leaves it.
+
+    The type's building list, heights, roofs, materials, plants, wear and
+    furniture are copied onto the district. A style pin is cleared: the type's
+    buildings are allowed to vary until set_skyline pins a style again. Blocks
+    and lots already inside the district pick up the type, or its nested mix.
+    """
+    model = copy.deepcopy(model)
+    district = _must(model, district_id, "districts")
+    sky = skyline.load()
+    types = district_types.table(sky)
+    district_types.apply_type(district, type_name, types, source="hand", keep_style_pin=False)
+    children = district_types.stamp_children(model, district, types, model.get("seed") or 1)
+    ids = [district_id] + [item for item in children if item and item != district_id]
+    _audit(model, "set_district_type", ids, {"district_type": type_name})
+    return model, ids
+
+
+def set_mix(model, district_id, weights):
+    """Store a nested mix on one district and paint the blocks and lots inside it.
+
+    Weights are shares, the same way skyline.yaml writes them. This mix is
+    hand-set, so assigning a type later does not replace it.
+    """
+    model = copy.deepcopy(model)
+    district = _must(model, district_id, "districts")
+    clean = _mix_weights(weights)
+    district["mix"] = clean
+    district["mix_source"] = "hand"
+    sky = skyline.load()
+    types = district_types.table(sky)
+    children = district_types.stamp_children(model, district, types, model.get("seed") or 1)
+    ids = [district_id] + [item for item in children if item and item != district_id]
+    _audit(model, "set_mix", ids, {"types": sorted(clean)})
+    return model, ids
+
+
+def assign_districts(model, region=None, mix=None):
+    """Paint unlocked districts from a region mix, the city mix, or an explicit one.
+
+    Placement is weighted and seeded. Utilities and industrial stay off the
+    boundary of houses when the mix contains another type that can go there.
+    A type that carries a nested mix (eclectic_mix, or a hand mix already on
+    the district) is then painted onto that district's blocks and lots.
+    """
+    model = copy.deepcopy(model)
+    sky = skyline.load()
+    types = district_types.table(sky)
+    weights = _mix_weights(mix) if mix is not None else district_types.resolve_mix(sky, region)
+    district_types.assign(model.get("districts") or [], weights, int(model.get("seed") or 1), types)
+    touched = []
+    for district in model.get("districts") or []:
+        touched.append(district["id"])
+        if district.get("mix") or district.get("district_type"):
+            touched.extend(district_types.stamp_children(
+                model, district, types, int(model.get("seed") or 1)))
+    _audit(model, "assign_districts", touched, {"region": region or "city"})
+    return model, touched
+
+
+def texture_pack(type_name, root=None):
+    """The texture pack for a district type, or the CC0 slots when the pack is absent.
+
+    This does not change a city model. `root` is the folder that contains
+    `packs/<district>/manifest.json`; the default is Scripts/city.
+    """
+    return district_types.load_pack(type_name, root=root)
 
 
 def draw_road(model, polyline, cls="minor", lanes=2, oneway=False, core=False,
@@ -214,3 +288,16 @@ def _audit(model, op, ids, detail):
 
 def _hid(prefix, *parts):
     return "%s_%08x" % (prefix, zlib.crc32(repr(parts).encode()) & 0xffffffff)
+
+
+def _mix_weights(weights):
+    clean = {}
+    for name, weight in (weights or {}).items():
+        if name not in district_types.TYPE_NAMES:
+            raise ValueError("unknown district type %s" % name)
+        amount = float(weight)
+        if amount > 0:
+            clean[name] = amount
+    if not clean:
+        raise ValueError("a mix needs at least one district type")
+    return clean

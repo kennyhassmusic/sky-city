@@ -7,6 +7,8 @@ and a curb ramp. The crossing sits past the return so the paint is on asphalt.
 Lane lines, edge lines and stop bars are part of the same data. Furniture is placed
 by spacing, not by hand: lamps, trees of the district's species, a grate under each
 tree, bins, weeds at the curb, drains, hydrants, benches and a corner blade sign.
+A district that has a district type scatters only the furniture named on that type.
+Trees still follow the district's vegetation. An untyped district keeps this full kit.
 Manholes and puddles are markings in the carriageway, clear of the zebra.
 
 The output is data. Blender and, later, the editor sweep meshes along it.
@@ -207,19 +209,30 @@ def _furniture(model, road, sec, side, length, trim, district, props):
     lateral = side * (sec["width"] / 2.0 + back + (sec["furniture_w"] * 0.7 if sec["furniture_w"] else sec["parkway_w"] * 0.5))
     bench_lateral = side * (sec["width"] / 2.0 + back + min(sec["sidewalk"] * 0.55, 2.2))
     seed = int(model.get("seed") or 1)
-    _scatter(props, road, "lamp", start, end, lamp_step, lateral, district, seed, side)
+    furn = _typed_furniture(model, district)
+
+    def wants(kind):
+        return furn is None or kind in furn
+
+    if wants("lamp"):
+        _scatter(props, road, "lamp", start, end, lamp_step, lateral, district, seed, side)
     if trees and sec["sidewalk"] > 0:
-        _scatter(props, road, "tree", start + tree_step * 0.5, end, tree_step, lateral, district, seed, side, trees=trees)
-    if sec["core"]:
+        _scatter(props, road, "tree", start + tree_step * 0.5, end, tree_step, lateral, district, seed, side,
+                 trees=trees, grate=wants("grate"))
+    # Untyped core streets keep their benches. A typed district gets a bench only
+    # when its furniture list asks for one, including on a street that is not core.
+    if (furn is None and sec["core"]) or (furn is not None and wants("bench")):
         _scatter(props, road, "bench", start + 12.0, end, 48.0, bench_lateral, district, seed, side)
     # A bin sits further back on the walk than the weeds, which hug the curb joint.
     bin_lat = side * (sec["width"] / 2.0 + back + min(max(sec["sidewalk"], 0.0) * 0.72, 2.6))
-    _scatter(props, road, "bin", start + 8.0, end - 4.0, 38.0, bin_lat, district, seed, side)
-    weed_lat = side * (sec["width"] / 2.0 + back + 0.28)
-    _scatter_some(props, road, "weed", start + 2.5, end, 7.5, weed_lat, district, seed, side, keep=0.5)
+    if wants("bin"):
+        _scatter(props, road, "bin", start + 8.0, end - 4.0, 38.0, bin_lat, district, seed, side)
+    if wants("weed"):
+        weed_lat = side * (sec["width"] / 2.0 + back + 0.28)
+        _scatter_some(props, road, "weed", start + 2.5, end, 7.5, weed_lat, district, seed, side, keep=0.5)
 
 
-def _scatter(props, road, kind, start, end, step, lateral, district, seed, side, trees=None):
+def _scatter(props, road, kind, start, end, step, lateral, district, seed, side, trees=None, grate=True):
     if step <= 0 or end <= start:
         return
     i = 0
@@ -244,12 +257,12 @@ def _scatter(props, road, kind, start, end, step, lateral, district, seed, side,
         if kind == "tree" and trees:
             item["species"] = trees[int(geom.rnd(seed, item["id"]) * len(trees)) % len(trees)]
         props.append(item)
-        if kind == "tree":
-            grate = dict(item)
-            grate["id"] = "prop_%s_grate_%d_%d" % (road["id"], 0 if side > 0 else 1, i)
-            grate["kind"] = "grate"
-            grate.pop("species", None)
-            props.append(grate)
+        if kind == "tree" and grate:
+            tree_grate = dict(item)
+            tree_grate["id"] = "prop_%s_grate_%d_%d" % (road["id"], 0 if side > 0 else 1, i)
+            tree_grate["kind"] = "grate"
+            tree_grate.pop("species", None)
+            props.append(tree_grate)
         i += 1
         s += step
 
@@ -290,6 +303,7 @@ def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps,
         ends.append(length - inset)
     W = sec["width"]
     back = profiles.curb_back_from_flow(road.get("cls") or "minor")
+    furn = _typed_furniture(model, district)
     for s in ends:
         p, d = point_on_road(road, s, 0.0)
         marks = []
@@ -346,16 +360,18 @@ def _crossings(model, road, sec, length, junctions, district, crosswalks, ramps,
             "side": 1, "road_id": road["id"], "district_id": district,
             "source": "generated", "locked": False,
         })
-        # one hydrant on the left sidewalk, just past the crossing, toward midblock
-        hyd_s = s + 3.5 if s < length / 2 else s - 3.5
-        hp, hd = point_on_road(road, hyd_s, (W / 2.0 + back + 1.1))
-        props.append({
-            "id": "prop_%s_hydrant_%d" % (road["id"], int(s)),
-            "kind": "hydrant", "x": round(hp[0], 2), "y": round(hp[1], 2),
-            "yaw": round(math.degrees(math.atan2(hd[1], hd[0])), 1),
-            "side": 1, "road_id": road["id"], "district_id": district,
-            "source": "generated", "locked": False,
-        })
+        # one hydrant on the left sidewalk, just past the crossing, toward midblock.
+        # A typed district gets one only when its furniture list names it.
+        if furn is None or "hydrant" in furn:
+            hyd_s = s + 3.5 if s < length / 2 else s - 3.5
+            hp, hd = point_on_road(road, hyd_s, (W / 2.0 + back + 1.1))
+            props.append({
+                "id": "prop_%s_hydrant_%d" % (road["id"], int(s)),
+                "kind": "hydrant", "x": round(hp[0], 2), "y": round(hp[1], 2),
+                "yaw": round(math.degrees(math.atan2(hd[1], hd[0])), 1),
+                "side": 1, "road_id": road["id"], "district_id": district,
+                "source": "generated", "locked": False,
+            })
 
 
 def _lane_lines(road, sec, length, junctions, district, markings):
@@ -488,6 +504,19 @@ def _alley_bollards(model, block, props):
             "yaw": round(yaw, 1), "district_id": block.get("district_id"),
             "block_id": block["id"], "source": "generated", "locked": False,
         })
+
+
+def _typed_furniture(model, district_id):
+    """The furniture list of a typed district, or None when the district has no type.
+
+    None means the full default kit. An empty list means the type asked for none.
+    """
+    if not district_id:
+        return None
+    for district in model.get("districts") or []:
+        if district.get("id") == district_id and district.get("district_type"):
+            return list(district.get("furniture") or [])
+    return None
 
 
 def _trees(model, district_id):
