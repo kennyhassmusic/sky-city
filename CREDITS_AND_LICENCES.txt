@@ -76,6 +76,13 @@ City generator weathering (2026-10-23)
     ManholeCover009         https://ambientcg.com/a/ManholeCover009
   T_CG_Sign_* panels are original lettering, not a downloaded font or a real business.
 
+City AI texture packs (2026-10-22)
+  PBR texture packs that dress the procedural city (facades, ground, storefronts, interiors, decals, equipment, props),
+  in SourceArt/ai_textures. PNG, through Git LFS. Original / AI-generated work, not third-party content.
+  Generated with Grok Bot (xAI) and the project's own processing and audit scripts. Owned by Kenny Hass Music LLC to the
+  extent copyrightable; released under the Sky City asset licence (CC BY-NC 4.0, LICENSE-ASSETS.md). Provenance and the
+  per-file record: SourceArt/ai_textures/LICENSE.json and SourceArt/ai_textures/manifest.json.
+
 Generative AI
   Code, generated 3D content, in-game text and some sounds were made with the help of generative AI (Claude).
 
