@@ -88,9 +88,9 @@ press Y to go back to building (or ask it to stop the race).
 |---|---|
 | `get_course_guide` | Read the rules: the course format, every piece and its limits, tips. |
 | `get_player` | Where your car is and which way it faces, and the build area. |
-| `new_course` | Start a fresh course (optionally right next to your car). |
+| `new_course` | Start a fresh course (optionally right next to your car, and with a track width: lanes are 8 m by default, or 5.5 / 11). |
 | `add_pieces` | Add pieces to the end of the track, or to a branch of a split. |
-| `remove_pieces`, `update_piece` | Take pieces off the end, or change one piece (or the course settings: laps, name, skin, opponents). |
+| `remove_pieces`, `update_piece` | Take pieces off the end, or change one piece (or the course settings: laps, name, skin, opponents, `lane_width` 5.5 / 8 / 11 m per lane, `catch_up` on/off). |
 | `get_course`, `set_course` | Read the whole course, or replace it. |
 | `list_courses`, `save_course`, `load_course` | Work with saved courses. |
 | `start_race`, `stop_race`, `get_results` | Put you on the grid (with opponents if you like), stop, read the times. |

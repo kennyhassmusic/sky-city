@@ -32,8 +32,9 @@ namespace SkyGeom
 		TArray<TArray<FSkyFrame>>& Out, FString& Error);
 
 	/** Lane lines across a frame for a segment: offsets from the centre line along L (m), given the lanes the segment
-	 *  starts and ends with and how a lanes piece aligns (-1 left, 0 centre, +1 right). */
-	void LaneLines(double Width, int32 Lanes0, int32 Lanes1, int32 Align, double Along01, TArray<double>& Out);
+	 *  starts and ends with and how a lanes piece aligns (-1 left, 0 centre, +1 right). LaneWidth is the course's (only an
+	 *  aligned lanes piece uses it: its lines count lanes from the fixed edge). */
+	void LaneLines(double Width, int32 Lanes0, int32 Lanes1, int32 Align, double Along01, TArray<double>& Out, double LaneWidth = SkyCourse::DefaultLaneWidth);
 
 	/** For the track: a split's lead-in or merge connector edges that face a neighbour (the inner edges), so the trim
 	 *  there can start low. Bit 0 = left edge, bit 1 = right edge. */

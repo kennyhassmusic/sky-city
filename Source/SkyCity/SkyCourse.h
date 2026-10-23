@@ -25,8 +25,13 @@ class FJsonObject;   // added by geometry: so ParsePiece/PieceToJson below take 
 
 namespace SkyCourse
 {
-	constexpr int32 FormatVersion = 1;
-	constexpr double LaneWidth = 5.5;           // m: one lane is the McGregor unveil ramp's deck
+	// Version 2 (Oct 2026) adds lane_width and catch_up. A version 1 file has 5.5 m lanes (it was built for them).
+	constexpr int32 FormatVersion = 2;
+	// Lane width per course (FSkyCourse::LaneWidth, file "lane_width"): Standard is one McGregor unveil ramp deck, the
+	// only width before version 2; Wide is the default for new courses (Design/RaceHandling.md); Extra wide doubles it.
+	constexpr double StandardLaneWidth = 5.5, WideLaneWidth = 8.0, ExtraLaneWidth = 11.0;
+	constexpr double DefaultLaneWidth = WideLaneWidth;
+	constexpr double MinLaneWidth = 5.5, MaxLaneWidth = 11.0;
 	constexpr int32 MinLanes = 1, MaxLanes = 4, DefaultLanes = 2;
 	constexpr int32 MaxPieces = 400;            // every piece in the course, branches included
 	constexpr int32 MaxCheckpoints = 32;
@@ -36,6 +41,10 @@ namespace SkyCourse
 	constexpr int32 MaxOpponents = 7;
 	constexpr double SampleStep = 0.5;          // m between baked frames
 	constexpr int32 McpPort = 47800;
+	// Bumpers (Design/RaceHandling.md): ASkyCourseTrack puts a low rail along both deck edges on its own collision
+	// component tagged SkyRail; the car glances off it (keeps its speed, no damage) instead of treating it as a kerb.
+	constexpr double BumperHeight = 1.0;        // m above the deck: under 2.5 m, so the car never wall-rides it
+	inline const TCHAR* RailTag() { return TEXT("SkyRail"); }
 
 	/** True when the current map was opened as the Course Builder (McGregor with the URL option mode=build). */
 	SKYCITY_API bool IsBuildMode(const UWorld* World);
@@ -70,6 +79,8 @@ enum class ESkyPiece : uint8
 
 enum class ESkyGate : uint8 { None, Lights, Wall };   // how a split shows which branch is open this lap
 enum class ESkySkin : uint8 { Unveil, Classic, Neon, Count };   // Unveil (default): McGregor ramp concrete, red edge trim
+/** The player's race assists (a player setting, not a course one; Design/RaceHandling.md). Off = pure Skyster. */
+enum class ESkyAssist : uint8 { Off, Light, Full };
 
 /** One branch of a split. */
 struct FSkyBranch
@@ -107,10 +118,12 @@ struct FSkyCourse
 	FVector Start = FVector::ZeroVector;   // m: where the start piece begins (its deck surface)
 	double Yaw = 0;                        // deg
 	int32 Lanes = SkyCourse::DefaultLanes; // lane count at the start
+	double LaneWidth = SkyCourse::DefaultLaneWidth;   // m per lane (5.5-11); a version 1 file loads as 5.5
 	ESkySkin Skin = ESkySkin::Unveil;
 	int32 Laps = 1;                        // > 1 needs a lap course (ends with Close)
 	int32 Opponents = 0;                   // AI opponents by default
 	double Skill = 0.8;                    // AI skill 0.3-1.2
+	bool bCatchUp = true;                  // AI rubber band: a leading AI eases off, a trailing one pushes (never the player)
 	TArray<FSkySeq> Seqs = { FSkySeq() };
 };
 
@@ -121,7 +134,7 @@ struct FSkyFrame
 	FVector F = FVector(1, 0, 0);          // forward
 	FVector L = FVector(0, 1, 0);          // left (across the deck)
 	FVector U = FVector(0, 0, 1);          // up (out of the deck)
-	double Width = SkyCourse::LaneWidth * SkyCourse::DefaultLanes;   // m, deck width here
+	double Width = SkyCourse::DefaultLaneWidth * SkyCourse::DefaultLanes;   // m, deck width here
 	double S = 0;                          // m along the course from the start gate (main line; branches continue it)
 	bool bDeck = true;                     // false over a jump's gap (nothing to drive on)
 };
@@ -158,6 +171,7 @@ struct FSkyBaked
 	FBox Bounds = FBox(ForceInit);         // m
 	double MinZ = 0, MaxZ = 0;             // m, deck surface
 	int32 PieceCount = 0;
+	double LaneWidth = SkyCourse::DefaultLaneWidth;   // m, the course's lane width (copied from FSkyCourse)
 };
 
 namespace SkyCourse
@@ -289,6 +303,10 @@ public:
 	ASkyCourseRace* GetRace() const { return Race; }
 	ASkyCourseTrack* GetTrack() const { return Track; }
 
+	// --- the player's race assists (course menu; saved in GameUserSettings.ini [SkyCourse] Assist=0/1/2, default Full) ---
+	ESkyAssist GetAssist() const { return Assist; }
+	void SetAssist(ESkyAssist A);
+
 	// --- the MCP server (off until the player or a config switch turns it on) ---
 	bool SetMcpEnabled(bool bOn);
 	bool IsMcpEnabled() const;
@@ -321,6 +339,7 @@ public:
 
 private:
 	FSkyCourse Course;
+	ESkyAssist Assist = ESkyAssist::Full;
 	TArray<FSkyCourse> UndoStack;
 	FBox Area = FBox(ForceInit);
 	bool bDriving = false;

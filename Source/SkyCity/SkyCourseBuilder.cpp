@@ -58,7 +58,7 @@ FFieldInfo SkyBuilder::InfoFor(ESkyPiece T, EF F)
 		switch (T)
 		{
 		case ESkyPiece::Ramp: return { TEXT("LENGTH"), TEXT("m"), 5, 4, 150 };
-		case ESkyPiece::Corkscrew: return { TEXT("LENGTH"), TEXT("m"), 5, 20, 150 };
+		case ESkyPiece::Corkscrew: return { TEXT("LENGTH"), TEXT("m"), 5, 20, 260 };
 		case ESkyPiece::WallRide: return { TEXT("LENGTH"), TEXT("m"), 5, 15, 150 };
 		case ESkyPiece::Booster: return { TEXT("LENGTH"), TEXT("m"), 5, 4, 30 };
 		case ESkyPiece::Lanes: return { TEXT("LENGTH"), TEXT("m"), 5, 10, 80 };
@@ -71,7 +71,7 @@ FFieldInfo SkyBuilder::InfoFor(ESkyPiece T, EF F)
 	case EF::Rise:     return { TEXT("RISE"), TEXT("m"), 2, -60, 60 };
 	case EF::Gap:      return { TEXT("GAP"), TEXT("m"), 2, 4, 80 };
 	case EF::Drop:     return { TEXT("DROP"), TEXT("m"), 2, -30, 30 };
-	case EF::Offset:   return { TEXT("OFFSET"), TEXT("m"), 1, 0, 12 };
+	case EF::Offset:   return { TEXT("OFFSET"), TEXT("m"), 1, 0, SkyCourse::MaxLanes * SkyCourse::MaxLaneWidth + 1 };
 	case EF::Turns:    return { TEXT("TURNS"), TEXT(""), 0.5, 0.5, 2 };
 	case EF::Side:     return { TEXT("SIDE"), TEXT(""), 1, -1, 1 };
 	case EF::Lanes:    return { TEXT("LANES"), TEXT(""), 1, 1, 4 };
@@ -187,7 +187,7 @@ FSkyPiece SkyBuilder::MakeDefault(ESkyPiece Type, int32 LanesHere)
 	case ESkyPiece::Curve: if (FMath::Abs(P.Angle) < 1) P.Angle = 90; Fill(P.Radius, 40, 8); break;
 	case ESkyPiece::Ramp: Fill(P.Length, 30, 4); if (FMath::Abs(P.Rise) < 0.01) P.Rise = 8; break;
 	case ESkyPiece::Jump: Fill(P.Gap, 20, 4); break;
-	case ESkyPiece::Loop: Fill(P.Radius, 10, 6); P.Offset = FMath::Clamp(P.Offset > 0 ? P.Offset : SkyCourse::LaneWidth * LanesHere + 1.0, 0.0, 12.0); break;
+	case ESkyPiece::Loop: Fill(P.Radius, 10, 6); P.Offset = FMath::Clamp(P.Offset > 0 ? P.Offset : SkyCourse::DefaultLaneWidth * LanesHere + 1.0, 0.0, SkyCourse::MaxLanes * SkyCourse::MaxLaneWidth + 1.0); break;
 	case ESkyPiece::Corkscrew: Fill(P.Length, 60, 20); Fill(P.Turns, 1, 0.5); break;
 	case ESkyPiece::WallRide: Fill(P.Length, 50, 15); if (P.Side == 0) P.Side = 1; break;
 	case ESkyPiece::Booster: Fill(P.Length, 10, 4); break;
@@ -879,7 +879,8 @@ void FSkyCourseBuilderImpl::UpdateCursorVisual(float Dt)
 {
 	if (!bHaveCursor) return;
 	UProceduralMeshComponent* M = EnsureCursor();
-	const double W = FMath::Max(Cursor.Width, SkyCourse::LaneWidth);
+	const ASkyCourseMode* CursorMode = ModeRef.Get();
+	const double W = FMath::Max(Cursor.Width, CursorMode ? CursorMode->GetCourse().LaneWidth : SkyCourse::DefaultLaneWidth);
 	if (!FMath::IsNearlyEqual(W, CursorWidthBuilt, 0.01)) BuildCursorMesh(W);
 	M->SetVisibility(true);
 	CursorBlink += Dt;
@@ -1061,6 +1062,15 @@ void FSkyCourseBuilderImpl::HandleBuild(const FIn& In, APlayerController* PC)
 
 static const TCHAR* SkinLabel(ESkySkin S) { return S == ESkySkin::Classic ? TEXT("CLASSIC (orange toy track)") : S == ESkySkin::Neon ? TEXT("NEON (dark glass, cyan edge)") : TEXT("UNVEIL (concrete, red trim)"); }
 
+static FString WidthLabel(double W)
+{
+	return FMath::IsNearlyEqual(W, SkyCourse::StandardLaneWidth, 0.01) ? FString(TEXT("STANDARD (5.5 m lanes)"))
+		: FMath::IsNearlyEqual(W, SkyCourse::WideLaneWidth, 0.01) ? FString(TEXT("WIDE (8 m lanes)"))
+		: FMath::IsNearlyEqual(W, SkyCourse::ExtraLaneWidth, 0.01) ? FString(TEXT("EXTRA WIDE (11 m lanes)"))
+		: FString::Printf(TEXT("%.1f m lanes"), W);
+}
+static const TCHAR* AssistLabel(ESkyAssist A) { return A == ESkyAssist::Full ? TEXT("FULL") : A == ESkyAssist::Light ? TEXT("LIGHT") : TEXT("OFF"); }
+
 TArray<FSkyCourseBuilderImpl::FItem> FSkyCourseBuilderImpl::BuildItems() const
 {
 	TArray<FItem> Items;
@@ -1082,6 +1092,9 @@ TArray<FSkyCourseBuilderImpl::FItem> FSkyCourseBuilderImpl::BuildItems() const
 	Add(EMenuItem::Laps, TEXT("Laps"), FString::FromInt(C.Laps), true);
 	Add(EMenuItem::Opponents, TEXT("Opponents"), FString::FromInt(C.Opponents), true);
 	Add(EMenuItem::Skill, TEXT("AI skill"), FString::Printf(TEXT("%.1f"), C.Skill), true);
+	Add(EMenuItem::CatchUp, TEXT("Catch-up (AI rubber band)"), C.bCatchUp ? TEXT("ON") : TEXT("OFF"), true);
+	Add(EMenuItem::TrackWidth, TEXT("Track width"), WidthLabel(C.LaneWidth), true);
+	Add(EMenuItem::Assist, TEXT("Assists (your car, races)"), AssistLabel(Mode->GetAssist()), true);
 	const FString Client = Mode->McpClient();
 	Add(EMenuItem::Llm, TEXT("LLM link"), !Mode->IsMcpEnabled() ? TEXT("OFF") : Client.IsEmpty() ? TEXT("ON") : FString::Printf(TEXT("ON: %s"), *Client));
 	Add(EMenuItem::ConnectClaude, TEXT("   Install in Claude Desktop"));
@@ -1236,6 +1249,28 @@ void FSkyCourseBuilderImpl::Adjust(EMenuItem Id, int32 Dir)
 		bOk = Mode->Edit([Dir](FSkyCourse& C) { C.Laps = FMath::Clamp(C.Laps + Dir, 1, SkyCourse::MaxLaps); }, Errors);
 		What = TEXT("Laps need a lap course: end it with a Close piece");
 		break;
+	case EMenuItem::CatchUp:
+		bOk = Mode->Edit([](FSkyCourse& C) { C.bCatchUp = !C.bCatchUp; }, Errors);
+		break;
+	case EMenuItem::TrackWidth:
+	{
+		// Standard -> Wide -> Extra wide and round; the edit is checked like any other (a wider track can stop fitting
+		// the build area or a loop's clearance), so a width that doesn't fit is refused with the reasons and rolled back
+		static const double Widths[3] = { SkyCourse::StandardLaneWidth, SkyCourse::WideLaneWidth, SkyCourse::ExtraLaneWidth };
+		int32 Now = 0;
+		for (int32 i = 1; i < 3; ++i) if (FMath::Abs(Mode->GetCourse().LaneWidth - Widths[i]) < FMath::Abs(Mode->GetCourse().LaneWidth - Widths[Now])) Now = i;
+		const double To = Widths[((Now + Dir) % 3 + 3) % 3];
+		bOk = Mode->Edit([To](FSkyCourse& C) { C.LaneWidth = To; }, Errors);
+		What = TEXT("That track width doesn't fit this course");
+		break;
+	}
+	case EMenuItem::Assist:
+	{
+		// shown Full, Light, Off; a player setting (saved with the game settings), not part of the course
+		const int32 Now = 2 - (int32)Mode->GetAssist();
+		Mode->SetAssist((ESkyAssist)(2 - (((Now + Dir) % 3 + 3) % 3)));
+		break;
+	}
 	case EMenuItem::Opponents:
 		bOk = Mode->Edit([Dir](FSkyCourse& C) { C.Opponents = FMath::Clamp(C.Opponents + Dir, 0, SkyCourse::MaxOpponents); }, Errors);
 		break;
@@ -1425,6 +1460,12 @@ FString FSkyCourseBuilderImpl::StateJson() const
 	O->SetStringField(TEXT("screen"), Names[(int32)Screen]);
 	O->SetNumberField(TEXT("menuSel"), MenuSel);
 	O->SetStringField(TEXT("name"), NameText);
+	if (Mode)
+	{
+		O->SetNumberField(TEXT("laneWidth"), Mode->GetCourse().LaneWidth);
+		O->SetBoolField(TEXT("catchUp"), Mode->GetCourse().bCatchUp);
+		O->SetNumberField(TEXT("assist"), (int32)Mode->GetAssist());
+	}
 	TSharedRef<FJsonObject> Cam = MakeShared<FJsonObject>();
 	Cam->SetNumberField(TEXT("yaw"), YawS); Cam->SetNumberField(TEXT("pitch"), PitchS); Cam->SetNumberField(TEXT("dist"), DistS);
 	O->SetObjectField(TEXT("camera"), Cam);

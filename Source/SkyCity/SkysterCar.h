@@ -119,6 +119,18 @@ public:
 	 *  challenges, toasts, pickups, camera, traffic or course mode. TestVehicle picks its body at BeginPlay. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster|Test") bool bAIDriver = false;
 
+	// Course Builder race hooks (Design/RaceHandling.md). ASkyCourseRace sets these on its cars every tick, before the
+	// car ticks, and clears them when the race ends; outside a race they stay at rest and nothing below changes.
+	// The assists only act while the car is on Course Builder track (SkyTrack) or in the air above it.
+	bool bInCourseRace = false;
+	uint8 RaceAssist = 0;                   // the player's ESkyAssist (0 Off, 1 Light, 2 Full); opponents stay 0
+	float RaceSteerNudge = 0.f;             // smart steering: added to the stick's steer on the ground (-1..1)
+	bool bRaceAirAim = false;               // landing help: in the air, turn toward this attitude (sim frame)...
+	FVector RaceAimFwd = FVector(1, 0, 0), RaceAimUp = FVector(0, 0, 1);
+	FVector RaceAirPull = FVector::ZeroVector;   // ...and drift toward the pad (m/s^2, sim frame, a few at most)
+	float RaceSpeedScale = 1.f;             // slipstream and the AI rubber band: scales the drive and boost top speed
+	bool bRaceResetHit = false;             // the car's reset (View / R) during a race: the race reads and clears it
+
 	/** Called by the progress system when the level changes. */
 	void ApplyCaps(const FSkyCaps& C);
 	void Toast(const FString& Title, const FString& Sub = FString());
@@ -339,6 +351,7 @@ private:
 	double Cushion = 0, FlyHeading = 0, FlyTurn = 0, FlyClimb = 0, FlyLift = 0;
 	/** The support normal last step while on Course Builder track (zero off it): how fast it turns gives a curve's grip. */
 	FVector LastSupN = FVector::ZeroVector;
+	bool bRaceStable = false;              // Full race assist on track this step: stronger stability control (Tyres)
 	double TrackPress = 0, TrackRun = 0;   // the curve's grip (m/s^2), held between triangle edges; metres since the normal last turned
 	double SteerAngle = 0, StuckT = 0, TumbleT = 0, DeadT = 0, LastHurt = -9;
 	double YawRate = 0, SlipF = 0, SlipR = 0, AccelLat = 0, AccelLong = 0, Fans = 0;

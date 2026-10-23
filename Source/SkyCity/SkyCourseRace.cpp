@@ -40,6 +40,8 @@ static TAutoConsoleVariable<float> CVarAutopilot(TEXT("SkyCourse.RaceAutopilot")
 	TEXT("Test: the race drives the player's car with the AI driver at this skill (0 = off, 0.3-1.2)."));
 static TAutoConsoleVariable<FString> CVarSkills(TEXT("SkyCourse.RaceSkills"), TEXT(""),
 	TEXT("Test: the opponents' skills, comma separated (e.g. 0.5,0.8,1.1); empty = spread round the race's skill."));
+static TAutoConsoleVariable<int32> CVarAssist(TEXT("SkyCourse.RaceAssist"), -1,
+	TEXT("Test: the player's race assists, 0 off, 1 light, 2 full (also on the autopilot); -1 = the course menu's setting (never on the autopilot)."));
 // AI tuning (read when a race begins)
 static TAutoConsoleVariable<float> CVarCorkV(TEXT("SkyCourse.AI.CorkV"), 36.f,
 	TEXT("AI: the speed (m/s) it drives a corkscrew at, every skill alike (it held on between about 34 and 42 in tests)."));
@@ -550,6 +552,7 @@ bool FSkyCourseRaceImpl::Begin(ASkyCourseTrack* InTrack, const FSkyCourse& InCou
 		if (Sg.Frames.Num() < 2) { UE_LOG(LogSkyRace, Warning, TEXT("race: the bake has a segment with %d frames"), Sg.Frames.Num()); return false; }
 	}
 	Laps = B.bLapCourse ? FMath::Clamp(Course.Laps, 1, SkyCourse::MaxLaps) : 1;
+	PlayerAssist = ASkyCourseMode::Get(World) ? ASkyCourseMode::Get(World)->GetAssist() : ESkyAssist::Full;
 	Opponents = FMath::Clamp(Opponents, 0, SkyCourse::MaxOpponents);
 	Skill = FMath::Clamp(Skill, 0.3, 1.2);
 	Events.Reset();
@@ -676,6 +679,7 @@ void FSkyCourseRaceImpl::End()
 		ASkysterCar* Car = R.Car.Get();
 		if (!Car) continue;
 		Car->RemoveTickPrerequisiteActor(Owner);
+		ClearRaceHooks(*Car);
 		if (R.bAI) Car->Destroy();
 		else if (R.bPlayer)
 		{
@@ -789,8 +793,10 @@ void FSkyCourseRaceImpl::Tick(float DeltaSeconds)
 	{
 		ASkysterCar* Car = R.Car.Get();
 		if (!Car) continue;
+		Assists(R, *Car, Dt);
 		if (Phase == EPhase::Countdown)
 		{
+			Car->bRaceResetHit = false;
 			if (R.bAI || Drives(R)) Hold(*Car);
 			// not on the deck (the track's collision was still cooking when it was placed): put it back on its slot
 			if ((R.Vert < -1.0 || R.D2 > 4.0 * 4.0) && T - R.RespawnT > 0.5 && T < COUNTDOWN - 0.4)
@@ -1053,6 +1059,13 @@ void FSkyCourseRaceImpl::LapDone(FRacer& R, double Tc)
 // Off the track for a while, fallen far below it, wrecked, stuck, or into a closed branch: back on the course.
 void FSkyCourseRaceImpl::Recover(FRacer& R, ASkysterCar& Car, double Dt)
 {
+	// the car's reset (View / R): back to the last good spot, like Trackmania's respawn key
+	if (Car.bRaceResetHit)
+	{
+		Car.bRaceResetHit = false;
+		if (Phase == EPhase::Racing && T - R.RespawnT > 1.0) { Respawn(R, TEXT("reset button")); return; }
+	}
+	NoteGood(R, Car);
 	if (R.WrongSplit != INDEX_NONE)
 	{
 		R.WrongShowT = T;
@@ -1136,7 +1149,154 @@ void FSkyCourseRaceImpl::Respawn(FRacer& R, const TCHAR* Why)
 		AfterTeleport(R, Why, TEXT("its grid slot"));
 		return;
 	}
-	RespawnAt(R, R.SafeSeg, R.SafeFrame, 5.0, Why);
+	if (!RespawnGood(R, Why)) RespawnAt(R, R.SafeSeg, R.SafeFrame, 5.0, Why);
+}
+
+// Lakitu-style recovery (Design/RaceHandling.md): the race keeps the last good spots each car drove this lap (level-ish
+// deck, wheels down, well inside the edges; not on a jump, loop or corkscrew), and a fall puts it back about 10 m before
+// the last one, moving. It's always somewhere the car already was, so a fall can't be a shortcut.
+void FSkyCourseRaceImpl::NoteGood(FRacer& R, const ASkysterCar& Car)
+{
+	if (R.GoodLap != R.Lap) { R.Good.Reset(); R.GoodLap = R.Lap; }
+	if (R.Ri == INDEX_NONE || R.WrongSplit != INDEX_NONE || !Car.bGrounded || !Car.bAlive || !B.Segs.IsValidIndex(R.Seg)) return;
+	const TArray<FSkyFrame>& Fr = B.Segs[R.Seg].Frames;
+	if (!Fr.IsValidIndex(R.Frame)) return;
+	const FSkyFrame& F = Fr[R.Frame];
+	const FSegX& Sx = X[R.Seg];
+	if (!F.bDeck || F.U.Z < 0.8 || Sx.bJump || Sx.bLoop || Sx.bCork) return;
+	if (FMath::Abs(R.Lat) > F.Width * 0.5 - 1.6 || FMath::Abs(R.Vert) > 1.2) return;
+	if (R.Good.Num() && FMath::Abs(R.S - R.Good.Last().S) < 2.0) return;
+	FRacer::FGood Spot;
+	Spot.Seg = R.Seg;
+	Spot.Frame = R.Frame;
+	Spot.S = R.S;
+	Spot.V = Car.Speed;
+	R.Good.Add(Spot);
+	if (R.Good.Num() > 32) R.Good.RemoveAt(0);
+}
+
+bool FSkyCourseRaceImpl::RespawnGood(FRacer& R, const TCHAR* Why)
+{
+	ASkysterCar* Car = R.Car.Get();
+	if (!Car || R.Good.Num() == 0) return false;
+	// back from the newest spot by GOOD_BACK (while the spots run in order along the route)
+	int32 k = R.Good.Num() - 1;
+	const double S0 = R.Good[k].S;
+	while (k > 0 && R.Good[k - 1].S < R.Good[k].S && S0 - R.Good[k].S < GOOD_BACK) --k;
+	const FRacer::FGood Spot = R.Good[k];
+	R.Good.SetNum(k + 1);   // a second fall right away goes from here, not from where it fell
+	if (!B.Segs.IsValidIndex(Spot.Seg) || !B.Segs[Spot.Seg].Frames.IsValidIndex(Spot.Frame)) return false;
+	// speed: most of what it had there, but what a jump or loop just ahead needs, and no more than the bend allows
+	double V = FMath::Max(KEEP_MIN, KEEP_V * Spot.V);
+	double Cap = X[Spot.Seg].VMax.IsValidIndex(Spot.Frame) && X[Spot.Seg].VMax[Spot.Frame] > 0 ? X[Spot.Seg].VMax[Spot.Frame] * 0.9 : MAX_SPEED;
+	int32 Ri = R.Route.Segs.Find(Spot.Seg);
+	double Ahead = X[Spot.Seg].Len - (X[Spot.Seg].Cum.IsValidIndex(Spot.Frame) ? X[Spot.Seg].Cum[Spot.Frame] : 0.f);
+	for (int32 n = Ri + 1; Ri != INDEX_NONE && n < R.Route.Segs.Num() && Ahead < 150.0; ++n)
+	{
+		const FSegX& Nx = X[R.Route.Segs[n]];
+		if (Nx.NeedV > 0) V = FMath::Max(V, (double)Nx.NeedV);
+		if (Nx.CapV > 0) Cap = FMath::Min(Cap, (double)Nx.CapV);
+		Ahead += Nx.Len;
+	}
+	V = FMath::Clamp(V, 0.0, FMath::Max(KEEP_MIN, Cap));
+	RespawnAt(R, Spot.Seg, Spot.Frame, 0.0, Why, R.bPlayer ? 0.0 : TNumericLimits<double>::Max());
+	Car->Vel = B.Segs[R.Seg].Frames[R.Frame].F * V;
+	return true;
+}
+
+ESkyAssist FSkyCourseRaceImpl::AssistFor(const FRacer& R) const
+{
+	if (!R.bPlayer) return ESkyAssist::Off;   // the opponents drive themselves
+	const int32 Forced = CVarAssist.GetValueOnGameThread();
+	if (Forced >= 0) return (ESkyAssist)FMath::Clamp(Forced, 0, 2);
+	return Drives(R) ? ESkyAssist::Off : PlayerAssist;   // the test autopilot drives as in 0.2.2 unless a test says otherwise
+}
+
+void FSkyCourseRaceImpl::ClearRaceHooks(ASkysterCar& Car)
+{
+	Car.bInCourseRace = false;
+	Car.RaceAssist = 0;
+	Car.RaceSteerNudge = 0.f;
+	Car.bRaceAirAim = false;
+	Car.RaceAirPull = FVector::ZeroVector;
+	Car.RaceSpeedScale = 1.f;
+	Car.bRaceResetHit = false;
+}
+
+// Every tick, before the cars tick: the race hooks on the car (SkysterCar.h). Slipstream for everyone, the AI rubber
+// band (course setting), and the player's smart steering and landing help.
+void FSkyCourseRaceImpl::Assists(FRacer& R, ASkysterCar& Car, double Dt)
+{
+	const ESkyAssist A = AssistFor(R);
+	Car.bInCourseRace = true;
+	Car.RaceAssist = (uint8)A;
+	const bool bGo = Phase == EPhase::Racing && !R.bFinished;
+	// slipstream: right behind another car (same way, close across), up to DRAFT more top speed
+	double Want = 0;
+	if (bGo && Car.bGrounded && Car.Speed > 15)
+	{
+		for (const FRacer& O : Racers)
+		{
+			const ASkysterCar* Oc = O.Car.Get();
+			if (&O == &R || !Oc) continue;
+			const FVector D = Oc->Pos - Car.Pos;
+			const double Along = FVector::DotProduct(D, Car.Fwd), Side = FMath::Abs(FVector::DotProduct(D, Car.Left));
+			if (Along > 3.0 && Along < DRAFT_LEN && Side < DRAFT_SIDE && FVector::DotProduct(Oc->Fwd, Car.Fwd) > 0.8)
+				Want = FMath::Max(Want, 1.0 - (Along - 3.0) / (DRAFT_LEN - 3.0));
+		}
+	}
+	R.Draft += (Want - R.Draft) * FMath::Min(1.0, Dt * 3.0);
+	double Scale = 1.0 + DRAFT * R.Draft;
+	// rubber band: an AI well ahead of the player eases off, one well behind pushes (top speed only: its curve speeds
+	// are planned from the track and don't change)
+	const FRacer* P = Racers.IsValidIndex(PlayerIdx) ? &Racers[PlayerIdx] : nullptr;
+	if (R.bAI && Course.bCatchUp && bGo && P && !P->bFinished && P->Progress >= 0 && R.Progress >= 0)
+	{
+		const double Gap = (R.Progress - P->Progress) * R.Route.LapLen();
+		Scale *= Gap > 0 ? 1.0 - BAND * SmoothStep(BAND_FROM, BAND_FULL, Gap) : 1.0 + BAND * SmoothStep(BAND_FROM, BAND_FULL, -Gap);
+	}
+	Car.RaceSpeedScale = (float)Scale;
+	const bool bTracked = R.Ri != INDEX_NONE && B.Segs.IsValidIndex(R.Seg) && B.Segs[R.Seg].Frames.IsValidIndex(R.Frame);
+	// smart steering (Full): if the path would leave the deck within NUDGE_LOOK s, a nudge back toward the middle,
+	// growing the closer it gets (halved while the car slides, so a drift stays yours)
+	double Nudge = 0;
+	if (A == ESkyAssist::Full && bGo && bTracked && Car.bGrounded && Car.Speed > 8)
+	{
+		const FSkyFrame& F = B.Segs[R.Seg].Frames[R.Frame];
+		const double Room = F.Width * 0.5 - 1.6;   // the bumper and half the car
+		const double Pred = R.Lat + FVector::DotProduct(Car.Vel, F.L) * NUDGE_LOOK;
+		const double Over = FMath::Abs(Pred) - (Room - 1.0);
+		if (Over > 0 && Room > 1.5)
+		{
+			// + steer = right; a car heading off the left edge (Pred > 0) is steered right
+			Nudge = FMath::Sign(Pred) * NUDGE_MAX * FMath::Clamp(Over / 3.0, 0.0, 1.0);
+			if (Car.bDrifting) Nudge *= 0.5;
+		}
+	}
+	R.Nudge += (Nudge - R.Nudge) * FMath::Min(1.0, Dt * 8.0);
+	Car.RaceSteerNudge = (float)R.Nudge;
+	if (FMath::Abs(R.Nudge) > 0.05) R.NudgeT = T;
+	// landing help (Light, Full): in the air over the track, wheels-down along the deck below (a jump's pad), drifting
+	// gently toward its middle
+	Car.bRaceAirAim = false;
+	Car.RaceAirPull = FVector::ZeroVector;
+	if (A != ESkyAssist::Off && bGo && bTracked && !Car.bGrounded && Car.bAlive)
+	{
+		int32 Sg = R.Seg, I = R.Frame;
+		if (!B.Segs[Sg].Frames[I].bDeck && X[Sg].LandAt != INDEX_NONE && B.Segs[Sg].Frames.IsValidIndex(X[Sg].LandAt)) I = X[Sg].LandAt;
+		const FSkyFrame& F = B.Segs[Sg].Frames[I];
+		const double Lat = FVector::DotProduct(Car.Pos - F.P, F.L);
+		const double Above = FVector::DotProduct(Car.Pos - F.P, F.U);
+		if (F.U.Z > 0.5 && Above > 0.3 && Above < 40.0 && FMath::Abs(Lat) < F.Width * 0.5 + 6.0)
+		{
+			Car.bRaceAirAim = true;
+			Car.RaceAimFwd = F.F;
+			Car.RaceAimUp = F.U;
+			const double VLat = FVector::DotProduct(Car.Vel, F.L);
+			const double Pull = FMath::Clamp(-(0.8 * Lat + 1.2 * VLat), -AIR_PULL, AIR_PULL);
+			Car.RaceAirPull = F.L * Pull;
+		}
+	}
 }
 
 // Put the car on the deck Ahead metres along the course from a frame, in its lane (the player in the middle), facing
@@ -1186,6 +1346,11 @@ void FSkyCourseRaceImpl::AfterTeleport(FRacer& R, const TCHAR* Why, const TCHAR*
 		if (bAny && Drives(R)) RefreshChoice(R);
 	}
 	if (Car) R.Prev = Car->Pos;
+	R.GhostUntil = T + GHOST_T;   // no shoving while it gets going again
+	// the player's view dips to black and back, so being put back reads as a pick-up, not a jump cut
+	if (Car && R.bPlayer)
+		if (APlayerController* PC = Cast<APlayerController>(Car->GetController()))
+			if (PC->PlayerCameraManager) PC->PlayerCameraManager->StartCameraFade(1.f, 0.f, 0.35f, FLinearColor::Black, false, false);
 	R.OffT = R.SlowT = R.DeadT = R.WrongT = 0;
 	R.WrongSplit = INDEX_NONE;
 	R.RespawnT = T;
@@ -1220,6 +1385,7 @@ void FSkyCourseRaceImpl::Contacts()
 			if (FVector::DistSquared(A->Pos, Bc->Pos) > 100.0) continue;
 			const FRacer& Ra = Racers[a];
 			const FRacer& Rb = Racers[b];
+			if (T < Ra.GhostUntil || T < Rb.GhostUntil) continue;   // just put back on the track: a ghost for a moment
 			double Over = 0;
 			FVector N = FVector::ZeroVector;
 			for (const double Ka : { -1.0, 1.0 })
@@ -1582,6 +1748,8 @@ void FSkyCourseRaceImpl::DrawHud(AHUD* Hud, UCanvas* Canvas, float S)
 		}
 		if (T - P->MissT < 2.5) Text(TEXT("MISSED A CHECKPOINT"), W * 0.5f, H * 0.52f, 1.3f * S, Orange, 1);
 		if (T - P->RespawnT < 1.5) Text(TEXT("BACK ON TRACK"), W * 0.5f, H * 0.52f + 46.f * S, 1.0f * S, Dim, 1);
+		// smart steering lit (like Mario Kart's antenna): a small tag low in the middle while it nudges
+		if (T - P->NudgeT < 0.4) Text(TEXT("STEER ASSIST"), W * 0.5f, H * 0.86f, 0.7f * S, Dim, 1);
 	}
 
 	// the results, once the player is home (or the race is over)

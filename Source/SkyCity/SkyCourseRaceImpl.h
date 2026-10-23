@@ -22,7 +22,17 @@ namespace SkyRaceK
 	constexpr double COUNTDOWN = 3.0;               // s: 3, 2, 1, go
 	constexpr int32 SEARCH = 24;                    // frames (12 m) each way the tracker looks for a car
 	constexpr double OFF_LAT = 3.0;                 // m past the deck's edge that counts as off the track
-	constexpr double OFF_T = 2.0;                   // s off the track before a respawn
+	constexpr double OFF_T = 1.0;                   // s off the track before a respawn (Lakitu-quick: Design/RaceHandling.md)
+	constexpr double GHOST_T = 1.5;                 // s after a respawn with no car-to-car contact
+	constexpr double GOOD_BACK = 10.0;              // m a respawn goes back from the last good spot
+	constexpr double KEEP_V = 0.7, KEEP_MIN = 25.0; // a respawn keeps this share of the speed it had there, at least this
+	constexpr double DRAFT = 0.04;                  // slipstream: up to this much more top speed right behind a car
+	constexpr double DRAFT_LEN = 25.0, DRAFT_SIDE = 2.5;   // m behind and across that count
+	constexpr double BAND = 0.06;                   // AI rubber band: up to this much less (ahead) or more (behind) top speed
+	constexpr double BAND_FROM = 40.0, BAND_FULL = 200.0;  // m from the player where it starts and is full
+	constexpr double NUDGE_MAX = 0.35;              // smart steering: the most it adds to the stick
+	constexpr double NUDGE_LOOK = 0.6;              // s ahead it looks for the edge
+	constexpr double AIR_PULL = 3.0;                // m/s^2 at most: landing help's drift toward the pad's middle
 	constexpr double WRONG_T = 1.0;                 // s in a closed branch before the car goes back to the split
 }
 
@@ -127,6 +137,12 @@ struct FRacer
 	TArray<double> LapSplits, BestSplits;   // per gate: split this lap, split on its best lap (-1 none)
 	TArray<FString> Branches;
 	// recovery
+	struct FGood { int32 Seg = 0, Frame = 0; double S = 0, V = 0; };
+	TArray<FGood> Good;               // the last good spots on the deck this lap (every 2 m, newest last): where a fall goes back to
+	int32 GoodLap = 0;
+	double GhostUntil = -99;          // no car-to-car contact until then (just put back on the track)
+	// race assists and catch-up (Design/RaceHandling.md)
+	double Nudge = 0, NudgeT = -99, Draft = 0;
 	int32 SafeSeg = INDEX_NONE, SafeFrame = 0;   // the last gate passed (INDEX_NONE: its grid slot)
 	double OffT = 0, SlowT = 0, DeadT = 0, WrongT = 0, ReverseT = 0;
 	double BumpT = -99;               // the last time it touched another car (s since Begin)
@@ -177,6 +193,7 @@ public:
 		void Restore(ASkysterCar& C) const;
 	} Held;                           // the player's own test input, kept over the countdown hold
 	bool bHolding = false;
+	ESkyAssist PlayerAssist = ESkyAssist::Full;   // the player's race assists (the course menu's setting, read at Begin)
 	// the player's best on this course
 	FString TimesPath;
 	double PbLap = -1, PbRace = -1;
@@ -218,6 +235,11 @@ public:
 	void LapDone(FRacer& R, double Tc);
 	void Recover(FRacer& R, ASkysterCar& Car, double Dt);
 	void Respawn(FRacer& R, const TCHAR* Why);
+	void NoteGood(FRacer& R, const ASkysterCar& Car);
+	bool RespawnGood(FRacer& R, const TCHAR* Why);
+	ESkyAssist AssistFor(const FRacer& R) const;
+	void Assists(FRacer& R, ASkysterCar& Car, double Dt);
+	static void ClearRaceHooks(ASkysterCar& Car);
 	/** Lat: m left of the middle to put it (default: its lane; the player in the middle). */
 	void RespawnAt(FRacer& R, int32 Sg, int32 I, double Ahead, const TCHAR* Why, double Lat = TNumericLimits<double>::Max());
 	void LimitTransitions();

@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/CommandLine.h"
+#include "Misc/ConfigCacheIni.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
@@ -302,9 +303,25 @@ const FSkyBaked& ASkyCourseMode::GetBaked() const
 	return Track ? Track->GetBaked() : Empty;
 }
 
+void ASkyCourseMode::SetAssist(ESkyAssist A)
+{
+	Assist = A;
+	if (GConfig)
+	{
+		GConfig->SetInt(TEXT("SkyCourse"), TEXT("Assist"), (int32)A, GGameUserSettingsIni);
+		GConfig->Flush(false, GGameUserSettingsIni);
+	}
+}
+
 void ASkyCourseMode::BeginPlay()
 {
 	Super::BeginPlay();
+	// the player's race assist level (Full unless they changed it; a bad value counts as Full)
+	{
+		int32 Saved = (int32)ESkyAssist::Full;
+		if (GConfig) GConfig->GetInt(TEXT("SkyCourse"), TEXT("Assist"), Saved, GGameUserSettingsIni);
+		Assist = Saved >= 0 && Saved <= (int32)ESkyAssist::Full ? (ESkyAssist)Saved : ESkyAssist::Full;
+	}
 	UWorld* World = GetWorld();
 	if (!World) return;
 	LoadArea(*State, Area);
@@ -620,6 +637,7 @@ FString ASkyCourseMode::TestStateJson() const
 	O->SetBoolField(TEXT("areaFromFile"), State->bAreaFromFile);
 	O->SetBoolField(TEXT("driving"), bDriving);
 	O->SetBoolField(TEXT("mcp"), IsMcpEnabled());
+	O->SetNumberField(TEXT("assist"), (int32)Assist);   // 0 off, 1 light, 2 full
 	O->SetNumberField(TEXT("revision"), CourseRevision);
 	O->SetNumberField(TEXT("undoDepth"), UndoStack.Num());
 	O->SetNumberField(TEXT("seqs"), Course.Seqs.Num());

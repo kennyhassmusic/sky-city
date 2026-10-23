@@ -13,7 +13,7 @@ The code contract is `Source/SkyCity/SkyCourse.h`.
   - Palette strip at the bottom: D-pad left/right picks a piece, D-pad up/down changes its main setting (length,
     angle, height), LB/RB its second setting (radius, bank, side, lanes), A places, B removes the last piece.
   - Right stick orbits, left stick pans, triggers zoom.
-  - Y: test drive (and back). X: course menu (new, save, load, rename, skin, laps, opponents, AI skill, LLM link).
+  - Y: test drive (and back). X: course menu (new, save, load, rename, skin, laps, opponents, AI skill, catch-up, track width, assists, LLM link).
   - View button: next branch while editing a split.
   - Keyboard equivalents: arrows, Q/E, Enter, Backspace, T, M, Tab.
 - **Pieces snap end to end:** each piece starts where the last one ended, facing the same way, at the same height and
@@ -21,12 +21,16 @@ The code contract is `Source/SkyCity/SkyCourse.h`.
 - **Test drive / race:** the car (and any AI opponents) line up on the starting grid behind the start gate.
   - A 3-2-1 countdown, then go. Pass the checkpoints in order and finish (or complete the laps) for a time.
   - The HUD shows lap x/y, time, splits, best lap and position.
-  - Falling off the track puts you back at the last checkpoint after a moment. Y returns to building.
+  - Falling off the track puts you back about 10 m before where you fell, in about a second, still moving. The car's reset
+    (View / R) does the same. See `Design/RaceHandling.md` for bumpers, assists and catch-up. Y returns to building.
 - **Saving and sharing:** courses are small JSON files in `Saved/Courses/<name>.json` (inside the sandbox container in
   the packaged game). Players share them by sending the file.
 
 ## Track
-- **Lanes:** 1 to 4 lanes, 5.5 m each (one lane is the unveil ramp's deck); **2 by default**, 1 for a solo builder.
+- **Lanes:** 1 to 4 lanes; **2 by default**, 1 for a solo builder. Each lane is `lane_width` metres, the same all over the
+  course: Standard 5.5 (one unveil ramp deck), **Wide 8 (the default)** or Extra wide 11. So 2 lanes are 16 m by default.
+  The course menu has a Track width setting; a change is checked like any edit and refused if the course no longer fits.
+  Corkscrews twist more slowly on a deck wider than 11 m (and so are longer), because a wide deck throws off-centre cars out harder.
   A `lanes` piece widens or narrows the track (2→3→4 or back) over its length, centred or to one side.
 - **Splits (Y pieces):** a `split` piece fans the track out into 2 to 4 branches. Each branch has its own lane count and
   angle and its own list of pieces, and can split again (3 levels deep). The branches rejoin automatically at the merge:
@@ -43,8 +47,8 @@ The code contract is `Source/SkyCity/SkyCourse.h`.
 - **Skins** (course setting):
   - `unveil` (default): the McGregor unveil ramp. Weathered concrete deck (`/Game/McGregor/Materials/MI_RampDeck`),
     white painted lane lines (`MI_RampLine`), and red edge trim along both sides (`MI_LEDRed`, glowing) that brightens
-    as cars pass, like the unveil's LED bars. The trim is a low 0.3 m lip.
-  - `classic`: orange toy track with 0.6 m side rails.
+    as cars pass, like the unveil's LED bars. The trim is a 1 m bumper (SkyRail) the car glances off.
+  - `classic`: orange toy track with 1 m side rails.
   - `neon`: dark glass deck with cyan edge light.
 - **Geometry:** built at runtime as procedural mesh, one component per segment, from centre-line frames every 0.5 m
   (position, forward, left, up), so banks, loops and corkscrews are exact. Collision is the same mesh: the car's
@@ -53,16 +57,18 @@ The code contract is `Source/SkyCity/SkyCourse.h`.
 - **Physics (done):** on `SkyTrack` the car gains grip in concave curves in proportion to speed (v²/r), so loops hold you
   if you're fast enough, at any car level. Booster strips push at 45 m/s². Nothing changes off the track.
 
-## Course file (format version 1)
+## Course file (format version 2)
+Version 2 adds `lane_width` and `catch_up`. A version 1 file (no `lane_width`) still loads, with 5.5 m lanes, exactly as it was built.
+
 Metres and degrees, in the car sim's world frame: Unreal cm = (x * 100, -y * 100, z * 100). Yaw is counter-clockwise
 from +x (Unreal yaw = -yaw). `start` is where the start piece begins.
 
 ```json
 {
-  "format": "skycity-course", "version": 1,
+  "format": "skycity-course", "version": 2,
   "name": "Desert Loop", "author": "kenny",
   "start": { "x": 120.0, "y": -40.0, "z": 0.5, "yaw": 90 },
-  "lanes": 2, "skin": "unveil", "laps": 3, "opponents": 3, "skill": 0.8,
+  "lanes": 2, "lane_width": 8, "skin": "unveil", "laps": 3, "opponents": 3, "skill": 0.8, "catch_up": true,
   "pieces": [
     { "type": "start" },
     { "type": "straight", "length": 60 },
@@ -92,8 +98,8 @@ from +x (Unreal yaw = -yaw). `start` is where the start piece begins.
 | `curve` | `angle` -270..270 (+ = left), `radius` 8-300, `bank` -45..45 | banks in and out within the piece |
 | `ramp` | `length` 4-150, `rise` -60..60 | S-shaped, level at both ends, steepest point ≤ 45° |
 | `jump` | `gap` 4-80, `drop` -30..30 | lip, open gap, landing pad `drop` m higher (+) or lower (-) |
-| `loop` | `radius` 6-30, `offset` 0-12 (default the track width + 1 m) | 360° vertical loop, exit shifted sideways |
-| `corkscrew` | `length` 20-150, `turns` 0.5-2 | track rolls about its own axis, ends level |
+| `loop` | `radius` 6-30, `offset` 0 to 4 x `lane_width` + 1 (default the track width + 1 m) | 360° vertical loop, exit shifted sideways |
+| `corkscrew` | `length` 20-260, `turns` 0.5-2 | track rolls about its own axis, ends level |
 | `wallride` | `length` 15-150, `side` "left"/"right" | twists up to vertical and back |
 | `booster` | `length` 4-30 | speed strip |
 | `lanes` | `lanes` 1-4, `length` 10-80, `align` "center"/"left"/"right" | widen or narrow |
@@ -133,10 +139,10 @@ Course limits:
 - **Packaged Mac app:** add `com.apple.security.network.server` to the sandbox entitlements, or the server can't listen.
 
 ## AI opponents
-- 0-7 opponents, skill 0.3-1.2. They're more `ASkysterCar`s driven through the car's test-input hooks, with an AI flag:
+- 0-7 opponents, skill 0.3-1.2. `catch_up` (default on) lets a car far ahead ease off and one far behind push, scaled by skill; the player is never sped up. They're more `ASkysterCar`s driven through the car's test-input hooks, with an AI flag:
   no camera, HUD, saved progress or toasts. They use the same physics and level 6 abilities, minus flight.
 - They follow their lap's route, each in its own lane, and plan their speed for curves, loops (minimum entry speed) and
-  jumps. They boost on straights and recover after crashes or falls (respawn at the last checkpoint like the player).
+  jumps. They boost on straights and recover after crashes or falls (put back on the track like the player).
 - Split routing: they take the branch the gate shows open when they get there.
 
 ## Code plan and owners

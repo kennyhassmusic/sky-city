@@ -53,7 +53,8 @@ enum class EMenuItem : uint8
 {
 	Resume, NewCourse, Save, Load, Rename, Example, Undo, Skin, Laps, Opponents, Skill, Llm,
 	BranchLanes, BranchAngle, BranchLaps, Gate, MergeLength, MergeLanes, Garage,
-	ConnectClaude, CopyClaudeCode, CopyAddress   // the LLM link's one-click connect helpers
+	ConnectClaude, CopyClaudeCode, CopyAddress,  // the LLM link's one-click connect helpers
+	TrackWidth, CatchUp, Assist                  // course width and catch-up (the course), assists (the player)
 };
 
 class FSkyCourseBuilderImpl

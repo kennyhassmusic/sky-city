@@ -5,7 +5,14 @@ For designing test and example courses without the editor; the bake in the game 
     python3 Scripts/course/layout_check.py Scripts/course/courses/example.json [--verbose]"""
 import json, math, sys
 
-LANE, G = 5.5, 25.4
+LANE, G = 5.5, 25.4   # LANE (m per lane) is set per course in main(): lane_width, or 5.5 for a version 1 file without it, else 8
+
+
+def course_lane_width(c):
+    """The course's lane width as the game reads it: lane_width if given; else 5.5 for version 1 (built for it), 8 for version 2."""
+    if "lane_width" in c:
+        return float(c["lane_width"])
+    return 5.5 if c.get("version", 2) < 2 else 8.0
 
 
 def frame(yaw):
@@ -207,7 +214,10 @@ def lay_split(p, st, lab, path, out, verbose):
 def main():
     path = sys.argv[1]
     verbose = "--verbose" in sys.argv
+    global LANE
     c = json.load(open(path))
+    LANE = course_lane_width(c)
+    print(f"lane width {LANE} m (version {c.get('version')})")
     s = c["start"]
     out = {"errors": [], "ends": [], "jumps": [], "merges": [], "xs": [], "start": (s["x"], s["y"], s["z"]), "start_yaw": math.radians(s.get("yaw", 0))}
     st = {"p": (s["x"], s["y"], s["z"]), "yaw": math.radians(s.get("yaw", 0)), "lanes": c.get("lanes", 2)}

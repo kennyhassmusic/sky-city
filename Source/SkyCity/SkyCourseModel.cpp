@@ -1,6 +1,6 @@
 // The course file and the bake (see SkyCourse.h and Design/CourseBuilder.md).
 //
-// The file: format skycity-course v1, read strictly (unknown pieces, unknown settings and anything past the hard limits
+// The file: format skycity-course v2 (v1 still loads; it has no lane_width, so its lanes are 5.5 m as it was built), read strictly (unknown pieces, unknown settings and anything past the hard limits
 // are errors with a JSON path) so an LLM writing courses hears exactly what it got wrong.
 //
 // The bake: every piece is a shape in its own start frame (x forward, y left, z up), sampled densely, then resampled
@@ -97,7 +97,7 @@ namespace SkyModel
 	struct FLim { double Min, Max; };
 	// the hard limits (Design/CourseBuilder.md)
 	constexpr FLim LimStraight{ 2, 300 }, LimAngle{ -270, 270 }, LimRadius{ 8, 300 }, LimBank{ -45, 45 }, LimRampLen{ 4, 150 },
-		LimRise{ -60, 60 }, LimGap{ 4, 80 }, LimDrop{ -30, 30 }, LimLoopR{ 6, 30 }, LimCorkLen{ 20, 150 }, LimTurns{ 0.5, 2 },
+		LimRise{ -60, 60 }, LimGap{ 4, 80 }, LimDrop{ -30, 30 }, LimLoopR{ 6, 30 }, LimCorkLen{ 20, 260 }, LimTurns{ 0.5, 2 },
 		LimWallLen{ 15, 150 }, LimBoost{ 4, 30 }, LimLanesLen{ 10, 80 }, LimSplitLen{ 15, 80 }, LimBranchAngle{ -45, 45 },
 		LimMergeLen{ 15, 80 }, LimSkill{ 0.3, 1.2 };
 
@@ -148,6 +148,8 @@ FSkyPiece SkyCourse::DefaultPiece(ESkyPiece Type, int32 LanesHere)
 {
 	using namespace SkyModel;
 	const int32 Ln = FMath::Clamp(LanesHere, MinLanes, MaxLanes);
+	// no course here, so the default lane width; the loop, corkscrew and wallride lengths below are only starting points
+	// (the builder and the file reader recompute the "auto" ones against the course's own width)
 	FSkyPiece P;
 	P.Type = Type;
 	switch (Type)
@@ -157,9 +159,9 @@ FSkyPiece SkyCourse::DefaultPiece(ESkyPiece Type, int32 LanesHere)
 	case ESkyPiece::Curve: P.Angle = 90; P.Radius = 40; P.Bank = 0; break;
 	case ESkyPiece::Ramp: P.Length = 30; P.Rise = 8; break;
 	case ESkyPiece::Jump: P.Gap = 20; P.Drop = 0; break;
-	case ESkyPiece::Loop: P.Radius = 12; P.Offset = Ln * LaneWidth + 1.0; break;
-	case ESkyPiece::Corkscrew: P.Turns = 1; P.Length = SkyModel::PlanCorkscrew(Ln * LaneWidth, -1, 1).Len; break;
-	case ESkyPiece::WallRide: P.Length = FMath::Max(40.0, FMath::CeilToDouble((4.0 * Ln * LaneWidth + 6.0) / 5.0) * 5.0); P.Side = 1; break;
+	case ESkyPiece::Loop: P.Radius = 12; P.Offset = Ln * DefaultLaneWidth + 1.0; break;
+	case ESkyPiece::Corkscrew: P.Turns = 1; P.Length = SkyModel::PlanCorkscrew(Ln * DefaultLaneWidth, -1, 1).Len; break;
+	case ESkyPiece::WallRide: P.Length = FMath::Max(40.0, FMath::CeilToDouble((4.0 * Ln * DefaultLaneWidth + 6.0) / 5.0) * 5.0); P.Side = 1; break;
 	case ESkyPiece::Lanes: P.Lanes = Ln >= MaxLanes ? Ln - 1 : Ln + 1; P.Length = 25; P.Align = 0; break;
 	case ESkyPiece::Split:
 	{
@@ -282,7 +284,7 @@ namespace SkyModel
 			break;
 		case ESkyPiece::Loop:
 			if (R.Number(O, TEXT("radius"), L, D)) { InRange(R.Errors, L, TEXT("radius"), D, LimLoopR); Out.Radius = D; }
-			if (R.Number(O, TEXT("offset"), L, D)) { InRange(R.Errors, L, TEXT("offset"), D, FLim{ 0, MaxLanes * LaneWidth + 1.0 }); Out.Offset = D; }
+			if (R.Number(O, TEXT("offset"), L, D)) { InRange(R.Errors, L, TEXT("offset"), D, FLim{ 0, MaxLanes * Course.LaneWidth + 1.0 }); Out.Offset = D; }
 			break;
 		case ESkyPiece::Corkscrew:
 			if (R.Number(O, TEXT("length"), L, D)) { InRange(R.Errors, L, TEXT("length"), D, LimCorkLen); Out.Length = D; }
@@ -391,15 +393,30 @@ bool SkyCourse::Parse(const FString& Json, FSkyCourse& Out, TArray<FString>& Err
 	}
 	FReader R{ Errors };
 	R.Unknown(Root, { TEXT("format"), TEXT("version"), TEXT("name"), TEXT("author"), TEXT("start"), TEXT("lanes"), TEXT("skin"), TEXT("laps"),
-		TEXT("opponents"), TEXT("skill"), TEXT("pieces") }, TEXT("course"),
-		TEXT("a course has format, version, name, author, start, lanes, skin, laps, opponents, skill and pieces"));
+		TEXT("opponents"), TEXT("skill"), TEXT("lane_width"), TEXT("catch_up"), TEXT("pieces") }, TEXT("course"),
+		TEXT("a course has format, version, name, author, start, lanes, lane_width, skin, laps, opponents, skill, catch_up and pieces"));
 	FString S;
 	if (R.Str(Root, TEXT("format"), TEXT("course"), S) && S != TEXT("skycity-course"))
 		Errors.Add(FString::Printf(TEXT("course: format \"%s\" is not \"skycity-course\""), *S));
 	int32 I = 0;
 	double D = 0;
-	if (R.Int(Root, TEXT("version"), TEXT("course"), I) && (I < 1 || I > FormatVersion))
-		Errors.Add(FString::Printf(TEXT("course: version %d is not one this game reads (%d)"), I, FormatVersion));
+	int32 Version = FormatVersion;
+	if (R.Int(Root, TEXT("version"), TEXT("course"), I))
+	{
+		if (I < 1 || I > FormatVersion) Errors.Add(FString::Printf(TEXT("course: version %d is not one this game reads (1 or %d)"), I, FormatVersion));
+		else Version = I;
+	}
+	// a version 1 file was built on 5.5 m lanes: without lane_width it loads exactly as it was, so it still fits
+	Out.LaneWidth = Version < 2 ? StandardLaneWidth : DefaultLaneWidth;
+	if (R.Number(Root, TEXT("lane_width"), TEXT("course"), D)) { InRange(Errors, TEXT("course"), TEXT("lane_width"), D, FLim{ MinLaneWidth, MaxLaneWidth }); Out.LaneWidth = Clamp(D, FLim{ MinLaneWidth, MaxLaneWidth }); }
+	{
+		const TSharedPtr<FJsonValue>* CV = Root->Values.Find(TEXT("catch_up"));
+		if (CV && CV->IsValid() && !(*CV)->IsNull())
+		{
+			if ((*CV)->Type == EJson::Boolean) Out.bCatchUp = (*CV)->AsBool();
+			else Errors.Add(TEXT("course: catch_up must be true or false"));
+		}
+	}
 	if (R.Str(Root, TEXT("name"), TEXT("course"), S)) { S.TrimStartAndEndInline(); if (!S.IsEmpty()) Out.Name = S.Left(64); }
 	if (R.Str(Root, TEXT("author"), TEXT("course"), S)) Out.Author = S.TrimStartAndEnd().Left(64);
 	const TSharedPtr<FJsonValue>* SV = Root->Values.Find(TEXT("start"));
@@ -562,7 +579,7 @@ FString SkyCourse::Write(const FSkyCourse& C)
 	S += TEXT("  \"format\": \"skycity-course\", \"version\": ") + Num(FormatVersion) + TEXT(",\n");
 	S += TEXT("  \"name\": ") + Quote(C.Name) + TEXT(", \"author\": ") + Quote(C.Author) + TEXT(",\n");
 	S += FString::Printf(TEXT("  \"start\": { \"x\": %s, \"y\": %s, \"z\": %s, \"yaw\": %s },\n"), *Num(C.Start.X), *Num(C.Start.Y), *Num(C.Start.Z), *Num(C.Yaw));
-	S += FString::Printf(TEXT("  \"lanes\": %d, \"skin\": \"%s\", \"laps\": %d, \"opponents\": %d, \"skill\": %s,\n"), C.Lanes, SkinName(C.Skin), C.Laps, C.Opponents, *Num(C.Skill));
+	S += FString::Printf(TEXT("  \"lanes\": %d, \"lane_width\": %s, \"skin\": \"%s\", \"laps\": %d, \"opponents\": %d, \"skill\": %s, \"catch_up\": %s,\n"), C.Lanes, *Num(C.LaneWidth), SkinName(C.Skin), C.Laps, C.Opponents, *Num(C.Skill), C.bCatchUp ? TEXT("true") : TEXT("false"));
 	S += TEXT("  \"pieces\": [");
 	const TArray<FSkyPiece>& Main = C.Seqs.Num() > 0 ? C.Seqs[0].Pieces : TArray<FSkyPiece>();
 	for (int32 i = 0; i < Main.Num(); ++i)
@@ -603,7 +620,8 @@ namespace SkyModel
 	{
 		FVector P = FVector::ZeroVector;
 		double Yaw = 0, Roll = 0;   // rad
-		double W = LaneWidth * DefaultLanes, S = 0;
+		double W = DefaultLaneWidth * DefaultLanes, S = 0;
+		double LaneW = DefaultLaneWidth;   // m per lane: the course's, carried through every state so no helper needs the course
 		int32 Lanes = DefaultLanes;
 		FSkyFrame Frame() const { FSkyFrame F = MakeFrame(P, Yaw, Roll, W); F.S = S; return F; }
 	};
@@ -807,6 +825,11 @@ namespace SkyModel
 		return (T - A * 0.5) / (1 - A);
 	}
 	constexpr double CorkMaxTwist = 0.12;   // rad per metre at the fastest: a deck x m off its centre line slopes x * twist
+	constexpr double CorkWideDeck = 11.0;   // m: a deck wider than this twists slower (CorkTwist), so wide lanes stay as easy as 2 standard lanes
+	/** The fastest twist (rad/m) for a deck W wide. The AI tuning showed a wider deck throws an off-centre car out harder
+	 *  (slope = distance from the middle x twist, and the car can be further out), so past 11 m the rate falls as
+	 *  sqrt(11 / W): the edge slope at the extreme stays what it is on 2 standard lanes. Never faster than before. */
+	double CorkTwist(double W) { return CorkMaxTwist * FMath::Min(1.0, FMath::Sqrt(CorkWideDeck / FMath::Max(W, 1.0))); }
 	constexpr double CorkRh = 1.0;          // helix radius: v^2 / r presses the car in upside down from ~40 m/s
 
 	FCorkPlan PlanCorkscrew(double W, double Len, double Turns)
@@ -826,7 +849,7 @@ namespace SkyModel
 		C.Lift = Dip * 1.05;
 		// a gentle climb: no steeper than ~20 degrees and a crest the car stays on at race speed
 		C.Rise = C.Lift > 0 ? FMath::Max(4.1 * C.Lift, FMath::Sqrt(100.0 * C.Lift)) : 0.0;
-		const double MinRoll = Tot * (4.0 / 3.0) / CorkMaxTwist;
+		const double MinRoll = Tot * (4.0 / 3.0) / CorkTwist(W);
 		C.Len = Len > 0 ? Len : FMath::Max(LimCorkLen.Min, FMath::CeilToDouble((2 * C.Rise + MinRoll) / 5.0) * 5.0);
 		C.Roll = FMath::Max(C.Len - 2 * C.Rise, 1.0);
 		return C;
@@ -988,8 +1011,8 @@ namespace SkyModel
 			if (P.Length > 0) InRange(Errors, Lb, TEXT("length"), P.Length, LimCorkLen);
 			const double Len = P.Length > 0 ? Clamp(P.Length, LimCorkLen) : Auto.Len;
 			const FCorkPlan Cp = PlanCorkscrew(W0, Len, Turns);
-			if (Cp.Roll < Tot0 * (4.0 / 3.0) / CorkMaxTwist - 1e-6)
-				Errors.Add(FString::Printf(TEXT("%s: %s turn%s on %d lane%s need%s at least %s m (it climbs %s m while level so its edges stay above the ground, then twists slowly enough to drive: about 70 m a turn)%s"),
+			if (Cp.Roll < Tot0 * (4.0 / 3.0) / CorkTwist(W0) - 1e-6)
+				Errors.Add(FString::Printf(TEXT("%s: %s turn%s on %d lane%s need%s at least %s m (it climbs %s m while level so its edges stay above the ground, then twists slowly enough to drive: about 70 m a turn, more on a deck wider than 11 m)%s"),
 					*Lb, *Num(Turns), Turns > 1 ? TEXT("s") : TEXT(""), St.Lanes, St.Lanes > 1 ? TEXT("s") : TEXT(""), Turns > 1 ? TEXT("") : TEXT("s"), *Num(Auto.Len),
 					*Num(FMath::RoundToDouble(Cp.Lift * 10) / 10), Auto.Len > LimCorkLen.Max ? TEXT(": too long for one piece, so narrow the track first (a lanes piece)") : TEXT("")));
 			const double Frac = FMath::Fmod(Turns, 1.0);
@@ -1050,7 +1073,7 @@ namespace SkyModel
 			if (!InRange(Errors, Lb, TEXT("lanes"), P.Lanes, FLim{ (double)MinLanes, (double)MaxLanes })) {}
 			const int32 N = FMath::Clamp(P.Lanes, MinLanes, MaxLanes);
 			const double Len = Clamp(P.Length, LimLanesLen);
-			const double W1 = N * LaneWidth;
+			const double W1 = N * St.LaneW;
 			// align: the left (-1) or right (+1) edge stays put; the centre line moves sideways by half the change
 			const double Al = P.Align < 0 ? 1.0 : P.Align > 0 ? -1.0 : 0.0;
 			Sh.EstLen = Len * 1.02;
@@ -1288,7 +1311,7 @@ namespace SkyModel
 				Ld.From.P = St.P + At.L * Off[b];
 				Ld.From.W = Wid[b];
 				Ld.From.Lanes = Ln[b];
-				Ld.Len = Len; Ld.Angle = Ang[b]; Ld.WEnd = Ln[b] * LaneWidth;
+				Ld.Len = Len; Ld.Angle = Ang[b]; Ld.WEnd = Ln[b] * C.LaneWidth;
 				FPieceBuild PB = LeadShape(Ld);
 				PB.End.Lanes = Ln[b];
 				TArray<FSkyFrame> Fr;
@@ -1398,12 +1421,12 @@ namespace SkyModel
 			// the trunk: from the slots' width to merge_lanes
 			const int32 NOut = P.MergeLanes > 0 ? FMath::Clamp(P.MergeLanes, MinLanes, MaxLanes) : St.Lanes;
 			FState TS;
-			TS.P = M; TS.Yaw = MergeYaw; TS.Roll = 0; TS.W = WIn; TS.Lanes = St.Lanes; TS.S = St.S + BranchLen[0];
+			TS.LaneW = C.LaneWidth; TS.P = M; TS.Yaw = MergeYaw; TS.Roll = 0; TS.W = WIn; TS.Lanes = St.Lanes; TS.S = St.S + BranchLen[0];
 			FSkyPiece Tp; Tp.Type = ESkyPiece::Lanes; Tp.Lanes = NOut; Tp.Length = MLen; Tp.Align = 0;
 			FPieceBuild PB;
 			TArray<FString> Ignore;
 			MakePieceShape(Tp, TS, Lb, PB, Ignore, Ignore);
-			PB.End.W = NOut * LaneWidth; PB.End.Lanes = NOut;
+			PB.End.W = NOut * C.LaneWidth; PB.End.Lanes = NOut;
 			TArray<FSkyFrame> Fr;
 			LayPiece(PB, TS, Fr);
 			const int32 Trunk = AddSeg(ESkySeg::MergeTrunk, ESkyPiece::Split, Seq, Pi, INDEX_NONE, NOut, MoveTemp(Fr), Lb + TEXT(" merge"), MLeads);
@@ -1415,7 +1438,7 @@ namespace SkyModel
 
 		void BakeClose(int32 Pi, const FState& St, TArray<int32>& Tail, const FString& Lb)
 		{
-			const FSkyFrame Goal = [&]() { FSkyFrame F = MakeFrame(C.Start, FMath::DegreesToRadians(C.Yaw), 0, FMath::Clamp(C.Lanes, MinLanes, MaxLanes) * LaneWidth); return F; }();
+			const FSkyFrame Goal = [&]() { FSkyFrame F = MakeFrame(C.Start, FMath::DegreesToRadians(C.Yaw), 0, FMath::Clamp(C.Lanes, MinLanes, MaxLanes) * C.LaneWidth); return F; }();
 			const FSkyFrame From = St.Frame();
 			if (FMath::Abs(St.Roll) > 0.05) B.Errors.Add(Lb + TEXT(": the track must be the right way up to close the lap"));
 			double R = 1e9, Sl = 0;
@@ -1623,6 +1646,8 @@ namespace SkyModel
 		Used.Add(0);
 		// course settings
 		InRange(B.Errors, TEXT("course"), TEXT("lanes"), C.Lanes, FLim{ (double)MinLanes, (double)MaxLanes });
+		InRange(B.Errors, TEXT("course"), TEXT("lane_width"), C.LaneWidth, FLim{ MinLaneWidth, MaxLaneWidth });
+		B.LaneWidth = FMath::Clamp(C.LaneWidth, MinLaneWidth, MaxLaneWidth);
 		InRange(B.Errors, TEXT("course"), TEXT("laps"), C.Laps, FLim{ 1, (double)MaxLaps });
 		InRange(B.Errors, TEXT("course"), TEXT("opponents"), C.Opponents, FLim{ 0, (double)MaxOpponents });
 		InRange(B.Errors, TEXT("course"), TEXT("skill"), C.Skill, LimSkill);
@@ -1651,8 +1676,9 @@ namespace SkyModel
 		FState St;
 		St.P = C.Start;
 		St.Yaw = FMath::DegreesToRadians(C.Yaw);
+		St.LaneW = B.LaneWidth;
 		St.Lanes = FMath::Clamp(C.Lanes, MinLanes, MaxLanes);
-		St.W = St.Lanes * LaneWidth;
+		St.W = St.Lanes * St.LaneW;
 		St.S = S0;
 		TArray<int32> Tail;
 		const FState E = BakeSeq(0, St, 0, Tail);
@@ -1736,7 +1762,7 @@ void SkyCourse::Bake(const FSkyCourse& Course, const FBox& BuildArea, FSkyBaked&
 FSkyFrame SkyCourse::EndOf(const FSkyBaked& Baked, const FSkyCourse& Course, int32 Seq, int32* OutLanes)
 {
 	using namespace SkyModel;
-	auto Fallback = [&]() { FSkyFrame F = SkyGeom::MakeFrame(Course.Start, FMath::DegreesToRadians(Course.Yaw), 0, Course.Lanes * LaneWidth); if (OutLanes) *OutLanes = Course.Lanes; return F; };
+	auto Fallback = [&]() { FSkyFrame F = SkyGeom::MakeFrame(Course.Start, FMath::DegreesToRadians(Course.Yaw), 0, Course.Lanes * Course.LaneWidth); if (OutLanes) *OutLanes = Course.Lanes; return F; };
 	if (Seq == 0)
 	{
 		if (Baked.Segs.Num() == 0) return Fallback();
@@ -1818,7 +1844,9 @@ bool SkyGeom::PieceFrames(const FSkyPiece& Piece, const FSkyFrame& Start, int32 
 	YawRoll(Start, St.Yaw, St.Roll);
 	St.Roll = FMath::Abs(St.Roll) < 1e-3 ? 0.0 : St.Roll;
 	St.Lanes = FMath::Clamp(Lanes, MinLanes, MaxLanes);
-	St.W = St.Lanes * LaneWidth;
+	// no course here: a boundary frame's width is its lanes times the lane width, so that gives the course's lane width
+	St.LaneW = Start.Width > 1.0 ? FMath::Clamp(Start.Width / St.Lanes, MinLaneWidth, MaxLaneWidth) : DefaultLaneWidth;
+	St.W = St.Lanes * St.LaneW;
 	St.S = Start.S;
 	TArray<FString> Errors, Warnings;
 	if (Piece.Type == ESkyPiece::Split)
@@ -1834,7 +1862,7 @@ bool SkyGeom::PieceFrames(const FSkyPiece& Piece, const FSkyFrame& Start, int32 
 		{
 			FLead Ld;
 			Ld.From = St; Ld.From.P = St.P + At.L * Off[b]; Ld.From.W = Wid[b];
-			Ld.Len = Clamp(Piece.Length, LimSplitLen); Ld.Angle = Ang[b]; Ld.WEnd = Ln[b] * LaneWidth;
+			Ld.Len = Clamp(Piece.Length, LimSplitLen); Ld.Angle = Ang[b]; Ld.WEnd = Ln[b] * St.LaneW;
 			FPieceBuild PB = LeadShape(Ld);
 			LayPiece(PB, Ld.From, Out.AddDefaulted_GetRef());
 		}
@@ -1858,7 +1886,7 @@ bool SkyGeom::PieceFrames(const FSkyPiece& Piece, const FSkyFrame& Start, int32 
 	return true;
 }
 
-void SkyGeom::LaneLines(double Width, int32 Lanes0, int32 Lanes1, int32 Align, double Along01, TArray<double>& Out)
+void SkyGeom::LaneLines(double Width, int32 Lanes0, int32 Lanes1, int32 Align, double Along01, TArray<double>& Out, double LaneWidth)
 {
 	using namespace SkyModel;
 	Out.Reset();
@@ -1908,6 +1936,7 @@ FSkyCourse SkyCourse::Example(const FVector& Start, double Yaw)
 	C.Start = Start;
 	C.Yaw = Yaw;
 	C.Lanes = 2;
+	C.LaneWidth = DefaultLaneWidth;
 	C.Skin = ESkySkin::Unveil;
 	C.Laps = 3;
 	C.Opponents = 3;
@@ -1918,7 +1947,7 @@ FSkyCourse SkyCourse::Example(const FVector& Start, double Yaw)
 	auto Ramp = [&](double L, double R) { FSkyPiece P = Pc(ESkyPiece::Ramp); P.Length = L; P.Rise = R; return P; };
 	// a "U": out along the start line (loop, a hill, a jump), a banked U-turn left, back past the start through a split
 	// (corkscrew on laps 1 and 3, wallride on lap 2), and a U-turn into a short close behind the start gate; it fits
-	// 60 m behind the start, 360 m ahead and 115 m to the left (the build area's start spot leaves 60 m behind)
+	// 60 m behind the start, 360 m ahead and 115 m to the left (8 m lanes: the wallride and corkscrew branches are 150 m) (the build area's start spot leaves 60 m behind)
 	TArray<FSkyPiece> M;
 	M.Add(Pc(ESkyPiece::Start));
 	M.Add(Straight(40));
@@ -1932,7 +1961,7 @@ FSkyCourse SkyCourse::Example(const FVector& Start, double Yaw)
 	{ FSkyPiece P = Pc(ESkyPiece::Jump); P.Gap = 36; P.Drop = 0; M.Add(P); }
 	M.Add(Straight(10));
 	M.Add(Pc(ESkyPiece::Checkpoint));
-	M.Add(Curve(180, 34, 20));
+	M.Add(Curve(180, 31.5, 20));
 	{ FSkyPiece P = Pc(ESkyPiece::Lanes); P.Lanes = 4; P.Length = 20; M.Add(P); }
 	{
 		FSkyPiece P = Pc(ESkyPiece::Split);
@@ -1941,14 +1970,14 @@ FSkyCourse SkyCourse::Example(const FVector& Start, double Yaw)
 		FSkyBranch A; A.Lanes = 2; A.Angle = 12; A.Laps = { 1, 3 };
 		FSkyBranch Bb; Bb.Lanes = 2; Bb.Angle = -12; Bb.Laps = { 2 };
 		A.Seq = C.Seqs.AddDefaulted();
-		{ FSkyPiece K = Pc(ESkyPiece::Corkscrew); K.Length = 115; K.Turns = 1; C.Seqs[A.Seq].Pieces.Add(K); }
+		{ FSkyPiece K = Pc(ESkyPiece::Corkscrew); K.Length = 150; K.Turns = 1; C.Seqs[A.Seq].Pieces.Add(K); }
 		Bb.Seq = C.Seqs.AddDefaulted();
-		{ FSkyPiece W = Pc(ESkyPiece::WallRide); W.Length = 50; W.Side = -1; C.Seqs[Bb.Seq].Pieces.Add(W); C.Seqs[Bb.Seq].Pieces.Add(Straight(65)); }
+		{ FSkyPiece W = Pc(ESkyPiece::WallRide); W.Length = 70; W.Side = -1; C.Seqs[Bb.Seq].Pieces.Add(W); C.Seqs[Bb.Seq].Pieces.Add(Straight(80)); }
 		P.Branches = { A, Bb };
 		M.Add(P);
 	}
 	M.Add(Pc(ESkyPiece::Checkpoint));
-	M.Add(Straight(75));
+	M.Add(Straight(40));
 	M.Add(Curve(180, 40, 15));
 	M.Add(Pc(ESkyPiece::Close));
 	C.Seqs[0].Pieces = MoveTemp(M);
@@ -1957,22 +1986,26 @@ FSkyCourse SkyCourse::Example(const FVector& Start, double Yaw)
 
 FString SkyCourse::Guide()
 {
-	return TEXT(R"GUIDE(SKY CITY COURSE FORMAT (skycity-course, version 1)
+	return TEXT(R"GUIDE(SKY CITY COURSE FORMAT (skycity-course, version 2)
 
 UNITS AND FRAME
 - Metres and degrees. x and y are the ground plane, z is up. Yaw is counter-clockwise from +x (yaw 90 faces +y).
 - "start" is where the start piece begins, on the deck surface (put z about 0.3 m above the ground).
 - Pieces snap end to end: each starts where the last ended, facing the same way, at the same height, with the same
   lanes. You never give positions after the start. + angles turn LEFT, - angles turn RIGHT.
-- Lanes are 5.5 m wide; the track is 1 to 4 lanes (2 by default). Every piece ends level (except a part-turn corkscrew).
+- The track is 1 to 4 lanes (2 by default). Each lane is "lane_width" metres wide: 5.5 (standard), 8 (wide, the default)
+  or 11 (extra wide), the same for the whole course, so 2 lanes are 16 m wide by default. Every number below that depends
+  on the width is given for 8 m lanes. Every piece ends level (except a part-turn corkscrew).
 
 THE COURSE
-{ "format": "skycity-course", "version": 1, "name": "...", "author": "...",
+{ "format": "skycity-course", "version": 2, "name": "...", "author": "...",
   "start": { "x": 0, "y": 0, "z": 0.3, "yaw": 0 },
   "lanes": 2,            1-4, lanes at the start
+  "lane_width": 8,       5.5 (standard), 8 (wide) or 11 (extra wide) m per lane; default 8. A version 1 file without it is 5.5
   "skin": "unveil",      "unveil" (concrete with red LED trim), "classic" (orange toy track, 0.6 m rails), "neon"
   "laps": 3,             1-9; more than 1 needs a lap course (ends with close)
   "opponents": 3,        0-7 AI cars;  "skill": 0.8   0.3-1.2
+  "catch_up": true,      AI rubber band: a car far ahead eases off, one far behind pushes (never the player); default true
   "pieces": [ ... ] }
 Unknown settings are errors, so spell them exactly as below. Missing optional settings get the defaults shown.
 
@@ -1983,7 +2016,8 @@ PIECES (type: settings, hard limits, default)
 - straight: length 2-300 (30).
 - booster: length 4-30 (10). A speed strip that pushes cars at 45 m/s^2.
 - curve: angle -270..270 (90; + left, - right, at least 1), radius 8-300 (40, at the centre line), bank -45..45 (0;
-  + tilts into the turn). The bank rises and falls within the piece. 3 lanes need radius >= 11, 4 lanes >= 13.
+  + tilts into the turn). The bank rises and falls within the piece. The radius must be at least half the track width
+  + 2 m: at 8 m lanes 8 (the minimum) for 1 lane, 10 for 2, 14 for 3, 18 for 4.
 - ramp: length 4-150 (30, measured along the ground), rise -60..60 (8; - goes down). S-shaped, level at both ends.
   The steepest point is 1.5 x rise / length and must be <= 45 degrees: |rise| <= length / 1.5.
 - jump: gap 4-80 (20), drop -30..30 (0). A 15 degree lip (7.8 m), an open gap, then a landing pad (16 m or more) that
@@ -1992,18 +2026,19 @@ PIECES (type: settings, hard limits, default)
   so plan for cars to arrive 5-15% faster. Minimum speeds for drop 0: gap 20 -> 34 m/s (76 mph), gap 36 -> 45 m/s
   (100 mph), gap 50 -> 52 m/s (117 mph). Landing lower (drop -) needs less speed, higher (drop +) more.
   The flight path is in the baked frames (frames with no deck), so get_course can show where cars fly.
-- loop: radius 6-30 (12), offset 0-12 (default the track width + 1 m; on 3-4 lanes up to the width + 1). A full
+- loop: radius 6-30 (12), offset 0 to 4 x lane_width + 1 (default the track width + 1 m: 17 m on 2 lanes of 8 m). A full
   vertical loop; the exit is shifted sideways (+ left) by offset so it clears the entry.
-- corkscrew: length 20-150 (default: the shortest that works), turns 0.5-2 (1). The track climbs a few metres while
+- corkscrew: length 20-260 (default: the shortest that works), turns 0.5-2 (1). The track climbs a few metres while
   level, rolls round its own axis (a helix round an axis 1 m above the deck, so above ~40 m/s speed presses cars in
   upside down), then comes back down: the climb keeps the rolling deck's lower edge above where it started, so it
-  works at ground level. The roll is slow (about 70 m a turn): a wide deck twisting fast is steep away from its middle.
-  So one turn needs 100 m on 1 lane, 115 m on 2, 135 m on 3 (climbs of 2, 4.8 and 7.7 m); half a turn 35 m less; a
-  4-lane track is too wide (narrow it first). Whole turns end level; a half turn leaves the track upside down. Where
+  works at ground level. The roll is slow (about 70 m a turn): a wide deck twisting fast is steep away from its middle,
+  and a deck wider than 11 m twists slower still (by the square root of 11 / its width). So with 8 m lanes one turn
+  needs 110 m on 1 lane, 150 m on 2, 200 m on 3 and 250 m on 4 (climbs of 3.3, 7.4, 11.6 and 15.8 m); half a turn
+  needs 35 to 60 m less. A wide, multi-lane corkscrew is long: narrow the track first (a lanes piece). Whole turns end level; a half turn leaves the track upside down. Where
   the deck is on its side or upside down its edges become 1 m rails. Cars without wall fans (below level 4) slide off.
 - wallride: length 15-150 (default: what the lanes need, at least 40), side "left"/"right" (left). The track twists up
-  to vertical on that side and back. It needs at least 4 x width + 6 m: 28 m for 1 lane, 50 m for 2, 72 m for 3, 94 m
-  for 4. The edges become 1 m rails while the deck is tilted. Cars without wall fans (below level 4) slide down it.
+  to vertical on that side and back. It needs at least 4 x width + 6 m: with 8 m lanes 38 m for 1 lane, 70 m for 2, 102 m
+  for 3, 134 m for 4 (the default is at least 40). The edges become 1 m rails while the deck is tilted. Cars without wall fans (below level 4) slide down it.
 - lanes: lanes 1-4 (required), length 10-80 (25), align "center"/"left"/"right" (center: which edge stays put).
 - split: length 15-80 (30), gate "lights"/"wall"/"none" (lights), merge_length 15-80 (30), merge_lanes 1-4 (default:
   the lanes before the split), branches: 2-4 of
@@ -2046,10 +2081,10 @@ TIPS
   tighter than a 15 m radius).
 - Read the "ends" (where the next piece would start) after every change, and keep inside the build area.
 
-EXAMPLE (a lap course, about 960 m: out along the start line, a U-turn, back through a split, a U-turn into the close)
-{ "format": "skycity-course", "version": 1, "name": "Sky Loop", "author": "Sky City",
+EXAMPLE (a lap course on 8 m lanes, about 950 m: out along the start line, a U-turn, back through a split, a U-turn into the close)
+{ "format": "skycity-course", "version": 2, "name": "Sky Loop", "author": "Sky City",
   "start": { "x": 0, "y": 0, "z": 0.3, "yaw": 0 },
-  "lanes": 2, "skin": "unveil", "laps": 3, "opponents": 3, "skill": 0.8,
+  "lanes": 2, "lane_width": 8, "skin": "unveil", "laps": 3, "opponents": 3, "skill": 0.8, "catch_up": true,
   "pieces": [
     { "type": "start" },
     { "type": "straight", "length": 40 },
@@ -2063,22 +2098,22 @@ EXAMPLE (a lap course, about 960 m: out along the start line, a U-turn, back thr
     { "type": "jump", "gap": 36, "drop": 0 },
     { "type": "straight", "length": 10 },
     { "type": "checkpoint" },
-    { "type": "curve", "angle": 180, "radius": 34, "bank": 20 },
+    { "type": "curve", "angle": 180, "radius": 31.5, "bank": 20 },
     { "type": "lanes", "lanes": 4, "length": 20, "align": "center" },
     { "type": "split", "length": 30, "gate": "lights", "merge_length": 25, "merge_lanes": 2,
       "branches": [
-        { "lanes": 2, "angle": 12, "laps": [1, 3], "pieces": [ { "type": "corkscrew", "length": 115, "turns": 1 } ] },
-        { "lanes": 2, "angle": -12, "laps": [2], "pieces": [ { "type": "wallride", "length": 50, "side": "right" },
-                                                              { "type": "straight", "length": 65 } ] }
+        { "lanes": 2, "angle": 12, "laps": [1, 3], "pieces": [ { "type": "corkscrew", "length": 150, "turns": 1 } ] },
+        { "lanes": 2, "angle": -12, "laps": [2], "pieces": [ { "type": "wallride", "length": 70, "side": "right" },
+                                                              { "type": "straight", "length": 80 } ] }
       ] },
     { "type": "checkpoint" },
-    { "type": "straight", "length": 75 },
+    { "type": "straight", "length": 40 },
     { "type": "curve", "angle": 180, "radius": 40, "bank": 15 },
     { "type": "close" }
   ] }
-Why it closes: the loop shifts the track 12 m left, the first U-turn (radius 34) moves it 68 m further left, and the
+Why it closes: the loop shifts the track 17 m left, the first U-turn (radius 31.5) moves it 63 m further left, and the
 last U-turn (radius 40) brings it back 80 m, so the track ends on the start line, about 12 m behind the start piece,
-heading the same way: close is then a short straight. Both branches are 115 m long, so the merge sits on the line
+heading the same way: close is then a short straight. Both branches are 150 m long, so the merge sits on the line
 between them. Plan a lap course's lateral offsets like this so close has an easy job.
 )GUIDE");
 }

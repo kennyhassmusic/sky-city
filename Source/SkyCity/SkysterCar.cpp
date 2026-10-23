@@ -60,6 +60,12 @@ namespace SkyP
 	constexpr double MAX_ANG = 5.5;
 	constexpr double SUCTION = 2.0;
 	constexpr double TRACK_BOOSTER = 45.0;                 // m/s^2 along a Course Builder booster strip
+	constexpr double RAIL_BOUNCE = 0.2;                    // Course Builder bumpers (SkyRail): the push back off the rail
+	constexpr double RAIL_SCRUB = 0.08;                    // speed lost along the rail, at a 20 m/s hit or harder
+	// Course Builder race assists (Design/RaceHandling.md), only on SkyTrack in a race (ASkyCourseRace sets the level)
+	constexpr double RACE_GRIP = 0.5;                      // g of extra tyre load on the deck (Light and Full)
+	constexpr double RACE_CREST = 6.0;                     // m/s off the deck before a crest launches you (2.5 without)
+	constexpr double RACE_ESC = 3.0;                       // stability control times this (Full, not while powersliding)
 	constexpr double WHEELBASE = 2.825;
 	constexpr double SIXTY = 26.8224;
 	constexpr double CHARGE_FAST = 80.0 / 15;              // %/s on a fast charger up to 80%
@@ -705,7 +711,9 @@ void ASkysterCar::Tick(float DeltaSeconds)
 	if (TestVehicle >= 0) { SetVehicle(TestVehicle, true); TestVehicle = -1; }
 	if (S.bTrafficHit) ToggleTraffic(false);
 	if (S.bCabsHit) ToggleTraffic(true);
-	if (S.bResetHit || Pos.Z < -60.0) Respawn();
+	// in a Course Builder race the race puts you back on the track (at the last good spot), not at the map's start
+	if (bInCourseRace) { if (S.bResetHit) bRaceResetHit = true; }
+	else if (S.bResetHit || Pos.Z < -60.0) Respawn();
 	if (S.bModeHit)
 	{
 		Handling.bArcade = !Handling.bArcade;
@@ -713,6 +721,8 @@ void ASkysterCar::Tick(float DeltaSeconds)
 	}
 	if (S.bFsdHit || bTestFsd) { bTestFsd = false; ToggleFsd(); }
 	if (bFsd) FsdControl(Dt, S);
+	// smart steering (race assist Full): the race's nudge away from the deck's edge, on top of the stick
+	if (bInCourseRace && bGrounded && RaceSteerNudge != 0.f) S.Steer = FMath::Clamp(S.Steer + RaceSteerNudge, -1.f, 1.f);
 	if (S.bLightsHit)
 	{
 		bLights = !bLights;
@@ -1050,6 +1060,18 @@ void ASkysterCar::Simulate(float Dt, FDriverInput& Live)
 		Aim(S, D.GetSafeNormal(), UPV, 1);
 	}
 	if (bLanding && !bWasLanding) Event(ESkyEv::Landing);
+	// landing help (race assist Light/Full): over Course Builder track, turn wheels-down along the deck below, eased
+	// out while the player gives air input of their own (or holds air roll)
+	if (bInCourseRace && RaceAssist > 0 && bRaceAirAim && !bGrounded && !bLanding && !Macro.bOn && !Dodge.bActive && !bTumbling && !S.bFlyHold)
+	{
+		FDriverInput Am = S;
+		Aim(Am, RaceAimFwd, RaceAimUp, 1);
+		const double Mine = FMath::Max3(FMath::Abs((double)S.Pitch), FMath::Abs((double)S.Roll), FMath::Abs((double)S.Yaw));
+		const float K = S.bAirRoll ? 0.f : (float)(1.0 - Smooth(0.15, 0.6, Mine));
+		S.Pitch = FMath::Lerp(S.Pitch, Am.Pitch, K);
+		S.Roll = FMath::Lerp(S.Roll, Am.Roll, K);
+		S.Yaw = FMath::Lerp(S.Yaw, Am.Yaw, K);
+	}
 
 	// air brake: hold LT in the air and the thrusters slow the travel (see Fly) while roll and pitch
 	// settle the car wheels-down; the nose keeps its heading, gravity still brings it down
@@ -1230,7 +1252,11 @@ void ASkysterCar::Step(double H, FDriverInput& S)
 		}
 	}
 	if (bGrounded) DriveOnSurface(H, S);
-	else Fly(H, S);
+	else
+	{
+		if (bInCourseRace && RaceAssist > 0) Vel += RaceAirPull * H;   // landing help: drift toward the pad's middle
+		Fly(H, S);
+	}
 	const FVector Prev = Pos;
 	Pos += Vel * H;
 	Collide(H, Prev);
@@ -1251,7 +1277,7 @@ void ASkysterCar::DriveOnSurface(double H, FDriverInput& S)
 	if (!Caps.bWalls && Sup.Kind != ESurface::Ground && VF < -1.0) Event(ESkyEv::Locked, TEXT("walls"));
 	const double Dmg = Health < 30 ? 0.75 : Health < 60 ? 0.9 : 1.0;
 	// RL throttle curve: full acceleration at rest, a tenth near the drive cap, nothing past it
-	const double DriveCap = Caps.Drive * Dmg;
+	const double DriveCap = Caps.Drive * Dmg * RaceSpeedScale;
 	auto Curve = [this, DriveCap](double V) { return V >= DriveCap ? 0.0 : Caps.Accel * (1.0 - 0.9 * FMath::Clamp(V / DriveCap, 0.0, 1.0)); };
 	double A = 0; // through the tyres
 	// RT drives forward (and against a backward roll slows it first); LT is reverse (and against a forward roll slows
@@ -1265,10 +1291,12 @@ void ASkysterCar::DriveOnSurface(double H, FDriverInput& S)
 	}
 	else A -= Sgn(VF) * FMath::Min(FMath::Abs(VF) / FMath::Max(H, 1e-3), STOP_DECEL * S.Stop);
 	// the rear thrusters push the body, not the tyres, so grip never limits boost
-	const double Thrust = bBoosting && VF < Caps.Top * Dmg ? BOOST_GROUND : 0.0;
+	const double Thrust = bBoosting && VF < Caps.Top * Dmg * RaceSpeedScale ? BOOST_GROUND : 0.0;
 	// Course Builder track pieces (component tags, Source/SkyCity/SkyCourse.h): a booster strip shoves the car along
 	const UPrimitiveComponent* SupComp = Sup.Comp.Get();
 	const bool bTrack = SupComp && SupComp->ComponentHasTag(TEXT("SkyTrack"));
+	const double RaceGrip = (bTrack && bInCourseRace && RaceAssist > 0) ? G * RACE_GRIP : 0.0;
+	bRaceStable = bTrack && bInCourseRace && RaceAssist >= 2 && !S.bAirRoll;
 	const double Pad = (bTrack && SupComp->ComponentHasTag(TEXT("SkyBoost")) && VF > -1.0 && VF < MAX_SPEED) ? TRACK_BOOSTER : 0.0;
 	bBraking = (bStop && FMath::Abs(VF) > 0.5) || (S.Brake > 0.05 && VF > 0.5);
 	bReversing = VF < -0.5;
@@ -1287,7 +1315,7 @@ void ASkysterCar::DriveOnSurface(double H, FDriverInput& S)
 	{
 		// on Course Builder track, the press of a loop or corkscrew (TrackPress, from the last step) loads the tyres too
 		const double Load = FMath::Max(G * 0.25, -Gn + G * SUCTION * Fans * Handling.FanGrip + G * Handling.Aero * FMath::Square(VF / MAX_SPEED)
-			+ (bTrack ? TrackPress : 0.0));
+			+ (bTrack ? TrackPress + RaceGrip : 0.0));
 		const double Shift = FMath::Clamp(AccelLong * Handling.CgH / WHEELBASE, -0.4 * Load, 0.4 * Load);
 		Nf = Load * Handling.CgF - Shift;
 		Nr = Load * (1 - Handling.CgF) + Shift;
@@ -1381,7 +1409,7 @@ void ASkysterCar::DriveOnSurface(double H, FDriverInput& S)
 		TrackRun = 0;
 	}
 	const double PullAway = Gn > 0 ? Gn : 0;
-	if (PullAway > G * (Caps.bWalls ? SUCTION : 0.0) * 0.98 + Press + 1e-3)
+	if (PullAway > G * (Caps.bWalls ? SUCTION : 0.0) * 0.98 + Press + RaceGrip + 1e-3)
 	{
 		LeaveSurface();
 		Vel += N * 0.5;
@@ -1398,6 +1426,7 @@ double ASkysterCar::Tyres(double H, const FDriverInput& S, double& VFio, double&
 	const FSkyHandling& Hd = Handling;
 	const double Lw = WHEELBASE, B = Hd.CgF * Lw, A = Lw - B; // centre of mass to the front (A) and rear (B) axle
 	const bool bHand = S.bAirRoll;
+	const double EscK = bRaceStable ? RACE_ESC : 1.0;   // race assist Full (DriveOnSurface sets it)
 	const double MuF = Hd.Mu, MuR = Hd.Mu * Hd.RearGrip * (bHand ? Hd.Handbrake : 1.0);
 	const double Split = ALong >= 0 ? Hd.DriveSplit : Hd.BrakeSplit;
 	const double Xf = ALong * Split, Xr = ALong * (1 - Split);
@@ -1429,9 +1458,9 @@ double ASkysterCar::Tyres(double H, const FDriverInput& S, double& VFio, double&
 		if (bHand) Yacc += S.Steer * Hd.DriftYaw * FMath::Clamp(FMath::Abs(VF) / 15, 0.0, 1.0);
 		else
 		{
-			if (Hd.Esc > 0 && (FMath::Abs(Yr) > FMath::Abs(Kin) || Yr * Kin < 0)) Yacc -= Hd.Esc * (Yr - Kin);
+			if (Hd.Esc > 0 && (FMath::Abs(Yr) > FMath::Abs(Kin) || Yr * Kin < 0)) Yacc -= Hd.Esc * EscK * (Yr - Kin);
 			// stability control: once the tail starts to come round, damp the rotation harder the further it slides
-			if (Hd.EscSlip > 0 && VF > 4 && Yr * Beta < 0) Yacc -= Hd.EscSlip * Yr * Smooth(0.06, 0.30, FMath::Abs(Beta));
+			if (Hd.EscSlip > 0 && VF > 4 && Yr * Beta < 0) Yacc -= Hd.EscSlip * EscK * Yr * Smooth(0.06, 0.30, FMath::Abs(Beta));
 		}
 		// drift angle limit: a slide past DriftAngle stops rotating further (a held stick holds a drift)
 		if (Yr * Beta < 0 && VF > 0) Yacc -= 12 * Yr * Smooth(Hd.DriftAngle - 0.15, Hd.DriftAngle + 0.25, FMath::Abs(Beta));
@@ -1671,6 +1700,35 @@ void ASkysterCar::Collide(double H, const FVector& PrevPos)
 		// more of the same surface curving up ahead (the McGregor ramp into its overhang)
 		if (FVector::DotProduct(N, Up) > 0.6) continue;
 		if (bGrounded && Hit.GetComponent() == Sup.Comp.Get() && FVector::DotProduct(N, Sup.N) > 0.5) continue;
+		// Course Builder bumpers (SkyRail, Design/RaceHandling.md): glance off, like toy-track walls. The push is taken
+		// across the deck (its plane, not the horizontal: decks bank, roll and loop), with a soft bounce; the car keeps
+		// nearly all its speed, turns to run along the rail and takes no damage
+		if (Hit.GetComponent() && Hit.GetComponent()->ComponentHasTag(SkyCourse::RailTag()))
+		{
+			const FVector DeckUp = bGrounded ? Sup.N : Up;
+			FVector Nd = N - DeckUp * FVector::DotProduct(N, DeckUp);
+			if (Nd.SizeSquared() < 1e-4) continue;   // its top: the support's business
+			Nd.Normalize();
+			if (Hit.bStartPenetrating) Pos += Nd * (Hit.PenetrationDepth / 100.0 + 0.02);
+			else Pos = FromUE(FVector(Hit.Location)) - Lift + Nd * 0.01;
+			const double Vn = FVector::DotProduct(Vel, Nd);
+			if (Vn < 0)
+			{
+				const FVector Vt = Vel - Nd * Vn;
+				Vel = Vt * (1.0 - RAIL_SCRUB * FMath::Clamp(-Vn / 20.0, 0.0, 1.0)) - Nd * (Vn * RAIL_BOUNCE);
+				if (-Vn > 6) Event(ESkyEv::Impact, TEXT("rail"), FMath::Min(-Vn, 12.0));
+			}
+			// nose into the rail: turn it to run along (most of the way this step), and calm the spin
+			const double Into = FVector::DotProduct(Fwd, Nd);
+			if (Into < 0)
+			{
+				const FVector RunDir = (Fwd - Nd * Into * 1.15).GetSafeNormal();
+				Q = (RotTo(Fwd, RunDir, 0.6) * Q).GetNormalized();
+				YawRate *= 0.5;
+				UpdateAxes();
+			}
+			return;
+		}
 		if (N.Z > 0.7) continue; // ground under a car on its side or roof: the rest-on-floor clamp handles it
 		if (Hit.bStartPenetrating)
 		{
@@ -1806,8 +1864,12 @@ void ASkysterCar::ResolveSupport(double H)
 			Sup.Comp = Out.Comp;
 			Sup.P = Out.P;
 			const double Vn = FVector::DotProduct(Vel, Out.N);
+			// race assist (Light/Full) on Course Builder track: small crests keep you on the deck (a jump's lip still
+			// launches you: the deck ends there)
+			const UPrimitiveComponent* OutComp = Out.Comp.Get();
+			const double CrestV = (bInCourseRace && RaceAssist > 0 && OutComp && OutComp->ComponentHasTag(TEXT("SkyTrack"))) ? RACE_CREST : 2.5;
 			if (Vn < 0) Vel -= Out.N * Vn;
-			else if (Vn > 2.5 && Out.Kind == ESurface::Ground)
+			else if (Vn > CrestV && Out.Kind == ESurface::Ground)
 			{
 				// over a crest or off a ramp lip faster than the street falls away: airborne
 				LeaveSurface();

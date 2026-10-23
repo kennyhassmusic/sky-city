@@ -1,11 +1,14 @@
 // ASkyCourseTrack (see SkyCourse.h): the course you see and drive on.
 //
-// One procedural mesh component per baked segment (deck, sides and underside, edge trim, then lane lines and booster
-// arrows in their own sections without collision). The rings come from the baked frames: straight stretches keep a ring
+// One procedural mesh component per baked segment (deck, sides and underside, then lane lines and booster arrows in their
+// own sections without collision), plus a child component with the segment's 1 m edge bumpers (SkyCourse::BumperHeight),
+// tagged SkyRail and not SkyTrack so the car can glance off them instead of treating them as a kerb or a wall to ride
+// (see Design/RaceHandling.md). The rings come from the baked frames: straight stretches keep a ring
 // every few metres, curved ones get extra rings between frames so the deck's facets turn by at most ~0.35 degrees
 // each (the car reads the curve of a loop from how fast the support normal turns under it, and complex collision gives
 // one flat normal per triangle, so coarse facets would make the loop's grip flicker). Collision is the mesh itself
-// (complex as simple), tagged SkyTrack (and SkyBoost on boosters). Gates, the gantries and lights at splits and the
+// (complex as simple), tagged SkyTrack (and SkyBoost on boosters); the bumpers use the same collision setup and carry the
+// segment's own glowing trim material. Gates, the gantries and lights at splits and the
 // switching walls are props on a separate actor tagged NoWallRide, so the car never tries to ride up them.
 #include "SkyCourse.h"
 #include "SkyCourseGeom.h"
@@ -88,7 +91,7 @@ namespace SkyTrackImpl
 		UMaterialInterface* Trim = nullptr;    // the parent each segment's own trim instance is made from
 		UMaterialInterface* Line = nullptr;
 		UMaterialInterface* Arrow = nullptr;
-		double LipH = 0.3;
+		double LipH = BumperHeight;            // the edge bumper's height (m)
 		FName GlowParam;                       // the trim's emissive scalar, None = no glow
 		float GlowBase = 0;
 	};
@@ -105,7 +108,7 @@ namespace SkyTrackImpl
 			L.Trim = Prop(T, FLinearColor(0.95f, 0.32f, 0.02f), 0.28f, 0.0f);
 			L.Line = Prop(T, FLinearColor(0.95f, 0.75f, 0.2f), 0.4f, 0.0f);
 			L.Arrow = Glow(T, FLinearColor(1.0f, 0.85f, 0.2f), 6.f);
-			L.LipH = 0.6;
+			L.LipH = BumperHeight;
 			break;
 		case ESkySkin::Neon:
 			L.Deck = Prop(T, FLinearColor(0.01f, 0.012f, 0.018f), 0.08f, 0.6f);
@@ -113,7 +116,7 @@ namespace SkyTrackImpl
 			L.Trim = Mat(MatEmissive);
 			L.Line = Glow(T, FLinearColor(0.1f, 0.55f, 1.0f), 2.5f);
 			L.Arrow = Glow(T, FLinearColor(0.2f, 1.0f, 0.9f), 8.f);
-			L.LipH = 0.08;   // a low light strip: wheels roll over it (a taller lip launched cars that clipped it)
+			L.LipH = BumperHeight;   // a glowing 1 m bumper; the car glances off it (SkyRail), it never rides up it
 			L.GlowParam = TEXT("Strength");
 			L.GlowBase = 9.f;
 			break;
@@ -123,7 +126,7 @@ namespace SkyTrackImpl
 			L.Trim = Mat(bNight ? MatLedNight : MatLed);
 			L.Line = Mat(MatLine);
 			L.Arrow = Glow(T, FLinearColor(1.0f, 0.55f, 0.08f), 7.f);
-			L.LipH = 0.08;   // the unveil ramp's red edge line as a low strip: wheels roll over it instead of launching
+			L.LipH = BumperHeight;   // the red LED bar as a 1 m bumper rail: the car glances off it (SkyRail tag) instead of launching over a low lip
 			L.GlowParam = bNight ? FName(TEXT("Strength")) : FName(TEXT("EmissiveStrength"));
 			L.GlowBase = bNight ? 14.f : 4.f;
 			break;
@@ -299,6 +302,24 @@ namespace SkyTrackImpl
 		S.Quad(A, B, C, D, Nrm);
 	}
 
+	/** The open end of a bumper on each side (Sign -1 at a run's start, +1 at its end), so a bumper that stops in the open
+	 *  (the end of a course, a jump's lip) isn't hollow. Skipped for a side whose factor is 0. */
+	void BumperCap(FSec& S, const FRing& R, double Lw, double LipH, double Sign)
+	{
+		const FVector Nrm = R.F * Sign;
+		for (const double Side : { 1.0, -1.0 })
+		{
+			const double H = LipH * (Side > 0 ? R.LipL : R.LipR);
+			if (H < 1e-3) continue;
+			const double Yi = Side * (R.W * 0.5 - Lw), Yo = Side * R.W * 0.5;
+			const int32 A = S.Vert(At(R, Yi, H), Nrm, FVector2D(Yi, H), R.L);
+			const int32 B = S.Vert(At(R, Yo, H), Nrm, FVector2D(Yo, H), R.L);
+			const int32 C = S.Vert(At(R, Yo, 0), Nrm, FVector2D(Yo, 0), R.L);
+			const int32 D = S.Vert(At(R, Yi, 0), Nrm, FVector2D(Yi, 0), R.L);
+			S.Quad(A, B, C, D, Nrm);
+		}
+	}
+
 	/** A flat strip painted on the deck along the rings (lane lines), Y0..Y1 across, a centimetre or two up. */
 	void Paint(FSec& S, const TArray<FRing>& Rs, int32 A, int32 B, double Y0, double Y1)
 	{
@@ -403,6 +424,7 @@ public:
 	static void BuildProps(ASkyCourseTrack* T, const FSkyCourse& C, const FSkyBaked& B, const SkyTrackImpl::FLook& L);
 	static void GroundChecks(ASkyCourseTrack* T, const FSkyCourse& C, FSkyBaked& B);
 	static AActor* Holder(ASkyCourseTrack* T, bool bCreate);
+	static UProceduralMeshComponent* RailOf(const UProceduralMeshComponent* Seg);
 	static UProceduralMeshComponent* NewMesh(AActor* Owner, USceneComponent* Parent, const TCHAR* Tag);
 };
 
@@ -427,6 +449,16 @@ UProceduralMeshComponent* FSkyCourseTrackImpl::NewMesh(AActor* Owner, USceneComp
 	M->RegisterComponent();
 	M->SetWorldTransform(FTransform::Identity);
 	return M;
+}
+
+/** The segment's bumper component (an attached child tagged SkyRail), or null. */
+UProceduralMeshComponent* FSkyCourseTrackImpl::RailOf(const UProceduralMeshComponent* Seg)
+{
+	if (Seg)
+		for (USceneComponent* Ch : Seg->GetAttachChildren())
+			if (UProceduralMeshComponent* P = Cast<UProceduralMeshComponent>(Ch))
+				if (P->ComponentHasTag(SkyCourse::RailTag())) return P;
+	return nullptr;
 }
 
 AActor* FSkyCourseTrackImpl::Holder(ASkyCourseTrack* T, bool bCreate)
@@ -514,13 +546,14 @@ void FSkyCourseTrackImpl::BuildSeg(ASkyCourseTrack* T, UProceduralMeshComponent*
 			if (Inner & 2) Rs[k].LipR = Kk;
 		}
 	}
-	// where a corkscrew or wallride has the deck on its side or upside down, the trim grows into 1 m rails (like toy
+	// where a corkscrew or wallride has the deck on its side or upside down, the bumpers are at least 1 m (like toy
 	// track's side walls): gravity pushes the car across a rolled deck, and off its middle a twisting deck gets steep,
-	// so the rails bounce it back instead of letting it slide off (under 2.5 m they stay kerbs, not walls to ride)
+	// so the rails bounce it back instead of letting it slide off (under 2.5 m they stay kerbs, not walls to ride).
+	// Every skin's bumper is already BumperHeight, so this keeps the factor at 1 (it only matters if a skin's lip is lower)
 	if ((S.Type == ESkyPiece::Corkscrew || S.Type == ESkyPiece::WallRide) && S.Kind == ESkySeg::Piece && L.LipH > 0)
 		for (FRing& R : Rs)
 		{
-			const double Rail = 1.0 * Smooth(0.08, 0.35, 1.0 - R.U.Z) / L.LipH;
+			const double Rail = BumperHeight * Smooth(0.08, 0.35, 1.0 - R.U.Z) / L.LipH;
 			R.LipL = FMath::Max(R.LipL, Rail);
 			R.LipR = FMath::Max(R.LipR, Rail);
 		}
@@ -528,7 +561,7 @@ void FSkyCourseTrackImpl::BuildSeg(ASkyCourseTrack* T, UProceduralMeshComponent*
 	for (const FSkySegment& O : B.Segs) if (O.Next.Contains(i)) { bPrev = true; break; }
 	const bool bNext = S.Next.Num() > 0;
 
-	FSec Deck, Body, Trim, Lines, Arrows;
+	FSec Deck, Body, Trim, Lines, Arrows;   // Trim is the bumpers: uploaded to the segment's SkyRail child component
 	const double Lw = LipWidth, Th = DeckThick, LipH = L.LipH;
 	// runs of deck (a jump's gap has none)
 	int32 k = 0;
@@ -546,28 +579,32 @@ void FSkyCourseTrackImpl::BuildSeg(ASkyCourseTrack* T, UProceduralMeshComponent*
 				Sweep(Trim, Rs, k, E, [Lw, LipH](const FRing& R, double& a, double& b, double& c, double& d) { a = R.W * 0.5 - Lw; b = LipH * R.LipL; c = R.W * 0.5; d = LipH * R.LipL; }, 0, 1.0, true);
 				Sweep(Trim, Rs, k, E, [Lw, LipH](const FRing& R, double& a, double& b, double& c, double& d) { a = -(R.W * 0.5 - Lw); b = 0; c = -(R.W * 0.5 - Lw); d = LipH * R.LipR; }, 1, 1.0, false);
 				Sweep(Trim, Rs, k, E, [Lw, LipH](const FRing& R, double& a, double& b, double& c, double& d) { a = -(R.W * 0.5 - Lw); b = LipH * R.LipR; c = -R.W * 0.5; d = LipH * R.LipR; }, 0, 1.0, true);
+				// outer faces, down to the deck edge (the Body's side walls stop at deck height, so the bumper owns the rise)
+				Sweep(Trim, Rs, k, E, [LipH](const FRing& R, double& a, double& b, double& c, double& d) { a = R.W * 0.5; b = LipH * R.LipL; c = R.W * 0.5; d = 0; }, 1, 1.0, false);
+				Sweep(Trim, Rs, k, E, [LipH](const FRing& R, double& a, double& b, double& c, double& d) { a = -R.W * 0.5; b = LipH * R.LipR; c = -R.W * 0.5; d = 0; }, 1, -1.0, false);
 			}
-			Sweep(Body, Rs, k, E, [LipH, Th](const FRing& R, double& a, double& b, double& c, double& d) { a = R.W * 0.5; b = LipH * R.LipL; c = R.W * 0.5; d = -Th; }, 1, 1.0, false);
+			Sweep(Body, Rs, k, E, [Th](const FRing& R, double& a, double& b, double& c, double& d) { a = R.W * 0.5; b = 0; c = R.W * 0.5; d = -Th; }, 1, 1.0, false);
 			Sweep(Body, Rs, k, E, [Th](const FRing& R, double& a, double& b, double& c, double& d) { a = R.W * 0.5; b = -Th; c = -R.W * 0.5; d = -Th; }, 0, -1.0, true);
-			Sweep(Body, Rs, k, E, [LipH, Th](const FRing& R, double& a, double& b, double& c, double& d) { a = -R.W * 0.5; b = LipH * R.LipR; c = -R.W * 0.5; d = -Th; }, 1, -1.0, false);
+			Sweep(Body, Rs, k, E, [Th](const FRing& R, double& a, double& b, double& c, double& d) { a = -R.W * 0.5; b = 0; c = -R.W * 0.5; d = -Th; }, 1, -1.0, false);
 			// end walls where the deck stops in the open (a jump's lip and pad, the ends of a course)
-			if (k > 0 || !bPrev) Cap(Body, Rs[k], LipH, Th, -1.0);
-			if (E < Rs.Num() - 1 || !bNext) Cap(Body, Rs[E], LipH, Th, 1.0);
+			// (the walls stay deck height: a 1 m wall across the run-in would be a barrier; the bumpers get their own small caps)
+			if (k > 0 || !bPrev) { Cap(Body, Rs[k], 0, Th, -1.0); if (LipH > 0) BumperCap(Trim, Rs[k], Lw, LipH, -1.0); }
+			if (E < Rs.Num() - 1 || !bNext) { Cap(Body, Rs[E], 0, Th, 1.0); if (LipH > 0) BumperCap(Trim, Rs[E], Lw, LipH, 1.0); }
 			// lane lines
 			int32 Lanes0 = S.Lanes, Lanes1 = S.Lanes, Align = 0;
 			if (S.Kind == ESkySeg::Piece && S.Type == ESkyPiece::Lanes)
 			{
-				Lanes0 = FMath::Clamp(FMath::RoundToInt(S.Frames[0].Width / LaneWidth), MinLanes, MaxLanes);
+				Lanes0 = FMath::Clamp(FMath::RoundToInt(S.Frames[0].Width / B.LaneWidth), MinLanes, MaxLanes);
 				if (C.Seqs.IsValidIndex(S.Seq) && C.Seqs[S.Seq].Pieces.IsValidIndex(S.Piece)) Align = C.Seqs[S.Seq].Pieces[S.Piece].Align;
 			}
-			else if (S.Kind == ESkySeg::MergeTrunk) Lanes0 = FMath::Clamp(FMath::RoundToInt(S.Frames[0].Width / LaneWidth), MinLanes, MaxLanes);
+			else if (S.Kind == ESkySeg::MergeTrunk) Lanes0 = FMath::Clamp(FMath::RoundToInt(S.Frames[0].Width / B.LaneWidth), MinLanes, MaxLanes);
 			TArray<double> Ya, Yb;
 			double D = 0;
 			for (int32 r = k; r < E; ++r)
 			{
 				const double D1 = D + FVector::Dist(Rs[r].P, Rs[r + 1].P) / 100.0;
-				LaneLines(Rs[r].W, Lanes0, Lanes1, Align, D / Total, Ya);
-				LaneLines(Rs[r + 1].W, Lanes0, Lanes1, Align, D1 / Total, Yb);
+				LaneLines(Rs[r].W, Lanes0, Lanes1, Align, D / Total, Ya, B.LaneWidth);
+				LaneLines(Rs[r + 1].W, Lanes0, Lanes1, Align, D1 / Total, Yb, B.LaneWidth);
 				if (Ya.Num() == Yb.Num())
 					for (int32 l = 0; l < Ya.Num(); ++l)
 					{
@@ -630,14 +667,22 @@ void FSkyCourseTrackImpl::BuildSeg(ASkyCourseTrack* T, UProceduralMeshComponent*
 	}
 	Upload(M, 0, Deck, true);
 	Upload(M, 1, Body, true);
-	Upload(M, 2, Trim, true);
-	Upload(M, 3, Lines, false);
-	Upload(M, 4, Arrows, false);
+	Upload(M, 2, Lines, false);
+	Upload(M, 3, Arrows, false);
 	M->SetMaterial(0, L.Deck);
 	M->SetMaterial(1, L.Body);
-	M->SetMaterial(2, TrimFor(T, L, Skin));
-	M->SetMaterial(3, L.Line);
-	M->SetMaterial(4, L.Arrow ? L.Arrow : L.Line);
+	M->SetMaterial(2, L.Line);
+	M->SetMaterial(3, L.Arrow ? L.Arrow : L.Line);
+	// the bumpers: a child component of the segment's mesh (so it is reused, hidden and destroyed with it), tagged SkyRail and
+	// not SkyTrack/SkyBoost, with the deck's collision setup (NewMesh) and the segment's own glowing trim material
+	UProceduralMeshComponent* Rail = RailOf(M);
+	if (!Rail)
+	{
+		Rail = NewMesh(T, M, SkyCourse::RailTag());
+		Rail->ComponentTags.AddUnique(TEXT("NoWallRide"));   // belt and braces: a 1 m kerb is never a wall to ride
+	}
+	Upload(Rail, 0, Trim, true);
+	Rail->SetMaterial(0, TrimFor(T, L, Skin));
 	M->ComponentTags.Remove(TEXT("SkyBoost"));
 	if (S.Type == ESkyPiece::Booster && S.Kind == ESkySeg::Piece) M->ComponentTags.AddUnique(TEXT("SkyBoost"));
 }
@@ -836,7 +881,11 @@ const FSkyBaked& ASkyCourseTrack::Build(const FSkyCourse& Course, const FBox& Bu
 		NewMeshes.Add(M);
 		NewHashes.Add(H);
 	}
-	for (int32 i = 0; i < SegMeshes.Num(); ++i) if (SegMeshes[i] && !Taken.Contains(i)) SegMeshes[i]->DestroyComponent();
+	for (int32 i = 0; i < SegMeshes.Num(); ++i) if (SegMeshes[i] && !Taken.Contains(i))
+	{
+		if (UProceduralMeshComponent* R = FSkyCourseTrackImpl::RailOf(SegMeshes[i])) R->DestroyComponent();   // (a destroyed parent's children would be re-parented, not destroyed)
+		SegMeshes[i]->DestroyComponent();
+	}
 	SegMeshes = MoveTemp(NewMeshes);
 	SegHashes = MoveTemp(NewHashes);
 	BuiltSkin = Course.Skin;
@@ -929,8 +978,14 @@ void ASkyCourseTrack::Highlight(int32 Seg)
 		{
 			if (!Over) Over = Ghost(this, FLinearColor(1.f, 0.8f, 0.15f), 0.3f);
 			SegMeshes[i]->SetOverlayMaterial(Over);
+			if (UProceduralMeshComponent* R = FSkyCourseTrackImpl::RailOf(SegMeshes[i])) R->SetOverlayMaterial(Over);
 		}
-		else if (SegMeshes[i]->GetOverlayMaterial()) SegMeshes[i]->SetOverlayMaterial(nullptr);
+		else
+		{
+			if (SegMeshes[i]->GetOverlayMaterial()) SegMeshes[i]->SetOverlayMaterial(nullptr);
+			UProceduralMeshComponent* R = FSkyCourseTrackImpl::RailOf(SegMeshes[i]);
+			if (R && R->GetOverlayMaterial()) R->SetOverlayMaterial(nullptr);
+		}
 	}
 }
 
@@ -945,7 +1000,8 @@ void ASkyCourseTrack::UpdateGlow(const TArray<FVector>& Cars, float Dt)
 	for (UProceduralMeshComponent* M : SegMeshes)
 	{
 		if (!M) continue;
-		UMaterialInstanceDynamic* Mi = Cast<UMaterialInstanceDynamic>(M->GetMaterial(2));
+		const UProceduralMeshComponent* Rail = FSkyCourseTrackImpl::RailOf(M);
+		UMaterialInstanceDynamic* Mi = Rail ? Cast<UMaterialInstanceDynamic>(Rail->GetMaterial(0)) : nullptr;
 		if (!Mi) continue;
 		const FBox Bx = M->Bounds.GetBox();
 		double D2 = 1e18;
@@ -963,7 +1019,12 @@ void ASkyCourseTrack::UpdateGlow(const TArray<FVector>& Cars, float Dt)
 void ASkyCourseTrack::Clear()
 {
 	using namespace SkyTrackImpl;
-	for (UProceduralMeshComponent* M : SegMeshes) if (M) M->DestroyComponent();
+	for (UProceduralMeshComponent* M : SegMeshes)
+		if (M)
+		{
+			if (UProceduralMeshComponent* R = FSkyCourseTrackImpl::RailOf(M)) R->DestroyComponent();
+			M->DestroyComponent();
+		}
 	SegMeshes.Reset();
 	SegHashes.Reset();
 	for (UPrimitiveComponent* P : Props) if (P) P->DestroyComponent();
@@ -1059,6 +1120,8 @@ FString ASkyCourseTrack::TestBuildJson(const FString& Json)
 				int32 N = 0;
 				for (int32 sct = 0; sct < SegMeshes[i]->GetNumSections(); ++sct)
 					if (const FProcMeshSection* Sec = SegMeshes[i]->GetProcMeshSection(sct)) N += Sec->ProcIndexBuffer.Num() / 3;
+				if (UProceduralMeshComponent* Rl = const_cast<UProceduralMeshComponent*>(FSkyCourseTrackImpl::RailOf(SegMeshes[i])))
+					if (const FProcMeshSection* Sec = Rl->GetProcMeshSection(0)) N += Sec->ProcIndexBuffer.Num() / 3;
 				J->SetNumberField(TEXT("tris"), N);
 				Tris += N;
 			}
