@@ -12,6 +12,8 @@ Deferred from the texture-stretch pass. Do not start these until asked:
 - Ground surfaces
 - Roofs
 
+Loader floor bugs are fixed on PR #5 (`Scripts/city/packs.py`), not in this list.
+
 ## Next: Course Builder (its own game mode)
 - A Hot Wheels-style track builder: snap together orange track pieces (straights, curves, banked turns, ramps, jumps,
   loops, corkscrews, boosters, wall-ride walls, a start/finish gate and checkpoints) and race them with lap times.
