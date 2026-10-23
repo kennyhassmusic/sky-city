@@ -8,7 +8,7 @@ Cloud agent marker for LUCA. Invariants were read from `docs/AGENT_OPS/INVARIANT
 - Base: `cursor/road-dressing-stage1-04ef`
 - ALLOW-CHANGE: none
 - city-sample: unchanged (`CitySamplePCG` stays in `SkyCity.uproject`). The new level is `/Game/Maps/SkyCityGenerated`. SkyCityMashup is not edited.
-- pr-guard-lfs: unchanged (25 / 100 / 300 MB). New GLBs under `SourceArt/CityGen/city/` are about 66 MB total. Each file is under 22 MB. Spawn JSON is about 6.8 MB and is not LFS.
+- pr-guard-lfs: unchanged (25 / 100 / 300 MB). New GLBs under `SourceArt/CityGen/city/` are about 66 MB total. Each file is under 22 MB. The four preview PNGs add about 6 MB. Spawn JSON is about 6.8 MB and is not LFS.
 - asset-licences: no new third-party assets. Meshes are generated. Materials are the existing CC0 slot names and are not embedded in the GLBs.
 - no-real-brands: no new brand names
 - lfs-r2: unchanged. `buildings_v3.json` and `plan_v3.json` were read, not modified.
