@@ -7,11 +7,12 @@ the type has income tiers, a tier. Buildings keep the planned height. Streets
 get sidewalks, curbs, grass where the section asks for it, and stage-1 dressing.
 
 City Sample is not touched. The editor script Scripts/city/import_city_ue.py
-spawns the compact file into its own level.
+imports the chunked GLBs from Scripts/city/blender_city.py into their own level.
+Those GLBs are the facade, roof and storefront meshes. This file only writes
+the spawn record.
 
 Run: python3 -I Scripts/city/generate_city.py
 Writes (gitignored): Saved/CityGen/sky_city_spawn.json
-Previews: /opt/cursor/artifacts/previews/sky_city_aerial.png and sky_city_street.png
 Seed is 7, the same seed plan_buildings used. Two builds of one plan match.
 """
 import json
@@ -453,15 +454,11 @@ def _disc(buf, width, height, cx, cy, radius, colour):
 def main():
     root = skyline.project_root()
     out = root / "Saved" / "CityGen"
-    preview = Path("/opt/cursor/artifacts/previews")
-    preview.mkdir(parents=True, exist_ok=True)
     city = build_from_disk(root)
     document = write_spawn(city, out / SPAWN_NAME)
     example = Path(__file__).resolve().parent / "examples" / SPAWN_NAME
     example.parent.mkdir(parents=True, exist_ok=True)
     example.write_text(json.dumps(document))
-    render_aerial(city, preview / "sky_city_aerial.png")
-    render_street(city, preview / "sky_city_street.png")
     kinds = {}
     for prop in document["props"]:
         kinds[prop["kind"]] = kinds.get(prop["kind"], 0) + 1

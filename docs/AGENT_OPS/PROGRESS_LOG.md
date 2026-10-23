@@ -24,6 +24,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 - SCALE CHECK: no change
 - Next: when `Art/ai_textures/` lands, the same schema picks it up
 
+## 2026-10-23 04:05 UTC — cursor cloud agent — real meshes for downtown and one residential street
+- State at start: `cursor/citywide-generate-04ef` (PR #6) had the spawn record and cube import. Flat street preview was colour planes.
+- Did: `Scripts/city/blender_city.py` builds LOD0 with the CG block facade, roof and storefront path. Chicago core cluster (14 buildings) and one Austin low-rise street (high beside mid) are chunked GLBs under `SourceArt/CityGen/city/` (about 66 MB, each file under 22 MB). Street surfaces and simple dressing props are in the street chunks. Trees are not meshed. `import_city_ue.py` imports those GLBs into `/Game/Maps/SkyCityGenerated` at the origin and binds the existing CC0 scans. Cycles previews: downtown aerial oblique, downtown street, residential street. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Test: `python3 -I Scripts/city/test_generate_city.py` (OK).
+- Found: the block volume haze blacks out the sky at city clip range → density lowered for these shots. A residential camera inside a footprint rendered black → the eye now sits off the pair of houses.
+- Asks for Kenny: PIE off, `py Scripts/city/import_city_ue.py`, open `SkyCityGenerated`. The GLBs are the downtown cluster and one residential street, not all 3,336 lots.
+- SCALE CHECK: no change
+- Next: mesh more of the core when a larger LFS budget is available. Do not start road stages 2–4 or pack polish unless asked.
+
 ## 2026-10-23 03:30 UTC — cursor cloud agent — generate the mashup city
 - State at start: street dressing on `cursor/road-dressing-stage1-04ef` (PR #4). Pack polish and road stages 2–4 deferred. Invariants read. City Sample plugin still present.
 - Did: `Scripts/city/generate_city.py` runs the generator over `buildings_v3.json` footprints and `plan_v3.json` roads (seed 7). 3336 buildings, 1635 driveable roads, sidewalks, curbs, parkway on 369 roads, stage-1 dressing. Spawn `Scripts/city/examples/sky_city_spawn.json`. Editor import `Scripts/city/import_city_ue.py` creates `/Game/Maps/SkyCityGenerated` under `/Game/City/Generated` and does not open SkyCityMashup. Hash `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Test: `python3 -I Scripts/city/test_generate_city.py` (two builds match). Commit `35b8bdd`. PR https://github.com/kennyhassmusic/sky-city/pull/6
