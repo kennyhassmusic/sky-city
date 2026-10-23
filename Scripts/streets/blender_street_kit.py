@@ -9,6 +9,8 @@ Trees are procedural (trunk, limbs, branches as tapered tubes; leaf-cluster card
   liveoak (broad, low, spreading - Austin), honeylocust (open vase, airy), linden (dense oval), elm (vase).
 
 Run: /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P Scripts/streets/blender_street_kit.py
+     add `-- curbs` to export only SK_Curb_Bevel, SK_Gutter_Pan and SK_Curb_Ramp.
+Importing this file does not build anything. The block preview calls the prop functions with do_export=False.
 Output: SourceArt/StreetKit/meshes/<name>.glb
 """
 import math, os, random, sys
@@ -167,7 +169,7 @@ M_GRN = lambda: mat("M_SignalGreen", (0.05, 0.9, 0.5), 0.0, 0.2)
 M_SIGNBACK = lambda: mat("M_SignBack", (0.55, 0.56, 0.57), 0.8, 0.5)
 
 
-def street_lamp(name="SK_Lamp_Street", h=9.0, arm=2.6, double=False):
+def street_lamp(name="SK_Lamp_Street", h=9.0, arm=2.6, double=False, do_export=True):
     B = Builder()
     s = M_STEEL()
     B.cyl((0, 0, 0), 0.6, 0.17, s, 10)                                  # base collar
@@ -179,7 +181,10 @@ def street_lamp(name="SK_Lamp_Street", h=9.0, arm=2.6, double=False):
         hx = Vector((0, -d * (arm + 0.35), h + 0.15))
         B.box(hx, (0.38, 0.8, 0.14), s)
         B.card(hx + Vector((0, 0, -0.072)), (0, 0, -1), (0, -d, 0), 0.3, 0.62, M_LENS())
-    export(name, [B.finish(name)])
+    ob = B.finish(name)
+    if do_export:
+        export(name, [ob])
+    return ob
 
 
 def signal_pole(arm_len):
@@ -297,13 +302,16 @@ def bus_shelter():
     sign_post("SK_BusStopSign", 0.45, 0.6, 2.8, mat("M_SignBus", (0.1, 0.3, 0.75), 0.0, 0.5), (0, 0, 1, 1))
 
 
-def storm_drain():
+def storm_drain(do_export=True):
     B = Builder()
     iron = mat("M_CastIron", (0.05, 0.05, 0.05), 0.7, 0.55)
     B.box((0, 0, -0.01), (0.95, 0.5, 0.03), iron)
     for k in range(8):
         B.box((-0.38 + k * 0.108, 0, 0.012), (0.05, 0.42, 0.02), iron)
-    export("SK_StormDrain", [B.finish("SK_StormDrain")])
+    ob = B.finish("SK_StormDrain")
+    if do_export:
+        export("SK_StormDrain", [ob])
+    return ob
 
 
 def mailbox():
@@ -320,13 +328,16 @@ def mailbox():
     export("SK_Mailbox", [B.finish("SK_Mailbox")])
 
 
-def bollard():
+def bollard(do_export=True):
     B = Builder()
     s = M_STEEL()
     B.cyl((0, 0, 0), 0.95, 0.1, s, 12)
     B.cyl((0, 0, 0.95), 0.06, 0.11, s, 12)
     B.cyl((0, 0, 0.8), 0.05, 0.102, mat("M_ReflectiveWhite", (0.9, 0.9, 0.9), 0.0, 0.3), 12, top=False)
-    export("SK_Bollard", [B.finish("SK_Bollard")])
+    ob = B.finish("SK_Bollard")
+    if do_export:
+        export("SK_Bollard", [ob])
+    return ob
 
 
 def tree_grate():
@@ -363,8 +374,10 @@ def crown_point(rnd, shape, cw, ch, base_z):
             return Vector((x * cw / 2, y * cw / 2, base_z + z * ch))
 
 
-def tree(sp):
+def tree(sp, cards=None, do_export=True):
     H, clear, cw, ch, nlimbs, limb_up, card, ncards, leaf_m, shape = SPECIES[sp]
+    if cards is not None:
+        ncards = int(cards)
     rnd = random.Random(sum(map(ord, sp)))
     B = Builder()
     bark = mat("M_Bark", (0.3, 0.26, 0.22), 0.0, 0.9)
@@ -419,7 +432,55 @@ def tree(sp):
         if abs(n.dot(up)) > 0.95:
             up = Vector((1, 0, 0))
         B.card(tuple(p), tuple(n), tuple(up), s, s, leaf, double=True)
-    export(f"SK_Tree_{sp}", [B.finish(f"SK_Tree_{sp}")])
+    ob = B.finish(f"SK_Tree_{sp}")
+    if do_export:
+        export(f"SK_Tree_{sp}", [ob])
+    return ob
+
+
+def _sweep_xz(name, ring, length, material):
+    """Extrude a closed (x, z) ring along +Y for `length` metres. x grows toward the sidewalk."""
+    B = Builder()
+    n = len(ring)
+    for i in range(n):
+        x0, z0 = ring[i]
+        x1, z1 = ring[(i + 1) % n]
+        # Outward is to the right of the ring as it is walked in XZ, looking along +Y.
+        B.face([(x0, 0, z0), (x0, length, z0), (x1, length, z1), (x1, 0, z1)], material)
+    B.face([(x, 0, z) for x, z in ring], material)
+    B.face([(x, length, z) for x, z in reversed(ring)], material)
+    ob = B.finish(name)
+    export(name, [ob])
+    return ob
+
+
+def curb_modules():
+    """SK_Curb_Bevel, SK_Gutter_Pan and SK_Curb_Ramp: the profiles.py section as kit meshes.
+
+    Two metres long, so a street can repeat them. The block preview sweeps the same
+    section itself; these are the pieces an editor can drop by hand.
+    """
+    import sys as _sys
+    roads = os.path.join(ROOT, "Scripts", "roads")
+    if roads not in _sys.path:
+        _sys.path.insert(0, roads)
+    import profiles
+    concrete = mat("M_Concrete", (0.55, 0.54, 0.52), 0.0, 0.7)
+    _sweep_xz("SK_Curb_Bevel", profiles.curb_solid_section("major"), 2.0, concrete)
+    pan = profiles.street_profile("major")[:2]
+    # A thin pan: the slope, then a floor so the mesh is closed.
+    pan_ring = pan + [(pan[-1][0], -0.08), (pan[0][0], -0.08)]
+    _sweep_xz("SK_Gutter_Pan", pan_ring, 2.0, concrete)
+    ramp = profiles.curb_ramp_spec()
+    B = Builder()
+    w, run, rise = ramp["width_m"], ramp["run_m"], ramp["rise_m"]
+    flare = ramp["flare_m"]
+    # The ramp runs along +Y, dropping from the sidewalk (y=0, z=rise) to the gutter (y=run, z=0).
+    hw = w / 2.0
+    B.face([(-hw, 0, rise), (hw, 0, rise), (hw, run, 0), (-hw, run, 0)], concrete)
+    B.face([(-hw - flare, 0, rise), (-hw, 0, rise), (-hw, run, 0), (-hw - flare, 0, 0)], concrete)
+    B.face([(hw, 0, rise), (hw + flare, 0, rise), (hw + flare, 0, 0), (hw, run, 0)], concrete)
+    export("SK_Curb_Ramp", [B.finish("SK_Curb_Ramp")])
 
 
 JOBS = {
@@ -430,11 +491,19 @@ JOBS = {
                       name_blade()),
     "street": lambda: (bike_rack(), dumpster(), bus_shelter(), storm_drain(), mailbox(), bollard(), tree_grate()),
     "trees": lambda: [tree(s) for s in SPECIES],
+    "curbs": curb_modules,
 }
-for job, fn in JOBS.items():
-    if ONLY and job not in ONLY:
-        continue
-    reset()
-    MATS.clear()
-    fn()
-print("ALL DONE")
+
+
+def main():
+    for job, fn in JOBS.items():
+        if ONLY and job not in ONLY:
+            continue
+        reset()
+        MATS.clear()
+        fn()
+    print("ALL DONE")
+
+
+if __name__ == "__main__":
+    main()

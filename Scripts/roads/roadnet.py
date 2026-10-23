@@ -10,8 +10,10 @@ Pipeline (all offline, plan frame: metres, x east, y north):
                 T-junction, endpoints snapped, pieces of the same street merged, dangling stubs removed, dead ends
                 either joined to the street they stop short of or given a proper dead-end treatment
   2. sections   every edge gets a cross-section: travel lanes by direction, centre treatment (double yellow, or a
-                two-way left-turn lane when OSM gives an odd lane count), parking lanes, shoulders on expressways,
-                sidewalk and parkway widths, all from the rules in SECTION_RULES; widths are what the parts add up to
+                two-way left-turn lane when OSM gives an odd lane count), parking lanes, a gutter pan taken from the
+                outer lane or stall (the carriageway width does not change), a beveled curb, shoulders on expressways,
+                sidewalk and parkway widths, all from the rules in SECTION_RULES and Scripts/roads/profiles.py;
+                widths are what the parts add up to
   3. junctions  curb-return geometry per intersection (corner radius by street class), compound junctions where
                 divided roads make two nodes, crosswalk and stop-line positions, the roads trimmed to the junction
   4. control    signal / all-way stop / two-way stop from OSM plus warrant-style rules; movements that are legal
@@ -27,6 +29,8 @@ Run: python3 -I Scripts/roads/roadnet.py [--wip] [--debug]
           game's Content/SkyCity/Data/traffic.json): for trying rule changes while other agents read the live files
 """
 import collections, json, math, pathlib, sys, zlib
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import profiles as road_profiles
 import networkx as nx
 import numpy as np
 
@@ -1581,11 +1585,11 @@ def design_section(d, half_room):
     half_room = (left, right) clearance from the centreline to the buildings."""
     cls, lanes, oneway, core = d["cls"], max(1, d["lanes"]), d["oneway"], d["core"]
     why = []
-    lw = {"highway": 3.6, "major": 3.3, "mid": 3.3, "minor": 3.0}[cls]
+    lw = road_profiles.LANE_W[cls]
     if cls == "minor" and oneway and lanes == 1:
         lw = 3.6
         why.append("single-lane one-way local: 3.6 m lane so emergency vehicles clear parked cars")
-    pw = 2.1 if cls == "minor" else 2.4
+    pw = road_profiles.PARKING_W[cls]
     # parking by rule
     if cls == "highway":
         park = (False, False)
@@ -1630,7 +1634,7 @@ def design_section(d, half_room):
                 centre = ("dy", 0.3)
             elif cls == "highway":
                 centre = ("barrier", 1.0)
-    sw = 0.0 if (cls == "highway" or d.get("under")) else (4.6 if core else 3.8)
+    sw = 0.0 if (cls == "highway" or d.get("under")) else (road_profiles.SIDEWALK_CORE if core else road_profiles.SIDEWALK_OTHER)
 
     def build(lw_, park_, sw_):
         travel = d["travel"] if oneway else 0
@@ -1667,8 +1671,15 @@ def design_section(d, half_room):
             if W / 2 + sw_ <= room or step == 3:
                 why.append(note)
                 break
+    # The pan is stolen from the outermost lane or stall, so W is unchanged and the ribbons
+    # already in the city keep their edges. The curb face itself is a bevel (profiles.py).
+    elems, gutter = road_profiles.carve_gutters(elems, cls, bool(d.get("under")))
+    W = sum(e[1] for e in elems)
+    if gutter:
+        why.append("gutter pan carved off the outer lane or stall; carriageway width unchanged, curb face is a bevel")
     return {"elems": elems, "width": round(W, 2), "sidewalk": sw2, "parkway": (not core) and cls != "highway",
-            "class": CLASS_NAME[cls], "why": why}
+            "class": CLASS_NAME[cls], "why": why,
+            "curb": road_profiles.curb_spec(cls, core), "gutter": gutter}
 
 
 for u, v, k, d in G.edges(keys=True, data=True):
@@ -1691,7 +1702,7 @@ for u, v, k, d in G.edges(keys=True, data=True):
 # ================================================================ 3. JUNCTIONS
 # Curb-return radius by the larger street class (design vehicle: a city bus on arterials, a delivery truck on
 # collectors, a car on locals): local 6 m, collector 7.5 m, arterial 9 m, expressway 15 m.
-RADIUS = {"minor": 6.0, "mid": 7.5, "major": 9.0, "highway": 15.0}
+RADIUS = road_profiles.CURB_RETURN_RADIUS
 RANK = {"minor": 0, "mid": 1, "major": 2, "highway": 3}
 GORE_R = 1.0          # nose radius where two roads part at a shallow angle (fork, ramp, merge)
 
@@ -2056,7 +2067,8 @@ ARROW = {frozenset("L"): "L", frozenset("S"): "S", frozenset("R"): "R", frozense
 # A crosswalk is 3.0 m wide at the junction mouth, continental bars 0.6 m wide every 1.2 m; the stop bar (0.6 m) sits
 # 1.2 m behind it across the arriving lanes. Lane lines: 0.15 m; dashes 3 m with 9 m gaps (10 ft / 30 ft); solid
 # white for the last 30 m before a stop bar (no lane changes into the junction); double yellow 2 x 0.12 m.
-XW, SETBACK, BAR = 3.0, 1.2, 0.6
+XW, SETBACK, BAR = (road_profiles.CONTINENTAL["width_m"], road_profiles.CONTINENTAL["stop_gap_m"],
+                   road_profiles.CONTINENTAL["bar_m"])
 MK = {"solid_white": [], "solid_white_thin": [], "dash_white": [], "solid_yellow": [], "dash_yellow": [], "bars": [],
       "arrows": [], "words": []}
 SIG = {"poles": [], "heads": [], "peds": [], "cabinets": []}
@@ -2485,7 +2497,7 @@ for u, v, k, d in G.edges(keys=True, data=True):
                     put("dash_white", g, s_cum, hi, sb, off)
             else:
                 put("dash_white", g, s_cum, sa, sb, off)
-        elif {ka, kb} == {"lane", "parking"}:
+        elif {ka, kb} == {"lane", "parking"} or {ka, kb} == {"lane", "gutter"}:
             put("solid_white_thin", g, s_cum, sa, sb, off)
         elif {ka, kb} == {"lane", "shoulder"}:
             lane = A if ka == "lane" else B
@@ -2771,6 +2783,7 @@ for u, v, k, d in G.edges(keys=True, data=True):
     edges_out.append({"cls": d["cls"], "class": d["section"]["class"], "name": d["name"], "city": d["city"], "pc": d["pc"], "rb": d["rb"], "core": d["core"],
                       "oneway": d["oneway"], "travel": d["travel"], "speed": d["speed"], "width": d["width"],
                       "elems": d["section"]["elems"], "sidewalk": d["section"]["sidewalk"], "parkway": d["section"]["parkway"],
+                      "curb": d["section"].get("curb"), "gutter": d["section"].get("gutter"),
                       "why": d["section"]["why"], "geom": R2(d["geom"]), "s0": round(d["s0"], 2), "s1": round(d["s1"], 2),
                       "ribbon": R2(rb) if rb else None, "internal": d["internal"],
                       "ends": [G.nodes[u]["kind"], G.nodes[v]["kind"]]})

@@ -194,12 +194,12 @@ for e in RN["edges"]:
     el = e["elems"]
     lpark = 0.0
     for k, w, d in el:
-        if k != "parking":
+        if k not in ("parking", "gutter"):
             break
         lpark += w
     rpark = 0.0
     for k, w, d in reversed(el):
-        if k != "parking":
+        if k not in ("parking", "gutter"):
             break
         rpark += w
     _drw.polygon(_px(e["ribbon"]), fill=1)
@@ -594,12 +594,12 @@ def band_edges(q, t):
         W = e["width"]
         lpark = 0.0
         for k, w, d in el:
-            if k != "parking":
+            if k not in ("parking", "gutter"):
                 break
             lpark += w
         rpark = 0.0
         for k, w, d in reversed(el):
-            if k != "parking":
+            if k not in ("parking", "gutter"):
                 break
             rpark += w
         res = (lat + W / 2 - lpark, lat - W / 2 + rpark)

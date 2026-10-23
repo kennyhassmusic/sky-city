@@ -1,0 +1,196 @@
+# Building grammar. One style tag picks massing, openings and materials.
+#
+# The evaluator in grammar.py is the shape grammar: lot, then mass (extrude, setbacks,
+# podium and tower), then floors and bays, then the roof. Numbers here are the rules an
+# artist edits. Materials are names of CC0 slots (brick, concrete, plaster, metal, glass),
+# not file paths.
+
+version: 1
+
+styles:
+  prewar_masonry:
+    floor_h: 3.45
+    ground_h: 4.7
+    bay_m: 3.35
+    pier_m: 0.46
+    recess_m: 0.26
+    opening: punched
+    sill: 0.34
+    head: 0.74
+    podium_floors: 1
+    tower_inset_m: 0
+    setback_every: 0
+    setback_m: 0
+    top_setback_floors: 2
+    top_setback_m: 1.6
+    cornice_m: 0.85
+    roof: flat
+    roof_h: 1.5
+    roof_units: [water_tank, stair]
+    balcony: false
+    wall: brick
+    trim: plaster
+    metal: metal
+    tint: [0.85, 0.55, 0.42]
+    parapet_m: 0.9
+
+  glass_curtain:
+    floor_h: 3.9
+    ground_h: 5.4
+    bay_m: 3.0
+    pier_m: 0.14
+    recess_m: 0.1
+    opening: curtain
+    sill: 0.06
+    head: 0.94
+    podium_floors: 4
+    tower_inset_m: 3.6
+    setback_every: 0
+    setback_m: 0
+    top_setback_floors: 0
+    top_setback_m: 0
+    cornice_m: 0.35
+    roof: flat
+    roof_h: 2.4
+    roof_units: [hvac, antenna]
+    balcony: false
+    wall: glass
+    trim: metal
+    metal: metal
+    tint: [0.62, 0.74, 0.82]
+    parapet_m: 0.4
+
+  art_deco:
+    floor_h: 3.35
+    ground_h: 5.1
+    bay_m: 3.7
+    pier_m: 0.62
+    recess_m: 0.22
+    opening: punched
+    sill: 0.14
+    head: 0.9
+    podium_floors: 0
+    tower_inset_m: 0
+    setback_every: 5
+    setback_m: 2.3
+    top_setback_floors: 0
+    top_setback_m: 0
+    cornice_m: 1.15
+    roof: flat
+    roof_h: 3.2
+    roof_units: [stair, antenna]
+    balcony: false
+    wall: plaster
+    trim: plaster
+    metal: metal
+    tint: [0.78, 0.68, 0.5]
+    parapet_m: 1.3
+
+  modern_mixed:
+    floor_h: 3.3
+    ground_h: 4.9
+    bay_m: 3.25
+    pier_m: 0.32
+    recess_m: 0.18
+    opening: mixed
+    sill: 0.22
+    head: 0.8
+    podium_floors: 3
+    tower_inset_m: 2.8
+    setback_every: 0
+    setback_m: 0
+    top_setback_floors: 0
+    top_setback_m: 0
+    cornice_m: 0.45
+    roof: flat
+    roof_h: 1.8
+    roof_units: [hvac, water_tank]
+    balcony: true
+    balcony_every: 2
+    balcony_depth_m: 1.25
+    wall: brick
+    trim: concrete
+    metal: metal
+    tint: [0.72, 0.5, 0.4]
+    parapet_m: 0.6
+
+  brick_walkup:
+    floor_h: 3.05
+    ground_h: 3.5
+    bay_m: 3.4
+    pier_m: 0.4
+    recess_m: 0.18
+    opening: punched
+    sill: 0.32
+    head: 0.72
+    podium_floors: 0
+    tower_inset_m: 0
+    setback_every: 0
+    setback_m: 0
+    top_setback_floors: 0
+    top_setback_m: 0
+    cornice_m: 0.4
+    roof: gabled
+    roof_h: 2.5
+    roof_units: []
+    balcony: false
+    max_floors: 4
+    wall: brick
+    trim: plaster
+    metal: metal
+    tint: [0.7, 0.38, 0.3]
+    parapet_m: 0.2
+
+  industrial:
+    floor_h: 4.4
+    ground_h: 5.2
+    bay_m: 6.2
+    pier_m: 0.45
+    recess_m: 0.12
+    opening: punched
+    sill: 0.42
+    head: 0.78
+    podium_floors: 0
+    tower_inset_m: 0
+    setback_every: 0
+    setback_m: 0
+    top_setback_floors: 0
+    top_setback_m: 0
+    cornice_m: 0.25
+    roof: gabled
+    roof_h: 2.2
+    roof_units: [hvac]
+    balcony: false
+    max_floors: 4
+    wall: concrete
+    trim: metal
+    metal: metal
+    tint: [0.55, 0.56, 0.54]
+    parapet_m: 0.15
+
+  texas_lowrise:
+    floor_h: 3.2
+    ground_h: 4.0
+    bay_m: 4.1
+    pier_m: 0.34
+    recess_m: 0.14
+    opening: punched
+    sill: 0.3
+    head: 0.7
+    podium_floors: 0
+    tower_inset_m: 0
+    setback_every: 0
+    setback_m: 0
+    top_setback_floors: 0
+    top_setback_m: 0
+    cornice_m: 0.3
+    roof: hipped
+    roof_h: 2.6
+    roof_units: []
+    balcony: false
+    max_floors: 3
+    wall: plaster
+    trim: plaster
+    metal: metal
+    tint: [0.82, 0.74, 0.6]
+    parapet_m: 0.15

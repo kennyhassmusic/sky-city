@@ -33,7 +33,7 @@ def lane_offsets(p, t):
     su = L.street_under(p, t)
     if su is None:
         return None
-    travel = sum(w for k, w, d in su[0]["elems"] if k != "parking")
+    travel = sum(w for k, w, d in su[0]["elems"] if k not in ("parking", "gutter"))
     if lft - rgt < 5.0 or lft - rgt > travel + 1.5:          # a junction ring or a merge: no lane to keep to here
         return None
     return float(lft - 1.7), float(rgt + 1.7)

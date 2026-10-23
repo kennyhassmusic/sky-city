@@ -1,0 +1,116 @@
+{
+  "seed": 1408,
+  "hash": "c8394de4404e6823f3a73c1534a03cc11829db0d928e22218ce14d892ff1425a",
+  "styles": {
+    "prewar_masonry": {
+      "bytes": {
+        "LOD0": 36381220,
+        "LOD1": 619772,
+        "LOD2": 424932,
+        "FAR": 35912,
+        "web": 1120168
+      },
+      "tris": {
+        "LOD0": 284977,
+        "LOD1": 3966,
+        "LOD2": 2571,
+        "FAR": 144
+      }
+    },
+    "glass_curtain": {
+      "bytes": {
+        "LOD0": 29824312,
+        "LOD1": 579428,
+        "LOD2": 399352,
+        "FAR": 35880,
+        "web": 1079816
+      },
+      "tris": {
+        "LOD0": 234702,
+        "LOD1": 3676,
+        "LOD2": 2396,
+        "FAR": 144
+      }
+    },
+    "art_deco": {
+      "bytes": {
+        "LOD0": 28988508,
+        "LOD1": 609452,
+        "LOD2": 416644,
+        "FAR": 35888,
+        "web": 1109840
+      },
+      "tris": {
+        "LOD0": 229005,
+        "LOD1": 3890,
+        "LOD2": 2510,
+        "FAR": 144
+      }
+    },
+    "modern_mixed": {
+      "bytes": {
+        "LOD0": 33624568,
+        "LOD1": 627780,
+        "LOD2": 429544,
+        "FAR": 35920,
+        "web": 1128176
+      },
+      "tris": {
+        "LOD0": 264202,
+        "LOD1": 4006,
+        "LOD2": 2591,
+        "FAR": 144
+      }
+    }
+  },
+  "renders": [
+    {
+      "file": "CG_prewar_masonry_street_day.png",
+      "seconds": 23.7
+    },
+    {
+      "file": "CG_prewar_masonry_aerial_day.png",
+      "seconds": 19.1
+    },
+    {
+      "file": "CG_prewar_masonry_street_dusk.png",
+      "seconds": 29.5
+    },
+    {
+      "file": "CG_glass_curtain_street_day.png",
+      "seconds": 25.7
+    },
+    {
+      "file": "CG_glass_curtain_aerial_day.png",
+      "seconds": 22.8
+    },
+    {
+      "file": "CG_glass_curtain_street_dusk.png",
+      "seconds": 35.0
+    },
+    {
+      "file": "CG_art_deco_street_day.png",
+      "seconds": 25.7
+    },
+    {
+      "file": "CG_art_deco_aerial_day.png",
+      "seconds": 20.9
+    },
+    {
+      "file": "CG_art_deco_street_dusk.png",
+      "seconds": 32.4
+    },
+    {
+      "file": "CG_modern_mixed_street_day.png",
+      "seconds": 25.4
+    },
+    {
+      "file": "CG_modern_mixed_aerial_day.png",
+      "seconds": 21.6
+    },
+    {
+      "file": "CG_modern_mixed_street_dusk.png",
+      "seconds": 33.7
+    }
+  ]
+}

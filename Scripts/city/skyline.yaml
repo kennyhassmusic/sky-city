@@ -1,0 +1,143 @@
+# Sky City skyline controls.
+#
+# This is the artist file the generator reads. The Map Designer will edit the same
+# fields per district. When Config/SkyCity/skyline.yaml exists it wins (that folder is
+# maintainer-gated, so the checked-in copy lives here and the loader looks there first).
+#
+# Heights are metres. A district in city_model.json overrides any field below.
+# The same seed and the same file rebuild the same buildings.
+
+version: 1
+seed: 1408
+
+# Applied under every character, then the district overrides them.
+defaults:
+  base_height_m: 28
+  edge_height_m: 12
+  falloff: smoothstep
+  reach_m: 0
+  coverage: 0.72
+  far: 6
+  noise_amplitude_m: 8
+  floor_height_m: 3.4
+  hero_count: 0
+  hero_min_spacing_m: 80
+  hero_height_rank_m: [80]
+  hero_anchor: [0, 0]
+  centre: [0, 0]
+  silhouette:
+    origin: [0, 0]
+    axis: [1, 0]
+    length: 1
+    samples: [28]
+    mode: soft_max
+
+# Zone character. add_district(character=...) copies style, trees and skyline from here.
+characters:
+  downtown:
+    style: prewar_masonry
+    trees: [linden, elm]
+    skyline:
+      base_height_m: 52
+      edge_height_m: 34
+      falloff: smoothstep
+      reach_m: 80
+      coverage: 0.8
+      far: 16
+      noise_amplitude_m: 14
+      hero_count: 1
+      hero_min_spacing_m: 70
+      hero_height_rank_m: [168, 120, 96]
+      floor_height_m: 3.5
+  residential:
+    style: brick_walkup
+    trees: [liveoak, elm]
+    skyline:
+      base_height_m: 11
+      edge_height_m: 7
+      coverage: 0.55
+      far: 1.6
+      noise_amplitude_m: 3
+      hero_count: 0
+  industrial:
+    style: industrial
+    trees: [honeylocust]
+    skyline:
+      base_height_m: 12
+      edge_height_m: 8
+      coverage: 0.62
+      far: 2.2
+      noise_amplitude_m: 3
+      hero_count: 0
+  waterfront:
+    style: glass_curtain
+    trees: [linden, liveoak]
+    skyline:
+      base_height_m: 40
+      edge_height_m: 18
+      coverage: 0.7
+      far: 10
+      noise_amplitude_m: 10
+      hero_count: 1
+      hero_height_rank_m: [110]
+  park:
+    style: texas_lowrise
+    trees: [liveoak]
+    skyline:
+      base_height_m: 0
+      coverage: 0
+      far: 0
+      hero_count: 0
+
+# The one-block study. Four readings of the same lots and the same height field.
+variations:
+  - prewar_masonry
+  - glass_curtain
+  - art_deco
+  - modern_mixed
+
+# Centreline rectangle of the study block (metres, origin at the crossing of the two avenues).
+block:
+  name: loop_sample
+  x0: -60
+  x1: 60
+  y0: -45
+  y1: 45
+  district:
+    - [-90, -75]
+    - [90, -75]
+    - [90, 75]
+    - [-90, 75]
+  hero_anchor: [0, -18]
+  silhouette:
+    origin: [-60, 0]
+    axis: [1, 0]
+    length: 120
+    samples: [46, 74, 176, 98, 50]
+    mode: soft_max
+  # class, oneway, lanes, core. core is the downtown section: wide paved walk, tree grates.
+  streets:
+    south:
+      class: major
+      oneway: true
+      lanes: 3
+      core: true
+      name: South Avenue
+    north:
+      class: mid
+      oneway: false
+      lanes: 2
+      core: false
+      name: North Avenue
+    east:
+      class: minor
+      oneway: true
+      lanes: 1
+      core: true
+      name: East Street
+    west:
+      class: major
+      oneway: true
+      lanes: 3
+      core: true
+      name: West Avenue

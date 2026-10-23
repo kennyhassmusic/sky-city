@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kennyhassmusic/sky-city/Scripts/city/city_model.schema.json",
+  "title": "Sky City city model",
+  "type": "object",
+  "required": [
+    "version",
+    "seed",
+    "districts",
+    "roads",
+    "blocks",
+    "lots",
+    "buildings",
+    "overrides"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "bounds": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "districts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/district"
+      }
+    },
+    "roads": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/road"
+      }
+    },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/block"
+      }
+    },
+    "lots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/lot"
+      }
+    },
+    "buildings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/building"
+      }
+    },
+    "overrides": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/element"
+      }
+    },
+    "streetscape": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "element": {
+      "type": "object",
+      "required": [
+        "id",
+        "source",
+        "locked"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "osm",
+            "generated",
+            "hand"
+          ]
+        },
+        "locked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "district": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/element"
+        }
+      ],
+      "properties": {
+        "polygon": {
+          "$ref": "#/$defs/ring"
+        },
+        "character": {
+          "enum": [
+            "downtown",
+            "residential",
+            "industrial",
+            "park",
+            "waterfront",
+            "custom"
+          ]
+        },
+        "style": {
+          "type": "string"
+        },
+        "skyline": {
+          "type": "object"
+        },
+        "trees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "road": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/element"
+        }
+      ],
+      "properties": {
+        "polyline": {
+          "$ref": "#/$defs/ring"
+        },
+        "cls": {
+          "enum": [
+            "highway",
+            "major",
+            "mid",
+            "minor"
+          ]
+        },
+        "lanes": {
+          "type": "integer"
+        },
+        "oneway": {
+          "type": "boolean"
+        },
+        "core": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "block": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/element"
+        }
+      ],
+      "properties": {
+        "polygon": {
+          "$ref": "#/$defs/ring"
+        },
+        "district_id": {
+          "type": "string"
+        }
+      }
+    },
+    "lot": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/element"
+        }
+      ],
+      "properties": {
+        "polygon": {
+          "$ref": "#/$defs/ring"
+        },
+        "block_id": {
+          "type": "string"
+        }
+      }
+    },
+    "building": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/element"
+        }
+      ],
+      "properties": {
+        "height": {
+          "type": "number"
+        },
+        "style": {
+          "type": "string"
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "footprint": {
+          "$ref": "#/$defs/ring"
+        },
+        "role": {
+          "enum": [
+            "building",
+            "landmark",
+            "context"
+          ]
+        }
+      }
+    },
+    "ring": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

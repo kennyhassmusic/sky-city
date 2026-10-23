@@ -330,12 +330,12 @@ def paint_net(G, RN):
         W = e["width"] or 1.0
         lp = 0.0
         for k, w, d in el:
-            if k != "parking":
+            if k not in ("parking", "gutter"):
                 break
             lp += w
         rp = 0.0
         for k, w, d in reversed(el):
-            if k != "parking":
+            if k not in ("parking", "gutter"):
                 break
             rp += w
         if lp > 0:
