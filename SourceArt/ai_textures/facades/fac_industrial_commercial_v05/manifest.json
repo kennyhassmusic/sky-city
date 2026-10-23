@@ -1,0 +1,127 @@
+{
+ "id": "fac_industrial_commercial_v05",
+ "districts": [
+  "industrial_commercial"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/industrial_commercial/facades/fac_industrial_commercial_v05_albedo.png",
+  "normal": "../../packs/industrial_commercial/facades/fac_industrial_commercial_v05_normal.png",
+  "orm": "../../packs/industrial_commercial/facades/fac_industrial_commercial_v05_orm.png",
+  "roughness": "../../packs/industrial_commercial/facades/fac_industrial_commercial_v05_roughness.png",
+  "mask": "../../packs/industrial_commercial/facades/fac_industrial_commercial_v05_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  2048
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 5.0,
+  "height": 10.0
+ },
+ "glass_mask": "../../packs/industrial_commercial/facades/fac_industrial_commercial_v05_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 5.0,
+ "floor_m": 5.0,
+ "windowless": false,
+ "bays_in_tile": 1,
+ "floors_in_tile": 2,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/industrial_commercial/facades/fac_industrial_commercial_v05_mask.png",
+   "windows": [
+    {
+     "rect": [
+      0,
+      0,
+      0.6025,
+      0.3301
+     ],
+     "bay": 0,
+     "floor": 1,
+     "wrap_group": 0
+    },
+    {
+     "rect": [
+      0.9912,
+      0,
+      1,
+      0.3301
+     ],
+     "bay": 0,
+     "floor": 1,
+     "wrap_group": 0
+    },
+    {
+     "rect": [
+      0,
+      0.4941,
+      0.5996,
+      0.8286
+     ],
+     "bay": 0,
+     "floor": 0,
+     "wrap_group": 1
+    },
+    {
+     "rect": [
+      0.9912,
+      0.4941,
+      1,
+      0.8286
+     ],
+     "bay": 0,
+     "floor": 0,
+     "wrap_group": 1
+    }
+   ],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      0.5
+     ]
+    },
+    {
+     "index": 1,
+     "rect": [
+      0.0,
+      0.5,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "suggested_use_notes": [
+  "base floors"
+ ]
+}

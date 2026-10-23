@@ -1,0 +1,30 @@
+{
+ "id": "dec_distressed_graffiti_02",
+ "role": "accent",
+ "placement": "decal",
+ "tile": false,
+ "feature": "poster",
+ "suggested_use": "scatter",
+ "districts": [
+  "apartments_condos",
+  "houses"
+ ],
+ "tiers": [
+  "distressed"
+ ],
+ "maps": {
+  "albedo": "../../packs/common/decals/graffiti/dec_distressed_graffiti_02.png"
+ },
+ "alpha": "../../packs/common/decals/graffiti/dec_distressed_graffiti_02.png",
+ "alpha_channel": "A",
+ "size_px": [
+  512,
+  512
+ ],
+ "scale_m": {
+  "width": 0.9,
+  "height": 0.9
+ },
+ "projection": "wall",
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable"
+}

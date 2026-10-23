@@ -1,0 +1,42 @@
+{
+ "id": "int_green_renewable_r04",
+ "districts": [
+  "green_renewable"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/green_renewable/interiors/int_green_renewable_r04_on.png",
+  "lights_off": "../../packs/green_renewable/interiors/int_green_renewable_r04_off.png",
+  "emissive_mask": "../../packs/green_renewable/interiors/int_green_renewable_r04_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "bedroom",
+ "room_type": "bedroom",
+ "scale_m": {
+  "width": 3.5,
+  "height": 2.7
+ },
+ "depth_m": 4,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.327,
+  0.535
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/green_renewable/interiors/int_green_renewable_r04_on.png",
+  "lights_off": "../../packs/green_renewable/interiors/int_green_renewable_r04_off.png"
+ },
+ "method": "regenerated_room_only"
+}

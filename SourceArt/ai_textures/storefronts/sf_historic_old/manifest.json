@@ -1,0 +1,103 @@
+{
+ "id": "sf_historic_old",
+ "districts": [
+  "historic_old"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/historic_old/storefronts/sf_historic_old_albedo.png",
+  "normal": "../../packs/historic_old/storefronts/sf_historic_old_normal.png",
+  "orm": "../../packs/historic_old/storefronts/sf_historic_old_orm.png",
+  "roughness": "../../packs/historic_old/storefronts/sf_historic_old_roughness.png",
+  "mask": "../../packs/historic_old/storefronts/sf_historic_old_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 4.51,
+  "height": 4.51
+ },
+ "glass_mask": "../../packs/historic_old/storefronts/sf_historic_old_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 4.51,
+ "floor_m": 4.51,
+ "windowless": false,
+ "bays_in_tile": 1,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/historic_old/storefronts/sf_historic_old_mask.png",
+   "windows": [
+    {
+     "rect": [
+      0.0967,
+      0.4697,
+      0.3496,
+      0.8008
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.6455,
+      0.46,
+      0.9131,
+      0.8018
+     ],
+     "bay": 0,
+     "floor": 0
+    }
+   ],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "sign_rect": [
+  0.15,
+  0.185,
+  0.865,
+  0.295
+ ],
+ "door_rect": [
+  0.375,
+  0.47,
+  0.62,
+  0.98
+ ]
+}

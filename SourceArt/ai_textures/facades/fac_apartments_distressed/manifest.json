@@ -1,0 +1,93 @@
+{
+ "id": "fac_apartments_distressed",
+ "districts": [
+  "apartments_condos"
+ ],
+ "tiers": [
+  "distressed"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_albedo.png",
+  "normal": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_normal.png",
+  "orm": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_orm.png",
+  "roughness": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_roughness.png",
+  "mask": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 6.0,
+  "height": 6.0
+ },
+ "glass_mask": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 3.0,
+ "floor_m": 3.0,
+ "windowless": true,
+ "bays_in_tile": 2,
+ "floors_in_tile": 2,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/apartments_condos/distressed/facades/fac_apartments_distressed_mask.png",
+   "windows": [],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "index": 1,
+     "rect": [
+      0.5,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      0.5
+     ]
+    },
+    {
+     "index": 1,
+     "rect": [
+      0.0,
+      0.5,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "suggested_use_notes": [
+  "base floors"
+ ]
+}

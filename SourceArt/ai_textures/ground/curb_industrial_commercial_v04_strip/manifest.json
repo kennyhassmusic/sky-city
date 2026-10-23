@@ -1,0 +1,50 @@
+{
+ "id": "curb_industrial_commercial_v04_strip",
+ "districts": [
+  "industrial_commercial"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/industrial_commercial/curbs/curb_industrial_commercial_v04_strip_albedo.png",
+  "normal": "../../packs/industrial_commercial/curbs/curb_industrial_commercial_v04_strip_normal.png",
+  "orm": "../../packs/industrial_commercial/curbs/curb_industrial_commercial_v04_strip_orm.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  512
+ ],
+ "role": "accent",
+ "suggested_use": "curb_strip",
+ "feature": "curb_strip",
+ "scale_m": {
+  "width": 2.0,
+  "height": 0.6
+ },
+ "tile_axis": "U",
+ "band_uv": {
+  "top": [
+   0.0,
+   0.25
+  ],
+  "face": [
+   0.25,
+   0.5
+  ],
+  "gutter": [
+   0.5,
+   1.0
+  ]
+ },
+ "band_m": {
+  "top": 0.15,
+  "face": 0.15,
+  "gutter": 0.3
+ }
+}

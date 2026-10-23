@@ -1,0 +1,44 @@
+{
+ "id": "int_houses_high_r04",
+ "districts": [
+  "houses"
+ ],
+ "tiers": [
+  "high"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/houses/high/interiors/int_houses_high_r04_on.png",
+  "lights_off": "../../packs/houses/high/interiors/int_houses_high_r04_off.png",
+  "emissive_mask": "../../packs/houses/high/interiors/int_houses_high_r04_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "library",
+ "room_type": "library",
+ "scale_m": {
+  "width": 6,
+  "height": 3.2
+ },
+ "depth_m": 8,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.591,
+  0.521
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/houses/high/interiors/int_houses_high_r04_on.png",
+  "lights_off": "../../packs/houses/high/interiors/int_houses_high_r04_off.png"
+ },
+ "method": "regenerated_room_only"
+}

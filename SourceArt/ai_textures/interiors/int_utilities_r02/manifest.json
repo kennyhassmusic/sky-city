@@ -1,0 +1,42 @@
+{
+ "id": "int_utilities_r02",
+ "districts": [
+  "utilities"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/utilities/interiors/int_utilities_r02_on.png",
+  "lights_off": "../../packs/utilities/interiors/int_utilities_r02_off.png",
+  "emissive_mask": "../../packs/utilities/interiors/int_utilities_r02_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "switchgear",
+ "room_type": "switchgear",
+ "scale_m": {
+  "width": 6,
+  "height": 4
+ },
+ "depth_m": 10,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.484,
+  0.456
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/utilities/interiors/int_utilities_r02_on.png",
+  "lights_off": "../../packs/utilities/interiors/int_utilities_r02_off.png"
+ },
+ "method": "regenerated_room_only"
+}

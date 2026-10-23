@@ -1,0 +1,141 @@
+{
+ "id": "sf_eclectic_mix",
+ "districts": [
+  "eclectic_mix"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/eclectic_mix/storefronts/sf_eclectic_mix_albedo.png",
+  "normal": "../../packs/eclectic_mix/storefronts/sf_eclectic_mix_normal.png",
+  "orm": "../../packs/eclectic_mix/storefronts/sf_eclectic_mix_orm.png",
+  "roughness": "../../packs/eclectic_mix/storefronts/sf_eclectic_mix_roughness.png",
+  "mask": "../../packs/eclectic_mix/storefronts/sf_eclectic_mix_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 4.694,
+  "height": 4.694
+ },
+ "glass_mask": "../../packs/eclectic_mix/storefronts/sf_eclectic_mix_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 4.694,
+ "floor_m": 4.694,
+ "windowless": false,
+ "bays_in_tile": 1,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/eclectic_mix/storefronts/sf_eclectic_mix_mask.png",
+   "windows": [
+    {
+     "rect": [
+      0.04,
+      0.3408,
+      0.3193,
+      0.5596
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.3633,
+      0.2324,
+      0.6504,
+      0.8379
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.6826,
+      0.3613,
+      0.8516,
+      0.7646
+     ],
+     "bay": 0,
+     "floor": 0
+    }
+   ],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "sign_rect": [
+  0.7,
+  0.24,
+  0.95,
+  0.36
+ ],
+ "door_rect": [
+  0.86,
+  0.37,
+  0.955,
+  0.86
+ ],
+ "door_rects": [
+  [
+   0.05,
+   0.61,
+   0.3,
+   0.92
+  ],
+  [
+   0.86,
+   0.37,
+   0.955,
+   0.86
+  ]
+ ],
+ "sign_rects": [
+  [
+   0.35,
+   0.14,
+   0.645,
+   0.22
+  ],
+  [
+   0.7,
+   0.24,
+   0.95,
+   0.36
+  ]
+ ]
+}

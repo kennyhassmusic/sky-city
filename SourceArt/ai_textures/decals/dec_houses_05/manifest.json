@@ -1,0 +1,27 @@
+{
+ "id": "dec_houses_05",
+ "role": "accent",
+ "placement": "decal",
+ "tile": false,
+ "feature": "pothole",
+ "suggested_use": "scatter",
+ "districts": [
+  "houses"
+ ],
+ "tiers": [],
+ "maps": {
+  "albedo": "../../packs/houses/decals/dec_houses_05.png"
+ },
+ "alpha": "../../packs/houses/decals/dec_houses_05.png",
+ "alpha_channel": "A",
+ "size_px": [
+  512,
+  512
+ ],
+ "scale_m": {
+  "width": 1.5,
+  "height": 1.5
+ },
+ "projection": "ground",
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable"
+}

@@ -1,0 +1,42 @@
+{
+ "id": "int_tech_r01",
+ "districts": [
+  "tech"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/tech/interiors/int_tech_r01_on.png",
+  "lights_off": "../../packs/tech/interiors/int_tech_r01_off.png",
+  "emissive_mask": "../../packs/tech/interiors/int_tech_r01_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "open_office",
+ "room_type": "open_office",
+ "scale_m": {
+  "width": 10,
+  "height": 3.2
+ },
+ "depth_m": 12,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.517,
+  0.488
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/tech/interiors/int_tech_r01_on.png",
+  "lights_off": "../../packs/tech/interiors/int_tech_r01_off.png"
+ },
+ "method": "regenerated_room_only"
+}

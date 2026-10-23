@@ -1,0 +1,96 @@
+{
+ "id": "fac_houses_low",
+ "districts": [
+  "houses"
+ ],
+ "tiers": [
+  "low"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/houses/low/facades/fac_houses_low_albedo.png",
+  "normal": "../../packs/houses/low/facades/fac_houses_low_normal.png",
+  "orm": "../../packs/houses/low/facades/fac_houses_low_orm.png",
+  "roughness": "../../packs/houses/low/facades/fac_houses_low_roughness.png",
+  "mask": "../../packs/houses/low/facades/fac_houses_low_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 3.0,
+  "height": 3.0
+ },
+ "glass_mask": "../../packs/houses/low/facades/fac_houses_low_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 3.0,
+ "floor_m": 3.0,
+ "windowless": false,
+ "bays_in_tile": 1,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/houses/low/facades/fac_houses_low_mask.png",
+   "windows": [
+    {
+     "rect": [
+      0.3193,
+      0.2549,
+      0.6934,
+      0.5215
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.3096,
+      0.54,
+      0.7021,
+      0.666
+     ],
+     "bay": 0,
+     "floor": 0
+    }
+   ],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "suggested_use_notes": [
+  "base floors"
+ ]
+}

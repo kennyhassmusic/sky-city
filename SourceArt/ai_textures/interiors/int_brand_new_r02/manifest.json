@@ -1,0 +1,42 @@
+{
+ "id": "int_brand_new_r02",
+ "districts": [
+  "brand_new"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/brand_new/interiors/int_brand_new_r02_on.png",
+  "lights_off": "../../packs/brand_new/interiors/int_brand_new_r02_off.png",
+  "emissive_mask": "../../packs/brand_new/interiors/int_brand_new_r02_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "empty_unit",
+ "room_type": "empty_unit",
+ "scale_m": {
+  "width": 5,
+  "height": 2.8
+ },
+ "depth_m": 6,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.5,
+  0.5
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/brand_new/interiors/int_brand_new_r02_on.png",
+  "lights_off": "../../packs/brand_new/interiors/int_brand_new_r02_off.png"
+ },
+ "method": "regenerated_room_only"
+}

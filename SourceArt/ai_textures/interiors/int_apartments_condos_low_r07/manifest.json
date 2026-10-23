@@ -1,0 +1,44 @@
+{
+ "id": "int_apartments_condos_low_r07",
+ "districts": [
+  "apartments_condos"
+ ],
+ "tiers": [
+  "low"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/apartments_condos/low/interiors/int_apartments_condos_low_r07_on.png",
+  "lights_off": "../../packs/apartments_condos/low/interiors/int_apartments_condos_low_r07_off.png",
+  "emissive_mask": "../../packs/apartments_condos/low/interiors/int_apartments_condos_low_r07_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "studio",
+ "room_type": "studio",
+ "scale_m": {
+  "width": 4,
+  "height": 2.8
+ },
+ "depth_m": 6,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.549,
+  0.347
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/apartments_condos/low/interiors/int_apartments_condos_low_r07_on.png",
+  "lights_off": "../../packs/apartments_condos/low/interiors/int_apartments_condos_low_r07_off.png"
+ },
+ "method": "regenerated_room_only"
+}

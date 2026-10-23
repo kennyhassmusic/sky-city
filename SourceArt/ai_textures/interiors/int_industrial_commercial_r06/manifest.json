@@ -1,0 +1,42 @@
+{
+ "id": "int_industrial_commercial_r06",
+ "districts": [
+  "industrial_commercial"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r06_on.png",
+  "lights_off": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r06_off.png",
+  "emissive_mask": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r06_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "showroom",
+ "room_type": "showroom",
+ "scale_m": {
+  "width": 8,
+  "height": 4
+ },
+ "depth_m": 10,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.487,
+  0.438
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r06_on.png",
+  "lights_off": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r06_off.png"
+ },
+ "method": "regenerated_room_only"
+}

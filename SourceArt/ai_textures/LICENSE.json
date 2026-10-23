@@ -1,0 +1,8 @@
+{
+  "assets": "Sky City AI texture packs: facades, ground, storefronts, interiors, decals, equipment and props for the procedural city generator.",
+  "generating_tool": "Grok Bot (xAI) text-to-image generation, with the project's Python processing and audit scripts (tools/audit_check.py).",
+  "license": "Original / AI-generated work, owned by Kenny Hass Music LLC to the extent copyrightable. Not third-party content. Distributed under the Sky City asset licence, CC BY-NC 4.0 (see LICENSE-ASSETS.md).",
+  "generated": "2026-10-22",
+  "note": "Every per-set manifest.json under the kind folders also carries this same 'license' string. The full generation record (per-file dimensions, srgb flags, seam fixes) is in manifest.json.",
+  "see_also": ["manifest.json", "packs/districts.json", "../../CREDITS_AND_LICENCES.txt", "../../LICENSE-ASSETS.md"]
+}

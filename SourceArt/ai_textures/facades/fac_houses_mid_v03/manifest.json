@@ -1,0 +1,98 @@
+{
+ "id": "fac_houses_mid_v03",
+ "districts": [
+  "houses"
+ ],
+ "tiers": [
+  "mid"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/houses/mid/facades/fac_houses_mid_v03_albedo.png",
+  "normal": "../../packs/houses/mid/facades/fac_houses_mid_v03_normal.png",
+  "orm": "../../packs/houses/mid/facades/fac_houses_mid_v03_orm.png",
+  "roughness": "../../packs/houses/mid/facades/fac_houses_mid_v03_roughness.png",
+  "mask": "../../packs/houses/mid/facades/fac_houses_mid_v03_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 3.0,
+  "height": 3.0
+ },
+ "glass_mask": "../../packs/houses/mid/facades/fac_houses_mid_v03_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 3.0,
+ "floor_m": 3.0,
+ "windowless": false,
+ "bays_in_tile": 1,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/houses/mid/facades/fac_houses_mid_v03_mask.png",
+   "windows": [
+    {
+     "rect": [
+      0.3809,
+      0.5771,
+      0.7939,
+      1
+     ],
+     "bay": 0,
+     "floor": 0,
+     "wrap_group": 0
+    },
+    {
+     "rect": [
+      0.3809,
+      0,
+      0.7939,
+      0.1035
+     ],
+     "bay": 0,
+     "floor": 0,
+     "wrap_group": 0
+    }
+   ],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "suggested_use_notes": [
+  "base floors"
+ ]
+}

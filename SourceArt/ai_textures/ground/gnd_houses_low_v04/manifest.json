@@ -1,0 +1,35 @@
+{
+ "id": "gnd_houses_low_v04",
+ "districts": [
+  "houses"
+ ],
+ "tiers": [
+  "low"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/houses/low/ground/gnd_houses_low_v04_albedo.png",
+  "normal": "../../packs/houses/low/ground/gnd_houses_low_v04_normal.png",
+  "orm": "../../packs/houses/low/ground/gnd_houses_low_v04_orm.png",
+  "roughness": "../../packs/houses/low/ground/gnd_houses_low_v04_roughness.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "curb",
+ "feature": "curb",
+ "scale_m": {
+  "width": 1.5,
+  "height": 3.0
+ },
+ "projection": "top_down"
+}

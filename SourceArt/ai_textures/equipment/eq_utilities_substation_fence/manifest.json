@@ -1,0 +1,35 @@
+{
+ "id": "eq_utilities_substation_fence",
+ "districts": [
+  "utilities"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/utilities/equipment/eq_utilities_substation_fence_albedo.png",
+  "normal": "../../packs/utilities/equipment/eq_utilities_substation_fence_normal.png",
+  "orm": "../../packs/utilities/equipment/eq_utilities_substation_fence_orm.png",
+  "roughness": "../../packs/utilities/equipment/eq_utilities_substation_fence_roughness.png",
+  "mask": "../../packs/utilities/equipment/eq_utilities_substation_fence_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "accent",
+ "suggested_use": "equipment_fence",
+ "kind": "equipment",
+ "scale_m": {
+  "width": 4.5,
+  "height": 4.5
+ },
+ "note": "substation behind chain-link fence; NOT a storefront. Use as equipment/fence panel."
+}

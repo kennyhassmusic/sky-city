@@ -1,0 +1,42 @@
+{
+ "id": "int_industrial_commercial_r05",
+ "districts": [
+  "industrial_commercial"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r05_on.png",
+  "lights_off": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r05_off.png",
+  "emissive_mask": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r05_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "break_room",
+ "room_type": "break_room",
+ "scale_m": {
+  "width": 4,
+  "height": 3
+ },
+ "depth_m": 5,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.524,
+  0.433
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r05_on.png",
+  "lights_off": "../../packs/industrial_commercial/interiors/int_industrial_commercial_r05_off.png"
+ },
+ "method": "regenerated_room_only"
+}

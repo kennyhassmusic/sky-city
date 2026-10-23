@@ -1,0 +1,27 @@
+{
+ "id": "dec_industrial_commercial_05",
+ "role": "accent",
+ "placement": "decal",
+ "tile": false,
+ "feature": "paint_marking",
+ "suggested_use": "scatter",
+ "districts": [
+  "industrial_commercial"
+ ],
+ "tiers": [],
+ "maps": {
+  "albedo": "../../packs/industrial_commercial/decals/dec_industrial_commercial_05.png"
+ },
+ "alpha": "../../packs/industrial_commercial/decals/dec_industrial_commercial_05.png",
+ "alpha_channel": "A",
+ "size_px": [
+  512,
+  512
+ ],
+ "scale_m": {
+  "width": 2.0,
+  "height": 2.0
+ },
+ "projection": "ground",
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable"
+}

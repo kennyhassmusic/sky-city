@@ -1,0 +1,73 @@
+{
+ "id": "fac_utilities_v07",
+ "districts": [
+  "utilities"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/utilities/facades/fac_utilities_v07_albedo.png",
+  "normal": "../../packs/utilities/facades/fac_utilities_v07_normal.png",
+  "orm": "../../packs/utilities/facades/fac_utilities_v07_orm.png",
+  "roughness": "../../packs/utilities/facades/fac_utilities_v07_roughness.png",
+  "mask": "../../packs/utilities/facades/fac_utilities_v07_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  2048
+ ],
+ "role": "accent",
+ "suggested_use": "crown",
+ "scale_m": {
+  "width": 2.5,
+  "height": 5.0
+ },
+ "glass_mask": "../../packs/utilities/facades/fac_utilities_v07_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 2.5,
+ "floor_m": 5.0,
+ "windowless": true,
+ "bays_in_tile": 1,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/utilities/facades/fac_utilities_v07_mask.png",
+   "windows": [],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "suggested_use_notes": [
+  "top/crown"
+ ]
+}

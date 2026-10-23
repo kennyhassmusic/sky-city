@@ -1,0 +1,27 @@
+{
+ "id": "dec_utilities_07",
+ "role": "accent",
+ "placement": "decal",
+ "tile": false,
+ "feature": "paint_marking",
+ "suggested_use": "scatter",
+ "districts": [
+  "utilities"
+ ],
+ "tiers": [],
+ "maps": {
+  "albedo": "../../packs/utilities/decals/dec_utilities_07.png"
+ },
+ "alpha": "../../packs/utilities/decals/dec_utilities_07.png",
+ "alpha_channel": "A",
+ "size_px": [
+  512,
+  256
+ ],
+ "scale_m": {
+  "width": 2.5,
+  "height": 1.25
+ },
+ "projection": "ground",
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable"
+}

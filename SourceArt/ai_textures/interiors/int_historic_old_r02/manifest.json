@@ -1,0 +1,42 @@
+{
+ "id": "int_historic_old_r02",
+ "districts": [
+  "historic_old"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/historic_old/interiors/int_historic_old_r02_on.png",
+  "lights_off": "../../packs/historic_old/interiors/int_historic_old_r02_off.png",
+  "emissive_mask": "../../packs/historic_old/interiors/int_historic_old_r02_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "brick_loft",
+ "room_type": "brick_loft",
+ "scale_m": {
+  "width": 6,
+  "height": 3.6
+ },
+ "depth_m": 8,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.504,
+  0.663
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/historic_old/interiors/int_historic_old_r02_on.png",
+  "lights_off": "../../packs/historic_old/interiors/int_historic_old_r02_off.png"
+ },
+ "method": "regenerated_room_only"
+}

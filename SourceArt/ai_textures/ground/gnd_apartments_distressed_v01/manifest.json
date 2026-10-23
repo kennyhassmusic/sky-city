@@ -1,0 +1,35 @@
+{
+ "id": "gnd_apartments_distressed_v01",
+ "districts": [
+  "apartments_condos"
+ ],
+ "tiers": [
+  "distressed"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/apartments_condos/distressed/ground/gnd_apartments_distressed_v01_albedo.png",
+  "normal": "../../packs/apartments_condos/distressed/ground/gnd_apartments_distressed_v01_normal.png",
+  "orm": "../../packs/apartments_condos/distressed/ground/gnd_apartments_distressed_v01_orm.png",
+  "roughness": "../../packs/apartments_condos/distressed/ground/gnd_apartments_distressed_v01_roughness.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "grass",
+ "feature": "grass",
+ "scale_m": {
+  "width": 4.0,
+  "height": 4.0
+ },
+ "projection": "top_down"
+}

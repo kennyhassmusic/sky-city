@@ -1,0 +1,146 @@
+{
+ "id": "sf_houses",
+ "districts": [
+  "houses"
+ ],
+ "tiers": [],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "albedo": "../../packs/houses/storefronts/sf_houses_albedo.png",
+  "normal": "../../packs/houses/storefronts/sf_houses_normal.png",
+  "orm": "../../packs/houses/storefronts/sf_houses_orm.png",
+  "roughness": "../../packs/houses/storefronts/sf_houses_roughness.png",
+  "mask": "../../packs/houses/storefronts/sf_houses_mask.png"
+ },
+ "srgb": {
+  "albedo": true,
+  "normal": false,
+  "orm": false,
+  "roughness": false,
+  "mask": false
+ },
+ "normal_convention": "DirectX",
+ "size_px": [
+  1024,
+  1024
+ ],
+ "role": "basic",
+ "suggested_use": "body",
+ "scale_m": {
+  "width": 6.216,
+  "height": 6.216
+ },
+ "glass_mask": "../../packs/houses/storefronts/sf_houses_mask.png",
+ "mask_channels": "R=glass G=frame B=wall",
+ "bay_m": 3.108,
+ "floor_m": 6.216,
+ "windowless": false,
+ "bays_in_tile": 2,
+ "floors_in_tile": 1,
+ "floor_index_note": "window floor = floor row inside one tile (0..floors_in_tile-1); building floor f uses row f % floors_in_tile. wrap_group links pieces of one window split by the tile edge.",
+ "facades": [
+  {
+   "role": "",
+   "glass_mask": "../../packs/houses/storefronts/sf_houses_mask.png",
+   "windows": [
+    {
+     "rect": [
+      0.1328,
+      0.1025,
+      0.2246,
+      0.2656
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.7217,
+      0.1035,
+      0.8125,
+      0.2666
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.3467,
+      0.3379,
+      0.3652,
+      0.6289
+     ],
+     "bay": 0,
+     "floor": 0
+    },
+    {
+     "rect": [
+      0.5029,
+      0.3379,
+      0.5215,
+      0.6289
+     ],
+     "bay": 0,
+     "floor": 0
+    }
+   ],
+   "bays": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "index": 1,
+     "rect": [
+      0.5,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "floors": [
+    {
+     "index": 0,
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "sign_rect": [
+  0.63,
+  0.54,
+  0.68,
+  0.61
+ ],
+ "door_rect": [
+  0.38,
+  0.31,
+  0.49,
+  0.68
+ ],
+ "door_rects": [
+  [
+   0.38,
+   0.31,
+   0.49,
+   0.68
+  ],
+  [
+   0.72,
+   0.41,
+   1,
+   0.83
+  ]
+ ]
+}

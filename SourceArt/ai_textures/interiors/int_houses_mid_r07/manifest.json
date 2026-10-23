@@ -1,0 +1,44 @@
+{
+ "id": "int_houses_mid_r07",
+ "districts": [
+  "houses"
+ ],
+ "tiers": [
+  "mid"
+ ],
+ "license": "AI-generated (Grok Bot), owned by Kenny Hass Music LLC to the extent copyrightable",
+ "maps": {
+  "lights_on": "../../packs/houses/mid/interiors/int_houses_mid_r07_on.png",
+  "lights_off": "../../packs/houses/mid/interiors/int_houses_mid_r07_off.png",
+  "emissive_mask": "../../packs/houses/mid/interiors/int_houses_mid_r07_emissive.png"
+ },
+ "srgb": {
+  "lights_on": true,
+  "lights_off": true,
+  "emissive_mask": false
+ },
+ "normal_convention": null,
+ "size_px": [
+  512,
+  512
+ ],
+ "role": "basic",
+ "suggested_use": "basement_den",
+ "room_type": "basement_den",
+ "scale_m": {
+  "width": 4.5,
+  "height": 2.5
+ },
+ "depth_m": 5,
+ "projection": "one_point_centered",
+ "vanishing_point_uv": [
+  0.397,
+  0.547
+ ],
+ "back_wall_fraction": 0.5,
+ "pair": {
+  "lights_on": "../../packs/houses/mid/interiors/int_houses_mid_r07_on.png",
+  "lights_off": "../../packs/houses/mid/interiors/int_houses_mid_r07_off.png"
+ },
+ "method": "regenerated_room_only"
+}
