@@ -8,12 +8,10 @@ What's being built next, in order. Kenny decides the order; ideas from contribut
 
 ## Next
 Deferred from the texture-stretch pass. Do not start these until asked:
-- Floating bases
+- Floating bases (the census now flags a building whose base is not on the sidewalk)
 - Ground surfaces
 - Grime
 - Roofs
-- Blender hardening and a mesh census
-- Six-view sheets
 - Loader floor bugs
 
 ## Next: Course Builder (its own game mode)

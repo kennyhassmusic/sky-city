@@ -138,7 +138,6 @@ def make_library(record):
 
 def textured(slot, maps, uv_m):
     mat = bpy.data.materials.new("M_" + slot.capitalize())
-    mat.use_nodes = True
     nt = mat.node_tree
     bsdf = nt.nodes.get("Principled BSDF")
     bsdf.inputs["Roughness"].default_value = 0.7
@@ -185,7 +184,6 @@ def _map_path(rel):
 
 def flat(name, rgb, rough):
     mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
     bsdf = mat.node_tree.nodes.get("Principled BSDF")
     bsdf.inputs["Base Color"].default_value = (*rgb, 1)
     bsdf.inputs["Roughness"].default_value = rough
@@ -194,7 +192,6 @@ def flat(name, rgb, rough):
 
 def emissive(name, rgb, strength):
     mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
     bsdf = mat.node_tree.nodes.get("Principled BSDF")
     bsdf.inputs["Base Color"].default_value = (*rgb, 1)
     _set(bsdf, ("Emission Color", "Emission"), (*rgb, 1))
@@ -206,7 +203,6 @@ def emissive(name, rgb, strength):
 def glass_material(name, emit):
     """A pane you can see through, with an optional glow. The recess behind it does the depth."""
     mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
     nt = mat.node_tree
     bsdf = nt.nodes.get("Principled BSDF")
     bsdf.inputs["Base Color"].default_value = (0.55, 0.7, 0.8, 1)
@@ -216,7 +212,10 @@ def glass_material(name, emit):
     _set(bsdf, ("Emission Strength",), emit)
     transp = nt.nodes.new("ShaderNodeBsdfTransparent")
     mix = nt.nodes.new("ShaderNodeMixShader")
-    mix.inputs["Fac"].default_value = 0.42
+    for _name in ("Factor", "Fac"):
+        if _name in mix.inputs:
+            mix.inputs[_name].default_value = 0.42
+            break
     out = nt.nodes.get("Material Output")
     nt.links.new(bsdf.outputs["BSDF"], mix.inputs[1])
     nt.links.new(transp.outputs["BSDF"], mix.inputs[2])
@@ -1095,7 +1094,6 @@ def facade_material(style):
     if existing:
         return existing
     mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
     bsdf = mat.node_tree.nodes.get("Principled BSDF")
     path = os.path.join(ART, "facades", "T_CG_Facade_%s.png" % style)
     if os.path.isfile(path):
@@ -1127,7 +1125,6 @@ def render_style(style, cameras, visible):
     realism.grade(scene)
     world = bpy.data.worlds.new("Sky_" + style)
     scene.world = world
-    world.use_nodes = True
     shots = []
     if os.environ.get("SKYCITY_SHOTS") == "none":
         return shots

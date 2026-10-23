@@ -53,7 +53,6 @@ def mat(name, rgb=(0.5, 0.5, 0.5), metal=0.0, rough=0.6):
     if name in MATS:
         return MATS[name]
     m = bpy.data.materials.new(name)
-    m.use_nodes = True
     b = m.node_tree.nodes.get("Principled BSDF")
     b.inputs["Base Color"].default_value = (*rgb, 1)
     b.inputs["Metallic"].default_value = metal

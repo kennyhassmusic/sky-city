@@ -18,12 +18,20 @@ stops the build when texel density or window aspect is off by more than 3%.
 The base is a concrete plinth on the planned sidewalks and asphalt. Grass is
 only the parkway. Flat roofs get a parapet and roof units.
 
-Run (Blender 4.2.15 LTS; the script prints bpy.app.version and refuses any other):
-  blender -b --factory-startup --python-exit-code 1 -P Scripts/city/blender_city.py
+Run (Blender 5.2.x LTS on Python 3.13; the script prints bpy.app.version and refuses any other series):
+  blender --background --factory-startup --python-exit-code 1 -P Scripts/city/blender_city.py
+One Blender unit is one metre, and the glTF export is 1:1. Mesh.box sizes are full
+edge lengths, the same rule as primitive_cube_add: a size of 2 is a 2 m cube, not
+a half-extent of 2. Geometry is bpy.data and bmesh. Mesh and object operators
+fail their polls headless, so they are not used. A boolean modifier stays on the
+EXACT solver, and its result is read with evaluated_get(depsgraph).to_mesh().
 A Python warning, a deprecated-API message, or a missing node or socket stops the build.
 Warnings go through warnings.showwarning: a filter of "error" is ignored inside a
 destructor, so an unclosed file used to print "Exception ignored" and keep going.
 Without --python-exit-code 1, Blender would still exit 0 after a Python traceback.
+After the mesh, census.py checks each building and face_uv.py checks the GLBs.
+SKYCITY_HERO_ONLY=1 meshes three buildings, runs that census, and writes a six-view
+Workbench sheet per hero instead of the city render.
 Output:
   SourceArt/CityGen/city/CG_<district>_<index>.glb
   SourceArt/CityGen/city/CG_<district>_street_<index>.glb
@@ -48,7 +56,9 @@ import sys
 import time
 import zlib
 
+import bmesh
 import bpy
+from mathutils import Matrix, Vector
 
 CITY = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("SKYCITY_ROOT") or os.path.dirname(os.path.dirname(CITY))
@@ -57,6 +67,7 @@ sys.path.insert(0, os.path.join(ROOT, "Scripts", "streets"))
 sys.path.insert(0, os.path.join(ROOT, "Scripts", "roads"))
 
 import blender_block as bb  # noqa: E402
+import census  # noqa: E402
 import face_uv  # noqa: E402
 import generate_city  # noqa: E402
 import geom  # noqa: E402
@@ -84,10 +95,10 @@ DRESS = {
     "sign", "fence",
 }
 
-# The city script is written against this build. A newer or older Blender
-# changes socket names and then keeps rendering, which is how a bad API call
-# used to look like a finished picture.
-PINNED_BLENDER = (4, 2, 15)
+# 5.2.x LTS. Socket names moved between 4.2 and 5.2 (Mix "Fac" became "Factor"),
+# and a script that misses the change still renders. Python 3.13 ships with 5.2.
+PINNED_BLENDER = (5, 2)
+PINNED_PYTHON = (3, 13)
 
 
 class _HardFailure(RuntimeError):
@@ -138,13 +149,26 @@ def _reject_log_line(line):
 
 def _require_exit_code():
     argv = sys.argv
+    if "--background" not in argv and "-b" not in argv:
+        _die("start Blender with --background (a windowed run is not the city build). "
+             "blender --background --factory-startup --python-exit-code 1 -P Scripts/city/blender_city.py")
+    if "--factory-startup" not in argv:
+        _die("start Blender with --factory-startup so preferences cannot change the build.")
     for index, arg in enumerate(argv):
         if arg == "--python-exit-code" and index + 1 < len(argv) and argv[index + 1] == "1":
             return
         if arg == "--python-exit-code=1":
             return
     _die("start Blender with --python-exit-code 1 (a Python error otherwise exits 0). "
-         "blender -b --factory-startup --python-exit-code 1 -P Scripts/city/blender_city.py")
+         "blender --background --factory-startup --python-exit-code 1 -P Scripts/city/blender_city.py")
+
+
+def _set_metres():
+    """1 unit = 1 m. The glTF exporter writes that scale through unchanged."""
+    scene = bpy.context.scene
+    scene.unit_settings.system = "METRIC"
+    scene.unit_settings.scale_length = 1.0
+    scene.unit_settings.length_unit = "METERS"
 
 
 def _assert_tree(nt, label):
@@ -181,11 +205,29 @@ def _set_strict(node, names, value):
 
 
 def _add_modifier(ob, name, typ):
-    """The only way the city script adds a modifier. It has to be on the object afterwards."""
+    """The only way the city script adds a modifier. It has to be on the object afterwards.
+
+    Booleans stay on EXACT. FLOAT (FAST before 5.0) drops coplanar faces and the
+    picture still looks closed.
+    """
     mod = ob.modifiers.new(name, typ)
     if mod is None or ob.modifiers.get(mod.name) is None:
         _die("modifier %s missing on %s after creation" % (name, ob.name))
+    if typ == "BOOLEAN":
+        mod.solver = "EXACT"
+        if mod.solver != "EXACT":
+            _die("boolean solver on %s is %s, not EXACT" % (ob.name, mod.solver))
     return mod
+
+
+def _applied_mesh(ob):
+    """Modifier result. Caller must to_mesh_clear() on the evaluated object."""
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    eval_ob = ob.evaluated_get(depsgraph)
+    mesh = eval_ob.to_mesh()
+    if mesh is None:
+        _die("evaluated_get().to_mesh() returned nothing for %s" % ob.name)
+    return eval_ob, mesh
 
 
 def _assert_on_object(ob, materials, uv_names):
@@ -224,8 +266,9 @@ def _library_strict(record):
             continue
         if bpy.data.materials.get(mat.name) is not mat:
             _die("material %s missing from bpy.data after creation" % getattr(mat, "name", mat))
-        if getattr(mat, "use_nodes", False):
-            if mat.node_tree is None or mat.node_tree.nodes.get("Principled BSDF") is None:
+        # use_nodes is deprecated in 5.2 and warns on read. A new material already has a tree.
+        if mat.node_tree is not None:
+            if mat.node_tree.nodes.get("Principled BSDF") is None:
                 _die("missing node Principled BSDF on %s" % mat.name)
             _assert_tree(mat.node_tree, mat.name)
     return lib
@@ -249,6 +292,10 @@ def _audit_modifier_calls():
     needle = "ob." + "modifiers.new("
     if own.count(needle) != 1:
         _die("modifier creation must go through _add_modifier")
+    for kind in ("mesh", "object"):
+        # Split so this check does not count itself.
+        if ("bpy.ops." + kind) in own:
+            _die("bpy.ops.%s fails its poll headless; build with bpy.data and bmesh" % kind)
 
 
 def _hard_warning(message, category, filename, lineno, file=None, line=None):
@@ -259,11 +306,15 @@ def _hard_warning(message, category, filename, lineno, file=None, line=None):
 
 def _startup():
     version = tuple(bpy.app.version[:3])
-    text = ".".join(str(part) for part in version)
-    print("BLENDER", text, flush=True)
-    if version != PINNED_BLENDER:
-        _die("Blender %s is not the pinned %s.%s.%s. See README.md." % ((text,) + PINNED_BLENDER))
+    py = tuple(sys.version_info[:3])
+    print("BLENDER", ".".join(str(part) for part in version),
+          "PYTHON", ".".join(str(part) for part in py), flush=True)
+    if version[:2] != PINNED_BLENDER:
+        _die("Blender %s.%s.%s is not the pinned 5.2.x LTS. See README.md." % version)
+    if py[:2] != PINNED_PYTHON:
+        _die("Python %s.%s.%s is not 3.13, which is what Blender 5.2.x LTS ships." % py)
     _require_exit_code()
+    _set_metres()
     import warnings
     # "error" raises, and a destructor then prints "Exception ignored" and continues.
     # "always" plus showwarning calls _die before that can happen. ResourceWarning
@@ -301,12 +352,19 @@ def main():
     print("AUSTIN TIERS", tier_counts, flush=True)
     anchor, core = _select_core(city)
     pair, residential = _select_residential(city, lots)
+    hero_only = os.environ.get("SKYCITY_HERO_ONLY") == "1"
+    if hero_only:
+        heroes = _hero_specs(core, residential)
+        core = [spec for spec in heroes if _district(city, spec) != "austin_low"]
+        residential = [spec for spec in heroes if spec not in core]
+        print("HERO", [spec.get("id") for spec in heroes], flush=True)
     core = core[:CORE_MAX]
     residential = residential[:RES_MAX]
     tier_names = [_tier(spec, lots) for spec in residential]
     print("CITY core", len(core), "of", _count(city, "chicago_core"),
           "residential", len(residential), "tiers", tier_names, flush=True)
     bb.reset()
+    _set_metres()
     record = bb.load_material_record()
     lib = bb.make_library(record)
     _install_facades(lib, record)
@@ -315,6 +373,17 @@ def main():
     res_col = bb.collection("ResBuildings")
     core_obs = _mesh_list(core, lib, core_col, keep_tall_rooms=False)
     res_obs = _mesh_list(residential, lib, res_col, keep_tall_rooms=True)
+    pairs = list(zip(core, core_obs)) + list(zip(residential, res_obs))
+    census_failed = _require_census(pairs)
+    if os.environ.get("SKYCITY_SHEETS", "1") != "0":
+        _contact_sheets(_sheet_targets(core, core_obs, residential, res_obs))
+    if census_failed:
+        print("CENSUS FAIL", flush=True)
+        raise SystemExit(1)
+    print("CENSUS PASS", flush=True)
+    if hero_only:
+        print("HERO done", round(time.time() - t0, 1), "s", flush=True)
+        return
     core_bounds = _bounds(core, 28.0)
     res_bounds = _bounds(residential, 22.0)
     core_street = _street(city, core_bounds, lib, protos, "CoreStreet", core)
@@ -564,8 +633,9 @@ def _curtain_glass(name, emit):
     mat = bpy.data.materials.new(name)
     if mat is None or bpy.data.materials.get(mat.name) is not mat:
         _die("material %s missing from bpy.data after creation" % name)
-    mat.use_nodes = True
     nt = mat.node_tree
+    if nt is None:
+        _die("missing node tree on %s" % name)
     bsdf = nt.nodes.get("Principled BSDF")
     if bsdf is None:
         _die("missing node Principled BSDF on %s" % name)
@@ -578,7 +648,7 @@ def _curtain_glass(name, emit):
     mix = nt.nodes.new("ShaderNodeMixShader")
     if transp is None or transp.name not in nt.nodes or mix is None or mix.name not in nt.nodes:
         _die("missing node on %s" % name)
-    mix.inputs["Fac"].default_value = 0.08
+    _mix_factor(mix, 0.08)
     out = nt.nodes.get("Material Output")
     if out is None:
         _die("missing node Material Output on %s" % name)
@@ -1368,6 +1438,191 @@ def _tower_side(specs):
     }
 
 
+def _mix_factor(mix, value):
+    """5.2 names this Factor. 4.2 named it Fac. The pin is 5.2; both are accepted."""
+    for name in ("Factor", "Fac"):
+        sock = mix.inputs.get(name)
+        if sock is not None:
+            sock.default_value = value
+            return
+    _die("missing socket Factor on %s" % getattr(mix, "name", mix))
+
+
+def _hero_specs(core, residential):
+    """The tall tower, the street anchor, and one house. Sheets stay on this set."""
+    chosen = []
+    if core:
+        tall = max(core, key=lambda spec: float(spec.get("height") or 0))
+        chosen.append(tall)
+        if core[0] is not tall:
+            chosen.append(core[0])
+    if residential:
+        chosen.append(residential[0])
+    return chosen
+
+
+def _sheet_targets(core, core_obs, residential, res_obs):
+    pairs = list(zip(core, core_obs)) + list(zip(residential, res_obs))
+    if len(pairs) <= 3:
+        return pairs
+    wanted = {spec.get("id") for spec in _hero_specs(core, residential)}
+    return [(spec, ob) for spec, ob in pairs if spec.get("id") in wanted]
+
+
+def _require_census(pairs):
+    """Plan footprint, height and sidewalk base, plus the topology counts."""
+    ground = profiles.CURB_RISE
+    failed = False
+    for spec, ob in pairs:
+        report = census.survey_object(ob, spec, ground)
+        print(census.format_line(spec.get("id"), report), flush=True)
+        if report["reasons"]:
+            failed = True
+    print("CENSUS buildings", len(pairs), "ground", ground, flush=True)
+    return failed
+
+
+def _front_axes(spec):
+    faces = [face for face in (spec.get("facades") or []) if int(face.get("floor") or 0) == 0]
+    if not faces:
+        faces = list(spec.get("facades") or [])
+    if faces:
+        face = max(faces, key=lambda item: float(item.get("length") or 0))
+        normal = face.get("normal") or (0.0, 1.0)
+        nx, ny = float(normal[0]), float(normal[1])
+        length = math.hypot(nx, ny) or 1.0
+        nx, ny = nx / length, ny / length
+        return (nx, ny), (-ny, nx)
+    return (0.0, 1.0), (1.0, 0.0)
+
+
+def _contact_sheets(pairs):
+    """Six orthographic views per hero. Workbench, offscreen, for proportion and gaps."""
+    if not pairs:
+        return
+    scene = bpy.context.scene
+    scene.render.engine = "BLENDER_WORKBENCH"
+    shading = scene.display.shading
+    shading.light = "STUDIO"
+    shading.color_type = "MATERIAL"
+    shading.show_shadows = False
+    scene.render.resolution_x = 320
+    scene.render.resolution_y = 400
+    scene.render.resolution_percentage = 100
+    scene.render.image_settings.file_format = "PNG"
+    scene.render.film_transparent = False
+    if scene.world is None:
+        scene.world = bpy.data.worlds.new("SheetWorld")
+    scene.world.color = (0.62, 0.66, 0.70)
+    cam_data = bpy.data.cameras.new("SheetCam")
+    cam_data.type = "ORTHO"
+    cam_data.clip_start = 0.05
+    cam_data.clip_end = 8000.0
+    cam = bpy.data.objects.new("SheetCam", cam_data)
+    bpy.context.scene.collection.objects.link(cam)
+    scene.camera = cam
+    os.makedirs(REPO_PREVIEWS, exist_ok=True)
+    for spec, ob in pairs:
+        _one_sheet(scene, cam, spec, ob)
+    bpy.data.objects.remove(cam, do_unlink=True)
+    bpy.data.cameras.remove(cam_data)
+
+
+def _one_sheet(scene, cam, spec, ob):
+    corners = [Vector(corner) for corner in ob.bound_box]
+    world = [ob.matrix_world @ corner for corner in corners]
+    xs = [point.x for point in world]
+    ys = [point.y for point in world]
+    zs = [point.z for point in world]
+    centre = Vector(((min(xs) + max(xs)) / 2.0, (min(ys) + max(ys)) / 2.0, max(zs) / 2.0))
+    span = max(max(xs) - min(xs), max(ys) - min(ys), max(zs) - min(min(zs), 0.0), 4.0)
+    cam.data.ortho_scale = span * 1.35
+    normal, tangent = _front_axes(spec)
+    dist = span + 20.0
+    views = [
+        centre + Vector((-normal[0], -normal[1], 0.0)) * dist,
+        centre + Vector((tangent[0], tangent[1], 0.0)) * dist,
+        centre + Vector((normal[0], normal[1], 0.0)) * dist,
+        centre + Vector((-tangent[0], -tangent[1], 0.0)) * dist,
+        centre + Vector((0.0, 0.0, dist)),
+        centre + Vector((0.0, 0.0, -dist - max(zs))),
+    ]
+    pad = _sheet_pad(spec)
+    hidden = []
+    for other in bpy.context.scene.objects:
+        if other.type != "MESH" or other in (ob, pad):
+            continue
+        hidden.append((other, other.hide_render))
+        other.hide_render = True
+    ob.hide_render = False
+    frames = []
+    try:
+        for index, eye in enumerate(views):
+            cam.location = eye
+            cam.rotation_euler = (centre - eye).to_track_quat("-Z", "Y").to_euler()
+            dest = os.path.join(REPO_PREVIEWS, "_sheet_view_%d.png" % index)
+            scene.render.filepath = dest
+            bpy.ops.render.render(write_still=True)
+            frames.append(dest)
+        safe = "".join(ch if ch.isalnum() or ch in ("-", "_") else "_" for ch in str(spec.get("id")))
+        sheet = os.path.join(REPO_PREVIEWS, "sky_city_sheet_%s.png" % safe)
+        _stitch(frames, sheet)
+        _publish(sheet)
+        print("SHEET", os.path.basename(sheet), flush=True)
+    finally:
+        for other, state in hidden:
+            other.hide_render = state
+        for path in frames:
+            if os.path.isfile(path):
+                os.remove(path)
+        if pad is not None:
+            mesh = pad.data
+            bpy.data.objects.remove(pad, do_unlink=True)
+            if mesh and mesh.users == 0:
+                bpy.data.meshes.remove(mesh)
+
+
+def _sheet_pad(spec):
+    """A sidewalk slab under the footprint, so a floating base shows as a gap."""
+    ring = [(float(p[0]), float(p[1])) for p in spec.get("footprint") or []]
+    if len(ring) < 3:
+        return None
+    outer = geom.offset_polygon(ring, -1.5) or ring
+    if len(outer) < 3:
+        outer = ring
+    mat = bb.flat("M_SheetGround", (0.40, 0.44, 0.38), 0.9)
+    mesh = bb.Mesh("SheetGround")
+    mesh.prism(outer, 0.0, profiles.CURB_RISE, mat)
+    if not mesh.bm.faces:
+        mesh.bm.free()
+        return None
+    return mesh.finish(bpy.context.scene.collection)
+
+
+def _stitch(paths, dest):
+    loaded = [bpy.data.images.load(path) for path in paths]
+    width, height = loaded[0].size
+    cols = 3
+    rows = 2
+    sheet = bpy.data.images.new("ContactSheet", width=width * cols, height=height * rows, alpha=True)
+    acc = [0.12, 0.12, 0.12, 1.0] * (sheet.size[0] * sheet.size[1])
+    stride = width * cols
+    for index, image in enumerate(loaded):
+        col = index % cols
+        row = rows - 1 - (index // cols)
+        src = list(image.pixels)
+        for y in range(height):
+            src_off = y * width * 4
+            dst_off = ((row * height + y) * stride + col * width) * 4
+            acc[dst_off:dst_off + width * 4] = src[src_off:src_off + width * 4]
+        bpy.data.images.remove(image)
+    sheet.pixels.foreach_set(acc)
+    sheet.filepath_raw = dest
+    sheet.file_format = "PNG"
+    sheet.save()
+    bpy.data.images.remove(sheet)
+
+
 def _require_face_uvs():
     """Texel density and window aspect on every exported building. The build stops when either is off."""
     sink = face_uv.check_folder(OUT)
@@ -1654,7 +1909,6 @@ def _render(cams, core_obs, core_street, res_obs, res_street):
     scene.render.film_transparent = False
     world = bpy.data.worlds.new("Sky_City")
     scene.world = world
-    world.use_nodes = True
     record = bb.load_material_record()
     groups = {
         "aerial": core_obs + core_street,
@@ -1712,38 +1966,93 @@ def _render(cams, core_obs, core_street, res_obs, res_street):
 
 
 def _export_baked(path, objects):
-    copies = []
-    for ob in objects:
-        copy = ob.copy()
-        copy.data = ob.data.copy()
-        bpy.context.scene.collection.objects.link(copy)
-        copies.append(copy)
-    pivot = bpy.data.objects.new("PivotBake", None)
-    bpy.context.scene.collection.objects.link(pivot)
-    pivot.rotation_euler = (0.0, 0.0, -math.pi / 2.0)
-    for copy in copies:
-        copy.parent = pivot
-    bpy.context.view_layer.update()
-    for copy in copies:
-        world = copy.matrix_world.copy()
-        copy.parent = None
-        copy.matrix_world = world
-    bpy.context.view_layer.update()
-    bpy.ops.object.select_all(action="DESELECT")
-    for copy in copies:
-        copy.select_set(True)
-    bpy.context.view_layer.objects.active = copies[0]
-    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-    if len(copies) > 1:
-        bpy.ops.object.join()
-    joined = bpy.context.view_layer.objects.active
-    bb._export(path, [joined])
-    mesh = joined.data
-    bpy.data.objects.remove(joined, do_unlink=True)
-    if mesh and mesh.users == 0:
-        bpy.data.meshes.remove(mesh)
-    bpy.data.objects.remove(pivot, do_unlink=True)
-    return os.path.getsize(path)
+    """Join evaluated meshes and bake the block exporter's -90 degree Z turn.
+
+    glTF is Y-up and metres. Scene scale stays 1, so a 2 m edge stays 2 m.
+    """
+    turn = Matrix.Rotation(-math.pi / 2.0, 4, "Z")
+    joined = _join_evaluated(objects, turn)
+    try:
+        _gltf_export(path, [joined])
+        return os.path.getsize(path)
+    finally:
+        mesh = joined.data
+        bpy.data.objects.remove(joined, do_unlink=True)
+        if mesh and mesh.users == 0:
+            bpy.data.meshes.remove(mesh)
+
+
+def _join_evaluated(objects, turn):
+    mesh = bpy.data.meshes.new("Baked")
+    bm = bmesh.new()
+    materials = {}
+    try:
+        uv_out = bm.loops.layers.uv.new("UVMap")
+        for ob in objects:
+            if ob.data is None:
+                continue
+            # Modifiers are applied through the depsgraph. A plain mesh is already the result.
+            eval_ob = None
+            if ob.modifiers:
+                eval_ob, src = _applied_mesh(ob)
+            else:
+                src = ob.data
+            part = bmesh.new()
+            try:
+                part.from_mesh(src)
+                part.transform(turn @ ob.matrix_world)
+                uv_src = part.loops.layers.uv.get("UVMap") or part.loops.layers.uv.active
+                remap = []
+                for mat in src.materials:
+                    key = mat.name if mat else ""
+                    if key not in materials:
+                        mesh.materials.append(mat)
+                        materials[key] = len(mesh.materials) - 1
+                    remap.append(materials[key])
+                vmap = {}
+                for vert in part.verts:
+                    vmap[vert.index] = bm.verts.new(vert.co)
+                for face in part.faces:
+                    try:
+                        made = bm.faces.new([vmap[vert.index] for vert in face.verts])
+                    except ValueError:
+                        continue
+                    if face.material_index < len(remap):
+                        made.material_index = remap[face.material_index]
+                    if uv_src is not None:
+                        for src_loop, dst_loop in zip(face.loops, made.loops):
+                            dst_loop[uv_out].uv = src_loop[uv_src].uv.copy()
+            finally:
+                part.free()
+                if eval_ob is not None:
+                    eval_ob.to_mesh_clear()
+        bm.to_mesh(mesh)
+    finally:
+        bm.free()
+    baked = bpy.data.objects.new("Baked", mesh)
+    bpy.context.scene.collection.objects.link(baked)
+    return baked
+
+
+def _gltf_export(path, objs):
+    """Selection through RNA. The glTF operator itself is not a mesh or object operator."""
+    _set_metres()
+    view = bpy.context.view_layer
+    for ob in view.objects:
+        ob.select_set(False)
+    for ob in objs:
+        ob.hide_set(False)
+        ob.select_set(True)
+    view.objects.active = objs[0]
+    bpy.ops.export_scene.gltf(
+        filepath=path,
+        export_format="GLB",
+        use_selection=True,
+        export_apply=False,
+        export_yup=True,
+        export_materials="EXPORT",
+        export_image_format="NONE",
+    )
 
 
 def _pack(prefix, objects, labels, budget, ratio):
