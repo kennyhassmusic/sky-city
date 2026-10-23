@@ -220,6 +220,99 @@ class PackLoaderTest(unittest.TestCase):
             self.assertEqual(locked["pack"]["marker"], "stay")
             self.assertNotIn("b_lock", touched)
 
+    def test_upper_floors_use_the_tile_row_not_a_made_up_rect(self):
+        """Floor 2 of a 2-floor tile is row 0. The glass mask stays with that rect."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _library(root)
+            low = [0.12, 0.2, 0.34, 0.62]
+            high = [0.12, 0.55, 0.34, 0.9]
+            manifest = _facade("tile_two", "basic", "body")
+            manifest["floors_in_tile"] = 2
+            manifest["bays_in_tile"] = 3
+            manifest["facades"][0]["windows"] = [
+                {"bay": 0, "floor": 0, "rect": low, "wrap_group": "stack", "pieces": 2},
+                {"bay": 0, "floor": 1, "rect": high, "wrap_group": "stack", "pieces": ["a", "b"]},
+            ]
+            manifest["facades"][0]["bays"] = [
+                {"index": 0, "floor": 0, "rect": [0.08, 0.0, 0.4, 0.5]},
+                {"index": 0, "floor": 1, "rect": [0.08, 0.5, 0.4, 1.0]},
+            ]
+            manifest["facades"][0]["floors"] = [
+                {"index": 0, "floor": 0, "rect": [0.0, 0.0, 1.0, 0.5]},
+                {"index": 1, "floor": 1, "rect": [0.0, 0.5, 1.0, 1.0]},
+            ]
+            _set(root, "facades", "tile_two", manifest)
+            # brick_a and brick_b are also eligible. Pin the body by dropping them.
+            for other in ("brick_a", "brick_b", "houses_only"):
+                folder = root / "facades" / other
+                for path in folder.glob("manifest.json"):
+                    path.unlink()
+            building = _shell("tower", 0)
+            building["facades"] = []
+            for floor in range(4):
+                building["facades"].append({
+                    "floor": floor, "role": "front", "length": 10.0, "bays": 1,
+                    "pier_w": 0.4, "opening_w": 1.2, "bay_kinds": ["window"],
+                })
+            dressed, _ids = ops.assign_textures(_model([building]), root=tmp)
+            pack = dressed["buildings"][0]["pack"]
+            self.assertEqual(pack["facade"]["basic"], "tile_two")
+            self.assertEqual(pack["facade"]["floors_in_tile"], 2)
+            self.assertEqual(pack["facade"]["bays_in_tile"], 3)
+            faces = {face["floor"]: face for face in pack["facade"]["faces"]}
+            self.assertEqual(faces[2]["windows"][0]["rect"], low)
+            self.assertEqual(faces[2]["windows"][0]["wrap_group"], "stack")
+            self.assertEqual(faces[2]["windows"][0]["pieces"], 2)
+            self.assertEqual(faces[3]["windows"][0]["rect"], high)
+            self.assertEqual(faces[2]["bays"][0]["rect"], [0.08, 0.0, 0.4, 0.5])
+            self.assertEqual(faces[3]["floors"][0]["rect"], [0.0, 0.5, 1.0, 1.0])
+            self.assertTrue(faces[2]["glass_mask"].endswith("_glass.png"))
+            # The invented grammar rect starts at v 0.22. The tile row does not.
+            self.assertNotEqual(faces[2]["windows"][0]["rect"][1], 0.22)
+
+    def test_normalize_keeps_tile_counts_and_window_wrap(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "packs").mkdir(parents=True)
+            (root / "packs" / "districts.json").write_text("{}")
+            manifest = _facade("kept", "basic", "body")
+            manifest["floors_in_tile"] = 3
+            manifest["bays_in_tile"] = 4
+            manifest["facades"][0]["windows"] = [{
+                "bay": 1, "floor": 0, "rect": [0.1, 0.2, 0.3, 0.6],
+                "wrap_group": "bay-stack", "pieces": ["left", "right"],
+            }]
+            _set(root, "facades", "kept", manifest)
+            record = ops.texture_pack("tech", root=tmp)
+            item = next(row for row in record["sets"] if row["id"] == "kept")
+            self.assertEqual(item["floors_in_tile"], 3)
+            self.assertEqual(item["bays_in_tile"], 4)
+            window = item["facades"][0]["windows"][0]
+            self.assertEqual(window["wrap_group"], "bay-stack")
+            self.assertEqual(window["pieces"], ["left", "right"])
+            self.assertEqual(window["rect"], [0.1, 0.2, 0.3, 0.6])
+
+    def test_equipment_category_loads(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _library(root)
+            _set(root, "equipment", "roof_unit", {
+                "id": "roof_unit",
+                "suggested_use": "roof",
+                "districts": ["tech"],
+                "maps": {"albedo": "unit.png"},
+                "size_px": [512, 512],
+                "scale_m": {"width": 1.2, "height": 0.8},
+            })
+            record = ops.texture_pack("tech", root=tmp)
+            unit = next(item for item in record["sets"] if item["id"] == "roof_unit")
+            self.assertEqual(unit["kind"], "equipment")
+            self.assertEqual(unit["role"], "basic")
+            self.assertTrue(unit["tile"])
+            dressed, _ids = ops.assign_textures(_model([_shell("b_eq", 0)]), root=tmp)
+            self.assertEqual(dressed["buildings"][0]["pack"]["equipment"], "roof_unit")
+
 
 if __name__ == "__main__":
     unittest.main()

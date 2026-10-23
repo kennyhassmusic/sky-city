@@ -9,13 +9,18 @@ The AI packs are not in the repo yet. They are expected under Art/ai_textures/
   storefronts/<id>/manifest.json
   interiors/<id>/manifest.json
   decals/<id>/manifest.json
+  equipment/<id>/manifest.json
 
 A set manifest names a role (basic or accent), a suggested use, and the
 districts and income tiers it belongs to. Facade and ground sets carry
 albedo, normal and roughness. Size, when present, is power-of-two on both
 axes. scale_m is the real-world size of one tile. Each facade entry can
 carry a glass mask plus window, bay and floor rects in 0..1 texture space.
-A decal carries an alpha map.
+A decal carries an alpha map. Equipment (roof units, and the like) is
+its own category. A facade tile covers floors_in_tile floors: a window
+authored for floor 0 is used again on floor 2 when the tile is one floor
+tall, and on every even floor when the tile is two floors tall. The index
+is floor modulo floors_in_tile, not the building floor.
 
 packs/districts.json is the mix: one basic for the body, an optional accent
 for the crown, the ground band or a corner, and neighbors that avoid
@@ -33,7 +38,7 @@ from pathlib import Path
 import geom
 import skyline
 
-KINDS = ("facade", "ground", "storefront", "interior", "decal")
+KINDS = ("facade", "ground", "storefront", "interior", "decal", "equipment")
 ROLES = ("basic", "accent")
 _KIND_DIRS = {
     "facades": "facade",
@@ -46,6 +51,7 @@ _KIND_DIRS = {
     "interior": "interior",
     "decals": "decal",
     "decal": "decal",
+    "equipment": "equipment",
 }
 SCATTER_FEATURES = ("pothole", "stain")
 DEFAULT_MIX = {
@@ -190,6 +196,8 @@ def normalize_set(manifest, kind):
         "alpha": None if alpha in (None, "") else str(alpha),
         "tile": tile,
         "placement": placement,
+        "floors_in_tile": _positive_int(data.get("floors_in_tile")),
+        "bays_in_tile": _positive_int(data.get("bays_in_tile")),
         "path": str(manifest),
     }, None
 
@@ -258,12 +266,15 @@ def _bind(building, eligible, mix, avoid, seed):
     decals.sort(key=lambda item: item["id"])
     storefront = _pick([item for item in eligible if item["kind"] == "storefront"], (), seed, building.get("id"), "storefront")
     interior = _pick([item for item in eligible if item["kind"] == "interior"], (), seed, building.get("id"), "interior")
+    equipment = _pick([item for item in eligible if item["kind"] == "equipment"], (), seed, building.get("id"), "equipment")
     return {
-        "source": "pack" if body or ground or decals or storefront or interior else "cc0",
+        "source": "pack" if body or ground or decals or storefront or interior or equipment else "cc0",
         "facade": {
             "basic": None if body is None else body["id"],
             "accents": accents,
             "scale_m": None if body is None else body.get("scale_m"),
+            "floors_in_tile": None if body is None else body.get("floors_in_tile"),
+            "bays_in_tile": None if body is None else body.get("bays_in_tile"),
             "maps": {} if body is None else dict(body.get("maps") or {}),
             "faces": _faces(building, body),
         },
@@ -276,6 +287,7 @@ def _bind(building, eligible, mix, avoid, seed):
         },
         "storefront": None if storefront is None else storefront["id"],
         "interior": None if interior is None else interior["id"],
+        "equipment": None if equipment is None else equipment["id"],
     }
 
 
@@ -290,9 +302,13 @@ def _faces(building, body):
     for face in building.get("facades") or []:
         role = face.get("role") or ""
         entry = _face_entry(packed, role)
-        windows = _for_floor(entry.get("windows") if entry else None, face.get("floor"))
-        bays = _for_floor(entry.get("bays") if entry else None, face.get("floor"))
-        floors = _for_floor(entry.get("floors") if entry else None, face.get("floor"))
+        # The tile repeats. Floor 2 of a 2-floor tile is the same row as floor 0.
+        tile_floors = None if not body else body.get("floors_in_tile")
+        if entry and entry.get("floors_in_tile"):
+            tile_floors = entry.get("floors_in_tile")
+        windows = _for_floor(entry.get("windows") if entry else None, face.get("floor"), tile_floors)
+        bays = _for_floor(entry.get("bays") if entry else None, face.get("floor"), tile_floors)
+        floors = _for_floor(entry.get("floors") if entry else None, face.get("floor"), tile_floors)
         if not windows or not bays or not floors:
             grown_w, grown_b, grown_f = grammar_rects(face)
             windows = windows or grown_w
@@ -317,10 +333,20 @@ def _face_entry(packed, role):
     return None
 
 
-def _for_floor(items, floor):
+def _for_floor(items, floor, floors_in_tile=None):
+    """Rects for this building floor.
+
+    A tile that covers N floors authors rows 0..N-1. Building floor 2 on a
+    2-floor tile is row 0. Comparing to the absolute floor misses those rows,
+    and the caller then invents rects while the glass mask stays the real one.
+    """
     if not items:
         return []
-    specific = [item for item in items if item.get("floor") is not None and int(item.get("floor")) == int(floor or 0)]
+    target = int(floor or 0)
+    count = int(floors_in_tile or 0)
+    if count >= 1:
+        target = target % count
+    specific = [item for item in items if item.get("floor") is not None and int(item.get("floor")) == target]
     if specific:
         return specific
     return [item for item in items if item.get("floor") is None]
@@ -395,13 +421,20 @@ def _facades(data):
         floors, reason = _rects(entry.get("floors"), "floor")
         if reason:
             return None, reason
-        out.append({
+        kept_entry = {
             "role": entry.get("role") or entry.get("name") or "",
             "glass_mask": entry.get("glass_mask"),
             "windows": windows,
             "bays": bays,
             "floors": floors,
-        })
+        }
+        floors_in_tile = _positive_int(entry.get("floors_in_tile"))
+        bays_in_tile = _positive_int(entry.get("bays_in_tile"))
+        if floors_in_tile is not None:
+            kept_entry["floors_in_tile"] = floors_in_tile
+        if bays_in_tile is not None:
+            kept_entry["bays_in_tile"] = bays_in_tile
+        out.append(kept_entry)
     return out, None
 
 
@@ -423,6 +456,10 @@ def _rects(items, kind):
                 kept["bay"] = int(item["bay"])
             if item.get("floor") is not None:
                 kept["floor"] = int(item["floor"])
+            if item.get("wrap_group") not in (None, ""):
+                kept["wrap_group"] = str(item["wrap_group"])
+            if item.get("pieces") is not None:
+                kept["pieces"] = _copy_value(item.get("pieces"))
         elif kind == "bay":
             if item.get("index") is not None:
                 kept["index"] = int(item["index"])
@@ -559,6 +596,27 @@ def _name_list(value):
     if isinstance(value, str):
         return [value]
     return [str(item) for item in value]
+
+
+def _positive_int(value):
+    """A tile count, or None when the manifest does not say."""
+    if value is None or value == "":
+        return None
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return None
+    if number < 1:
+        return None
+    return number
+
+
+def _copy_value(value):
+    if isinstance(value, list):
+        return list(value)
+    if isinstance(value, dict):
+        return dict(value)
+    return value
 
 
 def _power_of_two(value):

@@ -16,6 +16,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 
 ## Entries
 
+## 2026-10-23 06:30 UTC — cursor cloud agent — texture pack floor wrap and equipment
+- State at start: `cursor/texture-pack-loader-04ef` (PR #5) at `28eb643`. A cold audit of the loader: upper floors missed the tile's window rects, and `floors_in_tile` never survived `normalize_set`.
+- Did: `_for_floor` uses `floor % floors_in_tile`, so a 2-floor tile's row 0 is the rect on building floors 0, 2, 4 while the glass mask stays. `normalize_set` keeps `floors_in_tile`, `bays_in_tile`, and window `wrap_group` / `pieces`. The `equipment/` folder loads as its own kind and is stamped on the building. `python3 -I Scripts/city/test_packs.py` 6 OK, `python3 -I Scripts/city/test_city.py` 46 OK. Sample hash unchanged. An AI wrote this.
+- Found: without the modulo, floors 2+ took grammar rects (sill at v 0.22) under the real glass mask.
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: when `Art/ai_textures/` lands, the same schema picks it up
+
 ## 2026-10-23 03:05 UTC — cursor cloud agent — texture pack loader schema
 - State at start: branch `cursor/texture-pack-loader-04ef` off `cd8b893`. AI packs are not on main (`art/ai-texture-packs` is not a remote branch).
 - Did: `Scripts/city/packs.py` loads the manifest schema (role basic|accent, suggested use, district/tier, power-of-two size, scale_m, per-facade glass masks, window/bay/floor rects, decal alpha). `packs/districts.json` mix: one basic body, optional crown/ground-band/corner accent, neighbors avoid repeating a basic. Potholes and stains stay decals. Missing art falls back to CC0. `assign_textures` stamps buildings without changing the sample hash `3b867770796a5ab07187d1c962f2f6a6d91a00b6b8eab4b6466ccbabdf50632b`. Tests: `python3 -I Scripts/city/test_packs.py` 3 OK, `python3 -I Scripts/city/test_city.py` 46 OK. Commit `784177c`. PR https://github.com/kennyhassmusic/sky-city/pull/5

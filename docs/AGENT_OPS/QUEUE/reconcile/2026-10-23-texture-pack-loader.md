@@ -14,5 +14,5 @@ Cloud agent marker for LUCA. Invariants were read from `docs/AGENT_OPS/INVARIANT
 - no-real-brands: no new brand names
 - lfs-r2: unchanged
 - seed-determinism: sample manifest hash still `3b867770796a5ab07187d1c962f2f6a6d91a00b6b8eab4b6466ccbabdf50632b` (two builds matched). Pack choice is not part of the hash.
-- Tests: `python3 -I Scripts/city/test_packs.py` (3 OK), `python3 -I Scripts/city/test_city.py` (46 OK)
-- What: pack loader against the manifest schema, with CC0 fallback. Per-facade glass masks and window, bay and floor rects. Ground potholes and stains are decals, not tiles. Stages of road dressing are not in this branch.
+- Tests: `python3 -I Scripts/city/test_packs.py` (6 OK), `python3 -I Scripts/city/test_city.py` (46 OK)
+- What: pack loader against the manifest schema, with CC0 fallback. Per-facade glass masks and window, bay and floor rects. A tile repeats with `floor % floors_in_tile`, so floors above the tile still use the authored rects and the glass mask. `floors_in_tile`, `bays_in_tile`, and window `wrap_group` / `pieces` are kept. `equipment/` is a category. Ground potholes and stains are decals, not tiles. Stages of road dressing are not in this branch.
