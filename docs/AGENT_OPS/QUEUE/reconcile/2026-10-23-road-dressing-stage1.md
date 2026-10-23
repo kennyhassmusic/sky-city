@@ -2,7 +2,7 @@
 
 Cloud agent marker for LUCA. Invariants were read from `docs/AGENT_OPS/INVARIANTS.md` before this change. No protected value was edited.
 
-- PR: opened from branch `cursor/road-dressing-stage1-04ef` (URL filled in when the pull request exists)
+- PR: https://github.com/kennyhassmusic/sky-city/pull/4
 - Branch: `cursor/road-dressing-stage1-04ef`
 - Base: `cursor/city-block-realism-04ef` (stacked on the city-generator work; not folded into PR #3)
 - Commit: `8c307c2094ff07a454bd80085b4bd18db8c12556`
