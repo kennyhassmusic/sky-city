@@ -15,10 +15,12 @@ tier_mix such as {high: 20, mid: 50, low: 25, distressed: 5} is a share, not a
 district-type mix. assign_tiers lays those shares out along a seeded axis so a
 neighbourhood changes one step at a time. The same seed rebuilds the same bands.
 
-Texture packs are not in the repo yet. load_pack reads
-Scripts/city/packs/<district>/<tier>/manifest.json when a tier is named, then
-packs/<district>/manifest.json, and, when those files are missing or unreadable,
-returns the CC0 material slots instead.
+Texture packs are not in the repo yet. load_pack reads a library under
+Art/ai_textures/ (facade, ground, storefront, interior and decal manifests,
+plus packs/districts.json) and, for older tests, Scripts/city/packs/<district>/<tier>/manifest.json.
+A missing library, a bad manifest, or a set that fails the size and scale
+checks falls back to the CC0 material slots. The set schema and the mix
+live in packs.py.
 """
 import json
 import math
@@ -327,11 +329,12 @@ def outside_context(model, district):
 def load_pack(type_name, root=None, sky=None, tier=None):
     """Read a texture pack, or the CC0 slots when the pack is missing.
 
-    `root` is a directory that contains `packs/`. The default is Scripts/city,
-    next to this file. With a tier, the lookup is packs/<district>/<tier>/manifest.json,
-    then packs/<district>/manifest.json, then CC0. A missing file, an empty file,
-    or invalid JSON falls through to the next step. An unknown type or tier is
+    `root` is a pack library (Art/ai_textures, or a fixture). With no root, the
+    loader looks for Art/ai_textures and then the legacy
+    packs/<district>/<tier>/manifest.json next to this file. A missing file,
+    an empty file, or invalid JSON falls through. An unknown type or tier is
     an error. CC0 materials follow the tier recipe when a tier is named.
+    Sets, the mix and rejected manifests are on the record either way.
     """
     if type_name not in TYPE_NAMES:
         raise ValueError("unknown district type %s" % type_name)
@@ -346,17 +349,33 @@ def load_pack(type_name, root=None, sky=None, tier=None):
         slots = list((_recipe(types, type_name, tier).get("materials")) or spec.get("materials") or [])
     else:
         slots = list(spec.get("materials") or [])
+    import packs as texture_packs
+    library = texture_packs.load_library(root)
+    matched = texture_packs.for_district(library, type_name, tier)
+    legacy = None
+    legacy_path = None
     for path in _manifest_candidates(type_name, root, tier):
         data = _read_manifest(path)
         if data is None:
             continue
+        legacy = data
+        legacy_path = path
+        break
+    if matched or legacy:
+        materials = list((legacy or {}).get("materials") or slots)
+        textures = {slot: CC0_TEXTURES.get(slot, slot) for slot in slots}
+        if legacy and legacy.get("textures"):
+            textures.update(dict(legacy["textures"]))
         return {
             "source": "pack",
             "district": type_name,
             "tier": tier,
-            "materials": list(data.get("materials") or slots),
-            "textures": dict(data.get("textures") or {}),
-            "path": str(path),
+            "materials": materials,
+            "textures": textures,
+            "path": str(legacy_path) if legacy_path and not matched else library.get("root"),
+            "mix": library.get("mix"),
+            "sets": matched,
+            "skipped": list(library.get("skipped") or []),
         }
     return {
         "source": "cc0",
@@ -365,6 +384,9 @@ def load_pack(type_name, root=None, sky=None, tier=None):
         "materials": slots,
         "textures": {slot: CC0_TEXTURES.get(slot, slot) for slot in slots},
         "path": None,
+        "mix": library.get("mix"),
+        "sets": [],
+        "skipped": list(library.get("skipped") or []),
     }
 
 

@@ -2,12 +2,13 @@
 
 add_district, set_skyline, set_district_type, set_mix, assign_districts, set_tier,
 set_tier_mix, assign_tiers, draw_road, split_block, set_building, lock, unlock,
-regenerate, screenshot, texture_pack.
+regenerate, screenshot, texture_pack, assign_textures.
 Nothing here knows about Unreal or Blender. A later plugin maps these names onto
 buttons and onto the local MCP server. Each change returns (model, touched ids)
 and leaves the caller's model alone. screenshot returns a request and does not
 change the manifest hash. texture_pack is a lookup: it returns the pack record
-and does not change the model.
+and does not change the model. assign_textures stamps a seeded facade and
+ground choice on each building and also leaves the hash alone.
 
 Regeneration is non-destructive: it rebuilds a layer from the layers above it and
 keeps anything locked or drawn by hand.
@@ -210,11 +211,27 @@ def assign_tiers(model, district_id=None):
 def texture_pack(type_name, root=None, tier=None):
     """The texture pack for a district type, or the CC0 slots when the pack is absent.
 
-    This does not change a city model. `root` is the folder that contains
-    `packs/<district>/manifest.json`. Pass `tier` to read
-    `packs/<district>/<tier>/manifest.json` first. The default root is Scripts/city.
+    This does not change a city model. `root` is a pack library. The legacy
+    `packs/<district>/<tier>/manifest.json` is still read when the library has
+    no set for that district. The default search is Art/ai_textures, then
+    Scripts/city/packs.
     """
     return district_types.load_pack(type_name, root=root, tier=tier)
+
+
+def assign_textures(model, root=None):
+    """Stamp facade, ground and decal choices on every building.
+
+    One basic covers the body. Accents are optional (crown, ground band, corner).
+    Neighbors avoid repeating the basic. Potholes and stains are decals, not
+    tiles. Missing art uses the CC0 slots and grammar rects, with no glass mask.
+    The manifest hash does not include this stamp.
+    """
+    import packs as texture_packs
+    model = copy.deepcopy(model)
+    touched = texture_packs.assign(model, root=root)
+    _audit(model, "assign_textures", touched, {"root": root or ""})
+    return model, touched
 
 
 def draw_road(model, polyline, cls="minor", lanes=2, oneway=False, core=False,

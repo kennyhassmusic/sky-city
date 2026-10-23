@@ -16,6 +16,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 
 ## Entries
 
+## 2026-10-23 03:05 UTC — cursor cloud agent — texture pack loader schema
+- State at start: branch `cursor/texture-pack-loader-04ef` off `cd8b893`. AI packs are not on main (`art/ai-texture-packs` is not a remote branch).
+- Did: `Scripts/city/packs.py` loads the manifest schema (role basic|accent, suggested use, district/tier, power-of-two size, scale_m, per-facade glass masks, window/bay/floor rects, decal alpha). `packs/districts.json` mix: one basic body, optional crown/ground-band/corner accent, neighbors avoid repeating a basic. Potholes and stains stay decals. Missing art falls back to CC0. `assign_textures` stamps buildings without changing the sample hash `3b867770796a5ab07187d1c962f2f6a6d91a00b6b8eab4b6466ccbabdf50632b`. Tests: `python3 -I Scripts/city/test_packs.py` 3 OK, `python3 -I Scripts/city/test_city.py` 46 OK.
+- Found: none
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: when `Art/ai_textures/` lands on main, point the loader at it; no schema change expected
+
 ## 2026-10-23 02:40 UTC — cursor cloud agent — per-room interiors on PR #3
 - State at start: branch `cursor/city-block-realism-04ef`, parent `e1f8edf`, city tests 41 OK, profile tests 12 OK
 - Did: room volumes in `Scripts/city/grammar.py` (`layout_rooms`, `room_of`); preview shell in `realism.build_rooms` and `blender_block.py`; streetscape assertion for parkway, sidewalk, straight curb and curb return. Commit `2c569c5`. Tests: `python3 -I Scripts/city/test_city.py` 46 OK, `python3 -I Scripts/roads/test_profiles.py` 12 OK. Sample hash unchanged `3b867770796a5ab07187d1c962f2f6a6d91a00b6b8eab4b6466ccbabdf50632b`. Marker: `docs/AGENT_OPS/QUEUE/reconcile/2026-10-23-pr3-per-room-interiors.md`. PR https://github.com/kennyhassmusic/sky-city/pull/3
