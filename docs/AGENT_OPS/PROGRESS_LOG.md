@@ -16,6 +16,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 
 ## Entries
 
+## 2026-10-23 20:45 UTC — Claude (claude.ai cloud) — JOB 2: PR stack re-ordered locally, not pushed
+- State at start: #3 on `main` (4 behind), #4 and #5 both on #3, #6 on #4 (without #5), #7 on #5; tests OK on all five heads
+- Did: rebased locally to `main` ← #3 `788c507` ← #5 `fe5bd70` ← #4 `e150ce8` ← #6 `466ea12`, and #5 ← #7 `7cc1f27`. Only `PROGRESS_LOG.md` conflicted (union, newest first). Tests after each rebase: test_packs (where present), test_city, test_profiles all OK. Marker: `docs/AGENT_OPS/QUEUE/reconcile/2026-10-23-job2-pr-stack-order.md`
+- Found: #6 sat on #4 (road dressing), which was not in the brief, and did not include #5 → #4 moved onto #5 so #6 gets both. #7 is ~887 MB of LFS, over the 300 MB per-PR guard → needs `maintainer-approved`. Committed sample outputs on #4/#6 still carry the pre-dressing hash (pre-existing).
+- Asks for Kenny: review `JOB2_REPORT.md`, then run its push and `gh pr edit 4 --base` commands; merge #3, #5, #4, #6, #7
+- SCALE CHECK: no change
+- Next: after each squash merge, rebase the next branch with `--onto origin/main <old parent tip>`
+
 ## 2026-10-23 06:40 UTC — cursor cloud agent — per-set texel density check
 - State at start: `cursor/citywide-generate-04ef` (PR #6) at `71361ec`. Mesh faces already pass U/V density within 3%. A set can still stretch when its metres ignore the image aspect.
 - Did: commit `132da03`. `face_uv.set_density_ratio` and `score_sets` compare pixels per metre on U and V for each scan, before metres are rewritten to the image aspect. A set outside 3% fails the build. `python3 -I Scripts/city/test_face_uv.py` OK. Exported buildings: UV faces 371996, density fails 0, windows 54448, window fails 0, sets 7, set fails 0. The city cameras were not re-rendered. Loader floor bugs are fixed on PR #5, not on this branch.
