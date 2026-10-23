@@ -61,7 +61,8 @@ SLOT = {
 def main():
     os.makedirs(BLOCKS, exist_ok=True)
     os.makedirs(PREVIEWS, exist_ok=True)
-    data = json.load(open(VARIATIONS))
+    with open(VARIATIONS) as handle:
+        data = json.load(handle)
     mats = load_material_record()
     reset()
     lib = make_library(mats)
@@ -102,7 +103,10 @@ def load_material_record():
     path = os.path.join(ART, "materials", "materials.json")
     if not os.path.isfile(path):
         return {}
-    return json.load(open(path))
+    # Close the handle. An unclosed file warns from the destructor, and the city
+    # mesher treats that warning as a failed build.
+    with open(path) as handle:
+        return json.load(handle)
 
 
 def make_library(record):

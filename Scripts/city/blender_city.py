@@ -18,8 +18,12 @@ stops the build when texel density or window aspect is off by more than 3%.
 The base is a concrete plinth on the planned sidewalks and asphalt. Grass is
 only the parkway. Flat roofs get a parapet and roof units.
 
-Run:
-  blender -b --factory-startup -P Scripts/city/blender_city.py
+Run (Blender 4.2.15 LTS; the script prints bpy.app.version and refuses any other):
+  blender -b --factory-startup --python-exit-code 1 -P Scripts/city/blender_city.py
+A Python warning, a deprecated-API message, or a missing node or socket stops the build.
+Warnings go through warnings.showwarning: a filter of "error" is ignored inside a
+destructor, so an unclosed file used to print "Exception ignored" and keep going.
+Without --python-exit-code 1, Blender would still exit 0 after a Python traceback.
 Output:
   SourceArt/CityGen/city/CG_<district>_<index>.glb
   SourceArt/CityGen/city/CG_<district>_street_<index>.glb
@@ -79,6 +83,204 @@ DRESS = {
     "street_name", "bus_stop", "parked", "drain", "bollard", "grate",
     "sign", "fence",
 }
+
+# The city script is written against this build. A newer or older Blender
+# changes socket names and then keeps rendering, which is how a bad API call
+# used to look like a finished picture.
+PINNED_BLENDER = (4, 2, 15)
+
+
+class _HardFailure(RuntimeError):
+    """A Blender API miss that must not continue into a plausible render."""
+
+
+class _StrictStream(object):
+    """Fail the process when Blender prints a deprecation or a missing node or socket."""
+
+    def __init__(self, underlying):
+        self._out = underlying
+        self._buf = ""
+
+    def write(self, text):
+        if text is None:
+            return 0
+        self._out.write(text)
+        self._buf += str(text)
+        while "\n" in self._buf:
+            line, self._buf = self._buf.split("\n", 1)
+            _reject_log_line(line)
+        return len(text)
+
+    def flush(self):
+        if self._buf:
+            _reject_log_line(self._buf)
+            self._buf = ""
+        self._out.flush()
+
+    def __getattr__(self, name):
+        return getattr(self._out, name)
+
+
+def _die(message):
+    """Exit 1 even if the operator forgot --python-exit-code."""
+    sys.__stderr__.write("BLENDER FAIL %s\n" % message)
+    sys.__stderr__.flush()
+    os._exit(1)
+
+
+def _reject_log_line(line):
+    folded = line.lower()
+    if "deprecat" in folded:
+        _die("deprecated API: %s" % line.strip())
+    if "missing socket" in folded or "socket not found" in folded or "missing node" in folded or "node not found" in folded:
+        _die(line.strip())
+
+
+def _require_exit_code():
+    argv = sys.argv
+    for index, arg in enumerate(argv):
+        if arg == "--python-exit-code" and index + 1 < len(argv) and argv[index + 1] == "1":
+            return
+        if arg == "--python-exit-code=1":
+            return
+    _die("start Blender with --python-exit-code 1 (a Python error otherwise exits 0). "
+         "blender -b --factory-startup --python-exit-code 1 -P Scripts/city/blender_city.py")
+
+
+def _assert_tree(nt, label):
+    """Every link still points at a node and a socket that exist on that tree."""
+    if nt is None:
+        _die("missing node tree on %s" % label)
+    node_names = {node.name for node in nt.nodes}
+    for link in nt.links:
+        if link.from_node is None or link.to_node is None:
+            _die("missing node on a link in %s" % label)
+        if link.from_node.name not in node_names or link.to_node.name not in node_names:
+            _die("missing node %s on %s" % (link.from_node.name, label))
+        if link.from_socket is None or link.to_socket is None:
+            _die("missing socket on a link in %s" % label)
+        outs = {sock.name for sock in link.from_node.outputs}
+        ins = {sock.name for sock in link.to_node.inputs}
+        if link.from_socket.name not in outs:
+            _die("missing socket %s on %s" % (link.from_socket.name, label))
+        if link.to_socket.name not in ins:
+            _die("missing socket %s on %s" % (link.to_socket.name, label))
+
+
+def _set_strict(node, names, value):
+    """One of these sockets must exist. Skipping a missing socket used to render anyway."""
+    if node is None:
+        _die("missing node for sockets %s" % (names,))
+    for name in names:
+        if name in node.inputs:
+            node.inputs[name].default_value = value
+            if node.inputs.get(name) is None:
+                _die("missing socket %s" % name)
+            return
+    _die("missing socket %s on %s" % (names, getattr(node, "name", node)))
+
+
+def _add_modifier(ob, name, typ):
+    """The only way the city script adds a modifier. It has to be on the object afterwards."""
+    mod = ob.modifiers.new(name, typ)
+    if mod is None or ob.modifiers.get(mod.name) is None:
+        _die("modifier %s missing on %s after creation" % (name, ob.name))
+    return mod
+
+
+def _assert_on_object(ob, materials, uv_names):
+    me = ob.data
+    if me is None:
+        _die("object %s has no data after creation" % ob.name)
+    for name in uv_names:
+        if me.uv_layers.get(name) is None:
+            _die("UV map %s missing on %s after creation" % (name, ob.name))
+    for mat in materials:
+        if mat is None or bpy.data.materials.get(mat.name) is not mat:
+            _die("material missing from bpy.data after creation on %s" % ob.name)
+        try:
+            slot = me.materials[mat.name]
+        except KeyError:
+            slot = None
+        if slot is not mat:
+            _die("material %s missing on %s after creation" % (mat.name, ob.name))
+    for mod in ob.modifiers:
+        if ob.modifiers.get(mod.name) is not mod:
+            _die("modifier %s missing on %s after creation" % (mod.name, ob.name))
+
+
+def _finish_strict(self, collection):
+    uv_names = [layer.name for layer in self.bm.loops.layers.uv]
+    materials = list(self.mats)
+    ob = _ORIG_FINISH(self, collection)
+    _assert_on_object(ob, materials, uv_names)
+    return ob
+
+
+def _library_strict(record):
+    lib = _ORIG_LIBRARY(record)
+    for mat in lib.values():
+        if getattr(mat, "name", None) is None:
+            continue
+        if bpy.data.materials.get(mat.name) is not mat:
+            _die("material %s missing from bpy.data after creation" % getattr(mat, "name", mat))
+        if getattr(mat, "use_nodes", False):
+            if mat.node_tree is None or mat.node_tree.nodes.get("Principled BSDF") is None:
+                _die("missing node Principled BSDF on %s" % mat.name)
+            _assert_tree(mat.node_tree, mat.name)
+    return lib
+
+
+def _audit_modifier_calls():
+    """modifiers.new is RNA and cannot be wrapped. City code has to call _add_modifier."""
+    for name in os.listdir(CITY):
+        if not name.endswith(".py"):
+            continue
+        path = os.path.join(CITY, name)
+        with open(path) as handle:
+            text = handle.read()
+        if ".modifiers.new(" not in text:
+            continue
+        if name != "blender_city.py":
+            _die("%s calls modifiers.new directly; use blender_city._add_modifier" % name)
+    with open(os.path.abspath(__file__)) as handle:
+        own = handle.read()
+    # Split so this check does not count itself as a call.
+    needle = "ob." + "modifiers.new("
+    if own.count(needle) != 1:
+        _die("modifier creation must go through _add_modifier")
+
+
+def _hard_warning(message, category, filename, lineno, file=None, line=None):
+    """Any Python warning ends the process, including ones raised in a destructor."""
+    _die("Python warning: %s: %s (%s:%s)" % (
+        getattr(category, "__name__", category), message, filename, lineno))
+
+
+def _startup():
+    version = tuple(bpy.app.version[:3])
+    text = ".".join(str(part) for part in version)
+    print("BLENDER", text, flush=True)
+    if version != PINNED_BLENDER:
+        _die("Blender %s is not the pinned %s.%s.%s. See README.md." % ((text,) + PINNED_BLENDER))
+    _require_exit_code()
+    import warnings
+    # "error" raises, and a destructor then prints "Exception ignored" and continues.
+    # "always" plus showwarning calls _die before that can happen. ResourceWarning
+    # is ignored by default, so the filter has to turn it on.
+    warnings.filterwarnings("always")
+    warnings.showwarning = _hard_warning
+    sys.stdout = _StrictStream(sys.stdout)
+    sys.stderr = _StrictStream(sys.stderr)
+    bb._set = _set_strict
+    bb.Mesh.finish = _finish_strict
+    bb.make_library = _library_strict
+    _audit_modifier_calls()
+
+
+_ORIG_FINISH = bb.Mesh.finish
+_ORIG_LIBRARY = bb.make_library
+_startup()
 
 
 def main():
@@ -360,9 +562,13 @@ def _stamp_scales(lib, record):
 def _curtain_glass(name, emit):
     """Tinted reflective curtain glass. The clear pane was a hole into the floor plates."""
     mat = bpy.data.materials.new(name)
+    if mat is None or bpy.data.materials.get(mat.name) is not mat:
+        _die("material %s missing from bpy.data after creation" % name)
     mat.use_nodes = True
     nt = mat.node_tree
     bsdf = nt.nodes.get("Principled BSDF")
+    if bsdf is None:
+        _die("missing node Principled BSDF on %s" % name)
     bsdf.inputs["Base Color"].default_value = (0.55, 0.68, 0.74, 1)
     bsdf.inputs["Roughness"].default_value = 0.045
     bb._set(bsdf, ("Metallic",), 0.72)
@@ -370,14 +576,19 @@ def _curtain_glass(name, emit):
     bb._set(bsdf, ("Emission Strength",), emit)
     transp = nt.nodes.new("ShaderNodeBsdfTransparent")
     mix = nt.nodes.new("ShaderNodeMixShader")
+    if transp is None or transp.name not in nt.nodes or mix is None or mix.name not in nt.nodes:
+        _die("missing node on %s" % name)
     mix.inputs["Fac"].default_value = 0.08
     out = nt.nodes.get("Material Output")
+    if out is None:
+        _die("missing node Material Output on %s" % name)
     nt.links.new(bsdf.outputs["BSDF"], mix.inputs[1])
     nt.links.new(transp.outputs["BSDF"], mix.inputs[2])
     for link in list(nt.links):
         if link.to_node == out:
             nt.links.remove(link)
     nt.links.new(mix.outputs["Shader"], out.inputs["Surface"])
+    _assert_tree(nt, mat.name)
     mat["emit"] = emit
     return mat
 
@@ -1282,9 +1493,13 @@ def _light_city(world, sun_spec, dusk, record):
     blacks out a city-sized clip range. Nishita is only the fallback.
     """
     nt = world.node_tree
+    if nt is None:
+        _die("missing node tree on world")
     nt.nodes.clear()
     out = nt.nodes.new("ShaderNodeOutputWorld")
     bg = nt.nodes.new("ShaderNodeBackground")
+    if out is None or bg is None or out.name not in nt.nodes or bg.name not in nt.nodes:
+        _die("missing node on world")
     key = "kiara_9_dusk" if dusk else "kloofendal_43d_clear_puresky"
     path = _hdr_path(record, key)
     if path:
@@ -1303,6 +1518,7 @@ def _light_city(world, sun_spec, dusk, record):
         print("SKY nishita", sun_spec["elevation"], flush=True)
     bg.inputs["Strength"].default_value = 0.85 if dusk else 1.0
     nt.links.new(bg.outputs["Background"], out.inputs["Surface"])
+    _assert_tree(nt, "world")
     light_data = bpy.data.lights.get("Key") or bpy.data.lights.new("Key", "SUN")
     light = bpy.data.objects.get("Key")
     if light is None:
