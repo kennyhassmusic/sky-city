@@ -563,8 +563,8 @@ def _fitted_facade(mesh, building, facade, wall, trim, metal, lib):
         bb._span(mesh, (ax + tx * cursor, ay + ty * cursor), tangent, inward, up,
                  rest, 0.34, z0, z1, trim)
     mesh.uv_origin_m = (0.0, 0.0)
-    if opening == "storefront":
-        realism.shop_band(mesh, building, facade, 0, (ax, ay), tangent, inward, min(length, lay["ww"] * 2), z1 - 0.05, lib)
+    if opening == "storefront" and int(facade.get("floor") or 0) == 0:
+        realism.shop_band(mesh, building, facade, 0, (ax, ay), tangent, inward, min(length, lay["ww"] * 2), z0, z1, lib)
 
 
 def _fitted_pane(mesh, building, facade, bay, origin, tangent, inward, width, z0, z1, glass, glass_lit, lib, opening):
