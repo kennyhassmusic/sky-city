@@ -251,9 +251,10 @@ def build_rooms(mesh, building, lib):
 
 
 def _slab(mesh, poly, z, mat):
+    """Plan projection. U and V are world metres over the same repeat, so a long room is not stretched."""
     top = [(float(p[0]), float(p[1]), z) for p in poly]
-    uvs = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
-    uvs = (uvs * ((len(top) // 4) + 1))[:len(top)]
+    mu, mv = _repeat(mat)
+    uvs = [(p[0] / mu, p[1] / mv) for p in top]
     mesh.face(top, mat, uvs)
     mesh.face([(p[0], p[1], z - 0.02) for p in reversed(top)], mat, list(reversed(uvs)))
 
@@ -482,12 +483,40 @@ def _awning(mesh, origin, tangent, inward, width, z, mat):
     mesh.face([(p[0], p[1], p[2] - 0.03) for p in reversed(top)], mat, [(0, 0), (1, 0), (1, 1), (0, 1)])
 
 
+def _repeat(mat):
+    """Metres per repeat on U and V. One number when the slot only stored uv_m."""
+    mu, mv = 1.0, 1.0
+    try:
+        keys = mat.keys() if mat is not None else ()
+        if "meters_u" in keys:
+            mu = float(mat["meters_u"] or 1.0)
+            mv = float(mat["meters_v"] or mu) if "meters_v" in keys else mu
+        else:
+            raw = mat.get("uv_m") if mat is not None and hasattr(mat, "get") else 1.0
+            if isinstance(raw, (list, tuple)):
+                mu = float(raw[0] or 1.0)
+                mv = float(raw[1] if len(raw) > 1 else raw[0] or mu)
+            else:
+                mu = mv = float(raw or 1.0)
+    except (AttributeError, TypeError, ValueError):
+        mu, mv = 1.0, 1.0
+    if mu < 1e-4:
+        mu = 1.0
+    if mv < 1e-4:
+        mv = mu
+    return mu, mv
+
+
 def _floor(mesh, origin, tangent, inward, width, z, depth, mat):
     a = origin
     b = _along(origin, tangent, width)
     c = _shift(b, inward, depth)
     d = _shift(a, inward, depth)
-    mesh.face([(a[0], a[1], z), (b[0], b[1], z), (c[0], c[1], z), (d[0], d[1], z)], mat, [(0, 0), (1, 0), (1, 1), (0, 1)])
+    # The quad's own width and depth. A 0-1 map would stretch a long room.
+    mesh.face(
+        [(a[0], a[1], z), (b[0], b[1], z), (c[0], c[1], z), (d[0], d[1], z)],
+        mat, mesh._uv(width, depth, mat),
+    )
 
 
 def _plane(mesh, origin, tangent, inward, width, z0, z1, depth, mat):
@@ -639,13 +668,16 @@ def _set_spec(mat, value):
 
 
 def _blind(name, light, dark):
+    """Slats follow the pane's own UV. Generated coordinates used the whole building and stretched the stripes."""
     mat = _flat(name, light, 0.55)
     nt = mat.node_tree
     bsdf = nt.nodes.get("Principled BSDF")
+    coord = nt.nodes.new("ShaderNodeTexCoord")
     wave = nt.nodes.new("ShaderNodeTexWave")
     wave.wave_type = "BANDS"
     wave.bands_direction = "Y"
-    wave.inputs["Scale"].default_value = 32.0
+    wave.inputs["Scale"].default_value = 22.0
+    nt.links.new(coord.outputs["UV"], wave.inputs["Vector"])
     mix = _mix(nt)
     mix.inputs[0].default_value = 1.0
     nt.links.new(wave.outputs["Fac"], mix.inputs[0])

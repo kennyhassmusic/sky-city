@@ -9,11 +9,14 @@ The GLB vertices are the block exporter's -90 degree Z turn, baked in, so
 Unreal imports them at the world origin: plan north on +X, plan east on +Y.
 
 A glazed floor is a curtain wall: mullions, a spandrel at each slab, tinted
-reflective glass, and an opaque interior behind every pane. Facade UVs repeat
-at the texture's meters_u and meters_v. Bays are whole modules of bay_m, so a
-window is not stretched to the wall width. The base is a concrete plinth on
-the planned sidewalks and asphalt. Grass is only the parkway. Flat roofs get
-a parapet and roof units.
+reflective glass, and an opaque interior behind every pane. Every face
+(front, side, back, each setback) is UV'd from its own width and height:
+U = width / meters_u, V = height / meters_v, with one scale on both axes.
+Whole windows keep the facade texture's lit rect (24 by 19). Leftover length
+is a pilaster, not a wider pane. face_uv.py checks the exported GLBs and
+stops the build when texel density or window aspect is off by more than 3%.
+The base is a concrete plinth on the planned sidewalks and asphalt. Grass is
+only the parkway. Flat roofs get a parapet and roof units.
 
 Run:
   blender -b --factory-startup -P Scripts/city/blender_city.py
@@ -25,6 +28,7 @@ Output:
   artifacts/previews/sky_city_downtown_street_day.png
   artifacts/previews/sky_city_residential_street_day.png
   artifacts/previews/sky_city_downtown_street_dusk.png
+  artifacts/previews/sky_city_tower_side_day.png
 
 SKYCITY_BUDGET_MB (default 220) stops the export. SKYCITY_CORE_MAX and
 SKYCITY_RES_MAX cap how many buildings are even considered. SKYCITY_EXPORT=0
@@ -49,6 +53,7 @@ sys.path.insert(0, os.path.join(ROOT, "Scripts", "streets"))
 sys.path.insert(0, os.path.join(ROOT, "Scripts", "roads"))
 
 import blender_block as bb  # noqa: E402
+import face_uv  # noqa: E402
 import generate_city  # noqa: E402
 import geom  # noqa: E402
 import grammar  # noqa: E402
@@ -56,7 +61,7 @@ import model as model_mod  # noqa: E402
 import profiles  # noqa: E402
 import realism  # noqa: E402
 
-OUT = os.path.join(ROOT, "SourceArt", "CityGen", "city")
+OUT = os.environ.get("SKYCITY_CITY_OUT") or os.path.join(ROOT, "SourceArt", "CityGen", "city")
 REPO_PREVIEWS = os.path.join(ROOT, "artifacts", "previews")
 PREVIEWS = os.environ.get("SKYCITY_PREVIEWS") or "/opt/cursor/artifacts/previews"
 DAY_EXPOSURE = 0.0
@@ -114,17 +119,22 @@ def main():
     res_street = _street(city, res_bounds, lib, protos, "ResStreet", residential)
     locked = _cameras_from_manifest()
     cams = locked if locked else _cameras(anchor, pair, core, residential)
+    cams = dict(cams)
+    side = _tower_side(core)
+    if side:
+        cams["tower_side"] = side
     core_col = bpy.data.collections["CoreStreet"]
     res_col = bpy.data.collections["ResStreet"]
     core_street.extend(_camera_asphalt(city, cams["downtown_street"], lib, core_col, "downtown"))
     res_street.extend(_camera_asphalt(city, cams["residential_street"], lib, res_col, "residential"))
     if locked:
         print("CITY cameras from manifest", flush=True)
-    _render(cams, core_obs, core_street, res_obs, res_street)
     if os.environ.get("SKYCITY_EXPORT", "1") == "0":
+        _render(cams, core_obs, core_street, res_obs, res_street)
         print("CITY export skipped", round(time.time() - t0, 1), "s", flush=True)
         return
     files, spent = _export_all(core, core_obs, core_street, residential, res_obs, res_street)
+    _require_face_uvs()
     manifest = {
         "seed": int(city.get("seed") or generate_city.SEED),
         "hash": digest,
@@ -145,6 +155,7 @@ def main():
         handle.write("\n")
     print("CITY done", len(files), "files", round(spent / (1024 * 1024), 1), "MB",
           round(time.time() - t0, 1), "s", flush=True)
+    _render(cams, core_obs, core_street, res_obs, res_street)
 
 
 def _count(city, name):
@@ -305,9 +316,26 @@ def _metres(mat):
 
 
 def _uv_metres(self, u_len, v_len, mat):
-    """Repeats at real scale. A 3 m scan stays 3 m; it is not stretched across the wall."""
+    """One density on both axes. U = width / meters_u, V = height / meters_v.
+
+    meters_v follows the image pixel aspect, so a square scan is not stretched
+    by scaling only U or only V. uv_origin_m continues the same grid along the wall.
+    """
     mu, mv = _metres(mat)
-    return [(0.0, 0.0), (u_len / mu, 0.0), (u_len / mu, v_len / mv), (0.0, v_len / mv)]
+    px, py = 1.0, 1.0
+    try:
+        if mat is not None and "px" in mat.keys():
+            px = float(mat["px"] or 1.0)
+            py = float(mat["py"] or px)
+    except (AttributeError, TypeError, ValueError):
+        px, py = 1.0, 1.0
+    mu, mv = face_uv.uniform_metres(mu, mv, px, py)
+    origin = getattr(self, "uv_origin_m", (0.0, 0.0)) or (0.0, 0.0)
+    u0 = float(origin[0]) / mu
+    v0 = float(origin[1]) / mv
+    u = abs(float(u_len)) / mu
+    v = abs(float(v_len)) / mv
+    return [(u0, v0), (u0 + u, v0), (u0 + u, v0 + v), (u0, v0 + v)]
 
 
 def _stamp_scales(lib, record):
@@ -320,8 +348,13 @@ def _stamp_scales(lib, record):
         mv = float(info.get("meters_v") or (pair[1] if len(pair) > 1 else pair[0]) or mu)
         mat = lib.get(slot)
         if mat is not None:
+            color = ((info.get("maps") or {}).get("color")) or ""
+            px, py = face_uv.image_size(os.path.join(bb.ART, "materials", color))
+            mu, mv = face_uv.uniform_metres(mu, mv, px, py)
             mat["meters_u"] = mu
             mat["meters_v"] = mv
+            mat["px"] = px
+            mat["py"] = py
 
 
 def _curtain_glass(name, emit):
@@ -468,11 +501,101 @@ def _curtain_facade(mesh, building, facade, metal, lib):
         mesh.box(centre, tangent, (nx, ny, 0.0), up, (length, depth, 0.16 + 0.14 * scale), metal)
 
 
-def _city_facade(mesh, building, facade, wall, trim, metal, lib):
-    if facade.get("opening") == "curtain":
-        _curtain_facade(mesh, building, facade, metal, lib)
+def _target_window_h(building, floor_h, opening):
+    """The pane is this tall before the fitter keeps the source aspect."""
+    floor_h = float(floor_h or 3.0)
+    if opening == "curtain":
+        return min(floor_h * 0.76, floor_h - 0.48)
+    frac = float(building.get("head") or 0.74) - float(building.get("sill") or 0.32)
+    return floor_h * max(0.36, min(0.58, frac))
+
+
+def _fitted_facade(mesh, building, facade, wall, trim, metal, lib):
+    """One projection per edge. Whole panes; pilasters take the leftover length."""
+    ax, ay = float(facade["a"][0]), float(facade["a"][1])
+    bx, by = float(facade["b"][0]), float(facade["b"][1])
+    length = float(facade.get("length") or 0.0) or math.hypot(bx - ax, by - ay)
+    if length < 0.4:
         return
-    _ORIG_FACADE(mesh, building, facade, wall, trim, metal, lib)
+    tx, ty = (bx - ax) / length, (by - ay) / length
+    nx, ny = float(facade["normal"][0]), float(facade["normal"][1])
+    tangent = (tx, ty, 0.0)
+    inward = (-nx, -ny, 0.0)
+    up = (0.0, 0.0, 1.0)
+    z0 = float(facade["z"]) + profiles.CURB_RISE
+    floor_h = float(facade["h"])
+    z1 = z0 + floor_h
+    opening = facade.get("opening") or "punched"
+    pier = float(building.get("pier_m") or 0.3)
+    lay = face_uv.fit_bays(length, floor_h, pier, face_uv.WINDOW_ASPECT,
+                           _target_window_h(building, floor_h, opening))
+    field = metal if opening == "curtain" else wall
+    glass_mat_lit = lib["curtain_glass_lit"] if opening == "curtain" else lib["glass_lit"]
+    glass_mat = lib["curtain_glass"] if opening == "curtain" else lib["glass"]
+    # A short edge cannot hold a real pane. The wall is solid rather than a stretched slot.
+    if lay["wh"] < 0.4 or lay["ww"] < 0.45 or lay["ww"] / lay["wh"] < 0.2:
+        mesh.uv_origin_m = (0.0, z0)
+        bb._span(mesh, (ax, ay), tangent, inward, up, length, 0.28, z0, z1, field)
+        mesh.uv_origin_m = (0.0, 0.0)
+        return
+    sill = z0 + max(0.2, (floor_h - lay["wh"]) * (0.28 if opening == "curtain" else 0.55))
+    head = sill + lay["wh"]
+    if head > z1 - 0.12:
+        head = z1 - 0.12
+        sill = head - lay["wh"]
+    mesh.uv_origin_m = (0.0, z0)
+    bb._span(mesh, (ax, ay), tangent, inward, up, length, 0.28, z0, sill, field)
+    mesh.uv_origin_m = (0.0, head)
+    bb._span(mesh, (ax, ay), tangent, inward, up, length, 0.28, head, z1, field)
+    cursor = 0.0
+    for index in range(lay["count"]):
+        pier_w = lay["end"] if index == 0 else lay["pier"]
+        mesh.uv_origin_m = (cursor, z0)
+        bb._span(mesh, (ax + tx * cursor, ay + ty * cursor), tangent, inward, up, pier_w, 0.34, z0, z1, trim)
+        cursor += pier_w
+        origin = (ax + tx * cursor, ay + ty * cursor)
+        _fitted_pane(mesh, building, facade, index, origin, tangent, inward, lay["ww"], sill, head,
+                     glass_mat, glass_mat_lit, lib, opening)
+        cursor += lay["ww"]
+    rest = length - cursor
+    if rest > 0.02:
+        mesh.uv_origin_m = (cursor, z0)
+        bb._span(mesh, (ax + tx * cursor, ay + ty * cursor), tangent, inward, up,
+                 rest, 0.34, z0, z1, trim)
+    mesh.uv_origin_m = (0.0, 0.0)
+    if opening == "storefront":
+        realism.shop_band(mesh, building, facade, 0, (ax, ay), tangent, inward, min(length, lay["ww"] * 2), z1 - 0.05, lib)
+
+
+def _fitted_pane(mesh, building, facade, bay, origin, tangent, inward, width, z0, z1, glass, glass_lit, lib, opening):
+    """A pane whose glass quad is exactly the source aspect. The frame does not inset it."""
+    room = grammar.room_of(building, facade, min(bay, max(0, int(facade.get("bays") or 1) - 1)))
+    if room is not None:
+        lit = bool(room.get("lit"))
+    else:
+        lit = grammar.bay_lit(building.get("seed") or 1, building["id"], facade.get("floor") or 0, bay)
+    height = z1 - z0
+    centre = (origin[0] + tangent[0] * width / 2.0 + inward[0] * 0.08,
+              origin[1] + tangent[1] * width / 2.0 + inward[1] * 0.08,
+              (z0 + z1) / 2.0)
+    mesh.uv_origin_m = (0.0, 0.0)
+    mesh.box(centre, tangent, inward, (0.0, 0.0, 1.0), (width, 0.02, height), glass_lit if lit else glass)
+    back = (origin[0] + tangent[0] * width / 2.0 + inward[0] * 0.42,
+            origin[1] + tangent[1] * width / 2.0 + inward[1] * 0.42,
+            (z0 + z1) / 2.0)
+    panel = lib["interior_lit"] if lit else lib.get("plaster", lib["interior"])
+    mesh.box(back, tangent, inward, (0.0, 0.0, 1.0), (width, 0.04, height), panel)
+    kind = "curtain" if opening == "curtain" else "window"
+    realism.dress_opening(mesh, building, facade, bay, origin, tangent, inward, width, z0, z1, 0.35, lib, kind)
+
+
+def _city_facade(mesh, building, facade, wall, trim, metal, lib):
+    """Front, side, back and every setback. The grammar bay width is not reused.
+
+    That width was stretched so the openings filled the edge. The fitter keeps
+    the source window aspect and puts the leftover into the end pilasters.
+    """
+    _fitted_facade(mesh, building, facade, wall, trim, metal, lib)
 
 
 def _panel_behind(mesh, building, facade, bay, origin, tangent, inward, width, z0, z1, lib):
@@ -594,6 +717,7 @@ def _terrace_parapets(mesh, building, trim, metal, roof_mat):
 
 
 def _city_roof(mesh, building, wall, trim, metal, roof_mat):
+    mesh.uv_origin_m = (0.0, 0.0)
     _ORIG_ROOF(mesh, building, wall, trim, metal, roof_mat)
     _ensure_clutter(mesh, building, _deck_z(building), metal, roof_mat)
     _terrace_parapets(mesh, building, trim, metal, roof_mat)
@@ -996,6 +1120,53 @@ def _clear_of(specs, point, normal, start):
     return x, y
 
 
+def _tower_side(specs):
+    """A close view of the tallest tower's side, the face most perpendicular to its long front."""
+    if not specs:
+        return None
+    tower = max(specs, key=lambda spec: float(spec.get("height") or 0))
+    faces = [face for face in (tower.get("facades") or []) if int(face.get("floor") or 0) == 0]
+    if len(faces) < 2:
+        faces = list(tower.get("facades") or [])
+    if not faces:
+        return None
+    longest = max(faces, key=lambda face: float(face.get("length") or 0))
+    front = longest.get("normal") or (1.0, 0.0)
+
+    def alignment(face):
+        normal = face.get("normal") or (0.0, 1.0)
+        return abs(float(normal[0]) * float(front[0]) + float(normal[1]) * float(front[1]))
+
+    side = min(faces, key=alignment)
+    ax, ay = float(side["a"][0]), float(side["a"][1])
+    bx, by = float(side["b"][0]), float(side["b"][1])
+    mx, my = (ax + bx) / 2.0, (ay + by) / 2.0
+    nx, ny = float(side["normal"][0]), float(side["normal"][1])
+    ex, ey = _clear_of(specs, (mx, my), (nx, ny), 12.0)
+    height = float(tower.get("height") or 24.0)
+    look_z = min(16.0, max(8.0, height * 0.18))
+    eye = [round(ex, 2), round(ey, 2), 12.0]
+    target = [round(mx, 2), round(my, 2), round(look_z, 2)]
+    print("TOWER SIDE", tower.get("id"), "h", round(height, 1), "eye", eye, "target", target, flush=True)
+    return {
+        "location": eye,
+        "target": target,
+        "lens": 50,
+        "fstop": 8.0,
+        "sun": _sun_for(eye, target, 28),
+    }
+
+
+def _require_face_uvs():
+    """Texel density and window aspect on every exported building. The build stops when either is off."""
+    sink = face_uv.check_folder(OUT)
+    print(face_uv.format_report(sink, 10), flush=True)
+    if not face_uv.passed(sink):
+        print("UV FAIL", flush=True)
+        raise SystemExit(1)
+    print("UV PASS", flush=True)
+
+
 def _cameras_from_manifest():
     """The three shipped views. Relighting must not recompute them."""
     path = os.path.join(OUT, "city_manifest.json")
@@ -1273,12 +1444,14 @@ def _render(cams, core_obs, core_street, res_obs, res_street):
         "aerial": core_obs + core_street,
         "downtown_street": core_obs + core_street,
         "residential_street": res_obs + res_street,
+        "tower_side": core_obs + core_street,
     }
     shots = [
         ("aerial", False, "sky_city_downtown_aerial_day.png"),
         ("downtown_street", False, "sky_city_downtown_street_day.png"),
         ("residential_street", False, "sky_city_residential_street_day.png"),
         ("downtown_street", True, "sky_city_downtown_street_dusk.png"),
+        ("tower_side", False, "sky_city_tower_side_day.png"),
     ]
     wanted = [item for item in os.environ.get("SKYCITY_SHOTS", "").split(",") if item]
     if wanted:
