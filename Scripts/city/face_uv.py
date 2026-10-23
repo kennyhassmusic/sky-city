@@ -6,7 +6,10 @@ Every facade face is projected from its own width and height:
     V = height / meters_v
 
 meters_v is kept in step with meters_u and the image's pixel aspect, so one
-axis is never scaled on its own. A window's width/height matches the lit
+axis is never scaled on its own. Each texture set is also checked on its
+own: pixels per metre on U and on V have to agree within 3%. A set whose
+meters_u/v ignore the image aspect stretches the wall even when every face
+is projected from those metres. A window's width/height matches the lit
 opening in the facade textures (24 by 19 pixels on T_CG_Facade_*.png).
 Leftover wall length becomes a pilaster, not a wider pane.
 
@@ -76,8 +79,11 @@ def image_size(path):
     return 1, 1
 
 
-def load_scans(root=None):
-    """material name -> (pixels_u, pixels_v, meters_u, meters_v) for tiled scans."""
+def authored_scans(root=None):
+    """material name -> (pixels_u, pixels_v, meters_u, meters_v) as written.
+
+    meters_v is not rewritten here. The set check needs the authored pair.
+    """
     import json
     root = root or project_root()
     path = os.path.join(root, "SourceArt", "CityGen", "materials", "materials.json")
@@ -95,13 +101,63 @@ def load_scans(root=None):
         meters_v = float(info.get("meters_v") or (pair[1] if len(pair) > 1 else pair[0]) or meters_u)
         color = ((info.get("maps") or {}).get("color")) or ""
         pixels_u, pixels_v = image_size(os.path.join(root, "SourceArt", "CityGen", "materials", color))
-        # One density. The authored horizontal size wins; the vertical size follows
-        # the image so a square scan is not stretched into a rectangle.
-        if pixels_u > 1 and pixels_v > 1 and meters_u > 1e-6:
-            meters_v = meters_u * (float(pixels_v) / float(pixels_u))
         name = "M_" + slot.capitalize()
         scans[name] = (pixels_u, pixels_v, meters_u, meters_v)
     return scans
+
+
+def load_scans(root=None):
+    """material name -> (pixels_u, pixels_v, meters_u, meters_v) for tiled scans.
+
+    The metres used to score a mesh are the uniform pair. The set check uses
+    authored_scans, before this rewrite.
+    """
+    scans = {}
+    for name, (pixels_u, pixels_v, meters_u, meters_v) in authored_scans(root).items():
+        meters_u, meters_v = uniform_metres(meters_u, meters_v, pixels_u, pixels_v)
+        scans[name] = (pixels_u, pixels_v, meters_u, meters_v)
+    return scans
+
+
+def set_density_ratio(pixels_u, pixels_v, meters_u, meters_v):
+    """Pixels per metre on U, divided by pixels per metre on V.
+
+    1.0 means the set's real-world size matches its pixel aspect. None when
+    the image or the metres are missing.
+    """
+    try:
+        pixels_u = float(pixels_u)
+        pixels_v = float(pixels_v)
+        meters_u = float(meters_u)
+        meters_v = float(meters_v)
+    except (TypeError, ValueError):
+        return None
+    if pixels_u < 2 or pixels_v < 2 or meters_u < 1e-6 or meters_v < 1e-6:
+        return None
+    per_v = pixels_v / meters_v
+    if per_v < 1e-8:
+        return None
+    return (pixels_u / meters_u) / per_v
+
+
+def score_sets(scans, sink):
+    """Fail a set whose U and V texel densities differ by more than 3%."""
+    for name in sorted(scans):
+        pixels_u, pixels_v, meters_u, meters_v = scans[name]
+        ratio = set_density_ratio(pixels_u, pixels_v, meters_u, meters_v)
+        if ratio is None:
+            continue
+        sink["set_n"] += 1
+        err = abs(ratio - 1.0)
+        if err > TOLERANCE:
+            sink["set_fail"] += 1
+        _keep(sink["sets"], err, {
+            "kind": "set",
+            "material": name,
+            "ratio": ratio,
+            "error": err,
+            "area": 0.0,
+        })
 
 
 def uniform_metres(meters_u, meters_v, pixels_u, pixels_v):
@@ -262,7 +318,12 @@ def _keep(bucket, score, row):
 
 
 def new_sink():
-    return {"density": [], "windows": [], "density_n": 0, "density_fail": 0, "window_n": 0, "window_fail": 0}
+    return {
+        "density": [], "windows": [], "sets": [],
+        "density_n": 0, "density_fail": 0,
+        "window_n": 0, "window_fail": 0,
+        "set_n": 0, "set_fail": 0,
+    }
 
 
 def _accessor_array(gltf, blob, index):
@@ -381,7 +442,7 @@ def scan_glb(path, scans):
             uvs = _accessor_array(gltf, blob, attrs["TEXCOORD_0"]) if "TEXCOORD_0" in attrs else None
             indices = _accessor_array(gltf, blob, prim["indices"])
             _score_indexed(positions, uvs, indices, material, scans, sink)
-    for row in sink["density"] + sink["windows"]:
+    for row in sink["density"] + sink["windows"] + sink.get("sets", []):
         row["file"] = base
     return sink
 
@@ -398,23 +459,33 @@ def merge_sinks(sinks):
         total["density_fail"] += sink["density_fail"]
         total["window_n"] += sink["window_n"]
         total["window_fail"] += sink["window_fail"]
+        total["set_n"] += sink.get("set_n", 0)
+        total["set_fail"] += sink.get("set_fail", 0)
         total["density"].extend(sink["density"])
         total["windows"].extend(sink["windows"])
+        total["sets"].extend(sink.get("sets") or [])
     total["density"].sort(key=lambda row: row["score"], reverse=True)
     total["windows"].sort(key=lambda row: row["score"], reverse=True)
+    total["sets"].sort(key=lambda row: row["score"], reverse=True)
     return total
 
 
 def check_folder(folder, root=None):
-    scans = load_scans(root)
+    authored = authored_scans(root)
+    scans = {}
+    for name, (pixels_u, pixels_v, meters_u, meters_v) in authored.items():
+        meters_u, meters_v = uniform_metres(meters_u, meters_v, pixels_u, pixels_v)
+        scans[name] = (pixels_u, pixels_v, meters_u, meters_v)
     sinks = [scan_glb(path, scans) for path in building_glbs(folder)]
-    return merge_sinks(sinks)
+    total = merge_sinks(sinks)
+    score_sets(authored, total)
+    return total
 
 
 def worst(sink, limit=10):
     rows = []
     seen = set()
-    for row in sink["density"] + sink["windows"]:
+    for row in sink["density"] + sink["windows"] + sink.get("sets", []):
         key = (row.get("file"), row["kind"], row["material"], round(row["score"], 4), round(row["area"], 2))
         if key in seen:
             continue
@@ -426,14 +497,19 @@ def worst(sink, limit=10):
 
 def format_report(sink, limit=10):
     lines = [
-        "UV faces %d  density fails %d  windows %d  window fails %d  target aspect %.4f"
-        % (sink["density_n"], sink["density_fail"], sink["window_n"], sink["window_fail"], WINDOW_ASPECT),
+        "UV faces %d  density fails %d  windows %d  window fails %d  sets %d  set fails %d  target aspect %.4f"
+        % (
+            sink["density_n"], sink["density_fail"], sink["window_n"], sink["window_fail"],
+            sink.get("set_n", 0), sink.get("set_fail", 0), WINDOW_ASPECT,
+        ),
         "worst %d" % limit,
     ]
     for index, row in enumerate(worst(sink, limit), 1):
         where = row.get("file") or ""
         if row["kind"] == "density":
             lines.append("%d. %s %s density U/V %.4f  area %.2f" % (index, where, row["material"], row["ratio"], row["area"]))
+        elif row["kind"] == "set":
+            lines.append("%d. %s set px/m U/V %.4f" % (index, row["material"], row["ratio"]))
         else:
             lines.append("%d. %s %s window aspect %.4f target %.4f  err %.1f%%  area %.2f"
                          % (index, where, row["material"], row["aspect"], row["target"], row["error"] * 100.0, row["area"]))
@@ -441,4 +517,8 @@ def format_report(sink, limit=10):
 
 
 def passed(sink):
-    return sink["density_fail"] == 0 and sink["window_fail"] == 0 and sink["window_n"] > 0 and sink["density_n"] > 0
+    return (
+        sink["density_fail"] == 0 and sink["window_fail"] == 0
+        and sink.get("set_fail", 0) == 0
+        and sink["window_n"] > 0 and sink["density_n"] > 0
+    )

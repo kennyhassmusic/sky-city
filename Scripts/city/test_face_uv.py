@@ -35,6 +35,24 @@ class TestLayout(unittest.TestCase):
         face_uv.consider_polygon(points, [(0, 0), (2, 0), (2, 0.5), (0, 0.5)], "M_Brick", scans, bad)
         self.assertGreater(bad["density_fail"], 0)
 
+    def test_set_px_per_meter_agrees_within_three_percent(self):
+        # 1024x512 over 2 m by 1 m is the same pixels per metre on both axes.
+        self.assertAlmostEqual(face_uv.set_density_ratio(1024, 512, 2.0, 1.0), 1.0)
+        # Two percent off the square stays inside the band. Four percent does not.
+        close = face_uv.set_density_ratio(1024, 1024, 3.0, 3.0 * 1.02)
+        wide = face_uv.set_density_ratio(1024, 1024, 3.0, 1.5)
+        self.assertLess(abs(close - 1.0), face_uv.TOLERANCE)
+        self.assertGreater(abs(wide - 1.0), face_uv.TOLERANCE)
+        sink = face_uv.new_sink()
+        face_uv.score_sets({
+            "M_Brick": (1024, 1024, 3.0, 3.0),
+            "M_Wide": (1024, 1024, 3.0, 1.5),
+        }, sink)
+        self.assertEqual(sink["set_n"], 2)
+        self.assertEqual(sink["set_fail"], 1)
+        failed = [row["material"] for row in sink["sets"] if row["error"] > face_uv.TOLERANCE]
+        self.assertEqual(failed, ["M_Wide"])
+
     def test_window_aspect_matches_the_source_rect(self):
         aspect = face_uv.WINDOW_ASPECT
         width, height = 1.6 * aspect, 1.6
