@@ -24,6 +24,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 - SCALE CHECK: no change
 - Next: when `Art/ai_textures/` lands, the same schema picks it up
 
+## 2026-10-23 03:30 UTC — cursor cloud agent — generate the mashup city
+- State at start: street dressing on `cursor/road-dressing-stage1-04ef` (PR #4). Pack polish and road stages 2–4 deferred. Invariants read. City Sample plugin still present.
+- Did: `Scripts/city/generate_city.py` runs the generator over `buildings_v3.json` footprints and `plan_v3.json` roads (seed 7). 3336 buildings, 1635 driveable roads, sidewalks, curbs, parkway on 369 roads, stage-1 dressing. Spawn `Scripts/city/examples/sky_city_spawn.json`. Editor import `Scripts/city/import_city_ue.py` creates `/Game/Maps/SkyCityGenerated` under `/Game/City/Generated` and does not open SkyCityMashup. Hash `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Test: `python3 -I Scripts/city/test_generate_city.py` (two builds match).
+- Found: a camera aimed along a centreline looked at empty pavement → street preview now faces a downtown facade.
+- Asks for Kenny: run `py Scripts/city/import_city_ue.py` with PIE off, then open `SkyCityGenerated` next to the City Sample map.
+- SCALE CHECK: no change
+- Next: Kenny compares the generated level with City Sample. Do not start road stages 2–4 or pack polish unless asked.
+
 ## 2026-10-23 03:05 UTC — cursor cloud agent — texture pack loader schema
 - State at start: branch `cursor/texture-pack-loader-04ef` off `cd8b893`. AI packs are not on main (`art/ai-texture-packs` is not a remote branch).
 - Did: `Scripts/city/packs.py` loads the manifest schema (role basic|accent, suggested use, district/tier, power-of-two size, scale_m, per-facade glass masks, window/bay/floor rects, decal alpha). `packs/districts.json` mix: one basic body, optional crown/ground-band/corner accent, neighbors avoid repeating a basic. Potholes and stains stay decals. Missing art falls back to CC0. `assign_textures` stamps buildings without changing the sample hash `3b867770796a5ab07187d1c962f2f6a6d91a00b6b8eab4b6466ccbabdf50632b`. Tests: `python3 -I Scripts/city/test_packs.py` 3 OK, `python3 -I Scripts/city/test_city.py` 46 OK. Commit `784177c`. PR https://github.com/kennyhassmusic/sky-city/pull/5
