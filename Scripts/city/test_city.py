@@ -158,6 +158,105 @@ class GrammarTest(unittest.TestCase):
         self.assertTrue(all(f["opening_w"] > 0.3 for f in spec["facades"]))
 
 
+class RoomTest(unittest.TestCase):
+    def _open_bays(self, spec):
+        found = []
+        for index, face in enumerate(spec["facades"]):
+            for bay, kind in enumerate(face.get("bay_kinds") or []):
+                if kind != "blind":
+                    found.append((index, bay, face["bay_rooms"][bay]))
+        return found
+
+    def test_every_opening_has_one_room_and_the_layout_repeats(self):
+        lot = _square_lot()
+        sky = _sky()
+        a = grammar.evaluate(lot, "prewar_masonry", sky, 1408)
+        b = grammar.evaluate(lot, "prewar_masonry", sky, 1408)
+        self.assertEqual(a["rooms"], b["rooms"])
+        self.assertTrue(a["rooms"])
+        for _index, _bay, rid in self._open_bays(a):
+            self.assertTrue(rid)
+            self.assertEqual(sum(1 for room in a["rooms"] if room["id"] == rid), 1)
+        for room in a["rooms"]:
+            self.assertEqual(room["interior"], "parallax")
+            ids = {a["facades"][w["facade"]]["bay_rooms"][w["bay"]] for w in room["windows"]}
+            self.assertEqual(ids, {room["id"]})
+            curtains = {room["curtain"]}
+            self.assertEqual(len(curtains), 1)
+
+    def test_corner_room_is_one_interior_on_two_facades(self):
+        spec = grammar.evaluate(_square_lot(), "prewar_masonry", _sky(base_height_m=24), 1408)
+        hit = None
+        for room in spec["rooms"]:
+            if room["floor"] == 0 or room["kind"] != "corner":
+                continue
+            faces = {}
+            for window in room["windows"]:
+                faces.setdefault(window["facade"], []).append(window["bay"])
+            if len(faces) < 2:
+                continue
+            normals = [spec["facades"][i]["normal"] for i in faces]
+            dot = normals[0][0] * normals[1][0] + normals[0][1] * normals[1][1]
+            if dot < 0.5:
+                hit = room
+                break
+        self.assertIsNotNone(hit)
+        self.assertTrue(hit["see_through"])
+        self.assertGreaterEqual(len(hit["windows"]), 2)
+        self.assertIn(hit["curtain"], ("none", "blind", "red", "green", "cream", "blue"))
+        room = grammar.room_of(spec, spec["facades"][hit["windows"][0]["facade"]], hit["windows"][0]["bay"])
+        self.assertEqual(room["id"], hit["id"])
+        self.assertEqual(room["lit"], hit["lit"])
+
+    def test_wide_room_shares_one_facade(self):
+        spec = grammar.evaluate(_square_lot("wide", 36), "prewar_masonry", _sky(base_height_m=18), 7)
+        wide = [room for room in spec["rooms"]
+                if room["kind"] == "room" and room["floor"] > 0 and len(room["windows"]) >= 2]
+        self.assertTrue(wide)
+        faces = {window["facade"] for window in wide[0]["windows"]}
+        self.assertEqual(len(faces), 1)
+        self.assertFalse(wide[0]["see_through"])
+
+    def test_curtain_floor_is_one_open_office(self):
+        spec = grammar.evaluate(_square_lot("gl", 30), "glass_curtain", _sky(base_height_m=40), 3)
+        upper = [room for room in spec["rooms"] if room["floor"] > 0]
+        self.assertTrue(upper)
+        by_floor = {}
+        for room in upper:
+            by_floor.setdefault(room["floor"], []).append(room)
+        for floor, rooms in by_floor.items():
+            self.assertEqual(len(rooms), 1)
+            room = rooms[0]
+            self.assertEqual(room["kind"], "office")
+            self.assertTrue(room["see_through"])
+            self.assertEqual(len(room["polygon"]), len(spec["floors"][floor]["polygon"]))
+            ids = set()
+            for face in spec["facades"]:
+                if face["floor"] != floor:
+                    continue
+                for rid in face["bay_rooms"]:
+                    if rid:
+                        ids.add(rid)
+            self.assertEqual(ids, {room["id"]})
+
+    def test_ground_floor_has_a_lobby_and_a_storefront(self):
+        spec = grammar.evaluate(_square_lot(), "prewar_masonry", _sky(), 1)
+        front = next(i for i, face in enumerate(spec["facades"]) if face["floor"] == 0 and face["role"] == "front")
+        face = spec["facades"][front]
+        door = next(i for i, kind in enumerate(face["bay_kinds"]) if kind == "door")
+        lobby = grammar.room_of(spec, face, door)
+        self.assertEqual(lobby["kind"], "lobby")
+        self.assertEqual(lobby["curtain"], "none")
+        self.assertGreaterEqual(len(lobby["windows"]), 2)
+        shops = [room for room in spec["rooms"] if room["kind"] == "storefront"]
+        self.assertTrue(shops)
+        for shop in shops:
+            self.assertEqual(shop["curtain"], "none")
+            ids = {spec["facades"][w["facade"]]["bay_rooms"][w["bay"]] for w in shop["windows"]}
+            self.assertEqual(ids, {shop["id"]})
+            self.assertIn(shop["lit"], (True, False))
+
+
 class NetworkTest(unittest.TestCase):
     def test_crossing_splits_into_four(self):
         roads = [
@@ -384,6 +483,11 @@ class SampleStreetTest(unittest.TestCase):
             self.assertTrue(any(c.get("road_id") == road_id for c in sc["curb_paths"]))
         park = {p["road_id"] for p in sc["surfaces"]["parkway"]}
         self.assertEqual(park, {"road_north"})
+        # Grass is the parkway. Sidewalks and both curb kinds are part of the streetscape.
+        self.assertTrue(sc["surfaces"]["parkway"])
+        self.assertTrue(sc["surfaces"]["sidewalk"])
+        self.assertTrue(any(c.get("kind") == "straight" for c in sc["curb_paths"]))
+        self.assertTrue(any(c.get("kind") == "return" for c in sc["curb_paths"]))
         kinds = {c["road_id"]: c["kind"] for c in sc["crosswalks"]}
         self.assertTrue(sc["crosswalks"])
         self.assertEqual(kinds.get("road_east"), "ladder")

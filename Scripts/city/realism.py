@@ -150,29 +150,178 @@ def pedestrian_door(mesh, building, facade, bay, origin, tangent, inward, width,
 
 
 def dress_opening(mesh, building, facade, bay, origin, tangent, inward, width, z0, z1, depth, lib, kind):
-    """Curtain or blind, a rare air conditioner, a leak decal, and a shop interior."""
+    """Curtain or blind, a rare air conditioner, a leak decal, and a shop interior.
+
+    When the bay belongs to a room, the curtain and the blind come from that room,
+    so every window of a corner unit or an office matches. The shop shell is one
+    volume in build_rooms, not a box behind each pane.
+    """
     import geom
+    import grammar
     seed = int(building.get("seed") or 1)
     bid = building["id"]
     floor = int(facade.get("floor") or 0)
-    roll = geom.rnd(seed, bid, floor, bay, "dress")
-    if kind == "storefront":
+    room = grammar.room_of(building, facade, bay)
+    if kind == "storefront" and room is None:
         _shop(mesh, building, facade, bay, origin, tangent, inward, width, z0, z1, lib)
         return
     if kind == "door":
         return
-    if roll < 0.28:
-        mat = lib["blind_warm"] if geom.rnd(seed, bid, floor, bay, "blind") < 0.5 else lib["blind"]
-        _plane(mesh, origin, tangent, inward, width * 0.92, z0 + 0.05, z1 - 0.05, depth * 0.55, mat)
-    elif roll < 0.62:
-        name, _rgb = CURTAINS[int(geom.rnd(seed, bid, floor, bay, "curtain") * len(CURTAINS)) % len(CURTAINS)]
-        frac = 0.34 + 0.28 * geom.rnd(seed, bid, floor, bay, "curtainw")
-        side = 0.0 if geom.rnd(seed, bid, floor, bay, "curtainside") < 0.5 else width * (1.0 - frac)
-        _plane(mesh, _along(origin, tangent, side), tangent, inward, width * frac, z0 + 0.04, z1 - 0.04, depth * 0.5, lib[name])
+    if room is not None:
+        _dress_room(mesh, room, origin, tangent, inward, width, z0, z1, depth, lib, kind)
+    else:
+        roll = geom.rnd(seed, bid, floor, bay, "dress")
+        if roll < 0.28:
+            mat = lib["blind_warm"] if geom.rnd(seed, bid, floor, bay, "blind") < 0.5 else lib["blind"]
+            _plane(mesh, origin, tangent, inward, width * 0.92, z0 + 0.05, z1 - 0.05, depth * 0.55, mat)
+        elif roll < 0.62:
+            name, _rgb = CURTAINS[int(geom.rnd(seed, bid, floor, bay, "curtain") * len(CURTAINS)) % len(CURTAINS)]
+            frac = 0.34 + 0.28 * geom.rnd(seed, bid, floor, bay, "curtainw")
+            side = 0.0 if geom.rnd(seed, bid, floor, bay, "curtainside") < 0.5 else width * (1.0 - frac)
+            _plane(mesh, _along(origin, tangent, side), tangent, inward, width * frac, z0 + 0.04, z1 - 0.04, depth * 0.5, lib[name])
     if floor > 0 and kind in ("window", "narrow") and geom.rnd(seed, bid, floor, bay, "ac") < 0.22:
         _ac(mesh, origin, tangent, inward, width, z0, lib["metal"])
-    if geom.rnd(seed, bid, floor, bay, "streak") < 0.42:
+    if kind != "storefront" and geom.rnd(seed, bid, floor, bay, "streak") < 0.42:
         _streak_under(mesh, building, facade, bay, origin, tangent, inward, width, z0, lib)
+
+
+def _dress_room(mesh, room, origin, tangent, inward, width, z0, z1, depth, lib, kind):
+    """The same curtain, colour, side and width on every window of the room."""
+    if kind == "door":
+        return
+    curtain = room.get("curtain") or "none"
+    if curtain == "none":
+        return
+    if curtain == "blind":
+        mat = lib["blind_warm"] if room.get("blind_warm") else lib["blind"]
+        _plane(mesh, origin, tangent, inward, width * 0.92, z0 + 0.05, z1 - 0.05, depth * 0.55, mat)
+        return
+    names = {"red": "M_CurtainRed", "green": "M_CurtainGreen", "cream": "M_CurtainCream", "blue": "M_CurtainBlue"}
+    name = names.get(curtain)
+    if not name or name not in lib:
+        return
+    frac = max(0.2, min(0.7, float(room.get("curtain_frac") or 0.45)))
+    side = room.get("curtain_side") or "left"
+    if side == "both":
+        leaf = width * frac * 0.5
+        _plane(mesh, origin, tangent, inward, leaf, z0 + 0.04, z1 - 0.04, depth * 0.5, lib[name])
+        _plane(mesh, _along(origin, tangent, width - leaf), tangent, inward, leaf, z0 + 0.04, z1 - 0.04, depth * 0.5, lib[name])
+    elif side == "right":
+        _plane(mesh, _along(origin, tangent, width * (1.0 - frac)), tangent, inward, width * frac,
+               z0 + 0.04, z1 - 0.04, depth * 0.5, lib[name])
+    else:
+        _plane(mesh, origin, tangent, inward, width * frac, z0 + 0.04, z1 - 0.04, depth * 0.5, lib[name])
+
+
+def build_rooms(mesh, building, lib):
+    """One shell per room: floor, ceiling, interior partitions, one lamp.
+
+    An edge of the room that lies on the floor footprint is the exterior wall.
+    The facade shell and the glass are that opening, so no partition is built
+    there. An open office therefore has no interior walls, and a window sees
+    the far window. Partition windows between rooms are not built.
+    """
+    import geom
+    floors = list(building.get("floors") or [])
+    wall = _wall(lib, building)
+    wood = lib.get("wood", lib.get("plaster"))
+    plaster = lib.get("plaster", wall)
+    for room in building.get("rooms") or []:
+        poly = room.get("polygon") or []
+        if len(poly) < 3:
+            continue
+        floor_i = int(room.get("floor") or 0)
+        floor_poly = (floors[floor_i].get("polygon") if floor_i < len(floors) else None) or building.get("footprint") or []
+        base = float(room.get("z") or 0.0) + profiles.CURB_RISE
+        height = float(room.get("h") or 3.0)
+        z0 = base + 0.06
+        z1 = base + height - 0.30
+        if z1 <= z0 + 0.4:
+            z1 = z0 + 0.4
+        slab = wood if room.get("kind") in ("storefront", "lobby") else lib.get("interior", plaster)
+        _slab(mesh, poly, z0, slab)
+        _slab(mesh, poly, z1, plaster)
+        _room_walls(mesh, poly, floor_poly, z0, z1, wall)
+        if room.get("lit"):
+            centre = geom.centroid([(float(p[0]), float(p[1])) for p in poly])
+            mesh.box((centre[0], centre[1], z1 - 0.22), (1, 0, 0), (0, 1, 0), (0, 0, 1),
+                     (0.42, 0.42, 0.12), lib["interior_lit"])
+        if room.get("kind") == "storefront":
+            _counter(mesh, poly, floor_poly, z0, lib.get("counter", plaster))
+
+
+def _slab(mesh, poly, z, mat):
+    top = [(float(p[0]), float(p[1]), z) for p in poly]
+    uvs = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+    uvs = (uvs * ((len(top) // 4) + 1))[:len(top)]
+    mesh.face(top, mat, uvs)
+    mesh.face([(p[0], p[1], z - 0.02) for p in reversed(top)], mat, list(reversed(uvs)))
+
+
+def _room_walls(mesh, poly, floor_poly, z0, z1, mat):
+    n = len(poly)
+    for i in range(n):
+        a = (float(poly[i][0]), float(poly[i][1]))
+        b = (float(poly[(i + 1) % n][0]), float(poly[(i + 1) % n][1]))
+        mid = ((a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0)
+        if _near_boundary(mid, floor_poly, 0.4):
+            continue
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        length = math.hypot(dx, dy)
+        if length < 0.15:
+            continue
+        tx, ty = dx / length, dy / length
+        ix, iy = -dy / length, dx / length
+        thick = 0.08
+        centre = ((a[0] + b[0]) / 2.0 + ix * thick / 2.0,
+                  (a[1] + b[1]) / 2.0 + iy * thick / 2.0,
+                  (z0 + z1) / 2.0)
+        mesh.box(centre, (tx, ty, 0), (ix, iy, 0), (0, 0, 1), (length, thick, z1 - z0), mat)
+
+
+def _counter(mesh, poly, floor_poly, z0, mat):
+    """One counter on the longest exterior edge of a shop, shared by its windows."""
+    best = None
+    n = len(poly)
+    for i in range(n):
+        a = (float(poly[i][0]), float(poly[i][1]))
+        b = (float(poly[(i + 1) % n][0]), float(poly[(i + 1) % n][1]))
+        mid = ((a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0)
+        if not _near_boundary(mid, floor_poly, 0.45):
+            continue
+        length = math.hypot(b[0] - a[0], b[1] - a[1])
+        if best is None or length > best[0]:
+            best = (length, a, b)
+    if best is None or best[0] < 0.8:
+        return
+    length, a, b = best
+    dx, dy = (b[0] - a[0]) / length, (b[1] - a[1]) / length
+    ix, iy = -dy, dx
+    span = length * 0.62
+    start = (length - span) / 2.0
+    origin = (a[0] + dx * start + ix * 0.55, a[1] + dy * start + iy * 0.55)
+    _span(mesh, origin, (dx, dy, 0), (ix, iy, 0), span, 0.55, z0, z0 + 0.95, mat)
+
+
+def _near_boundary(point, poly, tol):
+    if not poly or len(poly) < 2:
+        return False
+    n = len(poly)
+    for i in range(n):
+        a = (float(poly[i][0]), float(poly[i][1]))
+        b = (float(poly[(i + 1) % n][0]), float(poly[(i + 1) % n][1]))
+        if _dist_to_seg(point, a, b) <= tol:
+            return True
+    return False
+
+
+def _dist_to_seg(p, a, b):
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    length2 = dx * dx + dy * dy
+    if length2 < 1e-10:
+        return math.hypot(p[0] - a[0], p[1] - a[1])
+    t = max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / length2))
+    return math.hypot(p[0] - (a[0] + dx * t), p[1] - (a[1] + dy * t))
 
 
 def shop_band(mesh, building, facade, bay, origin, tangent, inward, width, z0, z1, lib):

@@ -620,6 +620,7 @@ def build_lod0(building, lib, col):
         mesh.prism(poly, z1 - 0.22, z1, trim if fl.get("cornice") else wall)
     for facade in building.get("facades") or []:
         _facade(mesh, building, facade, wall, trim, metal, lib)
+    realism.build_rooms(mesh, building, lib)
     _roof(mesh, building, wall, trim, metal, lib["roof"])
     for balcony in building.get("balconies") or []:
         _balcony(mesh, balcony, trim, metal)
@@ -760,18 +761,23 @@ def _window(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, 
         bar = 0.045
         _span(mesh, origin_xy, tangent, inward, (0, 0, 1), width, 0.08, (z0 + z1) / 2.0 - bar / 2.0, (z0 + z1) / 2.0 + bar / 2.0, frame)
     pane_z = (z0 + z1) / 2.0
-    lit = grammar.bay_lit(building.get("seed") or 1, building["id"], facade["floor"], bay)
-    # Shopfronts look into the room built in realism._shop. Other bays keep a back wall.
-    if kind != "storefront":
-        room = (origin_xy[0] + tangent[0] * width / 2.0 + inward[0] * (depth + 0.06),
+    room = grammar.room_of(building, facade, bay)
+    if room is not None:
+        lit = bool(room.get("lit"))
+    else:
+        lit = grammar.bay_lit(building.get("seed") or 1, building["id"], facade["floor"], bay)
+    # A shared room is an open volume (realism.build_rooms). A lone bay still gets a card
+    # so older specs, which have no room id, keep a back wall behind the glass.
+    if room is None and kind != "storefront":
+        card = (origin_xy[0] + tangent[0] * width / 2.0 + inward[0] * (depth + 0.06),
                 origin_xy[1] + tangent[1] * width / 2.0 + inward[1] * (depth + 0.06),
                 pane_z)
-        mesh.box(room, tangent, inward, (0, 0, 1), (width * 0.98, 0.06, (z1 - z0) * 0.98),
+        mesh.box(card, tangent, inward, (0, 0, 1), (width * 0.98, 0.06, (z1 - z0) * 0.98),
                  lib["interior_lit"] if lit else lib["interior"])
     centre = (origin_xy[0] + tangent[0] * width / 2.0 + inward[0] * (depth * 0.72),
               origin_xy[1] + tangent[1] * width / 2.0 + inward[1] * (depth * 0.72),
               pane_z)
-    glass = lib["glass"] if kind == "storefront" else (lib["glass_lit"] if lit else lib["glass"])
+    glass = lib["glass_lit"] if lit else lib["glass"]
     mesh.box(centre, tangent, inward, (0, 0, 1), (max(0.2, width - jamb * 2), 0.015, max(0.3, z1 - z0 - jamb * 2)), glass)
     realism.dress_opening(mesh, building, facade, bay, origin_xy, tangent, inward, width, z0, z1, depth, lib, kind)
 

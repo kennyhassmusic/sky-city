@@ -7,6 +7,10 @@ outline keeps its surveyed height inside a generated district.
 The mass is a stack of floor polygons so a setback is a smaller plate, not a texture.
 Window recess, pier width and sill line are on the spec because the mesher should not
 invent a second set of proportions.
+
+Interiors are per room, not per window. layout_rooms stamps a room id on every
+exterior opening of a volume (corner unit, wide room, open office, storefront,
+lobby) so a parallax shader can share one interior, one light and one curtain.
 """
 import math
 
@@ -58,6 +62,7 @@ def evaluate(lot, style_name, sky, seed, styles=None):
                     sky.get("roofs") if sky.get("roofs") else None)
     fronts = _fronts(lot)
     facades = facade_plan(floors, fronts, style, seed, lot["id"])
+    rooms = layout_rooms(floors, facades, style, seed, lot["id"])
     built = round(z_top + roof["h"], 2)
     spec = {
         "id": lot.get("building_id") or ("b_" + lot["id"]),
@@ -85,6 +90,7 @@ def evaluate(lot, style_name, sky, seed, styles=None):
         "floors": floors,
         "roof": roof,
         "facades": facades,
+        "rooms": rooms,
         "balconies": balconies(facades, style),
         "lod": {"lod0": "modules", "lod1": "floor_bands", "lod2": "shell", "far": "box", "nanite": True},
     }
@@ -383,6 +389,414 @@ def _role(normal, fronts):
     if fronts and normal[0] * fronts[0][0] + normal[1] * fronts[0][1] < -0.6:
         return "back"
     return "side"
+
+
+# Exterior openings that look into a room. A blind bay is solid wall.
+_OPENINGS = ("window", "narrow", "curtain", "mullion", "storefront", "transom", "door")
+_CURTAIN_COLOURS = ("red", "green", "cream", "blue")
+
+
+def layout_rooms(floors, facades, style, seed, lot_id):
+    """Assign room volumes and stamp bay_rooms on each facade.
+
+    Upper curtain-wall floors are one open office. Other upper floors get corner
+    units, then wide rooms along the remaining bays. The ground floor is a lobby
+    plus storefronts, and a curtain-wall building keeps one office for the side
+    bays the shops did not claim. Alley openings stay small rooms.
+    """
+    by_floor = {}
+    for index, face in enumerate(facades):
+        by_floor.setdefault(int(face["floor"]), []).append(index)
+        face["bay_rooms"] = [None] * len(face.get("bay_kinds") or [])
+    rooms = []
+    opening = style.get("opening") or "punched"
+    for fi, fl in enumerate(floors):
+        idxs = by_floor.get(fi, [])
+        if not idxs:
+            continue
+        if fi > 0 and opening == "curtain":
+            _office_floor(rooms, fl, facades, idxs, fi, seed, lot_id)
+        elif fi == 0:
+            _ground_floor(rooms, fl, facades, idxs, fi, seed, lot_id, opening)
+        else:
+            _upper_floor(rooms, fl, facades, idxs, fi, seed, lot_id)
+    return rooms
+
+
+def room_of(building, facade, bay):
+    """The room record shared by this opening, or None when the bay is solid."""
+    ids = (facade or {}).get("bay_rooms") or []
+    if bay < 0 or bay >= len(ids) or not ids[bay]:
+        return None
+    rid = ids[bay]
+    for room in building.get("rooms") or []:
+        if room.get("id") == rid:
+            return room
+    return None
+
+
+def _office_floor(rooms, fl, facades, idxs, floor, seed, lot_id):
+    windows = []
+    for face_i in idxs:
+        face = facades[face_i]
+        for bay, kind in enumerate(face.get("bay_kinds") or []):
+            if kind in _OPENINGS:
+                windows.append((face_i, bay))
+    if not windows:
+        return
+    _add_room(rooms, fl, facades, windows, floor, seed, lot_id, "office",
+              [list(p) for p in fl["polygon"]], whole=True)
+
+
+def _upper_floor(rooms, fl, facades, idxs, floor, seed, lot_id):
+    poly = [tuple(p) for p in fl["polygon"]]
+    taken = set()
+    if len(idxs) == len(poly) and len(poly) >= 3:
+        for i in range(len(idxs)):
+            prev_i = idxs[(i - 1) % len(idxs)]
+            next_i = idxs[i]
+            prev, nxt = facades[prev_i], facades[next_i]
+            if not _convex_corner(prev, nxt):
+                continue
+            prev_bays = [b for b in _end_bays(prev, False) if (prev_i, b) not in taken]
+            next_bays = [b for b in _end_bays(nxt, True) if (next_i, b) not in taken]
+            windows = [(prev_i, b) for b in prev_bays] + [(next_i, b) for b in next_bays]
+            if not windows:
+                continue
+            span_prev = _edge_span(prev, prev_bays, False) if prev_bays else min(2.5, float(prev["length"]) * 0.35)
+            span_next = _edge_span(nxt, next_bays, True) if next_bays else min(2.5, float(nxt["length"]) * 0.35)
+            quad = _corner_quad(prev, nxt, span_prev, span_next, poly)
+            if quad is None:
+                continue
+            kind = "corner" if prev_bays and next_bays else "room"
+            _add_room(rooms, fl, facades, windows, floor, seed, lot_id, kind, quad)
+            taken.update(windows)
+    for face_i in idxs:
+        face = facades[face_i]
+        free = [b for b, kind in enumerate(face.get("bay_kinds") or [])
+                if kind in _OPENINGS and (face_i, b) not in taken]
+        for run in _runs(free):
+            for chunk in _chunk_run(run):
+                band = _band_quad(face, chunk[0], chunk[-1], poly)
+                if band is None:
+                    continue
+                _add_room(rooms, fl, facades, [(face_i, b) for b in chunk], floor, seed, lot_id, "room", band)
+                taken.update((face_i, b) for b in chunk)
+
+
+def _ground_floor(rooms, fl, facades, idxs, floor, seed, lot_id, opening):
+    poly = [tuple(p) for p in fl["polygon"]]
+    taken = set()
+    count = len(idxs)
+    for k, face_i in enumerate(idxs):
+        face = facades[face_i]
+        if face.get("role") != "front":
+            continue
+        lobby_bays = _lobby_bays(face)
+        windows = [(face_i, b) for b in lobby_bays if (face_i, b) not in taken]
+        kinds = face.get("bay_kinds") or []
+        opens = [i for i, kind in enumerate(kinds) if kind in _OPENINGS]
+        doors = [i for i, kind in enumerate(kinds) if kind == "door"]
+        anchor = doors[0] if doors else (opens[len(opens) // 2] if opens else None)
+        extra = []
+        if anchor is not None and opens and count >= 3:
+            if anchor == opens[0]:
+                prev_i = idxs[(k - 1) % count]
+                ends = _end_bays(facades[prev_i], False)
+                if ends and (prev_i, ends[0]) not in taken:
+                    extra.append((prev_i, ends[0]))
+            if anchor == opens[-1]:
+                next_i = idxs[(k + 1) % count]
+                ends = _end_bays(facades[next_i], True)
+                if ends and (next_i, ends[0]) not in taken:
+                    extra.append((next_i, ends[0]))
+        windows = windows + extra
+        if not windows:
+            continue
+        on_face = [b for fi, b in windows if fi == face_i]
+        polygon = None
+        if extra and on_face:
+            other_i = extra[0][0]
+            if other_i == idxs[(k - 1) % count]:
+                polygon = _corner_quad(
+                    facades[other_i], face,
+                    _edge_span(facades[other_i], [extra[0][1]], False),
+                    _edge_span(face, on_face, True), poly)
+            else:
+                polygon = _corner_quad(
+                    face, facades[other_i],
+                    _edge_span(face, on_face, False),
+                    _edge_span(facades[other_i], [extra[0][1]], True), poly)
+        if polygon is None and on_face:
+            polygon = _band_quad(face, min(on_face), max(on_face), poly)
+        if polygon is None:
+            continue
+        _add_room(rooms, fl, facades, windows, floor, seed, lot_id, "lobby", polygon)
+        taken.update(windows)
+    for face_i in idxs:
+        face = facades[face_i]
+        if face.get("role") != "front":
+            continue
+        free = [b for b, kind in enumerate(face.get("bay_kinds") or [])
+                if kind in ("storefront", "transom", "window", "narrow", "curtain", "mullion")
+                and (face_i, b) not in taken]
+        for run in _runs(free):
+            for chunk in _chunks(run, 3):
+                band = _band_quad(face, chunk[0], chunk[-1], poly)
+                if band is None:
+                    continue
+                _add_room(rooms, fl, facades, [(face_i, b) for b in chunk], floor, seed, lot_id, "storefront", band)
+                taken.update((face_i, b) for b in chunk)
+    if opening == "curtain":
+        office = []
+        for face_i in idxs:
+            face = facades[face_i]
+            if face.get("role") == "back":
+                continue
+            for bay, kind in enumerate(face.get("bay_kinds") or []):
+                if kind in ("curtain", "mullion") and (face_i, bay) not in taken:
+                    office.append((face_i, bay))
+        if office:
+            _add_room(rooms, fl, facades, office, floor, seed, lot_id, "office",
+                      [list(p) for p in fl["polygon"]], whole=True)
+            taken.update(office)
+    for face_i in idxs:
+        face = facades[face_i]
+        for bay, kind in enumerate(face.get("bay_kinds") or []):
+            if kind in _OPENINGS and (face_i, bay) not in taken:
+                band = _band_quad(face, bay, bay, poly)
+                if band is None:
+                    continue
+                _add_room(rooms, fl, facades, [(face_i, bay)], floor, seed, lot_id, "room", band)
+                taken.add((face_i, bay))
+
+
+def _add_room(rooms, fl, facades, windows, floor, seed, lot_id, kind, polygon, whole=False):
+    if not windows or len(polygon) < 3:
+        return None
+    ring = geom.ensure_ccw([(float(p[0]), float(p[1])) for p in polygon])
+    ring = [[round(p[0], 3), round(p[1], 3)] for p in ring]
+    number = sum(1 for room in rooms if room["floor"] == floor)
+    rid = "%s_f%d_r%d" % (lot_id, floor, number)
+    lit, curtain, side, warm, frac = _room_dress(seed, lot_id, rid, kind)
+    wins = []
+    openings = []
+    for face_i, bay in windows:
+        facades[face_i]["bay_rooms"][bay] = rid
+        wins.append({"facade": face_i, "bay": int(bay)})
+        openings.append(_opening_at(facades[face_i], bay))
+    rooms.append({
+        "id": rid,
+        "floor": int(floor),
+        "kind": kind,
+        "polygon": ring,
+        "z": fl["z"],
+        "h": fl["h"],
+        "lit": bool(lit),
+        "curtain": curtain,
+        "curtain_side": side,
+        "curtain_frac": frac,
+        "blind_warm": bool(warm),
+        "windows": wins,
+        "openings": openings,
+        "interior": "parallax",
+        "see_through": bool(whole) or _two_normals(wins, facades),
+    })
+    return rid
+
+
+def _room_dress(seed, lot_id, room_id, kind):
+    """One light and one curtain for the whole room. The bay index is not in the seed."""
+    seed = int(seed)
+    if kind in ("storefront", "lobby"):
+        bias = 0.82 if kind == "lobby" else 0.78
+        lit = geom.rnd(seed, lot_id, room_id, "room_lit") < bias
+        return lit, "none", "both", False, 0.0
+    lit = geom.rnd(seed, lot_id, room_id, "room_lit") < 0.42
+    roll = geom.rnd(seed, lot_id, room_id, "room_curtain")
+    if roll < 0.28:
+        curtain = "blind"
+    elif roll < 0.62:
+        curtain = _CURTAIN_COLOURS[int(geom.rnd(seed, lot_id, room_id, "room_colour") * 4) % 4]
+    else:
+        curtain = "none"
+    side_r = geom.rnd(seed, lot_id, room_id, "room_side")
+    if side_r < 0.34:
+        side = "left"
+    elif side_r < 0.68:
+        side = "right"
+    else:
+        side = "both"
+    warm = geom.rnd(seed, lot_id, room_id, "room_blind") < 0.5
+    frac = round(0.34 + 0.28 * geom.rnd(seed, lot_id, room_id, "room_frac"), 3)
+    return lit, curtain, side, warm, frac
+
+
+def _opening_at(face, bay):
+    pitch = float(face["pier_w"]) + float(face["opening_w"])
+    kind = (face.get("bay_kinds") or [None])[bay]
+    width = float(face["opening_w"]) * (0.58 if kind == "narrow" else 1.0)
+    t = bay * pitch + float(face["pier_w"]) + width * 0.5
+    ax, ay = float(face["a"][0]), float(face["a"][1])
+    bx, by = float(face["b"][0]), float(face["b"][1])
+    length = float(face["length"] or 1.0)
+    tx, ty = (bx - ax) / length, (by - ay) / length
+    return {
+        "center": [round(ax + tx * t, 3), round(ay + ty * t, 3)],
+        "normal": [round(float(face["normal"][0]), 4), round(float(face["normal"][1]), 4)],
+        "width": round(width, 3),
+    }
+
+
+def _two_normals(windows, facades):
+    normals = []
+    for window in windows:
+        normal = facades[window["facade"]]["normal"]
+        if not any(abs(normal[0] * other[0] + normal[1] * other[1]) > 0.98 for other in normals):
+            normals.append(normal)
+    for i in range(len(normals)):
+        for j in range(i + 1, len(normals)):
+            dot = normals[i][0] * normals[j][0] + normals[i][1] * normals[j][1]
+            if dot < 0.5:
+                return True
+    return False
+
+
+def _end_bays(face, from_start):
+    """Openings at one end of an edge. A second bay joins when the edge is wide."""
+    kinds = face.get("bay_kinds") or []
+    opens = [i for i, kind in enumerate(kinds) if kind in _OPENINGS]
+    if not opens:
+        return []
+    if from_start:
+        chosen = [opens[0]]
+        if len(opens) >= 5 and opens[1] == opens[0] + 1:
+            chosen.append(opens[1])
+        return chosen
+    chosen = [opens[-1]]
+    if len(opens) >= 5 and opens[-2] + 1 == opens[-1]:
+        chosen.append(opens[-2])
+    return chosen
+
+
+def _lobby_bays(face):
+    kinds = face.get("bay_kinds") or []
+    opens = [i for i, kind in enumerate(kinds) if kind in _OPENINGS]
+    if not opens:
+        return []
+    doors = [i for i, kind in enumerate(kinds) if kind == "door"]
+    anchor = doors[0] if doors else opens[len(opens) // 2]
+    pos = opens.index(anchor) if anchor in opens else len(opens) // 2
+    chosen = [opens[pos]]
+    if pos > 0:
+        chosen.append(opens[pos - 1])
+    if pos + 1 < len(opens):
+        chosen.append(opens[pos + 1])
+    return chosen
+
+
+def _convex_corner(prev, nxt):
+    d0 = _dir(prev["a"], prev["b"])
+    d1 = _dir(nxt["a"], nxt["b"])
+    return d0[0] * d1[1] - d0[1] * d1[0] > 1e-4
+
+
+def _dir(a, b):
+    dx = float(b[0]) - float(a[0])
+    dy = float(b[1]) - float(a[1])
+    length = math.hypot(dx, dy) or 1.0
+    return (dx / length, dy / length)
+
+
+def _edge_span(face, bays, from_start):
+    """How far a corner room runs along an edge: the claimed bays, up to about 4 m."""
+    length = float(face["length"] or 0.0)
+    pitch = float(face["pier_w"]) + float(face["opening_w"])
+    if not bays or pitch <= 0 or length <= 0:
+        return min(4.0, max(length, 0.0) * 0.45)
+    if from_start:
+        need = min(length, (max(bays) + 1) * pitch)
+    else:
+        need = max(0.0, length - min(bays) * pitch)
+    target = max(need, min(4.0, length * 0.45))
+    return min(length * 0.98, target)
+
+
+def _corner_quad(prev, nxt, span_prev, span_next, floor_poly):
+    """CCW quad inside a convex corner. p0 is the footprint corner."""
+    corner = (float(nxt["a"][0]), float(nxt["a"][1]))
+    d_prev = _dir(prev["a"], prev["b"])
+    d_next = _dir(nxt["a"], nxt["b"])
+    span_prev = max(0.4, float(span_prev))
+    span_next = max(0.4, float(span_next))
+    for _ in range(10):
+        p0 = corner
+        p1 = (corner[0] + d_next[0] * span_next, corner[1] + d_next[1] * span_next)
+        p2 = (p1[0] - d_prev[0] * span_prev, p1[1] - d_prev[1] * span_prev)
+        p3 = (corner[0] - d_prev[0] * span_prev, corner[1] - d_prev[1] * span_prev)
+        quad = [p0, p1, p2, p3]
+        if all(geom.point_in_poly(p, floor_poly) for p in quad) and abs(geom.poly_area(quad)) > 0.8:
+            return quad
+        span_prev *= 0.72
+        span_next *= 0.72
+        if span_prev < 0.35 and span_next < 0.35:
+            break
+    return None
+
+
+def _band_quad(face, first, last, floor_poly):
+    """A room along one facade. The outer edge sits on the footprint."""
+    length = float(face["length"] or 1.0)
+    pitch = float(face["pier_w"]) + float(face["opening_w"])
+    t0 = max(0.0, first * pitch)
+    t1 = min(length, (last + 1) * pitch)
+    if t1 - t0 < 0.35:
+        t1 = min(length, t0 + 0.35)
+    ax, ay = float(face["a"][0]), float(face["a"][1])
+    dx, dy = _dir(face["a"], face["b"])
+    ix, iy = -float(face["normal"][0]), -float(face["normal"][1])
+    sx, sy = geom.spans(floor_poly) if floor_poly else (length, length)
+    depth = min(4.2, 0.35 * max(1.0, min(sx, sy)))
+    depth = max(1.5, depth)
+    for _ in range(10):
+        p0 = (ax + dx * t0, ay + dy * t0)
+        p1 = (ax + dx * t1, ay + dy * t1)
+        p2 = (p1[0] + ix * depth, p1[1] + iy * depth)
+        p3 = (p0[0] + ix * depth, p0[1] + iy * depth)
+        quad = [p0, p1, p2, p3]
+        if geom.point_in_poly(p2, floor_poly) and geom.point_in_poly(p3, floor_poly) and abs(geom.poly_area(quad)) > 0.5:
+            return quad
+        depth *= 0.7
+        if depth < 0.55:
+            break
+    return None
+
+
+def _runs(indices):
+    if not indices:
+        return []
+    indices = sorted(indices)
+    runs = [[indices[0]]]
+    for index in indices[1:]:
+        if index == runs[-1][-1] + 1:
+            runs[-1].append(index)
+        else:
+            runs.append([index])
+    return runs
+
+
+def _chunk_run(run):
+    if len(run) >= 6:
+        size = 3
+    elif len(run) >= 3:
+        size = 2
+    else:
+        size = 1
+    return _chunks(run, size)
+
+
+def _chunks(run, size):
+    return [run[i:i + size] for i in range(0, len(run), size)]
 
 
 def balconies(facades, style):
