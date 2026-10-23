@@ -3,7 +3,7 @@
 Cloud agent marker for LUCA. Invariants were read from `docs/AGENT_OPS/INVARIANTS.md` before this change. No protected value was edited.
 
 - PR: https://github.com/kennyhassmusic/sky-city/pull/6
-- Commit: per-face UVs and the 24×19 window rect. Code `a8d7ef8`. Spawn record remains `35b8bdd`. The mesh commit is the one that lands the GLBs and the two new frames.
+- Commit: `9c6b8bf` (uniform facade UVs, downtown street day, tower-side close-up). Code is `a8d7ef8`. Spawn record remains `35b8bdd`.
 - Branch: `cursor/citywide-generate-04ef`
 - Base: `cursor/road-dressing-stage1-04ef`
 - ALLOW-CHANGE: none
