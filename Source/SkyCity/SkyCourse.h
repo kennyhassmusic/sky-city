@@ -292,6 +292,8 @@ public:
 	// --- the MCP server (off until the player or a config switch turns it on) ---
 	bool SetMcpEnabled(bool bOn);
 	bool IsMcpEnabled() const;
+	/** Who's connected through the LLM link: a friendly app name ("Claude Desktop"), or empty if nobody yet / not lately. */
+	FString McpClient() const;
 	/** Thread-safe: the MCP server queues work here and it runs on the game thread next tick. */
 	void RunOnGameThread(TFunction<void()> Work);
 
@@ -380,6 +382,9 @@ public:
 	void Stop();
 	bool IsRunning() const;
 	FString Url() const;
+	/** The AI app that last connected (its clientInfo name, e.g. "claude-ai"), and seconds since it was last heard from. */
+	FString ClientName() const;
+	double SecondsSinceClient() const;
 private:
 	TWeakObjectPtr<ASkyCourseMode> Mode;
 	struct FState;

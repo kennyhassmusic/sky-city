@@ -11,6 +11,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/Paths.h"
+#include "HAL/PlatformApplicationMisc.h"
+#include "HAL/PlatformProcess.h"
 #include "ProceduralMeshComponent.h"
 #include "Serialization/JsonSerializer.h"
 #include "Policies/CondensedJsonPrintPolicy.h"
@@ -1080,7 +1082,11 @@ TArray<FSkyCourseBuilderImpl::FItem> FSkyCourseBuilderImpl::BuildItems() const
 	Add(EMenuItem::Laps, TEXT("Laps"), FString::FromInt(C.Laps), true);
 	Add(EMenuItem::Opponents, TEXT("Opponents"), FString::FromInt(C.Opponents), true);
 	Add(EMenuItem::Skill, TEXT("AI skill"), FString::Printf(TEXT("%.1f"), C.Skill), true);
-	Add(EMenuItem::Llm, TEXT("LLM link"), Mode->IsMcpEnabled() ? TEXT("ON") : TEXT("OFF"));
+	const FString Client = Mode->McpClient();
+	Add(EMenuItem::Llm, TEXT("LLM link"), !Mode->IsMcpEnabled() ? TEXT("OFF") : Client.IsEmpty() ? TEXT("ON") : FString::Printf(TEXT("ON: %s"), *Client));
+	Add(EMenuItem::ConnectClaude, TEXT("   Install in Claude Desktop"));
+	Add(EMenuItem::CopyClaudeCode, TEXT("   Copy Claude Code command"));
+	Add(EMenuItem::CopyAddress, TEXT("   Copy address (other AI apps)"));
 	// the line being edited, when it's a branch of a split
 	FOwner O;
 	if (P->EditSeq != 0 && FindOwner(C, P->EditSeq, O))
@@ -1165,6 +1171,27 @@ void FSkyCourseBuilderImpl::Activate(EMenuItem Id)
 		break;
 	}
 	case EMenuItem::Garage: Screen = EBuilderScreen::Garage; GarageSel = 0; break;
+	case EMenuItem::ConnectClaude:
+	{
+		// the extension only talks to the LLM link, so switch the link on first
+		if (!Mode->IsMcpEnabled() && !Mode->SetMcpEnabled(true)) { Toast(TEXT("The LLM link couldn't start"), TEXT("Is port 47800 already in use?"), true); break; }
+		const FString File = FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir() / TEXT("SkyCity/Connect/SkyCity.mcpb"));
+		if (!FPaths::FileExists(File)) { Toast(TEXT("The Claude extension is missing from this build"), TEXT("see docs/COURSE_MCP.md to connect by hand"), true); break; }
+		// macOS hands the .mcpb to Claude Desktop, which shows its own Install window
+		FPlatformProcess::LaunchFileInDefaultExternalApplication(*File, nullptr, ELaunchVerb::Open, false);
+		Toast(TEXT("Opening Claude Desktop"), TEXT("click Install in Claude's window, then ask Claude to build you a course"));
+		break;
+	}
+	case EMenuItem::CopyClaudeCode:
+		if (!Mode->IsMcpEnabled()) Mode->SetMcpEnabled(true);
+		FPlatformApplicationMisc::ClipboardCopy(*FString::Printf(TEXT("claude mcp add --transport http skycity http://127.0.0.1:%d/mcp"), SkyCourse::McpPort));
+		Toast(TEXT("Copied the Claude Code command"), TEXT("paste it into Terminal once, then ask Claude Code for a course"));
+		break;
+	case EMenuItem::CopyAddress:
+		if (!Mode->IsMcpEnabled()) Mode->SetMcpEnabled(true);
+		FPlatformApplicationMisc::ClipboardCopy(*FString::Printf(TEXT("http://127.0.0.1:%d/mcp"), SkyCourse::McpPort));
+		Toast(TEXT("Copied the address"), TEXT("for AI apps that connect to MCP servers over HTTP"));
+		break;
 	case EMenuItem::BranchLaps:
 	{
 		FOwner O;

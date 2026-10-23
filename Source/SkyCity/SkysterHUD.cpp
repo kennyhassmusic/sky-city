@@ -255,7 +255,13 @@ void ASkysterHUD::DrawGarage(const ASkysterCar& Car, float S)
 		Text(TEXT("RB / T: traffic   ·   LB / C: cabs"), X + W, Y + 4.f * S, 0.8f * S, Dim, true);
 		Y += 40.f * S;
 	}
-	Text(TEXT("D-pad left / right: car level (testing)   ·   A: handling   ·   X: next map (Sky City, McGregor, night, Course Builder)   ·   Y: reset challenges   ·   B / Menu: back"), X, Y, 0.8f * S, Dim);
+	if (!SkyCourse::IsBuildMode(Car.GetWorld()))
+	{
+		Text(TEXT("COURSE BUILDER: press View (R)"), X, Y, 1.0f * S, Gold);
+		Text(TEXT("build your own Hot Wheels-style tracks, race AI cars, let Claude build with you"), X + W, Y + 4.f * S, 0.8f * S, Dim, true);
+		Y += 40.f * S;
+	}
+	Text(TEXT("D-pad left / right: car level (testing)   ·   A: handling   ·   X: next map   ·   Y: reset challenges   ·   B / Menu: back"), X, Y, 0.8f * S, Dim);
 	Y += 40.f * S;
 	Text(TEXT("RT throttle · X brake · LT reverse (air: air brake) · A jump, again + stick = flip · B boost · RB slide · in the air X / RB roll"), X, Y, 0.72f * S, Faint);
 	Y += 28.f * S;

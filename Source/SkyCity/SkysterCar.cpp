@@ -780,6 +780,12 @@ void ASkysterCar::Garage(const FDriverInput& S)
 	if (S.bNavRB) ToggleTraffic(false);
 	if (S.bNavY) { Progress.Reset(*this); Toast(TEXT("Challenges reset"), TEXT("back to level 1 · Stock")); }
 	if (S.bNavB) bGarage = false;
+	// View / R: straight into the Course Builder (McGregor opened with ?mode=build), one press from any map
+	if (S.bResetHit && !SkyCourse::IsBuildMode(GetWorld()))
+	{
+		UGameplayStatics::OpenLevel(this, FName(TEXT("/Game/Maps/McGregor")), true, TEXT("mode=build"));
+		return;
+	}
 	if (S.bNavX && Maps.Num() > 0)
 	{
 		// entries are map paths, optionally with URL options ("/Game/Maps/McGregor?mode=build" is the Course Builder)

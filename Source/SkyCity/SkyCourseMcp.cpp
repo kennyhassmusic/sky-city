@@ -1616,6 +1616,8 @@ struct FSkyCourseMcp::FState
 	uint32 RoundRobin = 0;
 	int32 Budget = 0;
 	FObj ToolsListCache;
+	FString LastClient;          // clientInfo.name of the last initialize
+	double LastClientT = 0;      // FPlatformTime::Seconds() of the last request from a client
 
 	bool Open(FString& Err)
 	{
@@ -1965,7 +1967,7 @@ struct FSkyCourseMcp::FState
 		}
 		if (Method == TEXT("ping")) return RpcResult(Id, NewObj());
 		if (Method == TEXT("tools/list")) return RpcResult(Id, ToolsList());
-		if (Method == TEXT("tools/call")) return DoToolCall(Id, Params);
+		if (Method == TEXT("tools/call")) { LastClientT = FPlatformTime::Seconds(); return DoToolCall(Id, Params); }
 		return RpcError(Id, -32601, FString::Printf(TEXT("Method not found: %s"), *Method.Left(80)));
 	}
 
@@ -1983,7 +1985,9 @@ struct FSkyCourseMcp::FState
 			(*Info)->TryGetStringField(TEXT("name"), N);
 			(*Info)->TryGetStringField(TEXT("version"), V);
 			Client = (N + TEXT(" ") + V).Left(80);
+			LastClient = N.Left(40);
 		}
+		LastClientT = FPlatformTime::Seconds();
 		OutSession = FGuid::NewGuid().ToString(EGuidFormats::DigitsWithHyphensLower);
 		if (Sessions.Num() >= MaxSessions)
 		{
@@ -2117,6 +2121,8 @@ void FSkyCourseMcp::Stop()
 }
 
 bool FSkyCourseMcp::IsRunning() const { return State.IsValid() && State->ListenFd >= 0; }
+FString FSkyCourseMcp::ClientName() const { return State.IsValid() ? State->LastClient : FString(); }
+double FSkyCourseMcp::SecondsSinceClient() const { return State.IsValid() && State->LastClientT > 0 ? FPlatformTime::Seconds() - State->LastClientT : 1e9; }
 
 FString FSkyCourseMcp::Url() const
 {

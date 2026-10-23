@@ -52,7 +52,8 @@ enum class EBuilderScreen : uint8 { Build, Menu, Load, Name, Garage };
 enum class EMenuItem : uint8
 {
 	Resume, NewCourse, Save, Load, Rename, Example, Undo, Skin, Laps, Opponents, Skill, Llm,
-	BranchLanes, BranchAngle, BranchLaps, Gate, MergeLength, MergeLanes, Garage
+	BranchLanes, BranchAngle, BranchLaps, Gate, MergeLength, MergeLanes, Garage,
+	ConnectClaude, CopyClaudeCode, CopyAddress   // the LLM link's one-click connect helpers
 };
 
 class FSkyCourseBuilderImpl

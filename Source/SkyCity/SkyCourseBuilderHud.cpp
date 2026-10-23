@@ -441,7 +441,7 @@ void FSkyCourseBuilderImpl::DrawMenu()
 		if (!V.IsEmpty())
 		{
 			FLinearColor Vc = bSel ? Cyan : Dim;
-			if (It.Id == EMenuItem::Llm) Vc = V == TEXT("ON") ? Green : Dim;
+			if (It.Id == EMenuItem::Llm) Vc = V.StartsWith(TEXT("ON")) ? Green : Dim;
 			if (It.bAdjust && bSel) V = TEXT("<  ") + V + TEXT("  >");
 			while (V.Len() > 8 && TextW(V, 0.9f * S) > PW * 0.55f) V = V.Left(V.Len() - 4) + TEXT("...");
 			Text(V, X + PW - 30.f * S, Yy + 3.f * S, 0.9f * S, Vc, 2);
@@ -453,7 +453,19 @@ void FSkyCourseBuilderImpl::DrawMenu()
 	const FItem& Cur = Items.IsValidIndex(MenuSel) ? Items[MenuSel] : FItem();
 	const float Fy = Y + PH - 96.f * S;
 	Panel(X + 14.f * S, Fy, PW - 28.f * S, 1.f * S, Faint);
-	if (Cur.Id == EMenuItem::Llm)
+	if (Cur.Id == EMenuItem::ConnectClaude)
+	{
+		Text(TEXT("One click: Claude Desktop opens its Install window. Click Install, then start a new chat"), X + 28.f * S, Fy + 10.f * S, 0.8f * S, Ink);
+		Text(TEXT("and ask: \"Build me a 3-lap Sky City course with a big loop and a split.\""), X + 28.f * S, Fy + 36.f * S, 0.8f * S, Cyan);
+		Text(TEXT("Switches the LLM link on. This computer only, courses only."), X + 28.f * S, Fy + 62.f * S, 0.72f * S, Dim);
+	}
+	else if (Cur.Id == EMenuItem::CopyClaudeCode || Cur.Id == EMenuItem::CopyAddress)
+	{
+		Text(Cur.Id == EMenuItem::CopyClaudeCode ? TEXT("Copies:  claude mcp add --transport http skycity http://127.0.0.1:47800/mcp") : TEXT("Copies:  http://127.0.0.1:47800/mcp"), X + 28.f * S, Fy + 10.f * S, 0.8f * S, Ink);
+		Text(Cur.Id == EMenuItem::CopyClaudeCode ? TEXT("Paste it into Terminal once. Claude Code then has the course tools whenever the link is on.") : TEXT("For AI apps that connect to MCP servers over HTTP (Streamable HTTP)."), X + 28.f * S, Fy + 36.f * S, 0.8f * S, Dim);
+		Text(TEXT("Switches the LLM link on. This computer only, courses only."), X + 28.f * S, Fy + 62.f * S, 0.72f * S, Dim);
+	}
+	else if (Cur.Id == EMenuItem::Llm)
 	{
 		Text(Mode->IsMcpEnabled() ? TEXT("LLM link is ON: this computer only, courses only") : TEXT("LLM link is OFF. A switches it on: this computer only, courses only"), X + 28.f * S, Fy + 10.f * S, 0.8f * S, Ink);
 		Text(TEXT("URL   http://127.0.0.1:47800/mcp"), X + 28.f * S, Fy + 36.f * S, 0.85f * S, Cyan);

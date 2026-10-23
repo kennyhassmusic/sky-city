@@ -1,0 +1,50 @@
+{
+  "manifest_version": "0.3",
+  "name": "sky-city-courses",
+  "display_name": "Sky City Course Builder",
+  "version": "0.2.2",
+  "description": "Let Claude build Hot Wheels-style race courses in the Sky City game while you watch.",
+  "long_description": "Connects Claude to the Sky City game on this Mac. With the game's Course Builder open and its LLM link switched on, Claude can read the course guide, lay track pieces (loops, jumps, banked curves, splits), save and load courses, and start a race against AI cars. It only talks to the game on this computer (127.0.0.1) and only edits courses: no files, no internet.",
+  "author": {
+    "name": "Kenny Hass Music LLC",
+    "url": "https://kornontheken.itch.io/sky-city"
+  },
+  "homepage": "https://kornontheken.itch.io/sky-city",
+  "documentation": "https://github.com/kennyhassmusic/sky-city/blob/main/docs/COURSE_MCP.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kennyhassmusic/sky-city"
+  },
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "keywords": ["game", "sky city", "race track", "course builder", "unreal"],
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/index.js"],
+      "env": {}
+    }
+  },
+  "tools": [
+    { "name": "get_course_guide", "description": "Read the course-building guide (call first)" },
+    { "name": "get_player", "description": "Where the player's car is, and the build area" },
+    { "name": "new_course", "description": "Start a new course" },
+    { "name": "add_pieces", "description": "Add track pieces" },
+    { "name": "remove_pieces", "description": "Remove track pieces" },
+    { "name": "update_piece", "description": "Change one piece or the course settings" },
+    { "name": "set_course", "description": "Replace the whole course" },
+    { "name": "get_course", "description": "The course and its facts" },
+    { "name": "list_courses", "description": "Saved courses" },
+    { "name": "save_course", "description": "Save the course" },
+    { "name": "load_course", "description": "Load a saved course" },
+    { "name": "start_race", "description": "Start a race, with AI opponents if wanted" },
+    { "name": "stop_race", "description": "Stop the race" },
+    { "name": "get_results", "description": "Race results and best times" },
+    { "name": "sky_city_status", "description": "Check the link to the game" }
+  ],
+  "compatibility": {
+    "platforms": ["darwin"],
+    "runtimes": { "node": ">=18.0.0" }
+  }
+}

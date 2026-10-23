@@ -566,6 +566,18 @@ bool ASkyCourseMode::SetMcpEnabled(bool bOn)
 
 bool ASkyCourseMode::IsMcpEnabled() const { return Mcp.IsValid() && Mcp->IsRunning(); }
 
+FString ASkyCourseMode::McpClient() const
+{
+	if (!IsMcpEnabled()) return FString();
+	const FString N = Mcp->ClientName();
+	// a client counts as connected while it has been heard from in the last 10 minutes (an idle chat stays open)
+	if (N.IsEmpty() || Mcp->SecondsSinceClient() > 600.0) return FString();
+	if (N.Equals(TEXT("claude-ai"), ESearchCase::IgnoreCase) || N.Contains(TEXT("Claude Desktop"))) return TEXT("Claude Desktop");
+	if (N.Contains(TEXT("claude-code"), ESearchCase::IgnoreCase)) return TEXT("Claude Code");
+	if (N.Contains(TEXT("cursor"), ESearchCase::IgnoreCase)) return TEXT("Cursor");
+	return N;
+}
+
 void ASkyCourseMode::RunOnGameThread(TFunction<void()> Work)
 {
 	FScopeLock L(&PendingLock);
