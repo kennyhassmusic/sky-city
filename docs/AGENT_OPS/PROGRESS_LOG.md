@@ -24,6 +24,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 - SCALE CHECK: no change
 - Next: when `Art/ai_textures/` lands, the same schema picks it up
 
+## 2026-10-23 05:20 UTC — cursor cloud agent — per-face facade UVs
+- State at start: `cursor/citywide-generate-04ef` (PR #6) at `a8e211a`. Kenny: brick windows were wide and short, and tower sides were stretched.
+- Did: commits `a4ca888` and `a8d7ef8`. Each face is UV'd from its own width and height (`U = width / meters_u`, `V = height / meters_v`) with one scale on both axes. Whole windows keep the 24×19 lit rect in `T_CG_Facade_*.png`. Leftover length is a pilaster. `python3 -I Scripts/city/test_face_uv.py` checks exported buildings and the Blender build exits if density or window aspect is outside 3%. Re-rendered downtown street day and a tower-side close-up only. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. GLBs 47.4 MB, each file under 22 MB. UV faces 371996, density fails 0, windows 54448, window fails 0, target aspect 1.2632. Worst density ratio 1.0134 (1.3%). Histograms at exposure 0: downtown street day median 107.3, crushed 0.006, midtones 0.977, p95 193.7; tower side day median 173.1, crushed 0.000, midtones 0.881, p95 212.0.
+- Found: the shop-band call was one argument short and stopped the first mesh. Fixed before the render.
+- Asks for Kenny: none tonight. Deferred in `Design/ROADMAP.md` under Next: floating bases, ground surfaces, grime, roofs, Blender hardening and a mesh census, six-view sheets, loader floor bugs.
+- SCALE CHECK: no change
+- Next: the deferred list above. Do not start it until asked.
+
 ## 2026-10-23 04:48 UTC — cursor cloud agent — bases, streets and flat roofs
 - State at start: `cursor/citywide-generate-04ef` (PR #6) had curtain-wall daylight frames. Kenny: buildings floated, the ground was one olive plane, facade stains looked like holes, and flat roofs were bare.
 - Did: commit `1eeae41` in `Scripts/city/blender_city.py`. A concrete plinth meets each wall. The fill plane is concrete at street level. Sidewalks follow the ground-floor frontage. Grass stays on the planned parkway. A street camera that is not on asphalt or sidewalk gets a carriageway under it. Leak decals are skipped. Flat roofs keep a parapet at least a metre tall, plus HVAC, a stair bulkhead and a water tank when the roof record lacks them. Commit `44715a5` replaces the city GLBs (about 85 MB, each file under 22 MB, 22 core buildings) and re-renders the same four cameras. Hash unchanged `1e7ebb8635888c40699841b78beac5391e23200eb70247f118f4d0cc2b6390bf`. Tests: `python3 -I Scripts/city/test_generate_city.py` (OK), `python3 -I Scripts/city/test_city.py` (46 OK). Histograms at exposure 0: aerial day median 143.3 (crushed 0.000), downtown street day 77.5 (0.007), residential day 132.6 (0.005), downtown street dusk 85.2 (0.006, p95 203.5).

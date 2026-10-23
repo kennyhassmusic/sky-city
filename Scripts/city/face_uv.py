@@ -81,7 +81,10 @@ def load_scans(root=None):
     import json
     root = root or project_root()
     path = os.path.join(root, "SourceArt", "CityGen", "materials", "materials.json")
-    record = json.load(open(path)) if os.path.isfile(path) else {}
+    if not os.path.isfile(path):
+        return {}
+    with open(path) as handle:
+        record = json.load(handle)
     scans = {}
     for slot, ident in SLOT.items():
         info = record.get(ident) or {}
@@ -352,7 +355,8 @@ def _score_indexed(positions, uvs, indices, material, scans, sink):
 def scan_glb(path, scans):
     """Score one exported GLB. Returns the sink, with a file name on each worst row."""
     import json
-    data = open(path, "rb").read()
+    with open(path, "rb") as handle:
+        data = handle.read()
     json_len, json_type = struct.unpack_from("<II", data, 12)
     if json_type != 0x4E4F534A:
         raise ValueError("not a glTF JSON chunk: %s" % path)
