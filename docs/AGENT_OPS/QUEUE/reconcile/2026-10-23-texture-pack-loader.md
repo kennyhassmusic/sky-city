@@ -3,7 +3,7 @@
 Cloud agent marker for LUCA. Invariants were read from `docs/AGENT_OPS/INVARIANTS.md` before this change. No protected value was edited.
 
 - PR: https://github.com/kennyhassmusic/sky-city/pull/5
-- Commit: `784177c`
+- Commit: `953399e` wraps facade tiles by `floors_in_tile`, keeps tile and window wrap fields, and loads `equipment/`. Schema loader remains `784177c`.
 - Branch: `cursor/texture-pack-loader-04ef`
 - Base: `cursor/city-block-realism-04ef`
 - Parent: `cd8b893`
