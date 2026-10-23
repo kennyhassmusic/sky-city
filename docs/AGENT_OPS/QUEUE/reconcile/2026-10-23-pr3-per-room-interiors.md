@@ -6,7 +6,7 @@ Cloud agent marker for LUCA. Invariants were read from `docs/AGENT_OPS/INVARIANT
 - Branch: `cursor/city-block-realism-04ef`
 - Base: `main`
 - Parent at start: `e1f8edf`
-- Commit: the commit that adds this file on `cursor/city-block-realism-04ef`
+- Commit: `2c569c5172b17a748b8ea0813799f533c8b9188b`
 - ALLOW-CHANGE: none
 - city-sample: unchanged (`CitySamplePCG` stays)
 - pr-guard-lfs: unchanged (25 / 100 / 300 MB)
