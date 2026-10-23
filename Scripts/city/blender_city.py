@@ -11,7 +11,9 @@ Unreal imports them at the world origin: plan north on +X, plan east on +Y.
 A glazed floor is a curtain wall: mullions, a spandrel at each slab, tinted
 reflective glass, and an opaque interior behind every pane. Facade UVs repeat
 at the texture's meters_u and meters_v. Bays are whole modules of bay_m, so a
-window is not stretched to the wall width.
+window is not stretched to the wall width. The base is a concrete plinth on
+the planned sidewalks and asphalt. Grass is only the parkway. Flat roofs get
+a parapet and roof units.
 
 Run:
   blender -b --factory-startup -P Scripts/city/blender_city.py
@@ -108,10 +110,14 @@ def main():
     res_obs = _mesh_list(residential, lib, res_col, keep_tall_rooms=True)
     core_bounds = _bounds(core, 28.0)
     res_bounds = _bounds(residential, 22.0)
-    core_street = _street(city, core_bounds, lib, protos, "CoreStreet")
-    res_street = _street(city, res_bounds, lib, protos, "ResStreet")
+    core_street = _street(city, core_bounds, lib, protos, "CoreStreet", core)
+    res_street = _street(city, res_bounds, lib, protos, "ResStreet", residential)
     locked = _cameras_from_manifest()
     cams = locked if locked else _cameras(anchor, pair, core, residential)
+    core_col = bpy.data.collections["CoreStreet"]
+    res_col = bpy.data.collections["ResStreet"]
+    core_street.extend(_camera_asphalt(city, cams["downtown_street"], lib, core_col, "downtown"))
+    res_street.extend(_camera_asphalt(city, cams["residential_street"], lib, res_col, "residential"))
     if locked:
         print("CITY cameras from manifest", flush=True)
     _render(cams, core_obs, core_street, res_obs, res_street)
@@ -514,9 +520,88 @@ def _city_rooms(mesh, building, lib):
     return _ORIG_ROOMS(mesh, copy, lib)
 
 
+def _no_streak(*_args, **_kwargs):
+    return None
+
+
+def _tall_parapet(mesh, poly, z, height, mat):
+    """A low lip disappears against a flat grey deck. Keep at least a metre."""
+    _ORIG_PARAPET(mesh, poly, z, max(float(height or 0), 1.05), mat)
+
+
+def _deck_z(building):
+    floors = building.get("floors") or []
+    if not floors:
+        return 0.0
+    roof = building.get("roof") or {}
+    top = floors[-1]
+    z = float(roof.get("z") or (float(top["z"]) + float(top["h"]))) + profiles.CURB_RISE
+    shape = roof.get("shape") or "flat"
+    h = float(roof.get("h") or 1.0)
+    if shape == "setback":
+        return z + max(3.0, h)
+    if shape == "mansard":
+        return z + max(2.2, h * 0.72) + 0.16
+    return z + 0.16
+
+
+def _ensure_clutter(mesh, building, deck, metal, roof_mat):
+    """HVAC, a stair bulkhead and a tank, when the roof record does not already have them."""
+    floors = building.get("floors") or []
+    roof = building.get("roof") or {}
+    if not floors or (roof.get("shape") or "flat") not in ("flat", "parapet", "setback", "mansard"):
+        return
+    poly = [(float(p[0]), float(p[1])) for p in floors[-1]["polygon"]]
+    if len(poly) < 3 or abs(geom.poly_area(poly)) < 40:
+        return
+    have = {unit.get("kind") for unit in roof.get("units") or []}
+    centre = geom.centroid(poly)
+    span = max(geom.spans(poly))
+    offsets = {"hvac": (0.22, 0.06), "stair": (-0.18, 0.14), "water_tank": (0.04, -0.2)}
+    for kind, (ox, oy) in offsets.items():
+        if kind in have:
+            continue
+        x = centre[0] + ox * span * 0.4
+        y = centre[1] + oy * span * 0.4
+        if not geom.point_in_poly((x, y), poly):
+            x, y = centre
+        bb._unit(mesh, {"kind": kind, "x": x, "y": y, "z": deck}, metal, roof_mat)
+
+
+def _terrace_parapets(mesh, building, trim, metal, roof_mat):
+    """A setback leaves a bare slab. Give that terrace a parapet and one unit."""
+    floors = building.get("floors") or []
+    for index in range(len(floors) - 1):
+        lower, upper = floors[index], floors[index + 1]
+        if float(upper.get("inset") or 0) < float(lower.get("inset") or 0) + 0.8:
+            continue
+        poly = [(float(p[0]), float(p[1])) for p in lower.get("polygon") or []]
+        if len(poly) < 3:
+            continue
+        z = float(lower["z"]) + profiles.CURB_RISE + float(lower["h"])
+        bb._parapet(mesh, poly, z, 0.95, trim)
+        if abs(geom.poly_area(poly)) < 120:
+            continue
+        inner = [(float(p[0]), float(p[1])) for p in upper.get("polygon") or []]
+        centre = geom.centroid(poly)
+        tower = geom.centroid(inner) if len(inner) >= 3 else centre
+        dx, dy = centre[0] - tower[0], centre[1] - tower[1]
+        length = math.hypot(dx, dy) or 1.0
+        x = tower[0] + dx / length * (length + 2.5)
+        y = tower[1] + dy / length * (length + 2.5)
+        if geom.point_in_poly((x, y), poly) and not (inner and geom.point_in_poly((x, y), inner)):
+            bb._unit(mesh, {"kind": "hvac", "x": x, "y": y, "z": z}, metal, roof_mat)
+
+
+def _city_roof(mesh, building, wall, trim, metal, roof_mat):
+    _ORIG_ROOF(mesh, building, wall, trim, metal, roof_mat)
+    _ensure_clutter(mesh, building, _deck_z(building), metal, roof_mat)
+    _terrace_parapets(mesh, building, trim, metal, roof_mat)
+
+
 def _install_facades(lib, record):
     """City-only. The CG block previews keep the original facade builder."""
-    global _ORIG_FACADE, _ORIG_WINDOW, _ORIG_ROOMS
+    global _ORIG_FACADE, _ORIG_WINDOW, _ORIG_ROOMS, _ORIG_ROOF, _ORIG_PARAPET
     _stamp_scales(lib, record)
     if "curtain_glass" not in lib:
         lib["curtain_glass"] = _curtain_glass("M_CurtainGlass", 0.04)
@@ -524,10 +609,16 @@ def _install_facades(lib, record):
     _ORIG_FACADE = bb._facade
     _ORIG_WINDOW = bb._window
     _ORIG_ROOMS = realism.build_rooms
+    _ORIG_ROOF = bb._roof
+    _ORIG_PARAPET = bb._parapet
     bb.Mesh._uv = _uv_metres
     bb._facade = _city_facade
     bb._window = _city_window
     realism.build_rooms = _city_rooms
+    # The leak decal reads as a dark cone stuck in the wall. City shots skip it.
+    realism._streak_under = _no_streak
+    bb._parapet = _tall_parapet
+    bb._roof = _city_roof
 
 
 def _shell(spec, keep_tall_rooms):
@@ -662,14 +753,95 @@ def _segment_enter(a, b, bounds):
     return hits[0][1]
 
 
-def _street(city, bounds, lib, protos, name):
+def _on_surface(city, x, y, kind):
+    surfaces = ((city.get("streetscape") or {}).get("surfaces") or {}).get(kind) or []
+    point = (float(x), float(y))
+    for poly in surfaces:
+        ring = [(float(p[0]), float(p[1])) for p in poly.get("polygon") or []]
+        if len(ring) >= 3 and geom.point_in_poly(point, ring):
+            return True
+    return False
+
+
+def _lot_pads(specs, lib, col, name):
+    """A plinth under each wall, and a sidewalk band so the lot meets the facade."""
+    plinth = bb.Mesh(name + "_Plinth")
+    walk = bb.Mesh(name + "_Frontage")
+    rise = profiles.CURB_RISE
+    for spec in specs:
+        ring = [(float(p[0]), float(p[1])) for p in spec.get("footprint") or []]
+        if len(ring) < 3:
+            continue
+        plinth.prism(ring, 0.0, rise + 0.02, lib["concrete"])
+        outer = geom.offset_polygon(ring, -0.45)
+        if outer and abs(geom.poly_area(outer)) > abs(geom.poly_area(ring)) + 0.5:
+            plinth.prism(outer, 0.0, rise + 0.01, lib["concrete"])
+        for facade in spec.get("facades") or []:
+            if int(facade.get("floor") or 0) != 0:
+                continue
+            a, b = facade.get("a"), facade.get("b")
+            normal = facade.get("normal") or (0.0, 1.0)
+            if not a or not b:
+                continue
+            width = 2.8
+            nx, ny = float(normal[0]), float(normal[1])
+            poly = [
+                (float(a[0]), float(a[1])),
+                (float(b[0]), float(b[1])),
+                (float(b[0]) + nx * width, float(b[1]) + ny * width),
+                (float(a[0]) + nx * width, float(a[1]) + ny * width),
+            ]
+            band = geom.ensure_ccw(poly)
+            if abs(geom.poly_area(band)) < 0.4:
+                continue
+            walk.prism(band, 0.12, rise - 0.004, lib["paving"])
+    made = []
+    for mesh in (plinth, walk):
+        if mesh.bm.faces:
+            made.append(mesh.finish(col))
+        else:
+            mesh.bm.free()
+    return made
+
+
+def _camera_asphalt(city, cam, lib, col, tag):
+    """Lay a carriageway under a street camera that is standing on the fill plane."""
+    eye = cam["location"]
+    target = cam["target"]
+    dx, dy = target[0] - eye[0], target[1] - eye[1]
+    length = math.hypot(dx, dy) or 1.0
+    tx, ty = dx / length, dy / length
+    samples = [(eye[0], eye[1])]
+    for dist in (4.0, 9.0):
+        samples.append((eye[0] + tx * dist, eye[1] + ty * dist))
+    if all(_on_surface(city, x, y, "asphalt") or _on_surface(city, x, y, "sidewalk") for x, y in samples):
+        print("STREET cam on plan", tag, flush=True)
+        return []
+    px, py = -ty, tx
+    half = 8.0
+    back, fwd = 12.0, max(6.0, min(length - 2.0, 26.0))
+
+    def corner(along, side):
+        return (eye[0] + tx * along + px * side, eye[1] + ty * along + py * side)
+
+    ring = geom.ensure_ccw([
+        corner(-back, -half), corner(fwd, -half), corner(fwd, half), corner(-back, half),
+    ])
+    mesh = bb.Mesh("CamStreet_" + tag)
+    mesh.prism(ring, -0.01, 0.02, lib["asphalt"])
+    print("STREET cam paved", tag, flush=True)
+    return [mesh.finish(col)]
+
+
+def _street(city, bounds, lib, protos, name, specs):
     col = bb.collection(name)
     made = []
     ground = bb.Mesh(name + "_Ground")
-    # Wider than the block so an oblique camera sees ground, not an empty cutout.
+    # A concrete fill, level with the carriageway. Grass is only a planned parkway.
     x0, y0, x1, y1 = bounds[0] - 600, bounds[1] - 600, bounds[2] + 600, bounds[3] + 600
-    ground.prism([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], -0.55, -0.2, lib["grass"])
+    ground.prism([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], -0.08, 0.0, lib["concrete"])
     made.append(ground.finish(col))
+    made.extend(_lot_pads(specs, lib, col, name))
     sc = city.get("streetscape") or {}
     surfaces = sc.get("surfaces") or {}
     for kind, z0, z1, slot in (
