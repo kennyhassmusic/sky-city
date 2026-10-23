@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "seed": 1408,
+  "hash": "c8394de4404e6823f3a73c1534a03cc11829db0d928e22218ce14d892ff1425a",
+  "districts": 1,
+  "roads": 4,
+  "blocks": 1,
+  "lots": 10,
+  "buildings": 10,
+  "styles": [
+    "prewar_masonry",
+    "glass_curtain",
+    "art_deco",
+    "modern_mixed"
+  ],
+  "props": 120
+}

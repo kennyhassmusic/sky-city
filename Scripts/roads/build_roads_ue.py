@@ -1,7 +1,9 @@
 """Build Sky City's street surfaces in Unreal from the road network v2 (Saved/Roads/roadnet.json, Scripts/roads/roadnet.py).
 
 The ground (z = 0) is the asphalt; everything that isn't roadway is a raised block (15 cm curb) whose top is split by
-purpose, not left as one big paved platform:
+purpose, not left as one big paved platform. The 15 cm step is still a vertical face in this builder. The gutter pan
+and the beveled curb live in Scripts/roads/profiles.py and in the SK_Curb_* kit meshes; this script keeps the step
+until those meshes are imported and swapped in:
   sidewalk   the paved walk along every curb, at the width its street's rules give (downtown 4.6 m, else 3.8 m)
   parkway    the grass strip between curb and walk on non-downtown streets (street trees stand in it)
   grounds    everything behind the sidewalk (building setbacks, courtyards, medians): landscaped lawn, never paving
