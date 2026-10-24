@@ -52,6 +52,13 @@ pull request also carries the imported Content (about 50 MB of meshes,
 textures and the map), and pr-guard stops at 300 MB. Buildings past the
 budget are left to the importer's massing from the spawn record.
 
+GLBs are Draco-compressed (KHR_draco_mesh_compression, about 18 bytes a
+triangle instead of 170; SKYCITY_DRACO=0 writes plain glTF). face_uv.py
+cannot read Draco, so each GLB is also written plain to
+Saved/CityGen/stage/<region> and checked there. Street meshes are cut into
+SKYCITY_STREET_TILE_M (300 m) tiles, CG_<...>_street_<i>_<j>_NN.glb, and a
+GLB still over the file cap after export is split in half and written again.
+
 SKYCITY_BUDGET_MB (default 220, region 225) stops the export. SKYCITY_CORE_MAX and
 SKYCITY_RES_MAX cap how many buildings are even considered. SKYCITY_EXPORT=0
 skips the GLB write and keeps the cameras already stored in city_manifest.json.
@@ -100,6 +107,18 @@ DUSK_EXPOSURE = 0.0
 DUSK_ELEVATION = 4.5
 BUDGET = int(os.environ.get("SKYCITY_BUDGET_MB", "225" if REGION else "220")) * 1024 * 1024
 FILE_CAP = 22 * 1024 * 1024
+# Draco mesh compression (KHR_draco_mesh_compression; Unreal's glTF importer
+# decodes it on Mac). Positions keep 20 bits over a chunk (1.5 km -> 1.4 mm),
+# UVs 16 bits, so face_uv's 3% texel check still holds. SKYCITY_DRACO=0 turns it off.
+DRACO = os.environ.get("SKYCITY_DRACO", "1") != "0"
+DRACO_BITS = {"position": 20, "normal": 10, "texcoord": 16, "color": 10, "generic": 12}
+# face_uv.py reads plain glTF buffers, not Draco: every GLB is also written
+# uncompressed here and checked there. Not shipped.
+STAGE = os.path.join(ROOT, "Saved", "CityGen", "stage", REGION or "city")
+# Streets are cut into square tiles of this size (metres) so no GLB passes the cap.
+STREET_TILE_M = float(os.environ.get("SKYCITY_STREET_TILE_M", "300"))
+# A street mesh with more faces than this, and no other users, is split by face centroid.
+SPLIT_MIN_FACES = 500
 CORE_MAX = int(os.environ.get("SKYCITY_CORE_MAX", "400" if REGION else "22"))
 RES_MAX = int(os.environ.get("SKYCITY_RES_MAX", "12"))
 CORE_RADIUS = 1e9 if REGION else 170.0
@@ -1658,7 +1677,7 @@ def _stitch(paths, dest):
 
 def _require_face_uvs():
     """Texel density and window aspect on every exported building. The build stops when either is off."""
-    sink = face_uv.check_folder(OUT)
+    sink = face_uv.check_folder(STAGE if DRACO else OUT)
     print(face_uv.format_report(sink, 10), flush=True)
     if not face_uv.passed(sink):
         print("UV FAIL", flush=True)
@@ -2006,7 +2025,10 @@ def _export_baked(path, objects):
     turn = Matrix.Rotation(-math.pi / 2.0, 4, "Z")
     joined = _join_evaluated(objects, turn)
     try:
-        _gltf_export(path, [joined])
+        if DRACO:
+            os.makedirs(STAGE, exist_ok=True)
+            _gltf_export(os.path.join(STAGE, os.path.basename(path)), [joined])
+        _gltf_export(path, [joined], draco=DRACO)
         return os.path.getsize(path)
     finally:
         mesh = joined.data
@@ -2076,7 +2098,7 @@ def _join_evaluated(objects, turn):
     return baked
 
 
-def _gltf_export(path, objs):
+def _gltf_export(path, objs, draco=False):
     """Selection through RNA. The glTF operator itself is not a mesh or object operator."""
     _set_metres()
     view = bpy.context.view_layer
@@ -2094,7 +2116,22 @@ def _gltf_export(path, objs):
         export_yup=True,
         export_materials="EXPORT",
         export_image_format="NONE",
+        **_draco_options(draco)
     )
+
+
+def _draco_options(draco):
+    if not draco:
+        return {"export_draco_mesh_compression_enable": False}
+    return {
+        "export_draco_mesh_compression_enable": True,
+        "export_draco_mesh_compression_level": 6,
+        "export_draco_position_quantization": DRACO_BITS["position"],
+        "export_draco_normal_quantization": DRACO_BITS["normal"],
+        "export_draco_texcoord_quantization": DRACO_BITS["texcoord"],
+        "export_draco_color_quantization": DRACO_BITS["color"],
+        "export_draco_generic_quantization": DRACO_BITS["generic"],
+    }
 
 
 def _pack(prefix, objects, labels, budget, ratio):
@@ -2111,6 +2148,18 @@ def _pack(prefix, objects, labels, budget, ratio):
             return True
         path = os.path.join(OUT, "%s_%02d.glb" % (prefix, len(files)))
         size = _export_baked(path, batch)
+        if size > FILE_CAP and len(batch) > 1:
+            # The estimate was low (streets carry more bytes per triangle): halve and retry.
+            os.remove(path)
+            staged = os.path.join(STAGE, os.path.basename(path))
+            if os.path.isfile(staged):
+                os.remove(staged)
+            half = len(batch) // 2
+            rest, rest_labels = batch[half:], batch_labels[half:]
+            batch, batch_labels = batch[:half], batch_labels[:half]
+            ok = flush()
+            batch, batch_labels = rest, rest_labels
+            return flush() and ok
         files.append({
             "file": os.path.basename(path),
             "bytes": size,
@@ -2144,9 +2193,11 @@ def _pack(prefix, objects, labels, budget, ratio):
 
 
 def _export_all(core, core_obs, core_street, residential, res_obs, res_street):
-    for name in os.listdir(OUT):
-        if name.endswith(".glb"):
-            os.remove(os.path.join(OUT, name))
+    for folder in (OUT, STAGE):
+        if os.path.isdir(folder):
+            for name in os.listdir(folder):
+                if name.endswith(".glb"):
+                    os.remove(os.path.join(folder, name))
     sample = core_obs[0] if core_obs else res_obs[0]
     probe = os.path.join(OUT, "_probe.glb")
     probe_size = _export_baked(probe, [sample])
@@ -2161,15 +2212,77 @@ def _export_all(core, core_obs, core_street, residential, res_obs, res_street):
                              int(BUDGET * 0.18), ratio)
     files.extend(more)
     spent += more_spent
-    left = max(0, BUDGET - spent)
-    street_files, street_spent = _pack(PREFIX[0] + "_street", core_street, ["street"] * len(core_street), left, ratio)
-    files.extend(street_files)
-    spent += street_spent
-    left = max(0, BUDGET - spent)
-    street_files, street_spent = _pack(PREFIX[1] + "_street", res_street, ["street"] * len(res_street), left, ratio)
-    files.extend(street_files)
-    spent += street_spent
+    for prefix, street in ((PREFIX[0], core_street), (PREFIX[1], res_street)):
+        tiles = _street_tiles(street, STREET_TILE_M)
+        # Split meshes replace their source; the renders after the export use the pieces.
+        street[:] = [ob for _cell_key, objects in sorted(tiles.items()) for ob in objects]
+        for cell, objects in sorted(tiles.items()):
+            left = max(0, BUDGET - spent)
+            tag = "%s_street_%d_%d" % (prefix, cell[0], cell[1])
+            street_files, street_spent = _pack(tag, objects, ["street"] * len(objects), left, ratio)
+            files.extend(street_files)
+            spent += street_spent
     return files, spent
+
+
+def _street_tiles(objects, tile_m):
+    """cell (i, j) -> street objects in that square of the plan.
+
+    A big single-user mesh (asphalt, sidewalks, curbs, paint) is split by face
+    centroid, so each tile holds only its own piece. Props share their
+    prototype's mesh and go by origin. Cells are numbered from the minimum
+    corner of everything, so names stay stable between runs of one region.
+    """
+    pieces = []
+    for ob in objects:
+        if ob.data is not None and not ob.modifiers and ob.data.users == 1 and len(ob.data.polygons) > SPLIT_MIN_FACES:
+            pieces.extend(_split_by_cell(ob, tile_m))
+        else:
+            pieces.append((_cell(ob.matrix_world.translation, tile_m), ob))
+    if not pieces:
+        return {}
+    i0 = min(cell[0] for cell, _ in pieces)
+    j0 = min(cell[1] for cell, _ in pieces)
+    tiles = {}
+    for cell, ob in pieces:
+        tiles.setdefault((cell[0] - i0, cell[1] - j0), []).append(ob)
+    return tiles
+
+
+def _cell(point, tile_m):
+    return (int(math.floor(point[0] / tile_m)), int(math.floor(point[1] / tile_m)))
+
+
+def _split_by_cell(ob, tile_m):
+    """One object per cell its faces fall in. The source object is removed."""
+    world = ob.matrix_world
+    cells = {}
+    for poly in ob.data.polygons:
+        cells.setdefault(_cell(world @ poly.center, tile_m), []).append(poly.index)
+    if len(cells) <= 1:
+        return [(next(iter(cells)) if cells else _cell(world.translation, tile_m), ob)]
+    out = []
+    for cell, keep in sorted(cells.items()):
+        bm = bmesh.new()
+        bm.from_mesh(ob.data)
+        bm.faces.ensure_lookup_table()
+        wanted = set(keep)
+        bmesh.ops.delete(bm, geom=[face for face in bm.faces if face.index not in wanted], context="FACES")
+        mesh = bpy.data.meshes.new("%s_%d_%d" % (ob.data.name, cell[0], cell[1]))
+        bm.to_mesh(mesh)
+        bm.free()
+        for mat in ob.data.materials:
+            mesh.materials.append(mat)
+        piece = bpy.data.objects.new(mesh.name, mesh)
+        piece.matrix_world = world.copy()
+        for collection in ob.users_collection:
+            collection.objects.link(piece)
+        out.append((cell, piece))
+    data = ob.data
+    bpy.data.objects.remove(ob, do_unlink=True)
+    if data.users == 0:
+        bpy.data.meshes.remove(data)
+    return out
 
 
 if __name__ == "__main__":

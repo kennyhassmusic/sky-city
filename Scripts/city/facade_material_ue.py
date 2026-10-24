@@ -40,6 +40,41 @@ MASTER_NAME = "M_Facade"
 FLAT_NORMAL = "/Engine/EngineMaterials/FlatNormal"
 
 
+def fresh_material(unreal, assets, library, editing, folder, name):
+    """An empty material at folder/name. An existing one is emptied and reused, not
+    deleted: the loaded level may still reference it, and then a delete fails and
+    create_asset returns None."""
+    path = folder + "/" + name
+    if not library.does_directory_exist(folder):
+        library.make_directory(folder)
+    if library.does_asset_exist(path):
+        mat = library.load_asset(path)
+        if isinstance(mat, unreal.Material):
+            editing.delete_all_material_expressions(mat)
+            return mat
+        library.delete_asset(path)
+    mat = assets.create_asset(name, folder, unreal.Material, unreal.MaterialFactoryNew())
+    if mat is None:
+        raise RuntimeError("could not create material %s" % path)
+    return mat
+
+
+def fresh_instance(unreal, assets, library, editing, folder, name, parent):
+    """A material instance of parent at folder/name, reusing an existing one (see fresh_material)."""
+    path = folder + "/" + name
+    inst = library.load_asset(path) if library.does_asset_exist(path) else None
+    if not isinstance(inst, unreal.MaterialInstanceConstant):
+        if inst is not None:
+            library.delete_asset(path)
+        inst = assets.create_asset(name, folder, unreal.MaterialInstanceConstant,
+                                   unreal.MaterialInstanceConstantFactoryNew())
+    if inst is None:
+        raise RuntimeError("could not create material instance %s" % path)
+    editing.clear_all_material_instance_parameters(inst)
+    editing.set_material_instance_parent(inst, parent)
+    return inst
+
+
 def apply(unreal, assets, library, editing, folder, slot_textures):
     """Create the master and an instance for each slot that has a colour map.
 
@@ -80,12 +115,7 @@ def _defaults(library, slot_textures):
 
 
 def _master(unreal, assets, library, editing, folder, defaults=None):
-    path = folder + "/" + MASTER_NAME
-    if library.does_asset_exist(path):
-        library.delete_asset(path)
-    if not library.does_directory_exist(folder):
-        library.make_directory(folder)
-    mat = assets.create_asset(MASTER_NAME, folder, unreal.Material, unreal.MaterialFactoryNew())
+    mat = fresh_material(unreal, assets, library, editing, folder, MASTER_NAME)
     g = _Graph(unreal, editing, mat)
 
     uv = _uv_scaled(g, unreal)
@@ -252,11 +282,7 @@ def _scale_cm(g, world, sx, sy, sz, x, y):
 
 
 def _instance(unreal, assets, library, editing, folder, master, name, textures):
-    path = folder + "/" + name
-    if library.does_asset_exist(path):
-        library.delete_asset(path)
-    inst = assets.create_asset(name, folder, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
-    editing.set_material_instance_parent(inst, master)
+    inst = fresh_instance(unreal, assets, library, editing, folder, name, master)
     _set_tex(editing, library, inst, "BaseColor", textures.get("color"))
     _set_tex(editing, library, inst, "Roughness", textures.get("rough"))
     _set_tex(editing, library, inst, "Normal", textures.get("normal"))

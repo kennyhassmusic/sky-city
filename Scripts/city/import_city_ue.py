@@ -23,9 +23,17 @@ longest major street. Re-running replaces what this script spawned.
 If the GLB folder is empty, the script falls back to scaled cubes from the
 spawn record so a layout pass still has something to see.
 
+Buildings: --buildings baked (default) imports the tower GLBs and boxes
+what they leave out. --buildings kit imports only the street tiles and
+assembles every tower from the facade kit (kit_city_ue.py, kit_layout.py,
+blender_facade_kit.py): about 25 HISM components for the whole region,
+simple box collision per setback tier.
+
 Run in the editor, PIE off (paths are relative to the project folder):
   py Scripts/city/import_city_ue.py
   py Scripts/city/import_city_ue.py --glbs SourceArt/CityGen/chicago \
+      --level /Game/Maps/SkyCityChicagoGen --spawn Saved/CityGen/sky_city_spawn_chicago_loop.json
+  py Scripts/city/import_city_ue.py --glbs SourceArt/CityGen/chicago --buildings kit \
       --level /Game/Maps/SkyCityChicagoGen --spawn Saved/CityGen/sky_city_spawn_chicago_loop.json
 Without arguments it is the old behaviour: SourceArt/CityGen/city into
 /Game/Maps/SkyCityGenerated. A spawn record's "level" and "folder" are used
@@ -90,6 +98,13 @@ def parse_args(argv=None):
     parser.add_argument("--folder", default=None, help="content folder for meshes and materials")
     parser.add_argument("--spawn", default=None, help="spawn record (default Saved/CityGen/sky_city_spawn.json)")
     parser.add_argument("--no-collision", action="store_true", help="skip complex collision (layout passes)")
+    parser.add_argument("--buildings", choices=("baked", "kit"), default="baked",
+                        help="baked: the tower GLBs; kit: towers assembled from the facade kit (HISM)")
+    parser.add_argument("--kit", default=None, help="facade kit GLBs (default SourceArt/CityGen/kit)")
+    parser.add_argument("--layout", default=None,
+                        help="kit layout (default Saved/CityGen/kit_layout_<region>.json; built if missing)")
+    parser.add_argument("--ids", default=None, help="comma-separated building ids: only these (a prototype block)")
+    parser.add_argument("--no-streets", action="store_true", help="skip the street GLBs")
     return parser.parse_args(sys.argv[1:] if argv is None else argv)
 
 
@@ -104,7 +119,13 @@ def resolve(args):
             document = json.load(handle)
     level = args.level or document.get("level") or LEVEL
     folder = args.folder or document.get("folder") or FOLDER
+    region = document.get("region") or "city"
     return {
+        "buildings": args.buildings,
+        "kit": abspath(args.kit) if args.kit else os.path.join(ART, "kit"),
+        "layout": abspath(args.layout) if args.layout else os.path.join(ROOT, "Saved", "CityGen", "kit_layout_%s.json" % region),
+        "ids": set(args.ids.split(",")) if args.ids else None,
+        "streets": not args.no_streets,
         "glbs": abspath(args.glbs) if args.glbs else MESH_SRC,
         "level": level,
         "folder": folder,
@@ -126,13 +147,15 @@ def main(argv=None):
         raise SystemExit("import_city_ue.py never writes into SkyCityMashup")
     _open_level(unreal, run["level"])
     _clear_previous(unreal, run["label"])
-    glbs = _glbs(run["glbs"])
+    glbs = select_glbs(_glbs(run["glbs"]), run)
     document = run["document"]
-    if glbs:
+    if glbs or run["buildings"] == "kit":
         materials = _city_materials(unreal, document)
         count, unbound = _spawn_glbs(unreal, glbs, materials, run)
         print("CITYGEN meshes", count, "from", len(glbs), "glb in", run["glbs"])
-        if document:
+        if run["buildings"] == "kit":
+            _kit(unreal, run, materials)
+        elif document:
             boxes, lanes = _massing(unreal, document, run, materials)
             print("CITYGEN massing", boxes, "buildings past the mesh budget,", lanes, "road pieces outside the meshed streets")
         if unbound:
@@ -183,6 +206,43 @@ def _clear_previous(unreal, label):
         print("CITYGEN removed", gone, "actors from the previous run")
 
 
+def select_glbs(glbs, run):
+    """Which GLBs this run imports. Kit runs take only the street tiles (the kit builds the towers)."""
+    def street(path):
+        return "_street" in os.path.basename(path)
+    out = []
+    for path in glbs:
+        if street(path):
+            if run.get("streets", True):
+                out.append(path)
+        elif run.get("buildings", "baked") == "baked":
+            out.append(path)
+    return out
+
+
+def _kit(unreal, run, materials):
+    import city_materials_ue
+    import kit_city_ue
+    import kit_layout
+    if os.path.isfile(run["layout"]):
+        layout = kit_city_ue.load_layout(run["layout"])
+    else:
+        import generate_city
+        city = generate_city.build_from_disk(ROOT, region=run["document"].get("region"))
+        layout = kit_layout.build_layout(city).document(run["document"].get("region"))
+    if run["ids"]:
+        import generate_city
+        city = generate_city.build_from_disk(ROOT, region=run["document"].get("region"))
+        layout = kit_layout.build_layout(city, run["ids"]).document(run["document"].get("region"))
+    meshes = kit_city_ue.import_kit(unreal, run["kit"], run["folder"] + "/Kit")
+    kit_city_ue.prepare(unreal, meshes, materials, _drop_gltf_materials)
+    walls = city_materials_ue.kit_walls(unreal, unreal.AssetToolsHelpers.get_asset_tools(), unreal.EditorAssetLibrary,
+                                        unreal.MaterialEditingLibrary, MAT_DIR, PLAN)
+    stats = kit_city_ue.build(unreal, layout, meshes, walls, materials, run["label"], run["label"] + "/Kit", run["level"])
+    print("CITYGEN kit buildings", layout.get("buildings"), "sublevels", stats["sublevels"],
+          "components", stats["components"], "instances", stats["instances"])
+
+
 def _glbs(folder):
     if not os.path.isdir(folder):
         return []
@@ -196,6 +256,7 @@ def _spawn_glbs(unreal, glbs, materials, run):
     dest = run["folder"] + "/Meshes"
     if not library.does_directory_exist(dest):
         library.make_directory(dest)
+    _drop_stale_meshes(unreal, dest, glbs)
     spawned = 0
     unbound = set()
     for filename in glbs:
@@ -225,6 +286,21 @@ def _spawn_glbs(unreal, glbs, materials, run):
             component.set_collision_profile_name("BlockAll")
             spawned += 1
     return spawned, unbound
+
+
+def _drop_stale_meshes(unreal, dest, glbs):
+    """Delete mesh folders of GLBs this run does not import (a chunk that was renamed or dropped)."""
+    library = unreal.EditorAssetLibrary
+    keep = {os.path.splitext(os.path.basename(path))[0] for path in glbs}
+    seen = set()
+    for path in library.list_assets(dest, recursive=True):
+        rest = path[len(dest) + 1:] if path.startswith(dest + "/") else ""
+        name = rest.split("/", 1)[0]
+        if name and name not in keep and name not in seen:
+            seen.add(name)
+            library.delete_directory(dest + "/" + name)
+    if seen:
+        print("CITYGEN removed stale meshes:", ", ".join(sorted(seen)))
 
 
 def _drop_gltf_materials(unreal, mesh_path):
@@ -282,6 +358,10 @@ def massing_plan(document, meshed, pad=28.0):
 
 def _massing(unreal, document, run, materials):
     todo, roads = massing_plan(document, meshed_ids(run["glbs"]))
+    if run.get("ids"):
+        # A prototype block: box only its own unmeshed buildings, no road strips.
+        todo = [item for item in todo if item.get("id") in run["ids"]]
+        roads = []
     cube = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube")
     wall = {"brick": "M_Brick", "concrete": "M_Concrete", "plaster": "M_Plaster", "metal": "M_Metal", "glass": "M_MassingGlass"}
     fallback = materials.get("M_Concrete")

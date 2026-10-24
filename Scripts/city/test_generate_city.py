@@ -13,6 +13,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import generate_city
 import import_city_ue
+import kit_layout
 import model as model_mod
 
 
@@ -152,6 +153,21 @@ class ImportArgsTest(unittest.TestCase):
         self.assertEqual(run["level"], "/Game/Maps/SkyCityChicagoGen")
         self.assertEqual(run["folder"], "/Game/City/Generated/Chicago")
 
+    def test_kit_mode_takes_only_street_tiles(self):
+        glbs = ["/x/CG_chicago_loop_core_00.glb", "/x/CG_chicago_loop_core_street_1_2_00.glb", "/x/CG_chicago_loop_res_00.glb"]
+        baked = import_city_ue.resolve(import_city_ue.parse_args(["--spawn", "/nonexistent.json"]))
+        self.assertEqual(baked["buildings"], "baked")
+        self.assertEqual(import_city_ue.select_glbs(glbs, baked), glbs)
+        kit = import_city_ue.resolve(import_city_ue.parse_args(["--spawn", "/nonexistent.json", "--buildings", "kit",
+                                                                "--ids", "a,b"]))
+        self.assertEqual(import_city_ue.select_glbs(glbs, kit), [glbs[1]])
+        self.assertEqual(kit["ids"], {"a", "b"})
+        self.assertTrue(kit["kit"].endswith("SourceArt/CityGen/kit"))
+        self.assertTrue(kit["layout"].endswith("Saved/CityGen/kit_layout_city.json"))
+        bare = import_city_ue.resolve(import_city_ue.parse_args(["--spawn", "/nonexistent.json", "--buildings", "kit",
+                                                                 "--no-streets"]))
+        self.assertEqual(import_city_ue.select_glbs(glbs, bare), [])
+
     def test_player_start_on_longest_major_street(self):
         document = {"roads": [
             {"cls": "minor", "pts": [[0, 0], [400, 0]]},
@@ -181,6 +197,72 @@ class MassingPlanTest(unittest.TestCase):
         todo, roads = import_city_ue.massing_plan(document, set())
         self.assertEqual(len(todo), 2)
         self.assertEqual(len(roads), 2)
+
+
+class KitLayoutTest(unittest.TestCase):
+    """Facade kit: the mesher's pane fit, inward-facing instances, one collision box per tier."""
+
+    @classmethod
+    def setUpClass(cls):
+        plan, buildings = _plan()
+        cls.city = generate_city.build_city(plan, buildings, plan["landmarks"])
+        cls.specs = [spec for spec in cls.city["buildings"] if spec.get("facades") and spec.get("role") != "landmark"]
+
+    def test_layout_is_deterministic_and_covers_every_building(self):
+        one = kit_layout.build_layout(self.city).document("test")
+        two = kit_layout.build_layout(self.city).document("test")
+        self.assertEqual(json.dumps(one, sort_keys=True), json.dumps(two, sort_keys=True))
+        self.assertEqual(one["buildings"], len(self.specs))
+        self.assertGreater(one["counts"].get("KIT_Pane|lit", 0) + one["counts"].get("KIT_Pane|dark", 0)
+                           + one["counts"].get("KIT_PaneCurtain|lit", 0) + one["counts"].get("KIT_PaneCurtain|dark", 0), 0)
+        for key in one["groups"]:
+            self.assertIn(key.split("|")[0], kit_layout.MODULES)
+
+    def test_runs_fill_each_facade_and_point_inward(self):
+        for spec in self.specs:
+            for facade in spec["facades"]:
+                layout = kit_layout.Layout()
+                kit_layout.facade_record(layout, spec, facade)
+                if not layout.groups:
+                    continue
+                length = float(facade["length"])
+                # Corners, piers and panes tile the edge; a solid edge is one span of the whole length.
+                along = sum(item[4] for key, items in layout.groups.items()
+                            if key.split("|")[0] in ("KIT_Corner", "KIT_Pier", "KIT_Pane", "KIT_PaneCurtain")
+                            for item in items)
+                if along == 0:
+                    along = max(item[4] for items in layout.groups.values() for item in items)
+                self.assertAlmostEqual(along, length, delta=0.01)
+                inward = (-float(facade["normal"][0]), -float(facade["normal"][1]))
+                inward_ue = (inward[1], inward[0])
+                for items in layout.groups.values():
+                    for item in items:
+                        ly = kit_layout._local_y(item[3])
+                        self.assertGreater(ly[0] * inward_ue[0] + ly[1] * inward_ue[1], 0.99)
+                        self.assertTrue(all(value > 0 for value in item[4:]))
+
+    def test_one_collision_box_per_tier_on_the_footprint(self):
+        layout = kit_layout.build_layout(self.city)
+        tiers = sum(len(kit_layout.tiers(spec)) for spec in self.specs)
+        boxes = layout.groups[kit_layout.COLLISION]
+        self.assertEqual(len(boxes), tiers)
+        spec = self.specs[0]
+        poly, z0, z1 = kit_layout.tiers(spec)[0]
+        box = kit_layout.build_layout(self.city, {spec["id"]}).groups[kit_layout.COLLISION][0]
+        area = abs(sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(poly, poly[1:] + poly[:1]))) / 2.0
+        self.assertAlmostEqual(box[4] * box[5], area, delta=area * 0.02)
+        self.assertAlmostEqual(box[2], 0.0)  # the ground tier's box starts at the street
+
+    def test_dressing_follows_the_mesher(self):
+        spec = self.specs[0]
+        facade = spec["facades"][0]
+        for bay in range(4):
+            lit, leaf = kit_layout.dressing(spec, facade, bay, 1.6)
+            self.assertEqual((lit, leaf), kit_layout.dressing(spec, facade, bay, 1.6))
+            if leaf:
+                mat, along, width, inset = leaf
+                self.assertTrue(mat.startswith("M_Blind") or mat.startswith("M_Curtain"))
+                self.assertLessEqual(along + width, 1.6 + 1e-6)
 
 
 if __name__ == "__main__":

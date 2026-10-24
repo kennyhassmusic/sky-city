@@ -16,6 +16,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 
 ## Entries
 
+## 2026-10-23 23:05 CDT — Claude Code (Kenny's Mac) — Chicago import pipeline: Draco, street tiles, facade kit (HISM), box collision
+- State at start: `cursor/chicago-gen-map` `4e33b22`, tests OK
+- Did: Draco GLBs + 300 m street tiles in `blender_city.py` (228.6 MiB → 90.9 MB, all 346 meshed buildings, largest 21.5 MB); facade kit (`blender_facade_kit.py`, `kit_layout.py`, `kit_city_ue.py`, `M_KitWall`) assembling all 354 Loop towers from 7 modules as HISM in 11 tile sublevels; box collision per setback tier; import fixes (reuse materials instead of delete, stale mesh folders). Prototype block (9 towers) then rollout. Before/after: drawn sections 2,494 → 982, street GPU 20.0 → 17.8 ms, aerial 17.3 → 23.3 ms (354 real towers vs 296 boxes), memory +2,091 → +1,419 MB, load 1.03 → 0.72 s. Tests: test_city 46, test_profiles 12, test_packs 13, test_generate_city 15, all OK. Report: `CHICAGO_REPORT.md`
+- Found: blank box facades were minification, not texture streaming (NeverStream A/B shows no change); HISM costs ~140 B/instance in the level (hence tiles); lockable LFS files read-only → chmod locally, no `git lfs lock`; port 8000 held by the pass-1 crash reporter → MCP on 8001
+- Asks for Kenny: review CHICAGO_REPORT.md; decide whether to keep the 79 MB baked tower GLBs (unused by the kit map); `maintainer-approved` stays needed for the pass-1 Config/Source lines
+- SCALE CHECK: no change
+- Next: pane LOD1 to win back the aerial GPU time; facade grime on kit walls
+
 ## 2026-10-23 20:55 CDT — Claude Code (Kenny's Mac) — Chicago Loop generated map built, imported, driven
 - State at start: `main` `a25704a` plus the scripts-only work below (uncommitted), tests OK
 - Did: branch `cursor/chicago-gen-map`; headless Blender export of the Loop (`SourceArt/CityGen/chicago`, 12 GLBs, 228.5 MiB; region budget lowered 240 → 225 so the PR stays under 300 MiB with the imported Content); UE build (`Build.sh … -NoUBA`); editor import into `/Game/Maps/SkyCityChicagoGen`; PIE drive (street at 122 mph, wall rides, flight). Importer fixes found in the editor: Nanite off on import (SM5 drew the fallback, torn facades), master materials now get default textures and Masks samplers (M_Facade, ground slots and massing failed to compile → grey checker), `unreal.Rotator` argument order in `_actor`, fog density, glTF placeholder materials deleted (−20 MB), `M_Hydrant` flat. New: `pack_slots.massing_sets()` + `M_MassingFacade` (windowed pack facades in metres on the 296 massing boxes), tiled `M_GroundSlab`. Tests: test_city 46, test_profiles 12, test_packs 13, test_generate_city 10, all OK. Report: `CHICAGO_REPORT.md`

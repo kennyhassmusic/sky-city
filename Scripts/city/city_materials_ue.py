@@ -140,10 +140,7 @@ def massing(unreal, assets, library, editing, mat_dir, tex_dir, sets):
     if not imported:
         return {}
     first = imported[sorted(imported)[0]]
-    path = mat_dir + "/" + MASSING_MASTER
-    if library.does_asset_exist(path):
-        library.delete_asset(path)
-    mat = assets.create_asset(MASSING_MASTER, mat_dir, unreal.Material, unreal.MaterialFactoryNew())
+    mat = facade_material_ue.fresh_material(unreal, assets, library, editing, mat_dir, MASSING_MASTER)
     g = facade_material_ue._Graph(unreal, editing, mat)
     local = g.node(unreal.MaterialExpressionLocalPosition, -2200, 0)
     unit = g.add(g.div(local, 100.0, -2000, 0), 0.5, -1850, 0)  # 0..1 across the cube
@@ -194,11 +191,7 @@ def massing(unreal, assets, library, editing, mat_dir, tex_dir, sets):
     for kind, textures in sorted(imported.items()):
         entry = sets[kind]
         name = "MI_Massing_" + kind
-        inst_path = mat_dir + "/" + name
-        if library.does_asset_exist(inst_path):
-            library.delete_asset(inst_path)
-        inst = assets.create_asset(name, mat_dir, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
-        editing.set_material_instance_parent(inst, mat)
+        inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir, name, mat)
         facade_material_ue._set_tex(editing, library, inst, "BaseColor", textures.get("color"))
         facade_material_ue._set_tex(editing, library, inst, "Roughness", textures.get("rough"))
         editing.set_material_instance_scalar_parameter_value(inst, "TileW", float(entry["tile_m"][0]))
@@ -208,6 +201,92 @@ def massing(unreal, assets, library, editing, mat_dir, tex_dir, sets):
         made[kind] = inst
     if "*" in sets and sets["*"]["set_id"] in {sets[k]["set_id"] for k in made}:
         made["*"] = next(made[k] for k in made if sets[k]["set_id"] == sets["*"]["set_id"])
+    return made
+
+
+KIT_MASTER = "M_KitWall"
+# Kit wall name -> the slot whose textures it uses.
+KIT_WALLS = {"brick": "M_Brick", "concrete": "M_Concrete", "plaster": "M_Plaster", "metal": "M_Metal"}
+
+
+def kit_walls(unreal, assets, library, editing, mat_dir, plan):
+    """wall name -> instance of M_KitWall, for the facade kit's boxes.
+
+    Kit modules are 1 m boxes scaled per instance, so their own UVs would
+    stretch. The master projects in metres instead, along the instance's own
+    axes taken to world space: U along local X (local Y on the end faces),
+    V down the wall from world Z (local Y on tops). Neighbouring modules of a
+    facade share the projection, so brick runs on across piers and spans.
+    The tile is the slot's tile_m (pack) or uv_m (scan). Built after build(),
+    which imports the textures (plan entries carry them).
+    """
+    import facade_material_ue
+    found = {name: (plan or {}).get(slot) for name, slot in KIT_WALLS.items()}
+    found = {name: entry for name, entry in found.items() if entry and (entry.get("textures") or {}).get("color")}
+    if not found:
+        return {}
+    first = found[sorted(found)[0]]["textures"]
+    mat = facade_material_ue.fresh_material(unreal, assets, library, editing, mat_dir, KIT_MASTER)
+    g = facade_material_ue._Graph(unreal, editing, mat)
+    world = g.div(g.node(unreal.MaterialExpressionWorldPosition, -2400, 0), 100.0, -2200, 0)
+
+    def axis(vec, y):
+        const = g.node(unreal.MaterialExpressionConstant3Vector, -2400, y)
+        const.set_editor_property("constant", unreal.LinearColor(vec[0], vec[1], vec[2], 1.0))
+        node = g.node(unreal.MaterialExpressionTransform, -2200, y)
+        node.set_editor_property("transform_source_type", unreal.MaterialVectorCoordTransformSource.TRANSFORMSOURCE_LOCAL)
+        node.set_editor_property("transform_type", unreal.MaterialVectorCoordTransform.TRANSFORM_WORLD)
+        g.wire(const, node)
+        unit = g.node(unreal.MaterialExpressionNormalize, -2000, y)
+        g.wire(node, unit)
+        return unit
+
+    ax, ay = axis((1, 0, 0), 200), axis((0, 1, 0), 320)
+    normal_ws = g.node(unreal.MaterialExpressionVertexNormalWS, -2400, 480)
+    to_local = g.node(unreal.MaterialExpressionTransform, -2200, 480)
+    to_local.set_editor_property("transform_source_type", unreal.MaterialVectorCoordTransformSource.TRANSFORMSOURCE_WORLD)
+    to_local.set_editor_property("transform_type", unreal.MaterialVectorCoordTransform.TRANSFORM_LOCAL)
+    g.wire(normal_ws, to_local)
+    unit_n = g.node(unreal.MaterialExpressionNormalize, -2000, 480)
+    g.wire(to_local, unit_n)
+    facing = g.node(unreal.MaterialExpressionAbs, -1850, 480)
+    g.wire(unit_n, facing)
+    on_x = g.mask(facing, True, False, False, False, -1700, 460)
+    on_z = g.mask(facing, False, False, True, False, -1700, 540)
+    along = g.dot(world, g.lerp(ax, ay, on_x, -1700, 260), -1500, 200)
+    down = g.mul(g.mask(world, False, False, True, False, -1700, 100), -1.0, -1500, 100)
+    across = g.dot(world, ay, -1500, 320)
+    tile = []
+    for k, name in enumerate(("TileW", "TileH")):
+        node = g.node(unreal.MaterialExpressionScalarParameter, -1500, 420 + 80 * k)
+        node.set_editor_property("parameter_name", name)
+        node.set_editor_property("default_value", 3.0)
+        tile.append(node)
+    u = g.div(along, tile[0], -1300, 200)
+    v = g.div(g.lerp(down, across, on_z, -1400, 140), tile[1], -1300, 140)
+    uv = g.append(u, v, -1150, 170)
+    base = g.tex("BaseColor", -950, 0, library.load_asset(first["color"]))
+    rough = g.tex("Roughness", -950, 300, library.load_asset(first.get("rough") or first["color"]))
+    rough.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_MASKS)
+    for sample in (base, rough):
+        g.wire(uv, sample, in_hint="UVs", in_index=0)
+    g.to_property(base, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
+    g.to_property(g.mask(rough, True, False, False, False, -750, 300), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    editing.recompile_material(mat)
+    library.save_loaded_asset(mat)
+    made = {}
+    for name, entry in sorted(found.items()):
+        textures = entry["textures"]
+        inst_name = "MI_KitWall_" + name
+        inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir, inst_name, mat)
+        facade_material_ue._set_tex(editing, library, inst, "BaseColor", textures.get("color"))
+        facade_material_ue._set_tex(editing, library, inst, "Roughness", textures.get("rough"))
+        tile_m = entry.get("tile_m") or entry.get("uv_m") or [3.0, 3.0]
+        editing.set_material_instance_scalar_parameter_value(inst, "TileW", float(tile_m[0]))
+        editing.set_material_instance_scalar_parameter_value(inst, "TileH", float(tile_m[1]))
+        editing.update_material_instance(inst)
+        library.save_loaded_asset(inst)
+        made[name] = inst
     return made
 
 
@@ -268,10 +347,8 @@ def _textures(unreal, assets, library, entry, tex_dir):
 
 
 def _fresh(unreal, assets, library, mat_dir, name):
-    path = mat_dir + "/" + name
-    if library.does_asset_exist(path):
-        library.delete_asset(path)
-    return assets.create_asset(name, mat_dir, unreal.Material, unreal.MaterialFactoryNew())
+    import facade_material_ue
+    return facade_material_ue.fresh_material(unreal, assets, library, unreal.MaterialEditingLibrary, mat_dir, name)
 
 
 def _textured(unreal, assets, library, editing, mat_dir, slot, textures):
