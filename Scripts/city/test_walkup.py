@@ -142,7 +142,7 @@ class LayoutTest(unittest.TestCase):
 
     def test_storefront_pieces_present(self):
         keys = set(self.layout.groups)
-        for needed in ("KIT_PaneCurtain|", "KIT_Cornice|trim:", "KIT_Decal|gdecal:sign_", "KIT_Box|trim:sf_tile",
+        for needed in ("KIT_Glass|shopglass:", "KIT_Panel|shopback:", "KIT_Cornice|trim:", "KIT_Decal|gdecal:sign_", "KIT_Box|trim:sf_tile",
                        "KIT_Bracket|", "KIT_Decal|gdecal:streak_", "KIT_Box|trim:wood"):
             self.assertTrue(any(key.startswith(needed) for key in keys), needed)
 

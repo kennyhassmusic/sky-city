@@ -2,7 +2,7 @@
 
 Runs in a live editor with the Chicago level open (it ticks across frames, so start it from the
 console, or at launch with -ExecCmds, not -ExecutePythonScript, which quits when the script ends):
-  py Scripts/city/shadow_ab_ue.py [frames=3] [settle=8] [rounds=2]
+  py Scripts/city/shadow_ab_ue.py [frames=3] [settle=8] [rounds=2] [states=off,on] [tag=]
 For each camera and state (proxies casting off, then on; `rounds` times) it waits `settle` seconds
 (streaming and the shadow cache), runs
 ProfileGPU `frames` times (the results go to the log, between "CITYGEN_AB begin" and "end" markers)
@@ -63,6 +63,8 @@ def shoot(argv):
     frames = int(kv.get("frames", "3"))
     settle = float(kv.get("settle", "8"))  # seconds after a camera or state change (streaming, shadow cache)
     rounds = int(kv.get("rounds", "2"))    # off/on repeated, so warm-up doesn't favour one side
+    states = tuple(kv.get("states", "off,on").split(","))
+    tag = kv.get("tag", "")                 # names a plain measurement: states=on tag=after
     os.makedirs(SHOTS, exist_ok=True)
     ues = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
     actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors()
@@ -70,7 +72,7 @@ def shoot(argv):
     for actor in actors:
         proxies.extend(actor.get_components_by_tag(unreal.HierarchicalInstancedStaticMeshComponent, "kit_shadow"))
     steps = [(r, state, name, pose) for r in range(rounds) for name, pose in sorted(cameras().items())
-             for state in ("off", "on")]
+             for state in states]
     world = ues.get_editor_world()
     # Slate ticks run several times per engine frame, so everything here goes by the clock.
     st = {"i": 0, "phase": "move", "t": time.time(), "n": 0, "files": [], "t0": time.time()}
@@ -93,7 +95,7 @@ def shoot(argv):
                 ues.set_level_viewport_camera_info(unreal.Vector(x, y, z), unreal.Rotator(roll=0, pitch=pitch, yaw=yaw))
                 st.update(phase="settle", t=now)
             elif st["phase"] == "settle" and now - st["t"] >= settle:
-                unreal.log("CITYGEN_AB begin state=%s cam=%s round=%d" % (state, name, rnd))
+                unreal.log("CITYGEN_AB begin state=%s cam=%s round=%d" % (tag + state, name, rnd))
                 st.update(phase="profile", t=now, n=0)
             elif st["phase"] == "profile" and now - st["t"] >= 1.0:
                 unreal.SystemLibrary.execute_console_command(world, "ProfileGPU")
@@ -102,11 +104,11 @@ def shoot(argv):
                 if st["n"] >= frames:
                     st["phase"] = "shot"
             elif st["phase"] == "shot" and now - st["t"] >= 1.0:
-                unreal.log("CITYGEN_AB end state=%s cam=%s round=%d" % (state, name, rnd))
+                unreal.log("CITYGEN_AB end state=%s cam=%s round=%d" % (tag + state, name, rnd))
                 # State first: the screenshot call can tick Slate again before it returns.
                 st.update(phase="next", t=now)
                 if rnd == 0:
-                    path = os.path.join(SHOTS, "shadow_%s_%s.png" % (state, name))
+                    path = os.path.join(SHOTS, "shadow_%s_%s.png" % (tag + state, name))
                     st["files"].append(path)
                     unreal.AutomationLibrary.take_high_res_screenshot(1600, 900, path)
             elif st["phase"] == "next" and now - st["t"] >= 2.0:
@@ -144,7 +146,11 @@ def _mean(values):
 if __name__ == "__main__":
     if "--read" in sys.argv:
         found = read()
-        for cam in sorted({cam for _state, cam in found}):
+        for (state, cam), rec in sorted(found.items()):
+            if state not in ("off", "on"):
+                print("%-10s %-22s root %.2f ms  ShadowDepths %.2f ms  n=%d" % (
+                    state, cam, _mean(rec["root"]), _mean(rec["shadow"]), len(rec["root"])))
+        for cam in sorted({cam for state, cam in found if state in ("off", "on")}):
             off, on = found.get(("off", cam), {}), found.get(("on", cam), {})
             print("%-22s root off %.2f on %.2f (%+.2f) | ShadowDepths off %.2f on %.2f (%+.2f) ms  n=%d/%d" % (
                 cam, _mean(off.get("root", [])), _mean(on.get("root", [])),

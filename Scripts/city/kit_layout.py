@@ -35,6 +35,8 @@ into the building (negative is proud of the wall):
   KIT_Keystone    keystone, wider at the top, Y -1..0.1.
   KIT_Awning      shed awning: high at the wall (Z 1), low and proud at Y -1, with a valance.
   KIT_Dish        roof satellite dish on a stub mast, facing -Y.
+  KIT_Glass       glass only (no room back), at Y 0.5, with a frame: a shop window with a modelled
+                  interior behind it.
 
 Frames: plan metres (x east, y north, z up) in, Unreal centimetres out:
 X = y * 100, Y = x * 100, Z = z * 100. Each instance is [x, y, z, yaw, sx, sy, sz]
@@ -91,7 +93,7 @@ CURTAIN_ORDER = ("M_CurtainRed", "M_CurtainGreen", "M_CurtainCream", "M_CurtainB
 MODULES = ("KIT_Wall", "KIT_Pier", "KIT_Corner", "KIT_Pane", "KIT_PaneCurtain", "KIT_Leaf", "KIT_RoofCap",
            "KIT_Sill", "KIT_Cornice", "KIT_Panel", "KIT_Decal", "KIT_DecalFloor",
            # The walkup kit (walkup.py).
-           "KIT_Box", "KIT_Bracket", "KIT_ArchLintel", "KIT_Keystone", "KIT_Awning", "KIT_Dish")
+           "KIT_Box", "KIT_Bracket", "KIT_ArchLintel", "KIT_Keystone", "KIT_Awning", "KIT_Dish", "KIT_Glass")
 TINTED = ("KIT_Wall", "KIT_Pier", "KIT_Corner")
 # Street dressing: chance per slot, metres per slot.
 WALL_DECAL_CHANCE, WALL_DECAL_EVERY = 0.3, 8.0

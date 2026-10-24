@@ -55,25 +55,46 @@
    4.0
   ]
  },
- "patch_01": {
-  "file": "patch_01.png",
-  "size_m": [
-   1.5,
-   1.0
-  ]
- },
- "patch_02": {
-  "file": "patch_02.png",
-  "size_m": [
-   1.5,
-   1.0
-  ]
- },
  "plywood": {
   "file": "plywood.png",
   "size_m": [
    2.0,
    2.0
+  ]
+ },
+ "shop_bar": {
+  "file": "shop_bar.png",
+  "size_m": [
+   2.4,
+   2.4
+  ]
+ },
+ "shop_clothes": {
+  "file": "shop_clothes.png",
+  "size_m": [
+   2.4,
+   2.4
+  ]
+ },
+ "shop_empty": {
+  "file": "shop_empty.png",
+  "size_m": [
+   2.4,
+   2.4
+  ]
+ },
+ "shop_grocery": {
+  "file": "shop_grocery.png",
+  "size_m": [
+   2.4,
+   2.4
+  ]
+ },
+ "shop_laundry": {
+  "file": "shop_laundry.png",
+  "size_m": [
+   2.4,
+   2.4
   ]
  },
  "sign_01": {

@@ -71,6 +71,17 @@ ART = os.path.join(ROOT, "SourceArt", "CityGen")
 LEVEL = "/Game/Maps/SkyCityGenerated"
 FOLDER = "/Game/City/Generated"
 GROUND_PAD_M = 40.0
+# Lighting and grade for the generated level (_stage, _grade).
+LIGHT = {
+    "sun_temperature": 5600.0,
+    "sky_intensity": 1.4,
+    "sky_color": (255, 214, 180),        # r, g, b: cancels the blue sky in the shade
+    "sky_lower": (0.26, 0.21, 0.16, 1.0),
+    "exposure_bias": 0.3,
+    "white_temp": 6500.0,                # neutral; the sky colour does the warming
+    "skylight_leaking": 0.0,
+    "saturation": 1.15,                  # keeps brick colour in the shade
+}
 FOG_DENSITY = 0.0025
 # Cube fallback colours, used only when no city GLB is present.
 COLOURS = {
@@ -105,6 +116,7 @@ def parse_args(argv=None):
                         help="kit layout (default Saved/CityGen/kit_layout_<region>.json; built if missing)")
     parser.add_argument("--ids", default=None, help="comma-separated building ids: only these (a prototype block)")
     parser.add_argument("--no-streets", action="store_true", help="skip the street GLBs")
+    parser.add_argument("--relight", action="store_true", help="only apply LIGHT to the level's sun, sky and grade")
     return parser.parse_args(sys.argv[1:] if argv is None else argv)
 
 
@@ -133,6 +145,7 @@ def resolve(args):
         "spawn": spawn,
         "document": document,
         "collision": not args.no_collision,
+        "relight": bool(getattr(args, "relight", False)),
     }
 
 
@@ -145,6 +158,13 @@ def main(argv=None):
     TEX_DIR = run["folder"] + "/Textures"
     if run["level"].rsplit("/", 1)[-1] == "SkyCityMashup":
         raise SystemExit("import_city_ue.py never writes into SkyCityMashup")
+    if run["relight"]:
+        _open_level(unreal, run["level"])
+        relight(unreal)
+        # The old stage may sit in a kit sublevel (see kit_city_ue.build): save every level touched.
+        unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_all_dirty_levels()
+        print("CITYGEN relit", run["level"])
+        return
     locked = read_only_outputs(run)
     if locked:
         raise SystemExit("%d files this import rewrites are read-only (Git LFS keeps lockable .uasset/.umap files "
@@ -482,16 +502,9 @@ def _stage(unreal, document, run):
         return actor
 
     sun = spawn(unreal.DirectionalLight, (0, 0, 50000), (0, -38, -35), "Sun")
-    try:
-        sun.light_component.set_editor_property("atmosphere_sun_light", True)
-        sun.light_component.set_editor_property("intensity", 8.0)
-    except Exception:
-        pass
     sky = spawn(unreal.SkyLight, (0, 0, 40000), label="SkyLight")
-    try:
-        sky.light_component.set_editor_property("real_time_capture", True)
-    except Exception:
-        pass
+    volume = spawn(unreal.PostProcessVolume, label="Grade")
+    relight(unreal, sun, sky, volume)
     spawn(unreal.SkyAtmosphere, label="SkyAtmosphere")
     fog = spawn(unreal.ExponentialHeightFog, (0, 0, -100), label="HeightFog")
     try:
@@ -506,6 +519,80 @@ def _stage(unreal, document, run):
     start = _start_on_street(document)
     spawn(unreal.PlayerStart, start[0], start[1], "PlayerStart")
     print("CITYGEN player start", [round(v) for v in start[0]], "yaw", round(start[1][2]))
+
+
+def _set_props(obj, values):
+    """Set editor properties one by one; a name this engine build lacks is reported, not fatal."""
+    for name, value in values.items():
+        try:
+            obj.set_editor_property(name, value)
+        except Exception as exc:  # noqa: BLE001
+            print("CITYGEN note: %s.%s not set (%s)" % (obj.get_name(), name, exc))
+
+
+def relight(unreal, sun=None, sky=None, volume=None):
+    """Apply LIGHT to the level's Sun, SkyLight and Grade (found by label when not given).
+
+    Shade on north faces and plazas is lit by the sky alone; a warmer, stronger sky light with a
+    warm lower hemisphere (the street's bounce) keeps brick from going grey-blue there. The Grade
+    volume (unbound) adds exposure, a warmer white balance, a little sky in the shade and Lumen
+    reflections on the front translucent layer (the shop windows). Run alone after a tweak:
+      py Scripts/city/import_city_ue.py --relight --level /Game/Maps/SkyCityChicagoGen
+    """
+    if sun is None or sky is None or volume is None:
+        # Standalone (--relight): replace the level's Sun, SkyLight and Grade with fresh ones. Setting
+        # properties on the old actors from Python didn't mark the level for saving; spawning does.
+        sub = _actors(unreal)
+        found = {}
+        for actor in sub.get_all_level_actors():
+            label = actor.get_actor_label()
+            if label in ("Sun", "SkyLight", "Grade"):
+                found[label] = (actor.get_actor_location(), actor.get_actor_rotation(), actor.get_folder_path())
+                sub.destroy_actor(actor)
+        made = {}
+        for label, cls, default in (("Sun", unreal.DirectionalLight, ((0, 0, 50000), (0, -38, -35))),
+                                    ("SkyLight", unreal.SkyLight, ((0, 0, 40000), (0, 0, 0))),
+                                    ("Grade", unreal.PostProcessVolume, ((0, 0, 0), (0, 0, 0)))):
+            if label in found:
+                location, rotation, folder = found[label]
+            else:
+                location, rotation, folder = unreal.Vector(*default[0]), unreal.Rotator(*default[1]), "Stage"
+            actor = sub.spawn_actor_from_class(cls, location, rotation)
+            actor.set_actor_label(label)
+            actor.set_folder_path(folder)
+            made[label] = actor
+        sun, sky, volume = made["Sun"], made["SkyLight"], made["Grade"]
+    if sun is not None:
+        _set_props(sun.light_component, {"atmosphere_sun_light": True, "intensity": 8.0, "use_temperature": True,
+                                         "temperature": LIGHT["sun_temperature"]})
+    if sky is not None:
+        _set_props(sky.light_component, {
+            "real_time_capture": True, "intensity": LIGHT["sky_intensity"],
+            # Keywords: unreal.Color's positional order is its memory order, B, G, R, A.
+            "light_color": unreal.Color(r=LIGHT["sky_color"][0], g=LIGHT["sky_color"][1], b=LIGHT["sky_color"][2], a=255),
+            "lower_hemisphere_is_black": False,
+            "lower_hemisphere_color": unreal.LinearColor(*LIGHT["sky_lower"]),
+        })
+    if volume is None:
+        print("CITYGEN note: no Grade volume; rerun the import")
+        return
+    _set_props(volume, {"unbound": True})
+    settings = volume.get_editor_property("settings")
+    for name, value in (("auto_exposure_bias", LIGHT["exposure_bias"]), ("white_temp", LIGHT["white_temp"]),
+                        ("lumen_skylight_leaking", LIGHT["skylight_leaking"]),
+                        ("lumen_front_layer_translucency_reflections", True)):
+        try:
+            settings.set_editor_property("override_" + name, True)
+            settings.set_editor_property(name, value)
+        except Exception as exc:  # noqa: BLE001
+            print("CITYGEN note: post-process %s not set (%s)" % (name, exc))
+    try:
+        settings.set_editor_property("override_color_saturation", True)
+        settings.set_editor_property("color_saturation", unreal.Vector4(LIGHT["saturation"], LIGHT["saturation"],
+                                                                       LIGHT["saturation"], 1.0))
+    except Exception as exc:  # noqa: BLE001
+        print("CITYGEN note: post-process color_saturation not set (%s)" % exc)
+    volume.set_editor_property("settings", settings)
 
 
 def _ground(unreal, spawn, bounds):

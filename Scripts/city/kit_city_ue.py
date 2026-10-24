@@ -30,7 +30,7 @@ MESH_OF = {name: name for name in (
     "KIT_Wall", "KIT_Pier", "KIT_Corner", "KIT_Pane", "KIT_PaneCurtain", "KIT_Leaf", "KIT_RoofCap",
     "KIT_Sill", "KIT_Cornice", "KIT_Panel", "KIT_Decal", "KIT_DecalFloor",
     # Walkup kit (walkup.py).
-    "KIT_Box", "KIT_Bracket", "KIT_ArchLintel", "KIT_Keystone", "KIT_Awning", "KIT_Dish")}
+    "KIT_Box", "KIT_Bracket", "KIT_ArchLintel", "KIT_Keystone", "KIT_Awning", "KIT_Dish", "KIT_Glass")}
 # Default slot bindings; each component overrides its own (see _material_for).
 FIXED = {"M_Glass": "M_Glass", "M_Frame": "M_TrimDark", "M_Trim": "M_TrimDark", "M_Coping": "M_TrimDark"}
 BACK = {"lit": "M_InteriorLit", "dark": "M_Interior"}
@@ -116,6 +116,13 @@ def _material_for(key, walls, materials, styled=None):
         out.append(("M_Glass", styled.get("glass:" + glass) or materials.get("M_Glass")))
     elif module in ("KIT_Pane", "KIT_PaneCurtain"):
         out.append(("M_PaneBack", materials.get(BACK.get(variant, "M_Interior"))))
+    elif kind == "shopglass":
+        # A shop window (walkup.py): the reflective shop glass, the look's frame.
+        frame, _glass = style_kit.pane_look(name)
+        out.append(("M_Glass", styled.get("glass:shop") or materials.get("M_Glass")))
+        out.append(("M_Frame", styled.get("frame:" + frame)))
+    elif kind == "shopback":
+        out.append(("M_Panel", styled.get(variant)))
     elif kind == "sf":
         out.append(("M_Panel", styled.get(variant)))
     elif kind in ("decal", "gdecal"):
@@ -232,8 +239,11 @@ def build(unreal, layout, meshes, walls, materials, label, folder, level, styled
         _actor_with(unreal, groups, meshes, walls, materials, "%s_Kit_%02d" % (label, index), folder, stats, styled)
         stats["sublevels"] += 1
     editor.save_all_dirty_levels()
-    # New actors (the stage) go back into the persistent level.
-    editor.set_current_level_by_name("PersistentLevel")
+    # New actors (the stage) go back into the persistent level. The call wants the level's own
+    # name: with "PersistentLevel" it silently stayed on the last kit sublevel, and the stage's
+    # sun, sky and fog ended up in <level>_Kit_09.
+    if not editor.set_current_level_by_name(level.rsplit("/", 1)[-1]):
+        print("CITYGEN note: could not make %s current again; the stage may land in a kit sublevel" % level)
     _drop_unused_sublevels(unreal, level, {sublevel_path(level, index) for index in range(stats["sublevels"])})
     return stats
 

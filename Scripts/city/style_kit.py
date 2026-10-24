@@ -80,10 +80,13 @@ TRIMS = {"limestone": (0.70, 0.66, 0.58, 0.8, 0.0), "painted": (0.80, 0.78, 0.72
          "awn_blue": (0.06, 0.11, 0.32, 0.9, 0.0), "awn_black": (0.04, 0.04, 0.04, 0.9, 0.0),
          "wood": (0.40, 0.31, 0.22, 0.9, 0.0), "wood_grey": (0.47, 0.45, 0.41, 0.9, 0.0),
          "galv": (0.55, 0.56, 0.56, 0.45, 0.85), "metal_dark": (0.12, 0.12, 0.13, 0.5, 0.6),
-         "condenser": (0.66, 0.66, 0.63, 0.5, 0.3), "membrane": (0.13, 0.13, 0.14, 0.9, 0.0),
+         "condenser": (0.82, 0.82, 0.80, 0.45, 0.2),
+         "hatch": (0.60, 0.22, 0.16, 0.6, 0.2), "membrane": (0.13, 0.13, 0.14, 0.9, 0.0),
          "skylight": (0.30, 0.36, 0.38, 0.2, 0.3), "vinyl": (0.86, 0.85, 0.80, 0.6, 0.0)}
 GLASS = {"clear": ((0.02, 0.025, 0.03), 0.06, 0.5), "blue": ((0.04, 0.08, 0.11), 0.22, 0.75),
-         "grey": ((0.03, 0.035, 0.035), 0.14, 0.65)}
+         "grey": ((0.03, 0.035, 0.035), 0.14, 0.65),
+         # Shop windows: clearer head-on (the shop shows), strongly reflective at an angle.
+         "shop": ((0.012, 0.015, 0.016), 0.1, 0.92)}
 # Pane looks that are not a style (walkup.py): "KIT_Pane|lit:<look>" takes this frame and glass.
 PANE_LOOKS = {"wu_white": ("white", "clear"), "wu_green": ("green", "clear"), "wu_brown": ("brown", "clear"),
               "wu_black": ("black", "clear"), "wu_vinyl": ("vinyl", "clear"), "wu_alum": ("silver", "clear")}

@@ -1,4 +1,4 @@
-"""Walkup street-level decals: grime, patched brick, faded wall ads, shop signs and gates.
+"""Walkup street-level decals: grime, faded wall ads, shop signs and gates.
 
 walkup.py dresses the brick walk-ups with these the way kit_layout.py dresses
 the rest of the kit: wall decals (KIT_Decal) and storefront fittings. Pure
@@ -11,7 +11,7 @@ Writes SourceArt/CityGen/kit/decals/<name>.png and decals.json there:
 
   streak_01..03  (0.9 x 1.2 m)  dark grime streaks down from the top edge, soft alpha.
   soot_01..02    (4.0 x 1.2 m)  a soot band, darkest at the top, fading down.
-  patch_01..02   (1.5 x 1.0 m)  a patched-brick rectangle, irregular edge alpha.
+  shop_<kind>    (2.4 x 2.4 m)  a shop's back wall seen through its window (grocery, bar, laundry, clothes, empty).
   ghost_01..06   (6.0 x 4.0 m)  faded painted wall ads, generic words, heavily worn.
   sign_01..10    (4.0 x 0.6 m)  shop-sign lettering, generic words, transparent background.
   gate_rolldown  (2.0 x 2.0 m)  corrugated steel roll-down gate slats, opaque.
@@ -38,7 +38,7 @@ if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
 PX_PER_M = {
-    "streak": 150, "soot": 100, "patch": 150, "ghost": 80, "sign": 150,
+    "streak": 150, "soot": 100, "ghost": 80, "sign": 150, "shop": 200,
     "gate_rolldown": 150, "gate_accordion": 150, "plywood": 150,
 }
 FONT_CANDIDATES = (
@@ -101,60 +101,102 @@ def _rgba(w, h):
 
 
 def streak(seed, size_m):
+    """Rain-washed grime running down from a sill or coping: dark, opaque near the top, soft sides."""
     w, h = _size_px("streak", size_m)
     yy, xx = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
-    n_streaks = 4 + int(4 * _hash(seed, np.array([0]), np.array([0]))[0])
+    n_streaks = 5 + int(5 * _hash(seed, np.array([0]), np.array([0]))[0])
     alpha = np.zeros((h, w), dtype=np.float64)
+    # A grime band right under the ledge, then the runs.
+    alpha = np.maximum(alpha, np.clip(1.0 - yy / (h * 0.12), 0.0, 1.0) ** 1.2 * 0.75)
     for i in range(n_streaks):
-        cx = (0.08 + 0.84 * _hash(seed, np.array([i]), np.array([1]))[0]) * w
-        width = (0.04 + 0.10 * _hash(seed, np.array([i]), np.array([2]))[0]) * w
-        length = (0.5 + 0.5 * _hash(seed, np.array([i]), np.array([3]))[0]) * h
-        strength = 0.35 + 0.45 * _hash(seed, np.array([i]), np.array([4]))[0]
-        wiggle = (_hash(seed, np.array([i]), (yy[:, 0] // 6)) - 0.5) * width * 0.6
-        wiggle = wiggle[:, None] if wiggle.shape[0] == h else 0.0
-        dx = xx - (cx + (wiggle if isinstance(wiggle, np.ndarray) else 0.0))
-        band = np.clip(1.0 - np.abs(dx) / (width * 0.5), 0.0, 1.0) ** 1.6
-        fade = np.clip(1.0 - yy / length, 0.0, 1.0) ** 1.3
+        cx = (0.05 + 0.9 * _hash(seed, np.array([i]), np.array([1]))[0]) * w
+        width = (0.05 + 0.12 * _hash(seed, np.array([i]), np.array([2]))[0]) * w
+        length = (0.45 + 0.55 * _hash(seed, np.array([i]), np.array([3]))[0]) * h
+        strength = 0.6 + 0.35 * _hash(seed, np.array([i]), np.array([4]))[0]
+        wiggle = (_hash(seed, np.array([i]), (yy[:, 0] // 8)) - 0.5) * width * 0.5
+        dx = xx - (cx + wiggle[:, None])
+        band = np.clip(1.0 - np.abs(dx) / (width * 0.5), 0.0, 1.0) ** 1.2
+        fade = np.clip(1.0 - yy / length, 0.0, 1.0) ** 0.9
         alpha = np.maximum(alpha, band * fade * strength)
-    color = np.full((h, w, 3), 28.0)
+    shade = 22.0 + 18.0 * _hash(seed + 3, xx // 3, yy // 3)
+    color = np.dstack([shade, shade * 0.95, shade * 0.88])
     img = np.dstack([color, np.clip(alpha * 255, 0, 255)[..., None]]).astype(np.uint8)
-    out = Image.fromarray(img, "RGBA").filter(ImageFilter.GaussianBlur(radius=max(1, w // 120)))
-    return out
+    return Image.fromarray(img, "RGBA").filter(ImageFilter.GaussianBlur(radius=max(1, w // 160)))
 
 
 def soot(seed, size_m):
+    """Soot under a cornice: near-black at the top, blotchy, fading out over the band's height."""
     w, h = _size_px("soot", size_m)
     yy, xx = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
-    noise = _hash(seed, xx // 4, yy // 4)
-    top_fade = np.clip(1.0 - (yy / h) ** 0.8, 0.0, 1.0)
-    edge = np.clip(1.0 - np.abs(xx - w / 2.0) / (w / 2.0 + 1.0), 0.0, 1.0) ** 0.3
-    alpha = np.clip((0.55 + 0.35 * noise) * top_fade * edge, 0.0, 1.0) * 255.0
-    color = np.full((h, w, 3), 18.0)
+    blotch = 0.6 * _hash(seed, xx // 18, yy // 18) + 0.4 * _hash(seed + 1, xx // 5, yy // 5)
+    top_fade = np.clip(1.0 - (yy / h) ** 0.7, 0.0, 1.0)
+    edge = np.clip(1.0 - np.abs(xx - w / 2.0) / (w / 2.0 + 1.0), 0.0, 1.0) ** 0.15
+    alpha = np.clip((0.7 + 0.35 * blotch) * top_fade * edge, 0.0, 0.92) * 255.0
+    color = np.full((h, w, 3), 14.0)
     img = np.dstack([color, alpha[..., None]]).astype(np.uint8)
-    return Image.fromarray(img, "RGBA").filter(ImageFilter.GaussianBlur(radius=max(1, w // 100)))
+    return Image.fromarray(img, "RGBA").filter(ImageFilter.GaussianBlur(radius=max(1, w // 140)))
 
 
-def patch(seed, size_m):
-    w, h = _size_px("patch", size_m)
+SHOPS = ("grocery", "bar", "laundry", "clothes", "empty")
+
+
+def shop(seed, size_m, kind):
+    """A shop's back wall and fittings seen through the window: dim, warm, varied (RGB, opaque)."""
+    w, h = _size_px("shop", size_m)
     yy, xx = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
-    cx0, cy0 = w * (0.1 + 0.15 * _hash(seed, np.array([0]), np.array([0]))[0]), h * 0.12
-    cx1, cy1 = w * (0.85 - 0.15 * _hash(seed, np.array([1]), np.array([0]))[0]), h * 0.88
-    inside = (xx >= cx0) & (xx <= cx1) & (yy >= cy0) & (yy <= cy1)
-    jitter = (_hash(seed + 1, xx // 6, yy // 6) - 0.5) * 18.0
-    edge_dx = np.minimum(xx - cx0, cx1 - xx)
-    edge_dy = np.minimum(yy - cy0, cy1 - yy)
-    edge = np.minimum(edge_dx, edge_dy) + jitter
-    alpha = np.clip(edge / 10.0, 0.0, 1.0)
-    alpha = np.where(inside, alpha, 0.0) * 255.0
-    row = (yy // 10) % 2
-    bx = ((xx + row * 25) // 55) % 2
-    brick_tone = np.where(bx == 0, 168.0, 156.0)
-    mortar = ((xx + row * 25) % 55) < 3
-    color_val = np.where(mortar, 196.0, brick_tone)
-    tint = np.array([1.0, 0.86, 0.78])  # a slightly different tone from the surrounding wall
-    color = np.stack([color_val * tint[0], color_val * tint[1], color_val * tint[2]], axis=-1)
-    img = np.dstack([color, alpha[..., None]]).astype(np.uint8)
-    return Image.fromarray(img, "RGBA")
+    wall = {"grocery": (150, 140, 118), "bar": (70, 42, 30), "laundry": (176, 182, 178),
+            "clothes": (168, 150, 132), "empty": (96, 90, 82)}[kind]
+    img = Image.new("RGB", (w, h), wall)
+    d = ImageDraw.Draw(img)
+    floor_y = int(h * 0.9)
+    d.rectangle([0, floor_y, w, h], fill=(64, 58, 50))
+    rnd = lambda *k: float(_hash(seed, np.array([k[0]]), np.array([k[1] if len(k) > 1 else 0]))[0])  # noqa: E731
+    if kind == "grocery":
+        for row in range(5):
+            y0 = int(h * (0.14 + 0.15 * row))
+            d.rectangle([int(w * 0.04), y0 + int(h * 0.12), int(w * 0.96), y0 + int(h * 0.135)], fill=(90, 84, 76))
+            x = int(w * 0.05)
+            while x < w * 0.95:
+                bw = int(w * (0.03 + 0.04 * rnd(row, x)))
+                bh = int(h * (0.06 + 0.05 * rnd(x, row)))
+                c = [(186, 58, 44), (230, 198, 76), (64, 112, 168), (232, 226, 210), (82, 140, 74)][int(rnd(x, row + 9) * 5) % 5]
+                d.rectangle([x, y0 + int(h * 0.12) - bh, x + bw, y0 + int(h * 0.12)], fill=c)
+                x += bw + 2
+    elif kind == "bar":
+        d.rectangle([0, int(h * 0.12), w, int(h * 0.5)], fill=(40, 46, 52))  # back-bar mirror
+        for row in range(2):
+            y = int(h * (0.3 + 0.18 * row))
+            d.rectangle([int(w * 0.05), y, int(w * 0.95), y + int(h * 0.015)], fill=(110, 80, 50))
+            for k in range(28):
+                x = int(w * (0.07 + 0.03 * k))
+                c = [(120, 70, 30), (60, 110, 60), (200, 180, 120), (160, 40, 30)][int(rnd(k, row) * 4) % 4]
+                d.rectangle([x, y - int(h * 0.09), x + int(w * 0.012), y], fill=c)
+        d.rectangle([0, int(h * 0.6), w, int(h * 0.9)], fill=(88, 52, 30))  # the bar
+        d.rectangle([0, int(h * 0.6), w, int(h * 0.63)], fill=(130, 90, 56))
+    elif kind == "laundry":
+        for row in range(2):
+            for k in range(6):
+                cx, cy = int(w * (0.1 + 0.16 * k)), int(h * (0.42 + 0.27 * row))
+                r = int(w * 0.055)
+                d.rectangle([cx - r - 8, cy - r - 8, cx + r + 8, cy + r + 8], fill=(226, 228, 224))
+                d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(60, 72, 80), outline=(150, 156, 160), width=4)
+    elif kind == "clothes":
+        d.rectangle([int(w * 0.05), int(h * 0.3), int(w * 0.95), int(h * 0.31)], fill=(70, 70, 72))
+        x = int(w * 0.06)
+        while x < w * 0.93:
+            gw = int(w * (0.03 + 0.03 * rnd(x, 1)))
+            c = [(40, 50, 80), (150, 40, 50), (210, 200, 180), (60, 90, 70), (30, 30, 34)][int(rnd(x, 2) * 5) % 5]
+            d.rectangle([x, int(h * 0.31), x + gw, int(h * (0.62 + 0.12 * rnd(x, 3)))], fill=c)
+            x += gw + 3
+        d.rectangle([int(w * 0.3), int(h * 0.72), int(w * 0.7), int(h * 0.9)], fill=(120, 96, 70))
+    else:
+        d.rectangle([int(w * 0.6), int(h * 0.25), int(w * 0.8), int(h * 0.5)], fill=(170, 150, 110))
+        d.rectangle([int(w * 0.1), int(h * 0.55), int(w * 0.35), int(h * 0.9)], fill=(70, 62, 54))
+    arr = np.asarray(img).astype(np.float64)
+    # A ceiling light pool and dark corners: dim, not a light box.
+    glow = np.clip(1.0 - (((xx - w * 0.5) / (w * 0.7)) ** 2 + ((yy - h * 0.15) / (h * 0.9)) ** 2), 0.25, 1.0)
+    arr = arr * glow[..., None]
+    return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB")
 
 
 # ------------------------------------------------------------------ ghost signs and shop signs
@@ -297,8 +339,8 @@ def build(out_dir, seed=771):
         jobs.append(("streak_%02d" % i, (0.9, 1.2), lambda s, sm: streak(s, sm)))
     for i in range(1, 3):
         jobs.append(("soot_%02d" % i, (4.0, 1.2), lambda s, sm: soot(s, sm)))
-    for i in range(1, 3):
-        jobs.append(("patch_%02d" % i, (1.5, 1.0), lambda s, sm: patch(s, sm)))
+    for kind in SHOPS:
+        jobs.append(("shop_" + kind, (2.4, 2.4), (lambda s, sm, k=kind: shop(s, sm, k))))
     for i, word in enumerate(GHOST_WORDS, 1):
         jobs.append(("ghost_%02d" % i, (6.0, 4.0), (lambda s, sm, w=word: ghost(s, sm, w))))
     for i, word in enumerate(SIGN_WORDS, 1):
@@ -309,9 +351,7 @@ def build(out_dir, seed=771):
     for index, (name, size_m, fn) in enumerate(jobs):
         image = fn(seed + index * 11, size_m)
         path = os.path.join(out_dir, name + ".png")
-        # On KIT_Decal in Unreal the image shows turned 180 degrees (U runs right to left and V
-        # bottom up, seen from the street), so the files are stored turned and the lettering reads right in game.
-        image.transpose(Image.ROTATE_180).save(path, optimize=True)
+        image.save(path, optimize=True)
         record[name] = {"file": name + ".png", "size_m": list(size_m)}
         print("decal", name, image.size, os.path.getsize(path), "bytes")
     with open(os.path.join(out_dir, "decals.json"), "w") as handle:

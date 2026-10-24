@@ -8,7 +8,8 @@
   clear head-on and reflective at grazing angles (Fresnel), so the room
   shells the mesher builds behind every pane show through. The lit variants
   are the same glass; the light comes from the rooms behind.
-- M_InteriorLit is emissive (EmissiveStrength), so lit rooms read at dusk.
+- M_InteriorLit: by day a warm interior lit by the scene; its glow (EmissiveStrength) only shows
+  at night, with MPC_CityLight's Night at 1 (light_collection).
 
 Pack normals are DirectX (Unreal's own convention): no green flip. Poly Haven
 scans are OpenGL: flipped on import. Import does not open SkyCityMashup.
@@ -57,6 +58,10 @@ FLATS = {
     # Simple massing for buildings past the mesh budget (import_city_ue.py).
     "M_MassingGlass": (0.10, 0.14, 0.18, 0.15),
 }
+LIGHT_MPC = "MPC_CityLight"
+_LIGHT_MPC_PATH = []  # set by build(); the materials read Night from it
+ROOM_DAY_ALBEDO = 0.45  # a lit room by day: its colour times this, lit by the scene, no glow
+SHOP_DAY_GLOW = 0.35    # shops keep a share of their glow by day (their lights are on)
 EMISSIVE = {
     "M_InteriorLit": ((1.0, 0.72, 0.38), 3.0),
     "M_LampLens": ((1.0, 0.92, 0.75), 6.0),
@@ -104,6 +109,7 @@ def build(unreal, plan, mat_dir, tex_dir):
         made[slot] = car
     for name, (r, g, b, rough) in FLATS.items():
         made[name] = _flat(unreal, assets, library, editing, mat_dir, name, (r, g, b), rough)
+    _LIGHT_MPC_PATH[:] = [light_collection(unreal, assets, library, mat_dir).get_path_name().split(".")[0]]
     for name, (rgb, strength) in EMISSIVE.items():
         made[name] = _emissive(unreal, assets, library, editing, mat_dir, name, rgb, strength)
     return made
@@ -314,6 +320,12 @@ def kit_wall_instance(unreal, assets, library, editing, mat_dir, master, name, t
 
 
 DECAL_MASTER = "M_KitDecal"
+DECAL_SOLID_MASTER = "M_KitDecalSolid"
+SHOP_MASTER = "M_KitShopBack"
+# Generated decals that hang in front of glass: a masked surface, not a mesh decal.
+SOLID_DECALS = ("gate_", "plywood")
+# Shop light states (walkup.SHOP_LIGHTS): the back wall's emissive Glow.
+SHOP_GLOW = {"on": 0.35, "dim": 0.12, "off": 0.0}
 
 
 def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layout, swatch_dir, pack_library):
@@ -382,8 +394,29 @@ def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layo
     for name, (tint, head_on, grazing) in style_kit.GLASS.items():
         made["glass:" + name] = _glass(unreal, assets, library, editing, mat_dir, "M_KitGlass_" + name, tint, head_on, grazing)
     decal_master = None
+    solid_master = None
+    shop_master = None
     for key in sorted(keys):
         kind, _, name = key.partition(":")
+        solid = False
+        if kind == "shopback":
+            shop_kind, _, state = name.partition(".")
+            path = os.path.join(decal_dir, "shop_%s.png" % shop_kind)
+            if not os.path.isfile(path):
+                continue
+            textures = textures_of({"color": path}, "gdecal_shop_" + shop_kind)
+            if "color" not in textures:
+                continue
+            shop_master = shop_master or _shop_master(unreal, assets, library, editing, mat_dir, textures["color"])
+            import facade_material_ue
+            inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir,
+                                                     "MI_KitShop_%s_%s" % (shop_kind, state), shop_master)
+            facade_material_ue._set_tex(editing, library, inst, "Shop", textures["color"])
+            editing.set_material_instance_scalar_parameter_value(inst, "Glow", SHOP_GLOW.get(state, 0.0))
+            editing.update_material_instance(inst)
+            library.save_loaded_asset(inst)
+            made[key] = inst
+            continue
         if kind == "decal" and name in by_id:
             import pack_slots
             albedo = pack_slots._albedo(by_id[name])
@@ -400,11 +433,16 @@ def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layo
             if "color" not in textures:
                 continue
             inst_name = "MI_KitGDecal_" + name
+            solid = name.startswith(SOLID_DECALS)
         else:
             continue
-        decal_master = decal_master or _decal_master(unreal, assets, library, editing, mat_dir, textures["color"])
+        if solid:
+            solid_master = solid_master or _decal_master(unreal, assets, library, editing, mat_dir, textures["color"], True)
+        else:
+            decal_master = decal_master or _decal_master(unreal, assets, library, editing, mat_dir, textures["color"])
         import facade_material_ue
-        inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir, inst_name, decal_master)
+        inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir, inst_name,
+                                                 solid_master if solid else decal_master)
         facade_material_ue._set_tex(editing, library, inst, "Decal", textures["color"])
         editing.update_material_instance(inst)
         library.save_loaded_asset(inst)
@@ -412,20 +450,67 @@ def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layo
     return made
 
 
-def _decal_master(unreal, assets, library, editing, mat_dir, default_texture):
-    """Masked by the texture's alpha; V flipped (the kit quads run their V up)."""
-    import facade_material_ue
-    mat = facade_material_ue.fresh_material(unreal, assets, library, editing, mat_dir, DECAL_MASTER)
-    mat.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
-    g = facade_material_ue._Graph(unreal, editing, mat)
+def _kit_quad_uv(g, unreal):
+    """UVs for the kit's face quads (KIT_Decal, KIT_Panel): their mesh UVs show the image turned
+    180 degrees from the street (U runs right to left, V bottom up after the glTF V flip), so U flips."""
     coord = g.node(unreal.MaterialExpressionTextureCoordinate, -900, 0)
-    flipped = g.append(g.mask(coord, True, False, False, False, -750, -40),
-                       g.one_minus(g.mask(coord, False, True, False, False, -750, 40), -650, 40), -550, 0)
+    return g.append(g.one_minus(g.mask(coord, True, False, False, False, -750, -40), -650, -40),
+                    g.mask(coord, False, True, False, False, -750, 40), -550, 0)
+
+
+def _decal_master(unreal, assets, library, editing, mat_dir, default_texture, solid=False):
+    """M_KitDecal: a mesh decal, upright from the street (_kit_quad_uv), blended by the texture's alpha.
+
+    As a deferred (mesh) decal it paints into the wall behind it and takes the wall's own lighting:
+    a plain quad 3 cm off a wall read near-black in shade (Lumen's coarse distance fields count it as
+    inside the wall), and a masked one cut soft grime off hard. solid (M_KitDecalSolid): a masked
+    surface for what hangs in front of glass (gates, plywood), where a decal would paint the shop."""
+    import facade_material_ue
+    mat = facade_material_ue.fresh_material(unreal, assets, library, editing, mat_dir,
+                                            DECAL_SOLID_MASTER if solid else DECAL_MASTER)
+    if solid:
+        mat.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+        mat.set_editor_property("used_with_instanced_static_meshes", True)
+    else:
+        # UE 5.8: a decal's blend comes from the material's own blend mode (Translucent).
+        mat.set_editor_property("material_domain", unreal.MaterialDomain.MD_DEFERRED_DECAL)
+        mat.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
+    g = facade_material_ue._Graph(unreal, editing, mat)
     tex = g.tex("Decal", -400, 0, library.load_asset(default_texture))
-    g.wire(flipped, tex, in_hint="UVs", in_index=0)
+    g.wire(_kit_quad_uv(g, unreal), tex, in_hint="UVs", in_index=0)
     g.to_property(tex, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
-    g.to_property(tex, "A", unreal.MaterialProperty.MP_OPACITY_MASK)
+    if solid:
+        g.to_property(tex, "A", unreal.MaterialProperty.MP_OPACITY_MASK)
+    else:
+        g.to_property(tex, "A", unreal.MaterialProperty.MP_OPACITY)
     g.to_property(g.const(0.85, -400, 260), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    editing.recompile_material(mat)
+    library.save_loaded_asset(mat)
+    return mat
+
+
+def _shop_master(unreal, assets, library, editing, mat_dir, default_texture):
+    """M_KitShopBack: a shop's back wall behind its window (walkup.py). Lit by the scene, plus a dim
+    emissive glow (Glow) so a shop with its lights on reads warm, not as a light box."""
+    import facade_material_ue
+    mat = facade_material_ue.fresh_material(unreal, assets, library, editing, mat_dir, SHOP_MASTER)
+    mat.set_editor_property("used_with_instanced_static_meshes", True)
+    g = facade_material_ue._Graph(unreal, editing, mat)
+    tex = g.tex("Shop", -400, 0, library.load_asset(default_texture))
+    g.wire(_kit_quad_uv(g, unreal), tex, in_hint="UVs", in_index=0)
+    rgb = g.mask(tex, True, True, True, False, -250, 0)
+    g.to_property(g.mul(rgb, 0.7, -150, -60), "", unreal.MaterialProperty.MP_BASE_COLOR)
+    glow = g.node(unreal.MaterialExpressionScalarParameter, -400, 200)
+    glow.set_editor_property("parameter_name", "Glow")
+    glow.set_editor_property("default_value", 0.5)
+    lit = g.mul(rgb, glow, -150, 120)
+    night = _night(unreal, editing, mat, -400, 280)
+    if night is not None:
+        # SHOP_DAY_GLOW by day, the full glow at night.
+        share = g.add(g.mul(night, 1.0 - SHOP_DAY_GLOW, -250, 280), SHOP_DAY_GLOW, -120, 280)
+        lit = g.mul(lit, share, -20, 160)
+    g.to_property(lit, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    g.to_property(g.const(0.8, -400, 320), "", unreal.MaterialProperty.MP_ROUGHNESS)
     editing.recompile_material(mat)
     library.save_loaded_asset(mat)
     return mat
@@ -526,6 +611,7 @@ def _glass(unreal, assets, library, editing, mat_dir, name, tint, opacity_head_o
     mat.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
     _try_set(mat, "translucency_lighting_mode", "TranslucencyLightingMode", "TLM_SURFACE_PER_PIXEL_LIGHTING", unreal)
     _try_set(mat, "translucency_pass", "MaterialTranslucencyPass", "MTP_AFTER_DOF", unreal)
+    mat.set_editor_property("used_with_instanced_static_meshes", True)
     base = editing.create_material_expression(mat, unreal.MaterialExpressionConstant3Vector, -600, -200)
     base.set_editor_property("constant", unreal.LinearColor(tint[0], tint[1], tint[2], 1))
     editing.connect_material_property(base, "", unreal.MaterialProperty.MP_BASE_COLOR)
@@ -567,17 +653,58 @@ def _flat(unreal, assets, library, editing, mat_dir, name, rgb, roughness, metal
     return mat
 
 
+def light_collection(unreal, assets, library, mat_dir):
+    """MPC_CityLight: the city's light state. Night (0 by day, 1 at night) switches the room lights on.
+
+    By day a "lit" room is only a lighter interior the sun and shadows reach (no glow out of nowhere);
+    set Night to 1 (Set Scalar Parameter Value on the collection, at runtime or in the editor) for dusk."""
+    path = mat_dir + "/" + LIGHT_MPC
+    mpc = library.load_asset(path) if library.does_asset_exist(path) else None
+    if mpc is None:
+        mpc = assets.create_asset(LIGHT_MPC, mat_dir, unreal.MaterialParameterCollection,
+                                  unreal.MaterialParameterCollectionFactoryNew())
+    night = unreal.CollectionScalarParameter()
+    night.set_editor_property("parameter_name", "Night")
+    night.set_editor_property("default_value", 0.0)
+    mpc.set_editor_property("scalar_parameters", [night])
+    library.save_loaded_asset(mpc)
+    return mpc
+
+
+def _night(unreal, editing, mat, x, y):
+    """The collection's Night value, as a material node."""
+    library = unreal.EditorAssetLibrary
+    mpc = library.load_asset(_LIGHT_MPC_PATH[0]) if _LIGHT_MPC_PATH else None
+    if mpc is None:
+        return None
+    node = editing.create_material_expression(mat, unreal.MaterialExpressionCollectionParameter, x, y)
+    node.set_editor_property("collection", mpc)
+    node.set_editor_property("parameter_name", "Night")
+    return node
+
+
 def _emissive(unreal, assets, library, editing, mat_dir, name, rgb, strength):
+    """A lit room: by day a warm interior wall lit by the scene, at night (MPC_CityLight Night) a glow."""
     mat = _fresh(unreal, assets, library, mat_dir, name)
+    mat.set_editor_property("used_with_instanced_static_meshes", True)
     const = editing.create_material_expression(mat, unreal.MaterialExpressionConstant3Vector, -500, 0)
     const.set_editor_property("constant", unreal.LinearColor(rgb[0], rgb[1], rgb[2], 1))
-    editing.connect_material_property(const, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    day = editing.create_material_expression(mat, unreal.MaterialExpressionMultiply, -250, -80)
+    editing.connect_material_expressions(const, "", day, "A")
+    day.set_editor_property("const_b", ROOM_DAY_ALBEDO)
+    editing.connect_material_property(day, "", unreal.MaterialProperty.MP_BASE_COLOR)
     gain = editing.create_material_expression(mat, unreal.MaterialExpressionScalarParameter, -500, 160)
     gain.set_editor_property("parameter_name", "EmissiveStrength")
     gain.set_editor_property("default_value", float(strength))
     mul = editing.create_material_expression(mat, unreal.MaterialExpressionMultiply, -250, 100)
     editing.connect_material_expressions(const, "", mul, "A")
     editing.connect_material_expressions(gain, "", mul, "B")
+    night = _night(unreal, editing, mat, -500, 260)
+    if night is not None:
+        lights = editing.create_material_expression(mat, unreal.MaterialExpressionMultiply, -100, 160)
+        editing.connect_material_expressions(mul, "", lights, "A")
+        editing.connect_material_expressions(night, "", lights, "B")
+        mul = lights
     editing.connect_material_property(mul, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     editing.recompile_material(mat)
     library.save_loaded_asset(mat)

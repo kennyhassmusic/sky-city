@@ -96,14 +96,24 @@ RULES = {
     "porch_depth": 1.7,
     "porch_stair": 0.95,
     "roof_items": (3, 5),
+    # Clutter at real size (m): chimney (side, height), vent (side, height), hatch 3 x 3 ft
+    # (side, curb), skylight (w, l), condenser (side, height), dish diameter.
+    "roof_size": {"chimney": (0.6, 1.2), "vent": (0.15, 0.6), "hatch": (0.91, 0.45), "skylight": (0.9, 1.2),
+                  "condenser": (1.0, 0.9), "dish": (0.9)},
     "repeat_window": 4,             # no repeated look within this many lots
-    "streak_chance": 0.35,
-    "soot_chance": 0.6,
-    "patch_chance": 0.35,
+    "streak_chance": 0.55,
+    "streak_drop": (0.9, 1.6),
+    "coping_streak_chance": 0.6,
+    "soot_chance": 0.75,
+    "soot_h": 1.4,
+    "patch_chance": 0.45,
+    "repair_w": (0.8, 1.6),
+    "repair_tint": (1.3, 1.12, 1.02),  # newer, redder brick than the wall around it
+    "repair_h": (0.6, 1.2),
     "ghost_chance": 0.55,
     "ac_chance": 0.1,
     "lit_chance": 0.3,
-    "shop_lit_chance": 0.35,
+    "shop_depth": (2.2, 3.4),       # window to the shop's back wall
     "parapet_step_min": 0.3,        # each side-parapet step drops at least this
     "parapet_step_zone": 0.4,       # share of the depth the steps take, from the front
 }
@@ -123,7 +133,8 @@ SIGNS = tuple("sign_%02d" % k for k in range(1, 11))
 GHOSTS = tuple("ghost_%02d" % k for k in range(1, 7))
 STREAKS = ("streak_01", "streak_02", "streak_03")
 SOOTS = ("soot_01", "soot_02")
-PATCHES = ("patch_01", "patch_02")
+SHOP_INTERIORS = ("grocery", "bar", "laundry", "clothes", "empty")
+SHOP_LIGHTS = (("on", 0.35), ("dim", 0.4), ("off", 0.25))
 ROOF_KINDS = ("chimney", "vent", "hatch", "skylight", "condenser", "dish", "antenna")
 CURTAINS = ("M_CurtainRed", "M_CurtainGreen", "M_CurtainCream", "M_CurtainBlue")
 WALL = 0.28                         # wall thickness behind the face (kit_layout.SPAN_DEPTH)
@@ -349,6 +360,9 @@ def _lot(building, frame, index, s0, s1, look, rand, vacant):
         "gate": rand.weighted(((None, 0.6), ("rolldown", 0.25), ("accordion", 0.15)), "gate"),
         "gate_closed": rand.u("gate_closed") < 0.4,
         "pilaster": rand.between(RULES["pilaster"], "pil"),
+        "interior": rand.pick(SHOP_INTERIORS, "interior"),
+        "lights": rand.weighted(SHOP_LIGHTS, "lights"),
+        "interior_d": rand.between(RULES["shop_depth"], "interior_d"),
     }
     # The storefront's parts set the ground floor's height (4.0-4.6 m).
     # Too tall for the floor: shrink the transom first, then the sign band, the glass and the bulkhead.
@@ -765,13 +779,13 @@ def _storefront(e, lot, width):
     e1 = e0 + ew
     shop_look = "wu_alum" if cond == "remuddled" else ("wu_black" if paint in ("sf_black", "sf_cream") else "wu_brown")
     bulk = "sf_tile" if cond == "remuddled" else paint
-    lit_shop = cond != "boarded" and _rnd(lot, "lit", "shop") < RULES["shop_lit_chance"]
+    _shop_interior(e, lot, shop0, shop1, e0, e1, ed, z_sign)
     glass_top = z_tr if cond != "remuddled" else z_tr - 0.3
     for g0, g1 in ((shop0, e0), (e1, shop1)):
         if g1 - g0 < 0.2:
             continue
         e.trim(bulk, "front", g0, g1, -0.02, 0.3, 0.0, z_glass)
-        e.pane("front", g0, g1, 0.0, z_glass, glass_top, lit_shop, look=shop_look, depth=0.12, module="KIT_PaneCurtain")
+        e.put("KIT_Glass|shopglass:" + shop_look, "front", g0, g1, 0.0, 0.2, z_glass, glass_top)
         e.trim(paint, "front", g0, g1, -0.05, 0.08, z_glass - 0.04, z_glass + 0.03)
         if cond == "remuddled":
             e.trim("sf_alum", "front", g0, g1, -0.01, 0.2, glass_top, z_tr)
@@ -784,15 +798,15 @@ def _storefront(e, lot, width):
     e.trim(bulk, "left", e0 - 0.08, e0, 0.0, ed, 0.0, z_tr)
     e.trim(bulk, "right", e1, e1 + 0.08, 0.0, ed, 0.0, z_tr)
     e.trim(paint, "front", e0, e1, 0.0, ed, z_tr - 0.06, z_tr)
-    e.pane("front", e0 + 0.08, e1 - 0.08, ed, RULES["entry_step"], z_tr - 0.08, lit_shop, look=shop_look, depth=0.08,
-           module="KIT_PaneCurtain")
+    e.put("KIT_Glass|shopglass:" + shop_look, "front", e0 + 0.08, e1 - 0.08, ed, ed + 0.12, RULES["entry_step"],
+          z_tr - 0.08)
     if cond == "boarded":
         e.decal("plywood", "front", e0, e1, ed - 0.02, ed + 1.0, RULES["entry_step"], z_tr)
     # Transom across the shop: lights divided by mullions; infilled on a remuddled front.
     if cond == "remuddled":
         e.trim(paint, "front", shop0, shop1, -0.02, 0.2, z_tr, z_sign)
     else:
-        e.pane("front", shop0, shop1, 0.0, z_tr, z_sign, lit_shop, look=shop_look, depth=0.1, module="KIT_PaneCurtain")
+        e.put("KIT_Glass|shopglass:" + shop_look, "front", shop0, shop1, 0.0, 0.2, z_tr, z_sign)
         lights = max(3, int(round((shop1 - shop0) / 0.9)))
         for k in range(1, lights):
             s = shop0 + (shop1 - shop0) * k / lights
@@ -820,6 +834,49 @@ def _storefront(e, lot, width):
     # Brick between the storefront cornice and the first floor (or the parapet on a one-storey lot).
     if g - z_top > 0.01:
         e.front_wall(pil, width - pil, z_top, g, [])
+
+
+def _shop_interior(e, lot, shop0, shop1, e0, e1, ed, z_top):
+    """The shop behind the glass: a back wall (a generated interior, lit, dimmed or dark), floor,
+    ceiling, side walls and a few fittings by kind, so the window reads as a shop, not a light box."""
+    sf = lot["storefront"]
+    kind = sf["interior"]
+    state = "off" if sf["condition"] == "boarded" else sf["lights"]
+    back = min(lot["depth"] - 1.0, sf["interior_d"])
+    inner = "metal_dark" if state == "off" else "sf_cream"
+    e.put("KIT_Panel|shopback:%s.%s" % (kind, state), "front", shop0, shop1, back, back + 1.0, 0.0, z_top)
+    e.trim("wood_grey" if kind in ("bar", "clothes") else "sf_tile", "front", shop0, shop1, 0.2, back, 0.0, 0.03)
+    e.trim(inner, "front", shop0, shop1, 0.2, back, z_top - 0.04, z_top)
+    e.trim(inner, "left", shop0 - 0.08, shop0, 0.2, back, 0.0, z_top)
+    e.trim(inner, "right", shop1, shop1 + 0.08, 0.2, back, 0.0, z_top)
+    # Fittings stand clear of the entry recess.
+    d0 = max(0.6, ed + 0.3)
+    span = (shop0 + 0.3, shop1 - 0.3)
+    if span[1] - span[0] < 1.2 or back - d0 < 0.8:
+        return
+    r = lambda *k: _rnd(lot, "shop", *k)  # noqa: E731
+    if kind == "grocery":
+        for k in range(2):
+            s = span[0] + (span[1] - span[0]) * (0.25 + 0.5 * k) - 0.2
+            e.trim("metal_dark", "front", s, s + 0.4, d0 + 0.2, back - 0.3, 0.0, 1.6 + 0.2 * r("shelf", k))
+            for j in range(4):
+                e.trim(PAINTS[int(r("goods", k, j) * len(PAINTS)) % len(PAINTS)], "front", s - 0.02, s + 0.42,
+                       d0 + 0.25, back - 0.35, 0.3 + 0.35 * j, 0.5 + 0.35 * j)
+        e.trim("wood", "front", span[0], span[0] + 1.3, d0, d0 + 0.55, 0.0, 0.95)
+    elif kind == "bar":
+        e.trim("wood", "front", span[0], span[1], back - 1.2, back - 0.65, 0.0, 1.05)
+        e.trim("brownstone", "front", span[0] - 0.05, span[1] + 0.05, back - 1.25, back - 0.6, 1.05, 1.1)
+    elif kind == "laundry":
+        e.trim("vinyl", "front", span[0], span[1], back - 0.75, back - 0.05, 0.0, 0.9)
+        e.trim("wood_grey", "front", span[0] + 0.4, span[0] + 1.6, d0 + 0.3, d0 + 1.0, 0.0, 0.85)
+    elif kind == "clothes":
+        for k in range(2):
+            s = span[0] + (span[1] - span[0]) * (0.2 + 0.6 * k)
+            e.trim("galv", "front", s - 0.6, s + 0.6, d0 + 0.4, d0 + 0.45, 1.45, 1.5)
+            e.trim(PAINTS[int(r("cloth", k) * len(PAINTS)) % len(PAINTS)], "front", s - 0.55, s + 0.55,
+                   d0 + 0.3, d0 + 0.55, 0.6, 1.45)
+        e.trim("wood", "front", (span[0] + span[1]) / 2.0 - 0.6, (span[0] + span[1]) / 2.0 + 0.6,
+               back - 1.2, back - 0.5, 0.0, 0.8)
 
 
 def _cornice_and_parapet(e, lot, width):
@@ -996,57 +1053,84 @@ def _rear(e, lot, width, depth):
 
 
 def _roof(e, lot, width, depth):
-    """Membrane deck, and 3-5 pieces of clutter, off-centre and mostly toward the rear."""
+    """Membrane deck, and 3-5 pieces of clutter at real size, off-centre and mostly toward the rear.
+
+    Light-coloured metal and brick on the dark membrane, so they read from the air."""
     deck = lot["deck"]
     # Under the parapets too, so no gap shows at a party wall from the air.
     e.put("KIT_Wall|set:" + ROOF, "front", 0.0, width, 0.0, depth, deck - 0.3, deck, (1.0, 1.0, 1.0))
     side = 1 if lot["storefront"]["door_side"] == "right" else 0
+    size = RULES["roof_size"]
     for k, kind in enumerate(lot["roof_items"]):
         u = _rnd(lot, "roof_u", kind)
         v = _rnd(lot, "roof_v", kind)
-        # Mostly toward the rear (45-90% of the depth), off the centre line.
-        d = depth * (0.45 + 0.45 * v)
-        s = width * (0.15 + 0.3 * u) if (k + side) % 2 == 0 else width * (0.55 + 0.3 * u)
+        # Mostly toward the rear (45-85% of the depth), off the centre line.
+        d = depth * (0.45 + 0.4 * v)
+        s = width * (0.12 + 0.25 * u) if (k + side) % 2 == 0 else width * (0.55 + 0.25 * u)
         if kind == "chimney":
-            # On a party wall, in common brick, with clay flue caps.
-            s0 = WALL if u < 0.5 else width - WALL - 0.6
+            # On a party wall, in common brick, with a stone cap and clay flue pots.
+            cw, ch = size["chimney"][0], size["chimney"][1] + 0.4 * _rnd(lot, "chim_h")
+            s0 = WALL if u < 0.5 else width - WALL - cw
             dd = depth * (0.25 + 0.5 * v)
-            hc = 1.2 + 0.6 * _rnd(lot, "chim_h")
-            e.common("front", s0, s0 + 0.6, dd, dd + 0.9, deck, deck + hc, module="KIT_Box")
-            e.trim("coping", "front", s0 - 0.04, s0 + 0.64, dd - 0.04, dd + 0.94, deck + hc, deck + hc + 0.06)
+            e.common("front", s0, s0 + cw, dd, dd + cw, deck, deck + ch, module="KIT_Box")
+            e.trim("coping", "front", s0 - 0.05, s0 + cw + 0.05, dd - 0.05, dd + cw + 0.05, deck + ch, deck + ch + 0.08)
             for j in range(1 + int(_rnd(lot, "flues") * 2)):
-                fs = s0 + 0.12 + j * 0.24
-                e.trim("terracotta", "front", fs, fs + 0.18, dd + 0.35, dd + 0.53, deck + hc + 0.06, deck + hc + 0.36)
+                fs = s0 + 0.1 + j * 0.24
+                e.trim("terracotta", "front", fs, fs + 0.18, dd + 0.21, dd + 0.39, deck + ch + 0.08, deck + ch + 0.45)
         elif kind == "vent":
             for j in range(1 + int(v * 2)):
-                vs = s + j * 0.7
-                e.trim("galv", "front", vs, vs + 0.1, d, d + 0.1, deck, deck + 0.5 + 0.3 * u)
-                e.trim("galv", "front", vs - 0.04, vs + 0.14, d - 0.04, d + 0.14, deck + 0.5 + 0.3 * u, deck + 0.56 + 0.3 * u)
+                vs = s + j * 0.8
+                hv = size["vent"][1] + 0.3 * u
+                e.trim("galv", "front", vs, vs + size["vent"][0], d, d + size["vent"][0], deck, deck + hv)
+                e.trim("galv", "front", vs - 0.06, vs + size["vent"][0] + 0.06, d - 0.06, d + size["vent"][0] + 0.06,
+                       deck + hv, deck + hv + 0.08)
         elif kind == "hatch":
-            # Near the stair, over the upstairs door's side.
-            hs = (0.6 if side == 0 else width - 1.6)
+            # Near the stair, over the upstairs door's side: a 3 x 3 ft curb and lid.
+            hw = size["hatch"][0]
+            hs = (0.6 if side == 0 else width - 0.6 - hw)
             hd = depth * 0.35
-            e.trim("galv", "front", hs, hs + 0.9, hd, hd + 0.9, deck, deck + 0.35)
-            e.trim("metal_dark", "front", hs - 0.04, hs + 0.94, hd - 0.04, hd + 0.94, deck + 0.35, deck + 0.4)
+            e.trim("hatch", "front", hs, hs + hw, hd, hd + hw, deck, deck + size["hatch"][1])
+            e.trim("galv", "front", hs - 0.05, hs + hw + 0.05, hd - 0.05, hd + hw + 0.05, deck + size["hatch"][1],
+                   deck + size["hatch"][1] + 0.06)
         elif kind == "skylight":
-            e.trim("galv", "front", s, s + 0.9, d - 0.6, d + 0.6, deck, deck + 0.25)
-            e.trim("skylight", "front", s + 0.05, s + 0.85, d - 0.55, d + 0.55, deck + 0.25, deck + 0.35)
+            sw, sl = size["skylight"]
+            e.trim("galv", "front", s, s + sw, d - sl / 2.0, d + sl / 2.0, deck, deck + 0.3)
+            e.trim("skylight", "front", s + 0.05, s + sw - 0.05, d - sl / 2.0 + 0.05, d + sl / 2.0 - 0.05,
+                   deck + 0.3, deck + 0.42)
         elif kind == "condenser":
+            cw, chh = size["condenser"]
             for j in range(1 + int(u * 2)):
-                cs = min(width - WALL - 0.8, s + j * 0.95)
-                e.trim("metal_dark", "front", cs, cs + 0.75, d, d + 0.75, deck, deck + 0.08)
-                e.trim("condenser", "front", cs, cs + 0.75, d, d + 0.75, deck + 0.08, deck + 0.78)
-                e.trim("metal_dark", "front", cs + 0.08, cs + 0.67, d + 0.08, d + 0.67, deck + 0.78, deck + 0.8)
+                cs = min(width - WALL - cw - 0.05, s + j * (cw + 0.3))
+                e.trim("metal_dark", "front", cs - 0.05, cs + cw + 0.05, d - 0.05, d + cw + 0.05, deck, deck + 0.1)
+                e.trim("condenser", "front", cs, cs + cw, d, d + cw, deck + 0.1, deck + 0.1 + chh)
+                e.trim("metal_dark", "front", cs + 0.12, cs + cw - 0.12, d + 0.12, d + cw - 0.12, deck + 0.1 + chh,
+                       deck + 0.13 + chh)
         elif kind == "dish":
-            e.put("KIT_Dish|trim:galv", "back", s, s + 0.8, d, d + 0.8, deck, deck + 0.8)
+            dw = size["dish"]
+            e.put("KIT_Dish|trim:condenser", "back", s, s + dw, d, d + dw, deck, deck + dw)
         elif kind == "antenna":
-            e.trim("metal_dark", "front", s, s + 0.04, d, d + 0.04, deck, deck + 2.2)
-            e.trim("metal_dark", "front", s - 0.6, s + 0.64, d, d + 0.03, deck + 1.9, deck + 1.93)
-            e.trim("metal_dark", "front", s - 0.4, s + 0.44, d, d + 0.03, deck + 1.6, deck + 1.63)
+            e.trim("galv", "front", s, s + 0.06, d, d + 0.06, deck, deck + 2.4)
+            e.trim("galv", "front", s - 0.7, s + 0.76, d, d + 0.04, deck + 2.1, deck + 2.14)
+            e.trim("galv", "front", s - 0.45, s + 0.51, d, d + 0.04, deck + 1.75, deck + 1.79)
+
+
+def _piers(lot):
+    """Wall gaps between the upper windows (and the ends), relative to the lot: where streaks can run."""
+    width = lot["s1"] - lot["s0"]
+    edges = [0.0]
+    for c0, c1 in sorted(window_columns(lot) + oriel_windows(lot)):
+        edges.extend([c0, c1])
+    edges.append(width)
+    out = []
+    for k in range(0, len(edges) - 1, 2):
+        a, b = edges[k] + 0.15, edges[k + 1] - 0.15
+        if b - a >= 0.5:
+            out.append((a, b))
+    return out
 
 
 def _wear(e, lot, width):
-    """Streaks under sills, soot under the cornice, patched brick on the band over the storefront."""
+    """Rain streaks under sills and the cornice, soot under the cornice, soft brick repairs."""
     cols = window_columns(lot)
     for floor in range(1, lot["floors"]):
         z0, _h = floor_z(lot, floor)
@@ -1054,23 +1138,64 @@ def _wear(e, lot, width):
         for k, (c0, c1) in enumerate(cols):
             if _rnd(lot, "streak", floor, k) < RULES["streak_chance"]:
                 name = STREAKS[int(_rnd(lot, "streak_kind", floor, k) * len(STREAKS)) % len(STREAKS)]
-                drop = 0.7 + 0.5 * _rnd(lot, "streak_h", floor, k)
+                drop = RULES["streak_drop"][0] + (RULES["streak_drop"][1] - RULES["streak_drop"][0]) * _rnd(
+                    lot, "streak_h", floor, k)
                 bottom = max(sill - lot["sill_h"] - drop, z0 - 0.4 if floor > 1 else lot["ground_h"])
-                e.decal(name, "front", c0 - 0.1, c1 + 0.1, 0.0, 1.0, bottom, sill - lot["sill_h"])
-    if lot["floors"] >= 2 and _rnd(lot, "soot") < RULES["soot_chance"]:
-        name = SOOTS[int(_rnd(lot, "soot_kind") * len(SOOTS)) % len(SOOTS)]
+                e.decal(name, "front", c0 - 0.12, c1 + 0.12, 0.0, 1.0, bottom, sill - lot["sill_h"])
+    top = cornice_bottom(lot)
+    if lot["floors"] >= 2:
         z_floor, _h = floor_z(lot, lot["floors"] - 1)
         head = z_floor + lot["sill_above"] + lot["wh"] + lot["lintel_h"] * 1.5
-        top = cornice_bottom(lot)
-        e.decal(name, "front", 0.0, lot["s1"] - lot["s0"], 0.0, 1.0, max(head, top - 1.1), top)
+        if _rnd(lot, "soot") < RULES["soot_chance"]:
+            name = SOOTS[int(_rnd(lot, "soot_kind") * len(SOOTS)) % len(SOOTS)]
+            e.decal(name, "front", 0.0, width, 0.0, 1.0, max(head - 0.6, top - RULES["soot_h"]), top)
+        # Runs from the cornice and coping down the piers between the top-floor windows.
+        for k, (a, b) in enumerate(_piers(lot)):
+            if _rnd(lot, "coping_streak", k) < RULES["coping_streak_chance"]:
+                name = STREAKS[int(_rnd(lot, "coping_kind", k) * len(STREAKS)) % len(STREAKS)]
+                drop = 1.2 + 1.0 * _rnd(lot, "coping_h", k)
+                e.decal(name, "front", a, b, 0.0, 1.0, max(lot["ground_h"] + 0.3, top - drop), top)
     if _rnd(lot, "patch") < RULES["patch_chance"] and lot["floors"] >= 2:
         sf = lot["storefront"]
         z_top = sf["bulkhead"] + sf["display"] + sf["transom"] + sf["sign_h"] + RULES["sf_cornice"]["h"]
-        name = PATCHES[int(_rnd(lot, "patch_kind") * len(PATCHES)) % len(PATCHES)]
-        s = (width - 1.5) * _rnd(lot, "patch_s")
-        top = min(lot["ground_h"] + lot["sill_above"] - lot["sill_h"] - 0.05, z_top + 1.0)
-        if top - z_top > 0.3:
-            e.decal(name, "front", s, s + 1.5, 0.0, 1.0, z_top + 0.02, top)
+        piers = _piers(lot) or [(0.2, width - 0.2)]
+        a, b = piers[int(_rnd(lot, "patch_pier") * len(piers)) % len(piers)]
+        floor = 1 + int(_rnd(lot, "patch_floor") * max(1, lot["floors"] - 1)) % max(1, lot["floors"] - 1)
+        z0, h = floor_z(lot, floor)
+        _repair(e, lot, a, b, max(z_top + 0.05, z0 + 0.3), z0 + h - 0.15, "front")
+
+
+def _repair(e, lot, a, b, z0, z1, face, key="walls"):
+    """A brick repair: newer brick of the same kind, 5 mm proud, in courses with a toothed outline.
+
+    Real geometry in the wall's own swatch, so its bricks line up with the wall's (M_KitWall projects
+    in world metres) and it takes the wall's light; only its tint (newer, a little redder) differs."""
+    course = 0.0667
+    w = min(RULES["repair_w"][1], b - a)
+    if w < 0.5 or z1 - z0 < 0.5:
+        return
+    s0 = a + (b - a - w) * _rnd(lot, "repair_s", face, key)
+    rows = int(min(RULES["repair_h"][1], z1 - z0) / course / 3)  # bands of three courses
+    tint = tuple(min(1.35, c * f) for c, f in zip(lot["tint"] if face == "front" else lot["common_tint"],
+                                                RULES["repair_tint"]))
+    wall = "KIT_Box|set:" + (lot["wall"] if face == "front" else COMMON)
+    zb = z0 + (z1 - z0 - rows * 3 * course) * _rnd(lot, "repair_z", face, key)
+    zb = round(zb / course) * course
+    for k in range(rows):
+        # Each band steps in or out by half a brick, so the edge is toothed like a real repair.
+        mid = abs(k - (rows - 1) / 2.0) / max(1.0, (rows - 1) / 2.0)
+        inset = 0.11 * int(1 + 3 * mid * _rnd(lot, "repair_tooth", face, key, k))
+        lo, hi = s0 + inset, s0 + w - inset * (0.5 + _rnd(lot, "repair_tooth_r", face, key, k))
+        if hi - lo < 0.25:
+            continue
+        zk = zb + 3 * course * k
+        if face == "front":
+            e.put(wall, "front", lo, hi, -0.005, 0.02, zk, zk + 3 * course, tint)
+        elif face == "left":
+            e.put(wall, "left", -0.005, 0.02, lo, hi, zk, zk + 3 * course, tint)
+        else:
+            width = lot["s1"] - lot["s0"]
+            e.put(wall, "right", width - 0.02, width + 0.005, lo, hi, zk, zk + 3 * course, tint)
 
 
 def _ghosts(layout, lots):
@@ -1097,11 +1222,8 @@ def _ghosts(layout, lots):
                 e.put("KIT_Decal|gdecal:" + name, "right", width - 1.0, width + 0.001, d0, d0 + w, z1 - h, z1)
             if _rnd(lot, "patch_side", side) < RULES["patch_chance"]:
                 pz = max(low + 0.5, 1.0)
-                pd = lot["depth"] * (0.55 + 0.3 * _rnd(lot, "patch_side_d", side))
-                if side == "left":
-                    e.put("KIT_Decal|gdecal:patch_02", "left", -0.001, 1.0, pd, pd + 1.5, pz, pz + 1.0)
-                else:
-                    e.put("KIT_Decal|gdecal:patch_02", "right", width - 1.0, width + 0.001, pd, pd + 1.5, pz, pz + 1.0)
+                pd = lot["depth"] * (0.5 + 0.3 * _rnd(lot, "patch_side_d", side))
+                _repair(e, lot, pd, pd + 2.0, pz, pz + 1.6, side, "side")
 
 
 def _vacant(e, lot, width, depth):

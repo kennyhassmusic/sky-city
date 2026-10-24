@@ -189,6 +189,22 @@ def pane(name):
     return k.finish()
 
 
+def glass():
+    k = Kit("KIT_Glass")
+    # A shop window: the glass at half its depth scale, a frame just in front; no room back
+    # (walkup.py models the shop behind it).
+    k.quad([(0, 0.5, 0), (1, 0.5, 0), (1, 0.5, 1), (0, 0.5, 1)], (0, -1, 0), "M_Glass")
+    f = 0.49
+    for a0, a1, z0, z1 in ((0, FRAME_W, 0, 1), (1 - FRAME_W, 1, 0, 1), (FRAME_W, 1 - FRAME_W, 1 - FRAME_W, 1),
+                           (FRAME_W, 1 - FRAME_W, 0, FRAME_W)):
+        k.quad([(a0, f, z0), (a1, f, z0), (a1, f, z1), (a0, f, z1)], (0, -1, 0), "M_Frame")
+    # Reveals from the wall plane back to the glass, so the frame reads as set into the opening.
+    k.quad([(0, 0, 0), (0, 0.5, 0), (0, 0.5, 1), (0, 0, 1)], (1, 0, 0), "M_Frame")
+    k.quad([(1, 0, 0), (1, 0.5, 0), (1, 0.5, 1), (1, 0, 1)], (-1, 0, 0), "M_Frame")
+    k.quad([(0, 0, 1), (1, 0, 1), (1, 0.5, 1), (0, 0.5, 1)], (0, 0, -1), "M_Frame")
+    return k.finish()
+
+
 def leaf():
     k = Kit("KIT_Leaf")
     d = kit.LEAF_IN
@@ -317,7 +333,7 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     made = [wall(), pier(), corner(), pane("KIT_Pane"), pane("KIT_PaneCurtain"), leaf(), roof_cap(),
             sill(), cornice(), panel(), decal(), decal_floor(),
-            box(), bracket(), arch_lintel(), keystone(), awning(), dish()]
+            box(), bracket(), arch_lintel(), keystone(), awning(), dish(), glass()]
     names = {ob.name for ob in made}
     if names != set(kit.MODULES):
         raise SystemExit("kit modules %s do not match kit_layout.MODULES %s" % (sorted(names), sorted(kit.MODULES)))

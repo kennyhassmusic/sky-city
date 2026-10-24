@@ -6,6 +6,119 @@ Branch `cursor/chicago-gen-map`, level `/Game/Maps/SkyCityChicagoGen`. Two jobs:
 2. The towers' striped shadows fixed with shadow-only proxies.
 
 Everything here was done by an AI (Claude), with one helper agent for the textures, decals and kit meshes.
+The fix-up pass (section 0) comes after sections 1 and 2 in time; it supersedes them where they differ.
+
+## 0. Fix-up pass
+
+Before and after shots, same cameras: `artifacts/previews/chicago_loop/walkup/fixup/`. `before_*` is the
+first pass (`81af655`), `after_*` is this one:
+- walk-up views: `*_83_street`, `*_83_close`, `*_58_close`, `*_22_close`, `*_58_street`, `*_22_street`, `*_83_roofs`,
+  `*_58_roofs`, `*_83_rear`, `*_58_corner`;
+- the report cameras: `*_cam_street`, `*_cam_aerial`, `*_cam_b_lot_osm_58_street`, `*_cam_b_lot_osm_22_street`;
+- crops: `after_83_streaks_crop.png`, `after_83_shopfronts_crop.png`.
+
+### What changed
+1. **Storefront glass.** The light box is gone: the display windows, transoms and shop doors are a new glass-only
+   module (`KIT_Glass`) in a reflective shop glass (`style_kit.GLASS["shop"]`, Fresnel to 0.92, and Lumen
+   front-layer reflections switched on in the grade).
+   - Behind the glass, `walkup._shop_interior` builds a shop 2.2-3.4 m deep: a generated back wall (grocery, bar,
+     laundry, clothes or empty; `walkup_decals.shop`), floor, ceiling and side walls, and fittings by kind
+     (shelving with goods, counters, a bar, washers and a folding table, racks).
+   - Light state per shop: on 35%, dim 40%, off 25% (boarded shops always off). It is a dim glow on the back wall
+     (`M_KitShopBack`), not a lit panel.
+2. **The 180-degree flip.** Fixed in the shared decal material (`city_materials_ue._kit_quad_uv`), so every
+   style's pack decals (graffiti, stains, signs) are upright, not just the walk-ups'. The generated decals are
+   stored upright again.
+   - Pack storefront panels (`KIT_Panel` with `M_KitWall`) were checked against their source texture: the door,
+     mailboxes and shutter come in the right order and right way up. They project in world metres, so they were
+     never flipped.
+3. **Weathering.**
+   - Wall decals are now true mesh decals (Deferred Decal domain, translucent blend). They paint into the wall
+     and take its lighting. As plain quads 3 cm off the wall they went near-black in shade, because Lumen's
+     distance fields count them as inside the wall, and their masked alpha cut soft grime off hard.
+   - Streaks are darker and longer (0.9-1.6 m, 55% of windows), and new runs come down the piers from the cornice
+     and coping (60%).
+   - Soot is darker and taller (1.4 m, 75% of lots).
+   - The dark-rectangle patches are replaced by real brick repairs (`walkup._repair`): a few thin bands of the
+     lot's own brick, 5 mm proud, three courses each, with a toothed outline and a newer, redder tint. They also
+     go on exposed side walls. Because the wall material projects in world metres, the repair's bricks line up
+     course for course with the wall.
+4. **Roof clutter** at real size (`RULES["roof_size"]`):
+   - chimneys 0.6 x 0.6 x 1.2-1.6 m with a cap and clay pots;
+   - condensers 1.0 x 1.0 x 0.9 m on a pad;
+   - a 3 x 3 ft (0.91 m) hatch, red with a galvanised lid;
+   - vents 0.15 m with caps, a 0.9 m dish, antenna masts.
+   They are light metal and brick on the dark membrane, and they read from the aerial.
+5. **Shade.** The stage's lighting is in `import_city_ue.LIGHT`:
+   - a warm sky-light tint (255, 214, 180), sky intensity 1.4;
+   - a warm lower hemisphere standing in for the street's bounce;
+   - a 5600 K sun;
+   - an unbound `Grade` volume: exposure +0.3, saturation 1.15, Lumen front-layer reflections.
+   `python3 ... import_city_ue.py --relight` re-applies it without a re-import. Two bugs were found on the way:
+   - The tint was going in blue. `unreal.Color(...)` takes positional arguments in memory order (B, G, R, A).
+     Keyword arguments now.
+   - The stage (sun, sky, fog, grade) has been landing in kit sublevel `Kit_09` since pass 2.
+     `set_current_level_by_name("PersistentLevel")` never switched back; it needs the level's own name. Fixed in
+     `kit_city_ue.build`; one of each now, in the persistent level.
+6. **Windows (your note).** Lit rooms no longer glow out of nowhere in daylight. The room material (`M_InteriorLit`)
+   is now a warm interior that the sun and shadows reach, and its glow is multiplied by `MPC_CityLight`'s `Night`
+   parameter, 0 by day. Shops keep 35% of their glow by day. Set `Night` to 1 for dusk or night, in the editor or
+   at runtime from Blueprint or C++. Night was not tested in this pass.
+
+### Re-grade against `Design/WALKUP_RULES.md`
+
+| # | Checklist item | First pass | Now | Evidence (`fixup/after_*`) |
+|---|---|---|---|---|
+| 1 | Ground floor taller than upper floors | PASS | **PASS** | `83_street` |
+| 2 | 20-25 ft per lot | PASS | **PASS** | `83_street` |
+| 3 | Tall 1:2 windows, stacked | PASS | **PASS** | `83_street`, `22_close` |
+| 4 | Recessed windows with lintels and sills | PASS | **PASS** | `22_close` |
+| 5 | Cornice projects and casts a shadow | PASS | **PASS** | `58_close`, `22_close` |
+| 6 | Storefront: bulkhead, glass, transom, sign band | PASS (light box) | **PASS** | `after_83_shopfronts_crop.png`: shop interiors behind reflective glass |
+| 7 | Recessed entry and separate upstairs door | PASS | **PASS** | `58_close` |
+| 8 | Front brick differs from the side and rear common brick | PASS | **PASS** | `58_corner`, `83_rear` |
+| 9 | Ornament stops 1-3 ft around the corner | PASS | **PASS** | `58_corner` |
+| 10 | Party walls mostly blind | PASS | **PASS** | `58_corner` |
+| 11 | Parapet rises above the roof | PASS | **PASS** | `83_roofs` |
+| 12 | Side parapets step down toward the rear | PASS (weak) | **PASS (weak)** | small 0.3-0.4 m steps behind the cornice; they read only up close |
+| 13 | Roof has 3-5 clutter items | PASS (small) | **PASS** | `83_roofs`, `58_roofs`: clutter reads from the air |
+| 14 | No water tank | PASS | **PASS** | `83_roofs` |
+| 15 | Rear porches | PASS | **PASS** | `83_rear` |
+| 16 | Adjacent lots never share brick, cornice, height and storefront | PASS | **PASS** | `test_walkup.VarietyTest` |
+| 17 | Rooflines vary | PASS | **PASS** | `83_street` |
+| 18 | Weathering: streaks, soot, patches | **FAIL** | **PASS (weak on soot and repairs)** | Streaks under every sill and down the piers from the cornice read at street distance (`after_83_streaks_crop.png`). Soot is faint. The brick repairs are geometry and line up with the wall, but in shade at 10+ m they are hard to see |
+| 19 | Window interiors vary | PASS | **PASS** | blinds, curtains, AC units; by day "lit" rooms are lighter interiors, not glowing |
+| 20 | No visible tiling at 20 m | PASS | **PASS** | `83_street`, `58_street` |
+
+**20 PASS (two weak), 0 FAIL.** The MISSING PIECE list from the first pass is unchanged: corner chamfers or
+turrets, open sashes, the 1/4 in per ft roof pitch, and gangways.
+
+**Shade:** the grey-blue cast is gone (`after_cam_street` vs `before_cam_street`, `after_83_street`). Shade now
+reads neutral to warm, and shaded brick keeps its brown (`after_58_close`, the right half). Red brick in deep
+shade still reads tan rather than red (`after_22_close`), so the tones hold up better but not fully.
+
+### GPU time
+`Scripts/city/shadow_ab_ue.py states=on`: the same four cameras, 6 ProfileGPU samples each, whole frame
+(`<root>`). Before is the first pass with proxies on; after is this pass.
+
+| Camera | Before | After |
+|---|---|---|
+| street (report camera) | 17.01 ms | 17.48 ms |
+| b_lot_osm_58 street | 16.52 ms | 16.39 ms |
+| b_lot_osm_22 street | 15.71 ms | 14.82 ms |
+| aerial (report camera) | 21.92 ms | 20.83 ms |
+
+All four are within the run-to-run spread (1.5-4 ms), so there is no measurable cost. The pass adds 2,200
+instances (951,925 in all), shop glass and mesh decals. 218 HISM components; map check 0 errors, 0 warnings.
+
+### Still open
+- Red brick in deep shade reads tan (see above). The next lever is the swatches' saturation or a per-tone
+  albedo, not more grade.
+- Soot and repairs are subtle; raising the soot alpha and the repair tint further is a one-line change in
+  `walkup.RULES` and `walkup_decals.soot`.
+- Night (`MPC_CityLight` Night = 1) was not tested.
+- Pack decals are upright now by the shared material fix. The walk-up signs show it works; I didn't look for a
+  pack decal on screen.
 
 ## 1. Walk-ups
 
@@ -144,8 +257,11 @@ py Scripts/city/import_city_ue.py --glbs SourceArt/CityGen/chicago --buildings k
 # review shots and the shadow A/B (live editor, level open):
 python3 -I Scripts/city/walkup_shots_ue.py --plan
 py Scripts/city/walkup_shots_ue.py tag=after
-py Scripts/city/shadow_ab_ue.py frames=3 settle=8 rounds=2
+py Scripts/city/shadow_ab_ue.py frames=3 settle=8 rounds=2                 # proxies off/on A/B
+py Scripts/city/shadow_ab_ue.py frames=3 settle=8 rounds=2 states=on tag=x  # a plain measurement
 python3 -I Scripts/city/shadow_ab_ue.py --read
+# lighting only (import_city_ue.LIGHT), no re-import:
+py Scripts/city/import_city_ue.py --relight --level /Game/Maps/SkyCityChicagoGen
 python3 -I Scripts/city/test_walkup.py
 ```
 
