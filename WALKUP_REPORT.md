@@ -6,7 +6,48 @@ Branch `cursor/chicago-gen-map`, level `/Game/Maps/SkyCityChicagoGen`. Two jobs:
 2. The towers' striped shadows fixed with shadow-only proxies.
 
 Everything here was done by an AI (Claude), with one helper agent for the textures, decals and kit meshes.
-The fix-up pass (section 0) comes after sections 1 and 2 in time; it supersedes them where they differ.
+The fix-up passes (sections 00 and 0) come after sections 1 and 2 in time. Section 00 is the latest and
+supersedes the others where they differ.
+
+## 00. Fix-up pass 2 (DELI, LAUNDROMAT, HARDWARE)
+
+Shots are in `artifacts/previews/chicago_loop/walkup/`:
+- `walkup_*` and `cam_*` are re-rendered;
+- `pass2/before_*` and `pass2/after_*` show the DELI (`22_close`, `22_street`) and the LAUNDROMAT and HARDWARE
+  (`58_street`, `58_close`);
+- crops: `pass2/*_laundromat_upper_wall_crop.jpg` (the light leak), `pass2/*_laundromat_hardware_shopfronts_crop.jpg`
+  (the white slabs).
+
+| # | Issue | Cause | Fix | Result |
+|---|---|---|---|---|
+| 1 | Storefront and transom glass glows white | Mostly not the glass. The undersides of light or metallic shop trim mirror the sunlit street seen from below: the remuddled cream box signs, the 0.9-metallic aluminium panels over the glass, the galvanised gate housings. The shop glass also had a strong Fresnel | Shop glass: dark tint, Fresnel opacity 0.22 → 0.62, specular 0.45, roughness 0.1 (`style_kit.GLASS["shop"]`, `GLASS_SURFACE`). Shop frames dark anodised, not silver. Box signs in the shop's paint, 0.12 m proud. Aluminium and gate housings matte and mid-dark (`sf_alum`, `gate_box`). Shop insides warm grey (`shop_wall`). Lit shops glow 0.22, dim 0.08 | **PASS**: no white slab in `pass2/after_*`. Shelves and racks stay visible behind the glass. The faint warm glow is kept |
+| 2 | Weathering reads as a dark blob | The pack "stain", "patch" and "paint" decals are round splats; every other style wore them on its ground floor | Splat features dropped from `style_kit.WALL_DECALS`. Every styled wall now wears soft streaks hanging from a floor line (`kit_layout.STREAK_DECALS`). Walk-ups get: 6 streak variants under sills and from the cornice; drips off lintel ends down the jambs; soot as runs of different lengths, not a band; base grime on pilasters and bulkheads. A per-lot dirt level (0.35-1.0) scales every chance, so no two lots wear the same | **PASS**: no blobs; streaks and drips read at street distance (`pass2/after_laundromat_upper_wall_crop.jpg`) |
+| 3 | Light leaks onto shaded facades | Traced (sun rays from the LAUNDROMAT front through the layout's boxes). The rays clip the corners of the towers across the street through the 0.85 m shell in front of their shadow proxies. Glass casts nothing there, and a pane's room back is one-sided, so it casts nothing when the sun is behind it. No gaps at the tier seams, the lot seams or the parapets | Pane components cast two-sided (`kit_city_ue`). Tower proxies inset 0.45 m, just behind their 0.42 m room backs, instead of 0.85 m (`kit_layout.SHADOW_INSET`). Walk-ups keep 0.85 m behind their deeper panes | **PASS**: the bright patches are gone (`pass2/*_laundromat_upper_wall_crop.jpg`) |
+| 4 | Shaded fronts flat and blue-grey | Shade lit by a blue sky alone | Sky tint (255, 204, 164) at 1.6, warmer lower hemisphere (0.34, 0.26, 0.18), Lumen indirect ×1.3 for street bounce (`import_city_ue.LIGHT`) | **PASS**: shaded brick stays warm brown (`walkup_58_corner`, `pass2/after_58_street`) |
+| 5 | Other styles' sign decals turned 180° | Checked: no other style places a sign or lettered decal. Their signage is in the storefront panel textures, upright (they project in world metres). The shared decal material carries the flip fix for any pack decal | none needed | **PASS** |
+| 6 | Roof clutter too small from the street | The 0.6-1.2 m front parapet hides anything short or far back | Chimneys 1.8-2.4 m tall, in the front third on the party wall. Vents 1.2-1.5 m, antenna masts 3 m. Still no water tanks: `Design/WALKUP_RULES.md` rules them out ("That's New York") | **PASS**: a chimney shows over the parapet in `walkup_58_corner`; clutter reads from the air (`walkup_83_roofs`) |
+
+**Checklist (`Design/WALKUP_RULES.md` section 5) after pass 2:** all 20 **PASS**. Item 12 (side parapets
+step down) stays weak: the steps are real but only read up close. Item 18 (weathering) now passes cleanly:
+streaks, drips, soot runs and base grime, with brick repairs as before. The MISSING PIECE list is unchanged:
+corner chamfer or turret, open sashes, roof pitch, gangways.
+
+**Frame cost** (`shadow_ab_ue.py states=on`, the same four cameras, 6 ProfileGPU samples each, `<root>`):
+
+| Camera | Pass 1 fix-up | Pass 2 |
+|---|---|---|
+| street (report camera) | 17.48 ms | 17.93 ms |
+| b_lot_osm_58 street | 16.39 ms | 14.71 ms |
+| b_lot_osm_22 street | 14.82 ms | 14.84 ms |
+| aerial (report camera) | 20.83 ms | 18.75 ms |
+
+The frame is within the run-to-run spread, at or under the last budget at every camera. Two-sided pane shadows
+didn't move ShadowDepths (0.26-0.96 ms). 222 HISM components, 952,270 instances; map check 0 errors, 0 warnings.
+
+Note on the numbers: ten CrashReportClient processes had piled up from this session's scripted editor runs (each
+logs a harmless crash on exit), and the load average was about 64. They were stopped before the pass-2
+measurement; the earlier passes' numbers were taken under that load. The one crash reporter from before this
+session was left alone.
 
 ## 0. Fix-up pass
 

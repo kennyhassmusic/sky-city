@@ -1,4 +1,25 @@
 {
+ "drip_01": {
+  "file": "drip_01.png",
+  "size_m": [
+   0.25,
+   0.9
+  ]
+ },
+ "drip_02": {
+  "file": "drip_02.png",
+  "size_m": [
+   0.25,
+   0.9
+  ]
+ },
+ "drip_03": {
+  "file": "drip_03.png",
+  "size_m": [
+   0.25,
+   0.9
+  ]
+ },
  "gate_accordion": {
   "file": "gate_accordion.png",
   "size_m": [
@@ -53,6 +74,27 @@
   "size_m": [
    6.0,
    4.0
+  ]
+ },
+ "grime_base_01": {
+  "file": "grime_base_01.png",
+  "size_m": [
+   3.0,
+   0.8
+  ]
+ },
+ "grime_base_02": {
+  "file": "grime_base_02.png",
+  "size_m": [
+   3.0,
+   0.8
+  ]
+ },
+ "grime_base_03": {
+  "file": "grime_base_03.png",
+  "size_m": [
+   3.0,
+   0.8
   ]
  },
  "plywood": {
@@ -171,35 +213,63 @@
   "file": "soot_01.png",
   "size_m": [
    4.0,
-   1.2
+   1.4
   ]
  },
  "soot_02": {
   "file": "soot_02.png",
   "size_m": [
    4.0,
-   1.2
+   1.4
+  ]
+ },
+ "soot_03": {
+  "file": "soot_03.png",
+  "size_m": [
+   4.0,
+   1.4
   ]
  },
  "streak_01": {
   "file": "streak_01.png",
   "size_m": [
    0.9,
-   1.2
+   1.4
   ]
  },
  "streak_02": {
   "file": "streak_02.png",
   "size_m": [
    0.9,
-   1.2
+   1.4
   ]
  },
  "streak_03": {
   "file": "streak_03.png",
   "size_m": [
    0.9,
-   1.2
+   1.4
+  ]
+ },
+ "streak_04": {
+  "file": "streak_04.png",
+  "size_m": [
+   0.9,
+   1.4
+  ]
+ },
+ "streak_05": {
+  "file": "streak_05.png",
+  "size_m": [
+   0.9,
+   1.4
+  ]
+ },
+ "streak_06": {
+  "file": "streak_06.png",
+  "size_m": [
+   0.9,
+   1.4
   ]
  }
 }

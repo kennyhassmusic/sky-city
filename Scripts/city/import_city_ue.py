@@ -74,9 +74,10 @@ GROUND_PAD_M = 40.0
 # Lighting and grade for the generated level (_stage, _grade).
 LIGHT = {
     "sun_temperature": 5600.0,
-    "sky_intensity": 1.4,
-    "sky_color": (255, 214, 180),        # r, g, b: cancels the blue sky in the shade
-    "sky_lower": (0.26, 0.21, 0.16, 1.0),
+    "sky_intensity": 1.6,
+    "sky_color": (255, 204, 164),        # r, g, b: cancels the blue sky in the shade
+    "sky_lower": (0.34, 0.26, 0.18, 1.0),  # the street's warm bounce
+    "indirect": 1.3,                     # Lumen bounce, so shaded brick picks up the lit street
     "exposure_bias": 0.3,
     "white_temp": 6500.0,                # neutral; the sky colour does the warming
     "skylight_leaking": 0.0,
@@ -580,6 +581,7 @@ def relight(unreal, sun=None, sky=None, volume=None):
     settings = volume.get_editor_property("settings")
     for name, value in (("auto_exposure_bias", LIGHT["exposure_bias"]), ("white_temp", LIGHT["white_temp"]),
                         ("lumen_skylight_leaking", LIGHT["skylight_leaking"]),
+                        ("indirect_lighting_intensity", LIGHT["indirect"]),
                         ("lumen_front_layer_translucency_reflections", True)):
         try:
             settings.set_editor_property("override_" + name, True)

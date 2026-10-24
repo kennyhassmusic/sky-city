@@ -63,7 +63,7 @@ DEFAULT_STYLE = "modern_mixed"
 FRAMES = {"bronze": (0.30, 0.19, 0.10, 0.45, 0.8), "green": (0.06, 0.13, 0.09, 0.55, 0.0),
           "white": (0.82, 0.81, 0.77, 0.6, 0.0), "silver": (0.58, 0.60, 0.62, 0.35, 0.9),
           "black": (0.035, 0.035, 0.04, 0.5, 0.2), "brown": (0.20, 0.13, 0.08, 0.55, 0.0),
-          "vinyl": (0.88, 0.87, 0.83, 0.5, 0.0)}
+          "vinyl": (0.88, 0.87, 0.83, 0.5, 0.0), "anodised": (0.16, 0.15, 0.14, 0.45, 0.6)}
 TRIMS = {"limestone": (0.70, 0.66, 0.58, 0.8, 0.0), "painted": (0.80, 0.78, 0.72, 0.7, 0.0),
          "metal": (0.48, 0.50, 0.52, 0.4, 0.8), "concrete": (0.54, 0.53, 0.50, 0.85, 0.0),
          # Walkup kit (walkup.py): stone trim, pressed-metal cornices, storefront paints, awnings,
@@ -75,21 +75,27 @@ TRIMS = {"limestone": (0.70, 0.66, 0.58, 0.8, 0.0), "painted": (0.80, 0.78, 0.72
          "sf_green": (0.07, 0.22, 0.15, 0.55, 0.0), "sf_red": (0.42, 0.07, 0.05, 0.55, 0.0),
          "sf_black": (0.03, 0.03, 0.03, 0.45, 0.1), "sf_blue": (0.07, 0.13, 0.30, 0.55, 0.0),
          "sf_cream": (0.78, 0.72, 0.58, 0.6, 0.0), "sf_teal": (0.09, 0.32, 0.33, 0.55, 0.0),
-         "sf_tile": (0.62, 0.60, 0.55, 0.3, 0.0), "sf_alum": (0.62, 0.63, 0.64, 0.35, 0.9),
+         "sf_tile": (0.62, 0.60, 0.55, 0.3, 0.0), "sf_alum": (0.28, 0.28, 0.29, 0.65, 0.25),
          "awn_red": (0.48, 0.07, 0.06, 0.9, 0.0), "awn_green": (0.05, 0.23, 0.11, 0.9, 0.0),
          "awn_blue": (0.06, 0.11, 0.32, 0.9, 0.0), "awn_black": (0.04, 0.04, 0.04, 0.9, 0.0),
          "wood": (0.40, 0.31, 0.22, 0.9, 0.0), "wood_grey": (0.47, 0.45, 0.41, 0.9, 0.0),
          "galv": (0.55, 0.56, 0.56, 0.45, 0.85), "metal_dark": (0.12, 0.12, 0.13, 0.5, 0.6),
          "condenser": (0.82, 0.82, 0.80, 0.45, 0.2),
          "hatch": (0.60, 0.22, 0.16, 0.6, 0.2), "membrane": (0.13, 0.13, 0.14, 0.9, 0.0),
-         "skylight": (0.30, 0.36, 0.38, 0.2, 0.3), "vinyl": (0.86, 0.85, 0.80, 0.6, 0.0)}
+         "skylight": (0.30, 0.36, 0.38, 0.2, 0.3), "vinyl": (0.86, 0.85, 0.80, 0.6, 0.0),
+         # Shop insides and gate housings: matte, so nothing behind or above the glass reads white.
+         "shop_wall": (0.30, 0.26, 0.22, 0.9, 0.0), "gate_box": (0.20, 0.20, 0.21, 0.75, 0.1)}
+# (Undersides seen from the sidewalk mirror the sunlit street: shop trim stays matte and mid-dark.)
 GLASS = {"clear": ((0.02, 0.025, 0.03), 0.06, 0.5), "blue": ((0.04, 0.08, 0.11), 0.22, 0.75),
          "grey": ((0.03, 0.035, 0.035), 0.14, 0.65),
-         # Shop windows: clearer head-on (the shop shows), strongly reflective at an angle.
-         "shop": ((0.012, 0.015, 0.016), 0.1, 0.92)}
+         # Shop windows: dark glass with a little sky in it. Fresnel kept low and the specular soft
+         # (GLASS_SURFACE), so looking up from the sidewalk it never turns into a white slab.
+         "shop": ((0.008, 0.009, 0.010), 0.22, 0.62)}
+# Glass surface per tint (specular, roughness); others use the city glass's (1.0, 0.04).
+GLASS_SURFACE = {"shop": (0.45, 0.1)}
 # Pane looks that are not a style (walkup.py): "KIT_Pane|lit:<look>" takes this frame and glass.
 PANE_LOOKS = {"wu_white": ("white", "clear"), "wu_green": ("green", "clear"), "wu_brown": ("brown", "clear"),
-              "wu_black": ("black", "clear"), "wu_vinyl": ("vinyl", "clear"), "wu_alum": ("silver", "clear")}
+              "wu_black": ("black", "clear"), "wu_vinyl": ("vinyl", "clear"), "wu_alum": ("anodised", "clear")}
 
 
 def pane_look(name):
@@ -109,8 +115,9 @@ WALL_OVERRIDES = {
                           "fac_apartments_mid_v03"),
 }
 DECALS_PER_FAMILY = 3
-WALL_DECALS = {"stain", "rust_streak", "crack", "patch", "plaster_patch", "poster", "graffiti", "paint_drip",
-               "moss", "paint", "dirt"}
+# Not "stain", "patch" or "paint": in these packs they are round splats that read as dark blobs on a
+# wall. Every styled wall gets soft streaks instead (kit_layout.STREAK_DECALS).
+WALL_DECALS = {"rust_streak", "crack", "plaster_patch", "poster", "graffiti", "paint_drip", "moss", "dirt"}
 GROUND_DECALS = {"litter", "leaves", "manhole", "paint_marking", "tire_marks", "pothole", "debris", "gravel",
                  "grate", "hatch", "drain_channel", "tactile_paving", "puddle", "weeds"}
 NEIGHBOR_M = 30.0

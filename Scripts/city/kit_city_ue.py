@@ -293,6 +293,10 @@ def _actor_with(unreal, groups, meshes, walls, materials, name, folder, stats, s
         else:
             comp.set_collision_profile_name("NoCollision")
             comp.set_editor_property("cast_shadow", module not in ("KIT_Leaf", "KIT_Decal", "KIT_DecalFloor", "KIT_Panel"))
+            if module in ("KIT_Pane", "KIT_PaneCurtain"):
+                # A pane's room back faces the street; one-sided, it casts nothing when the sun is behind
+                # it, and light through a corner window leaked onto the facades across the street.
+                comp.set_editor_property("cast_shadow_as_two_sided", True)
         tinted = len(items[0]) >= 10
         if tinted:
             comp.set_editor_property("num_custom_data_floats", 3)

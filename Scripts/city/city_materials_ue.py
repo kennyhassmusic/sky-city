@@ -325,7 +325,7 @@ SHOP_MASTER = "M_KitShopBack"
 # Generated decals that hang in front of glass: a masked surface, not a mesh decal.
 SOLID_DECALS = ("gate_", "plywood")
 # Shop light states (walkup.SHOP_LIGHTS): the back wall's emissive Glow.
-SHOP_GLOW = {"on": 0.35, "dim": 0.12, "off": 0.0}
+SHOP_GLOW = {"on": 0.22, "dim": 0.08, "off": 0.0}
 
 
 def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layout, swatch_dir, pack_library):
@@ -392,7 +392,9 @@ def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layo
     for name, (r, g, b, rough, metal) in style_kit.FRAMES.items():
         made["frame:" + name] = _flat(unreal, assets, library, editing, mat_dir, "M_KitFrame_" + name, (r, g, b), rough, metal)
     for name, (tint, head_on, grazing) in style_kit.GLASS.items():
-        made["glass:" + name] = _glass(unreal, assets, library, editing, mat_dir, "M_KitGlass_" + name, tint, head_on, grazing)
+        specular, roughness = style_kit.GLASS_SURFACE.get(name, (1.0, 0.04))
+        made["glass:" + name] = _glass(unreal, assets, library, editing, mat_dir, "M_KitGlass_" + name, tint, head_on, grazing,
+                                       specular, roughness)
     decal_master = None
     solid_master = None
     shop_master = None
@@ -605,7 +607,8 @@ def _textured(unreal, assets, library, editing, mat_dir, slot, textures):
     return mat
 
 
-def _glass(unreal, assets, library, editing, mat_dir, name, tint, opacity_head_on, opacity_grazing):
+def _glass(unreal, assets, library, editing, mat_dir, name, tint, opacity_head_on, opacity_grazing,
+           specular=1.0, roughness=0.04):
     """Clear pane: translucent, per-pixel lit, Fresnel opacity, smooth and specular."""
     mat = _fresh(unreal, assets, library, mat_dir, name)
     mat.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
@@ -616,8 +619,8 @@ def _glass(unreal, assets, library, editing, mat_dir, name, tint, opacity_head_o
     base.set_editor_property("constant", unreal.LinearColor(tint[0], tint[1], tint[2], 1))
     editing.connect_material_property(base, "", unreal.MaterialProperty.MP_BASE_COLOR)
     for prop, value, y in ((unreal.MaterialProperty.MP_METALLIC, 0.0, -60),
-                           (unreal.MaterialProperty.MP_SPECULAR, 1.0, 20),
-                           (unreal.MaterialProperty.MP_ROUGHNESS, 0.04, 100)):
+                           (unreal.MaterialProperty.MP_SPECULAR, float(specular), 20),
+                           (unreal.MaterialProperty.MP_ROUGHNESS, float(roughness), 100)):
         const = editing.create_material_expression(mat, unreal.MaterialExpressionConstant, -600, y)
         const.set_editor_property("r", value)
         editing.connect_material_property(const, "", prop)

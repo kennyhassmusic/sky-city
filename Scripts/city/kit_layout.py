@@ -99,11 +99,15 @@ TINTED = ("KIT_Wall", "KIT_Pier", "KIT_Corner")
 WALL_DECAL_CHANCE, WALL_DECAL_EVERY = 0.3, 8.0
 GROUND_DECAL_CHANCE, GROUND_DECAL_EVERY = 0.35, 10.0
 STREET_ROLES = ("front", "side")
+# Generated soft streaks (walkup_decals.py) every styled wall can wear, hanging from a floor line.
+STREAK_DECALS = tuple({"id": "streak_%02d" % k, "gdecal": True, "size": [0.9, 1.4]} for k in range(1, 7))
 COLLISION = "KIT_Wall|collision"
 # Shadow-only proxy: glass casts no shadow, so a tower's window bands let sun through in stripes.
 # A hidden box per tier, inset behind the panes' room backs, casts the building's shadow instead.
 SHADOW = "KIT_Wall|shadow"
-SHADOW_INSET = 0.85
+# Just behind a tower pane's room back (PANE_BACK_IN). Rays that clip a corner through the shell in
+# front of it meet a pane's room back, which casts two-sided (kit_city_ue). Walk-ups set their own.
+SHADOW_INSET = 0.45
 
 
 def to_ue(x, y, z):
@@ -191,7 +195,7 @@ class Look(object):
         self.frame = "frame:" + self.p["frame"]
         self.storefront = look.get("storefront")
         self.storefront_size = look.get("storefront_size") or [4.5, 4.5]
-        self.wall_decals = look.get("wall_decals") or []
+        self.wall_decals = (look.get("wall_decals") or []) + (list(STREAK_DECALS) if look.get("wall") else [])
         self.ground_decals = look.get("ground_decals") or []
 
     def wall_key(self, module):
@@ -317,7 +321,12 @@ def _street_decals(layout, building, facade, look, a, tangent, inward, length, z
             along = geom.rnd(seed, bid, key, slot, "wdecal_x") * max(0.0, length - w)
             z = z0 + 0.1 + geom.rnd(seed, bid, key, slot, "wdecal_z") * max(0.0, floor_h - h - 0.2)
             start = (a[0] + tangent[0] * along, a[1] + tangent[1] * along)
-            layout.add("KIT_Decal|decal:" + decal["id"], run(start, tangent, inward, w, z, w, 1.0, h))
+            if decal.get("gdecal"):
+                # A streak hangs from the floor line above, not at a random height.
+                z = z0 + floor_h - 0.05 - h
+                layout.add("KIT_Decal|gdecal:" + decal["id"], run(start, tangent, inward, w, z, w, 1.0, h))
+            else:
+                layout.add("KIT_Decal|decal:" + decal["id"], run(start, tangent, inward, w, z, w, 1.0, h))
     if floor == 0 and facade.get("role") == "front" and look.ground_decals:
         outward = (-inward[0], -inward[1])
         for slot in range(int(length // GROUND_DECAL_EVERY) + 1):

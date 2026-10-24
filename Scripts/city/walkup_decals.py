@@ -9,8 +9,10 @@ masked alpha so they read as grime and paint on the brick swatches
 Writes SourceArt/CityGen/kit/decals/<name>.png and decals.json there:
   {name: {file, size_m: [w, h]}}.
 
-  streak_01..03  (0.9 x 1.2 m)  dark grime streaks down from the top edge, soft alpha.
-  soot_01..02    (4.0 x 1.2 m)  a soot band, darkest at the top, fading down.
+  streak_01..06  (0.9 x 1.4 m)  dark grime streaks down from the top edge, soft alpha.
+  soot_01..03    (4.0 x 1.4 m)  soot under a cornice: a dark lip breaking into runs of different lengths.
+  drip_01..03    (0.25 x 0.9 m) a thin drip off a lintel or sill end, down the jamb.
+  grime_base_01..03 (3.0 x 0.8 m) splash-back at the foot of a wall, ragged top edge.
   shop_<kind>    (2.4 x 2.4 m)  a shop's back wall seen through its window (grocery, bar, laundry, clothes, empty).
   ghost_01..06   (6.0 x 4.0 m)  faded painted wall ads, generic words, heavily worn.
   sign_01..10    (4.0 x 0.6 m)  shop-sign lettering, generic words, transparent background.
@@ -125,16 +127,48 @@ def streak(seed, size_m):
 
 
 def soot(seed, size_m):
-    """Soot under a cornice: near-black at the top, blotchy, fading out over the band's height."""
+    """Soot under a cornice as dirty runs, not a band: dark at the top edge, breaking into vertical
+    streaks of different lengths, so it never reads as a smooth blob."""
     w, h = _size_px("soot", size_m)
     yy, xx = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
-    blotch = 0.6 * _hash(seed, xx // 18, yy // 18) + 0.4 * _hash(seed + 1, xx // 5, yy // 5)
-    top_fade = np.clip(1.0 - (yy / h) ** 0.7, 0.0, 1.0)
-    edge = np.clip(1.0 - np.abs(xx - w / 2.0) / (w / 2.0 + 1.0), 0.0, 1.0) ** 0.15
-    alpha = np.clip((0.7 + 0.35 * blotch) * top_fade * edge, 0.0, 0.92) * 255.0
-    color = np.full((h, w, 3), 14.0)
+    col = _hash(seed, xx // 7, np.zeros_like(xx))           # one length per 7 px column
+    length = (0.25 + 0.75 * col ** 1.5) * h
+    run = np.clip(1.0 - yy / np.maximum(length, 1.0), 0.0, 1.0) ** 1.4
+    lip = np.clip(1.0 - yy / (h * 0.08), 0.0, 1.0)
+    grain = 0.75 + 0.25 * _hash(seed + 1, xx // 3, yy // 5)
+    alpha = np.clip(np.maximum(run * 0.62, lip * 0.7) * grain, 0.0, 0.8) * 255.0
+    color = np.full((h, w, 3), 16.0)
     img = np.dstack([color, alpha[..., None]]).astype(np.uint8)
-    return Image.fromarray(img, "RGBA").filter(ImageFilter.GaussianBlur(radius=max(1, w // 140)))
+    return Image.fromarray(img, "RGBA").filter(ImageFilter.GaussianBlur(radius=max(1, w // 300)))
+
+
+def drip(seed, size_m):
+    """A thin drip off the end of a lintel or sill, down the jamb."""
+    w, h = _size_px("streak", size_m)
+    yy, xx = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
+    cx = w * (0.35 + 0.3 * _hash(seed, np.array([0]), np.array([0]))[0])
+    wiggle = (_hash(seed, np.array([1]), yy[:, 0] // 10) - 0.5) * w * 0.15
+    band = np.clip(1.0 - np.abs(xx - cx - wiggle[:, None]) / (w * 0.22), 0.0, 1.0) ** 1.3
+    fade = np.clip(1.0 - yy / (h * (0.6 + 0.4 * _hash(seed, np.array([2]), np.array([0]))[0])), 0.0, 1.0)
+    alpha = np.clip(band * fade * 0.8, 0.0, 1.0) * 255.0
+    color = np.full((h, w, 3), 24.0)
+    img = np.dstack([color, alpha[..., None]]).astype(np.uint8)
+    return Image.fromarray(img, "RGBA").filter(ImageFilter.GaussianBlur(radius=1))
+
+
+def grime_base(seed, size_m):
+    """Splash-back and rising damp at the foot of a wall: darkest at the sidewalk, a ragged top edge."""
+    w, h = _size_px("soot", size_m)
+    yy, xx = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
+    edge = h * (0.35 + 0.4 * (0.6 * _hash(seed, xx // 40, np.zeros_like(xx)) + 0.4 * _hash(seed + 3, xx // 9,
+                                                                                            np.zeros_like(xx))))
+    up = h - yy                                              # height above the bottom edge
+    rise = np.clip(1.0 - up / np.maximum(edge, 1.0), 0.0, 1.0) ** 0.8
+    spots = (_hash(seed + 5, xx // 4, yy // 4) > 0.93) * np.clip(1.0 - up / h, 0.0, 1.0)
+    alpha = np.clip(rise * 0.6 + spots * 0.35, 0.0, 0.7) * (0.8 + 0.2 * _hash(seed + 7, xx // 3, yy // 3)) * 255.0
+    color = np.dstack([np.full((h, w), 34.0), np.full((h, w), 30.0), np.full((h, w), 25.0)])
+    img = np.dstack([color, alpha[..., None]]).astype(np.uint8)
+    return Image.fromarray(img, "RGBA").filter(ImageFilter.GaussianBlur(radius=max(1, w // 250)))
 
 
 SHOPS = ("grocery", "bar", "laundry", "clothes", "empty")
@@ -335,10 +369,14 @@ def build(out_dir, seed=771):
     os.makedirs(out_dir, exist_ok=True)
     record = {}
     jobs = []
+    for i in range(1, 7):
+        jobs.append(("streak_%02d" % i, (0.9, 1.4), lambda s, sm: streak(s, sm)))
     for i in range(1, 4):
-        jobs.append(("streak_%02d" % i, (0.9, 1.2), lambda s, sm: streak(s, sm)))
-    for i in range(1, 3):
-        jobs.append(("soot_%02d" % i, (4.0, 1.2), lambda s, sm: soot(s, sm)))
+        jobs.append(("soot_%02d" % i, (4.0, 1.4), lambda s, sm: soot(s, sm)))
+    for i in range(1, 4):
+        jobs.append(("drip_%02d" % i, (0.25, 0.9), lambda s, sm: drip(s, sm)))
+    for i in range(1, 4):
+        jobs.append(("grime_base_%02d" % i, (3.0, 0.8), lambda s, sm: grime_base(s, sm)))
     for kind in SHOPS:
         jobs.append(("shop_" + kind, (2.4, 2.4), (lambda s, sm, k=kind: shop(s, sm, k))))
     for i, word in enumerate(GHOST_WORDS, 1):
