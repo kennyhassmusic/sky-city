@@ -198,6 +198,10 @@ def normalize_set(manifest, kind):
         "placement": placement,
         "floors_in_tile": _positive_int(data.get("floors_in_tile")),
         "bays_in_tile": _positive_int(data.get("bays_in_tile")),
+        # A windowless facade is wall only. Engine slots that already model
+        # windows (pack_slots.py) take only these, so windows are not doubled.
+        "windowless": bool(data.get("windowless")),
+        "normal_convention": data.get("normal_convention"),
         "path": str(manifest),
     }, None
 

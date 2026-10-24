@@ -14,6 +14,7 @@ import districts as district_types
 import grammar
 import model as model_mod
 import operations as ops
+import pack_slots
 import packs
 import skyline
 
@@ -352,6 +353,101 @@ class PackLoaderTest(unittest.TestCase):
             self.assertTrue(unit["tile"])
             dressed, _ids = ops.assign_textures(_model([_shell("b_eq", 0)]), root=tmp)
             self.assertEqual(dressed["buildings"][0]["pack"]["equipment"], "roof_unit")
+
+
+class PackSlotsTest(unittest.TestCase):
+    """Engine slots: windowless walls only, ground by use, CC0 when art is missing."""
+
+    def _root(self, tmp):
+        root = Path(tmp) / "packs_root"
+        wall = _facade("wall_tech", "basic", "body")
+        wall["windowless"] = True
+        wall["maps"]["orm"] = "orm.png"
+        del wall["maps"]["roughness"]
+        _set(root, "facades", "wall_tech", wall)
+        _set(root, "facades", "windowed_tech", _facade("windowed_tech", "basic", "body"))
+        lonely = _facade("wall_houses", "basic", "body", districts=["houses"])
+        lonely["windowless"] = True
+        _set(root, "facades", "wall_houses", lonely)
+        _set(root, "ground", "asphalt_tech", {
+            "id": "asphalt_tech", "role": "basic", "suggested_use": "asphalt", "districts": ["tech"],
+            "maps": {"albedo": "a.png", "normal": "n.png", "orm": "o.png"},
+            "scale_m": {"width": 4.0, "height": 4.0}, "normal_convention": "DirectX",
+        })
+        _set(root, "ground", "grass_tech_noart", {
+            "id": "grass_tech_noart", "role": "basic", "suggested_use": "grass", "districts": ["tech"],
+            "maps": {"albedo": "missing.png"}, "scale_m": {"width": 2.0, "height": 2.0},
+        })
+        for name in ("albedo.png", "normal.png", "orm.png"):
+            (root / "facades" / "wall_tech" / name).write_bytes(b"x")
+            (root / "facades" / "windowed_tech" / name).write_bytes(b"x")
+            (root / "facades" / "wall_houses" / name).write_bytes(b"x")
+        for name in ("a.png", "n.png", "o.png"):
+            (root / "ground" / "asphalt_tech" / name).write_bytes(b"x")
+        art = Path(tmp) / "art"
+        (art / "materials" / "scan").mkdir(parents=True)
+        (art / "materials" / "scan" / "c.jpg").write_bytes(b"x")
+        record = {ident: {"maps": {"color": "scan/c.jpg"}, "uv_m": [3.0, 3.0]} for ident in pack_slots.CC0.values()}
+        return root, art, record
+
+    def _spawn(self):
+        rows = [{"kind": "building", "wall": "concrete", "district_type": "tech"} for _ in range(8)]
+        rows.append({"kind": "building", "wall": "concrete", "district_type": "houses", "tier": None})
+        rows += [{"kind": "building", "wall": "brick", "district_type": "eclectic_mix"} for _ in range(3)]
+        return {"buildings": rows}
+
+    def test_windowless_wall_ground_by_use_and_cc0_fallback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, art, record = self._root(tmp)
+            library = packs.load_library(root)
+            plan = pack_slots.plan_slots(self._spawn(), library, record, art, region="test")
+            again = pack_slots.plan_slots(self._spawn(), library, record, art, region="test")
+            self.assertEqual(plan, again)
+            concrete = plan["M_Concrete"]
+            self.assertEqual((concrete["source"], concrete["set_id"]), ("pack", "wall_tech"))
+            self.assertEqual(concrete["rough_channel"], "G")  # ORM green, no roughness map
+            self.assertFalse(concrete["flip_green"])
+            self.assertEqual(concrete["uv_scale"], [0.5, 0.9375])  # 3 m scan UVs onto a 6 x 3.2 m tile
+            # brick buildings are eclectic_mix: no windowless set, so the scan stays
+            self.assertEqual(plan["M_Brick"]["source"], "cc0")
+            self.assertTrue(plan["M_Brick"]["flip_green"])
+            self.assertEqual(plan["M_Asphalt"]["set_id"], "asphalt_tech")
+            self.assertEqual(plan["M_Asphalt"]["uv_scale"], [0.75, 0.75])
+            # grass set has no albedo on disk: CC0
+            self.assertEqual(plan["M_Grass"]["source"], "cc0")
+            self.assertNotIn("M_Curb", plan)
+            for entry in plan.values():
+                self.assertTrue(Path(entry["maps"]["color"]).is_file())
+
+    def test_minor_district_does_not_dress_slot(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, art, record = self._root(tmp)
+            library = packs.load_library(root)
+            spawn = {"buildings": [{"kind": "building", "wall": "concrete", "district_type": "eclectic_mix"} for _ in range(9)]
+                     + [{"kind": "building", "wall": "concrete", "district_type": "houses"}]}
+            plan = pack_slots.plan_slots(spawn, library, record, art)
+            self.assertEqual(plan["M_Concrete"]["source"], "cc0")  # houses is 10%, under MIN_SHARE
+
+    def test_massing_takes_windowed_sets_at_real_size(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, _, _ = self._root(tmp)
+            library = packs.load_library(root)
+            sets = pack_slots.massing_sets(self._spawn(), library, region="test")
+            self.assertEqual(sets, pack_slots.massing_sets(self._spawn(), library, region="test"))
+            # tech has a windowed and a windowless set: the boxes take the windowed one
+            self.assertEqual(sets["tech"]["set_id"], "windowed_tech")
+            self.assertEqual(sets["tech"]["tile_m"], [6.0, 3.2])
+            self.assertIs(sets["*"], sets["tech"])  # the most common type
+            self.assertNotIn("houses", sets)  # only a windowless set there
+            self.assertTrue(Path(sets["tech"]["maps"]["color"]).is_file())
+            self.assertEqual(pack_slots.massing_sets(self._spawn(), packs.load_library(Path(tmp) / "none")), {})
+
+    def test_empty_library_is_all_cc0(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            _, art, record = self._root(tmp)
+            plan = pack_slots.plan_slots(self._spawn(), packs.load_library(Path(tmp) / "none"), record, art)
+            self.assertEqual({entry["source"] for entry in plan.values()}, {"cc0"})
+            self.assertEqual(set(plan), set(pack_slots.CC0))
 
 
 if __name__ == "__main__":

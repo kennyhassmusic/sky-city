@@ -1399,6 +1399,7 @@ FString FSkyCourseBuilderImpl::MapName(const FString& Path) const
 	const FString Base = FPaths::GetBaseFilename(Path);
 	if (Base.Contains(TEXT("mode=build"))) return TEXT("Course Builder");
 	if (Base == TEXT("SkyCityMashup") || Base == TEXT("SkyCity")) return TEXT("Sky City");
+	if (Base == TEXT("SkyCityChicagoGen")) return TEXT("Chicago Loop (generated)");
 	if (Base == TEXT("McGregorNight")) return TEXT("McGregor Night");
 	if (Base == TEXT("McGregor")) return TEXT("McGregor");
 	return Base;

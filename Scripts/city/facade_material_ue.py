@@ -14,6 +14,10 @@ M_Plaster, M_Metal). The scan stays a texture parameter. Grime is procedural:
   sit in the sill band.
 - Base dirt fades from the sidewalk up to about 1.4 m.
 
+Pack textures (pack_slots.py) reuse the same master: UVScale (default 1, 1)
+multiplies the mesher's UVs so a pack tile of scale_m metres lines up, and
+RoughFromG (0 or 1) reads roughness from an ORM map's green channel.
+
 World position in Unreal is centimetres. The metre constants live in
 facade_grime.py and are divided by UE_CM here. The Blender preview in
 realism._facade_grime uses the same constants.
@@ -33,6 +37,7 @@ import facade_grime  # noqa: E402
 
 
 MASTER_NAME = "M_Facade"
+FLAT_NORMAL = "/Engine/EngineMaterials/FlatNormal"
 
 
 def apply(unreal, assets, library, editing, folder, slot_textures):
@@ -50,14 +55,31 @@ def apply(unreal, assets, library, editing, folder, slot_textures):
         present[name] = textures
     if not present:
         return {}
-    master = _master(unreal, assets, library, editing, folder)
+    master = _master(unreal, assets, library, editing, folder, _defaults(library, present))
     made = {}
     for name, textures in present.items():
         made[name] = _instance(unreal, assets, library, editing, folder, master, name, textures)
     return made
 
 
-def _master(unreal, assets, library, editing, folder):
+def _defaults(library, slot_textures):
+    """A texture for each parameter of the master: the first slot that has that map.
+
+    A TextureSampleParameter2D with no texture fails to compile, and the whole
+    master then draws as the engine's grey checker. The instances override these.
+    """
+    out = {}
+    for kind, parameter in (("color", "BaseColor"), ("rough", "Roughness"), ("normal", "Normal")):
+        for _name, textures in sorted(slot_textures.items()):
+            if textures.get(kind):
+                out[parameter] = library.load_asset(textures[kind])
+                break
+    if "Normal" not in out:
+        out["Normal"] = library.load_asset(FLAT_NORMAL)
+    return out
+
+
+def _master(unreal, assets, library, editing, folder, defaults=None):
     path = folder + "/" + MASTER_NAME
     if library.does_asset_exist(path):
         library.delete_asset(path)
@@ -66,11 +88,15 @@ def _master(unreal, assets, library, editing, folder):
     mat = assets.create_asset(MASTER_NAME, folder, unreal.Material, unreal.MaterialFactoryNew())
     g = _Graph(unreal, editing, mat)
 
-    base = g.tex("BaseColor", -1400, -200)
-    rough = g.tex("Roughness", -1400, 80)
-    rough.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_LINEAR_COLOR)
-    normal = g.tex("Normal", -1400, 360)
+    uv = _uv_scaled(g, unreal)
+    defaults = defaults or {}
+    base = g.tex("BaseColor", -1400, -200, defaults.get("BaseColor"))
+    rough = g.tex("Roughness", -1400, 80, defaults.get("Roughness"))
+    rough.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_MASKS)
+    normal = g.tex("Normal", -1400, 360, defaults.get("Normal"))
     normal.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+    for sample in (base, rough, normal):
+        g.wire(uv, sample, in_hint="UVs", in_index=0)
 
     wear = _wear(g)
     world = g.node(unreal.MaterialExpressionWorldPosition, -1400, 640)
@@ -96,7 +122,13 @@ def _master(unreal, assets, library, editing, folder):
     colored = g.lerp(darkened, chip_color, chip, 1300, 0)
     g.to_property(colored, "", unreal.MaterialProperty.MP_BASE_COLOR)
 
-    rough_out = g.mask(rough, True, False, False, False, -900, 80)
+    rough_r = g.mask(rough, True, False, False, False, -1100, 80)
+    rough_g = g.mask(rough, False, True, False, False, -1100, 140)
+    from_g = g.node(unreal.MaterialExpressionScalarParameter, -1100, 200)
+    from_g.set_editor_property("parameter_name", "RoughFromG")
+    from_g.set_editor_property("default_value", 0.0)
+    from_g.set_editor_property("group", "Facade")
+    rough_out = g.lerp(rough_r, rough_g, from_g, -900, 80)
     rougher = g.lerp(rough_out, g.const(1.0, 900, 160), g.mul(dirt, 0.35, 1000, 160), 1200, 160)
     g.to_property(rougher, "", unreal.MaterialProperty.MP_ROUGHNESS)
     g.to_property(normal, "RGB", unreal.MaterialProperty.MP_NORMAL)
@@ -104,6 +136,17 @@ def _master(unreal, assets, library, editing, folder):
     editing.recompile_material(mat)
     library.save_loaded_asset(mat)
     return mat
+
+
+def _uv_scaled(g, unreal):
+    """TexCoord 0 times the UVScale vector parameter (R = U, G = V)."""
+    coord = g.node(unreal.MaterialExpressionTextureCoordinate, -1900, 120)
+    scale = g.node(unreal.MaterialExpressionVectorParameter, -1900, 220)
+    scale.set_editor_property("parameter_name", "UVScale")
+    scale.set_editor_property("default_value", unreal.LinearColor(1.0, 1.0, 0.0, 0.0))
+    scale.set_editor_property("group", "Facade")
+    rg = g.mask(scale, True, True, False, False, -1700, 220)
+    return g.mul(coord, rg, -1600, 160)
 
 
 def _wear(g):
@@ -217,6 +260,11 @@ def _instance(unreal, assets, library, editing, folder, master, name, textures):
     _set_tex(editing, library, inst, "BaseColor", textures.get("color"))
     _set_tex(editing, library, inst, "Roughness", textures.get("rough"))
     _set_tex(editing, library, inst, "Normal", textures.get("normal"))
+    scale = textures.get("uv_scale") or (1.0, 1.0)
+    editing.set_material_instance_vector_parameter_value(
+        inst, "UVScale", unreal.LinearColor(float(scale[0]), float(scale[1]), 0.0, 0.0))
+    editing.set_material_instance_scalar_parameter_value(
+        inst, "RoughFromG", 1.0 if textures.get("rough_channel") == "G" else 0.0)
     editing.update_material_instance(inst)
     library.save_loaded_asset(inst)
     return inst
@@ -246,10 +294,13 @@ class _Graph(object):
     def node(self, cls, x, y):
         return self.editing.create_material_expression(self.mat, cls, int(x), int(y))
 
-    def tex(self, parameter, x, y):
+    def tex(self, parameter, x, y, default=None):
+        """A texture parameter. Pass a default texture: without one the material does not compile."""
         node = self.node(self.unreal.MaterialExpressionTextureSampleParameter2D, x, y)
         node.set_editor_property("parameter_name", parameter)
         node.set_editor_property("group", "Facade")
+        if default is not None:
+            node.set_editor_property("texture", default)
         return node
 
     def const(self, value, x, y):

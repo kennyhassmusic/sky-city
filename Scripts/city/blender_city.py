@@ -42,7 +42,17 @@ Output:
   artifacts/previews/sky_city_downtown_street_dusk.png
   artifacts/previews/sky_city_tower_side_day.png
 
-SKYCITY_BUDGET_MB (default 220) stops the export. SKYCITY_CORE_MAX and
+Region mode: SKYCITY_REGION=chicago_loop meshes one region of the crop in
+generate_city.py instead of Chicago core plus an Austin street. The core is
+the region's buildings nearest its centre (no 170 m radius); the residential
+set is the region's tiered apartment lots in the same district; nothing is
+meshed twice. Output goes to SourceArt/CityGen/chicago (SKYCITY_CITY_OUT
+still wins) with file prefixes CG_<region>_. The default budget is 225 MB: the
+pull request also carries the imported Content (about 50 MB of meshes,
+textures and the map), and pr-guard stops at 300 MB. Buildings past the
+budget are left to the importer's massing from the spawn record.
+
+SKYCITY_BUDGET_MB (default 220, region 225) stops the export. SKYCITY_CORE_MAX and
 SKYCITY_RES_MAX cap how many buildings are even considered. SKYCITY_EXPORT=0
 skips the GLB write and keeps the cameras already stored in city_manifest.json.
 Daylight uses the CC0 Poly Haven sky (kloofendal) plus a sun; dusk uses kiara_9_dusk.
@@ -76,17 +86,26 @@ import model as model_mod  # noqa: E402
 import profiles  # noqa: E402
 import realism  # noqa: E402
 
-OUT = os.environ.get("SKYCITY_CITY_OUT") or os.path.join(ROOT, "SourceArt", "CityGen", "city")
-REPO_PREVIEWS = os.path.join(ROOT, "artifacts", "previews")
+REGION = os.environ.get("SKYCITY_REGION") or None
+REGION_OUT = {"chicago_loop": "chicago"}
+if REGION and REGION not in generate_city.REGIONS:
+    raise SystemExit("unknown SKYCITY_REGION %r (have: %s)" % (REGION, ", ".join(sorted(generate_city.REGIONS))))
+OUT = os.environ.get("SKYCITY_CITY_OUT") or os.path.join(
+    ROOT, "SourceArt", "CityGen", REGION_OUT.get(REGION, REGION) if REGION else "city")
+REPO_PREVIEWS = os.path.join(ROOT, "artifacts", "previews", REGION) if REGION \
+    else os.path.join(ROOT, "artifacts", "previews")
 PREVIEWS = os.environ.get("SKYCITY_PREVIEWS") or "/opt/cursor/artifacts/previews"
 DAY_EXPOSURE = 0.0
 DUSK_EXPOSURE = 0.0
 DUSK_ELEVATION = 4.5
-BUDGET = int(os.environ.get("SKYCITY_BUDGET_MB", "220")) * 1024 * 1024
+BUDGET = int(os.environ.get("SKYCITY_BUDGET_MB", "225" if REGION else "220")) * 1024 * 1024
 FILE_CAP = 22 * 1024 * 1024
-CORE_MAX = int(os.environ.get("SKYCITY_CORE_MAX", "22"))
+CORE_MAX = int(os.environ.get("SKYCITY_CORE_MAX", "400" if REGION else "22"))
 RES_MAX = int(os.environ.get("SKYCITY_RES_MAX", "12"))
-CORE_RADIUS = 170.0
+CORE_RADIUS = 1e9 if REGION else 170.0
+CORE_DISTRICT = "chicago_core"
+RES_DISTRICT = "chicago_core" if REGION else "austin_low"
+PREFIX = ("CG_%s_core" % REGION, "CG_%s_res" % REGION) if REGION else ("CG_chicago_core", "CG_austin_low")
 RES_RADIUS = 70.0
 
 DRESS = {
@@ -340,22 +359,28 @@ def main():
     os.makedirs(REPO_PREVIEWS, exist_ok=True)
     os.makedirs(PREVIEWS, exist_ok=True)
     print("CITY build", flush=True)
-    city = generate_city.build_from_disk()
+    city = generate_city.build_from_disk(region=REGION)
+    if REGION:
+        print("CITY region", REGION, "bounds", [round(v, 1) for v in city.get("bounds") or []], flush=True)
     digest = model_mod.manifest_hash(city)
     print("CITY hash", digest, "seconds", round(time.time() - t0, 1), flush=True)
     lots = {lot["id"]: lot for lot in city.get("lots") or []}
     tier_counts = {}
     for spec in city.get("buildings") or []:
-        if _district(city, spec) != "austin_low":
+        if _district(city, spec) != RES_DISTRICT:
             continue
         tier_counts[_tier(spec, lots) or "none"] = tier_counts.get(_tier(spec, lots) or "none", 0) + 1
     print("AUSTIN TIERS", tier_counts, flush=True)
     anchor, core = _select_core(city)
     pair, residential = _select_residential(city, lots)
+    if REGION:
+        # Same district: keep each building in one set only.
+        taken = {id(spec) for spec in residential}
+        core = [spec for spec in core if id(spec) not in taken]
     hero_only = os.environ.get("SKYCITY_HERO_ONLY") == "1"
     if hero_only:
         heroes = _hero_specs(core, residential)
-        core = [spec for spec in heroes if _district(city, spec) != "austin_low"]
+        core = [spec for spec in heroes if spec not in residential]
         residential = [spec for spec in heroes if spec not in core]
         print("HERO", [spec.get("id") for spec in heroes], flush=True)
     core = core[:CORE_MAX]
@@ -412,6 +437,8 @@ def main():
         "frame": "Baked -90 Z, same turn as the CG block GLBs. Plan metres. Actor at the origin.",
         "budget_bytes": BUDGET,
         "bytes": spent,
+        "region": REGION,
+        "bounds": city.get("bounds") if REGION else None,
         "chicago_core_total": _count(city, "chicago_core"),
         "chicago_core_meshed": len(core_obs),
         "austin_low_meshed": len(res_obs),
@@ -457,7 +484,7 @@ def _select_core(city):
     for spec in city.get("buildings") or []:
         if spec.get("role") == "landmark" or not spec.get("floors") or not spec.get("facades"):
             continue
-        if _district(city, spec) == "chicago_core":
+        if _district(city, spec) == CORE_DISTRICT:
             named.append(spec)
     best = None
     for spec in named:
@@ -471,6 +498,11 @@ def _select_core(city):
             best = (rank, spec)
     anchor = best[1] if best else max(named, key=lambda spec: float(spec.get("height") or 0))
     origin = _centre(anchor)
+    if REGION and city.get("bounds"):
+        # The region's middle, so the meshed core is the heart of the crop.
+        x0, y0, x1, y1 = (float(v) for v in city["bounds"])
+        origin = ((x0 + x1) / 2.0, (y0 + y1) / 2.0)
+        anchor = min(named, key=lambda spec: (geom.dist(_centre(spec), origin), spec.get("id") or ""))
     cluster = [spec for spec in named if geom.dist(_centre(spec), origin) <= CORE_RADIUS]
     cluster.sort(key=lambda spec: geom.dist(_centre(spec), origin))
     if anchor not in cluster:
@@ -483,7 +515,7 @@ def _select_residential(city, lots):
     for spec in city.get("buildings") or []:
         if not spec.get("floors") or not spec.get("facades"):
             continue
-        if _district(city, spec) != "austin_low":
+        if _district(city, spec) != RES_DISTRICT:
             continue
         if _tier(spec, lots):
             named.append(spec)
@@ -2123,18 +2155,18 @@ def _export_all(core, core_obs, core_street, residential, res_obs, res_street):
     ratio = probe_size / float(tris)
     print("CITY bytes/tri", round(ratio, 2), flush=True)
     # Streets are small next to towers. Give buildings most of the budget.
-    files, spent = _pack("CG_chicago_core", core_obs, [spec.get("id") for spec in core[:len(core_obs)]],
+    files, spent = _pack(PREFIX[0], core_obs, [spec.get("id") for spec in core[:len(core_obs)]],
                          int(BUDGET * 0.72), ratio)
-    more, more_spent = _pack("CG_austin_low", res_obs, [spec.get("id") for spec in residential[:len(res_obs)]],
+    more, more_spent = _pack(PREFIX[1], res_obs, [spec.get("id") for spec in residential[:len(res_obs)]],
                              int(BUDGET * 0.18), ratio)
     files.extend(more)
     spent += more_spent
     left = max(0, BUDGET - spent)
-    street_files, street_spent = _pack("CG_chicago_core_street", core_street, ["street"] * len(core_street), left, ratio)
+    street_files, street_spent = _pack(PREFIX[0] + "_street", core_street, ["street"] * len(core_street), left, ratio)
     files.extend(street_files)
     spent += street_spent
     left = max(0, BUDGET - spent)
-    street_files, street_spent = _pack("CG_austin_low_street", res_street, ["street"] * len(res_street), left, ratio)
+    street_files, street_spent = _pack(PREFIX[1] + "_street", res_street, ["street"] * len(res_street), left, ratio)
     files.extend(street_files)
     spent += street_spent
     return files, spent

@@ -1,20 +1,39 @@
 """Import the generated city beside City Sample. Does not replace it.
 
-Reads the chunked GLBs in SourceArt/CityGen/city (from
-Scripts/city/blender_city.py). They are the block builder's facade, roof and
-storefront meshes, with the same -90 degree turn baked in, so each mesh is
-spawned at the world origin. Textures are the CC0 scans already in
-SourceArt/CityGen/materials. SkyCityMashup is not opened. CitySamplePCG is
-not modified or removed.
+Reads chunked GLBs from Scripts/city/blender_city.py. They are the block
+builder's facade, roof and storefront meshes, with the same -90 degree turn
+baked in, so each mesh is spawned at the world origin (plan north on +X,
+plan east on +Y). SkyCityMashup is not opened. CitySamplePCG is not modified
+or removed.
 
-If that folder has no GLB, the script falls back to scaled cubes from
-Saved/CityGen/sky_city_spawn.json so a layout pass still has something to see.
+Materials: pack_slots.plan_slots() picks an AI texture pack per slot when one
+fits the district (windowless walls, asphalt, sidewalk, grass) and the CC0
+scans otherwise; city_materials_ue.py builds them, plus real glass so the
+room shells behind every pane show through, and emissive lit rooms.
 
-Run in the editor, PIE off:
+Nanite is turned off on every imported mesh (the Mac build is SM5, where
+Nanite would draw the simplified fallback).
+
+Collision: every imported mesh uses its own triangles as collision (complex
+as simple) so the Skyster can drive the streets and wall-ride the towers.
+A thin ground slab under the region keeps the car up between street meshes.
+The level gets a sun, sky light, atmosphere, fog and a PlayerStart on the
+longest major street. Re-running replaces what this script spawned.
+
+If the GLB folder is empty, the script falls back to scaled cubes from the
+spawn record so a layout pass still has something to see.
+
+Run in the editor, PIE off (paths are relative to the project folder):
   py Scripts/city/import_city_ue.py
+  py Scripts/city/import_city_ue.py --glbs SourceArt/CityGen/chicago \
+      --level /Game/Maps/SkyCityChicagoGen --spawn Saved/CityGen/sky_city_spawn_chicago_loop.json
+Without arguments it is the old behaviour: SourceArt/CityGen/city into
+/Game/Maps/SkyCityGenerated. A spawn record's "level" and "folder" are used
+when --level / --folder are not given.
 """
 import json
 import os
+import sys
 
 
 def _root():
@@ -34,42 +53,17 @@ def _root():
 
 
 ROOT = _root()
+_CITY = os.path.join(ROOT, "Scripts", "city")
+if _CITY not in sys.path:
+    sys.path.insert(0, _CITY)
 SPAWN = os.path.join(ROOT, "Saved", "CityGen", "sky_city_spawn.json")
 SPAWN_FALLBACK = os.path.join(ROOT, "Scripts", "city", "examples", "sky_city_spawn.json")
 MESH_SRC = os.path.join(ROOT, "SourceArt", "CityGen", "city")
 ART = os.path.join(ROOT, "SourceArt", "CityGen")
 LEVEL = "/Game/Maps/SkyCityGenerated"
 FOLDER = "/Game/City/Generated"
-MAT_DIR = FOLDER + "/Materials"
-TEX_DIR = FOLDER + "/Textures"
-
-# Blender slot -> materials.json id. Same scans as the block importer.
-SLOTS = {
-    "M_Brick": "brick_wall_001",
-    "M_Concrete": "concrete_wall_001",
-    "M_Plaster": "grey_plaster",
-    "M_Metal": "metal_plate",
-    "M_Asphalt": "asphalt_02",
-    "M_Paving": "PavingStones092",
-    "M_Grass": "Grass004",
-}
-FLATS = {
-    "M_Roof": (0.18, 0.19, 0.20),
-    "M_Curb": (0.78, 0.76, 0.72),
-    "M_LanePaint": (0.92, 0.92, 0.90),
-    "M_LanePaintYellow": (0.86, 0.68, 0.12),
-    "M_Interior": (0.12, 0.10, 0.09),
-    "M_InteriorLit": (1.0, 0.72, 0.38),
-    "M_FenceIron": (0.16, 0.17, 0.18),
-    "M_FenceWood": (0.36, 0.24, 0.14),
-    "M_TrimDark": (0.25, 0.22, 0.20),
-    "M_Paint": (0.85, 0.85, 0.82),
-    "M_Blind": (0.80, 0.78, 0.72),
-    "M_CurtainRed": (0.45, 0.16, 0.14),
-    "M_AwningNavy": (0.12, 0.16, 0.28),
-    "M_Puddle": (0.04, 0.04, 0.045),
-    "M_Manhole": (0.25, 0.25, 0.26),
-}
+GROUND_PAD_M = 40.0
+FOG_DENSITY = 0.0025
 # Cube fallback colours, used only when no city GLB is present.
 COLOURS = {
     "brick": (0.45, 0.22, 0.16, 1),
@@ -81,43 +75,129 @@ COLOURS = {
     "paving": (0.55, 0.54, 0.50, 1),
     "grass": (0.25, 0.38, 0.18, 1),
 }
+MAT_DIR = FOLDER + "/Materials"
+MESH_FOLDER_PREFIX = "/Game/City/Generated"
+TEX_DIR = FOLDER + "/Textures"
+OUTLINER = "SkyCityGenerated"
+PLAN = {}  # the slot plan of this run (pack_slots.plan_slots), for the ground slab
 
 
-def main():
+def parse_args(argv=None):
+    import argparse
+    parser = argparse.ArgumentParser(prog="import_city_ue.py")
+    parser.add_argument("--glbs", default=None, help="folder of city GLBs (default SourceArt/CityGen/city)")
+    parser.add_argument("--level", default=None, help="target level, e.g. /Game/Maps/SkyCityChicagoGen")
+    parser.add_argument("--folder", default=None, help="content folder for meshes and materials")
+    parser.add_argument("--spawn", default=None, help="spawn record (default Saved/CityGen/sky_city_spawn.json)")
+    parser.add_argument("--no-collision", action="store_true", help="skip complex collision (layout passes)")
+    return parser.parse_args(sys.argv[1:] if argv is None else argv)
+
+
+def resolve(args):
+    """Paths and names for one run. Pure Python, so the defaults can be tested."""
+    def abspath(path):
+        return path if os.path.isabs(path) else os.path.join(ROOT, path)
+    spawn = abspath(args.spawn) if args.spawn else (SPAWN if os.path.isfile(SPAWN) else SPAWN_FALLBACK)
+    document = {}
+    if os.path.isfile(spawn):
+        with open(spawn) as handle:
+            document = json.load(handle)
+    level = args.level or document.get("level") or LEVEL
+    folder = args.folder or document.get("folder") or FOLDER
+    return {
+        "glbs": abspath(args.glbs) if args.glbs else MESH_SRC,
+        "level": level,
+        "folder": folder,
+        "label": level.rsplit("/", 1)[-1],
+        "spawn": spawn,
+        "document": document,
+        "collision": not args.no_collision,
+    }
+
+
+def main(argv=None):
     import unreal
-    unreal.EditorLevelLibrary.new_level(LEVEL)
-    glbs = _glbs()
+    run = resolve(parse_args(argv))
+    global MAT_DIR, TEX_DIR, OUTLINER
+    OUTLINER = run["label"]
+    MAT_DIR = run["folder"] + "/Materials"
+    TEX_DIR = run["folder"] + "/Textures"
+    if run["level"].rsplit("/", 1)[-1] == "SkyCityMashup":
+        raise SystemExit("import_city_ue.py never writes into SkyCityMashup")
+    _open_level(unreal, run["level"])
+    _clear_previous(unreal, run["label"])
+    glbs = _glbs(run["glbs"])
+    document = run["document"]
     if glbs:
-        materials = _city_materials(unreal)
-        count = _spawn_glbs(unreal, glbs, materials)
-        unreal.EditorLevelLibrary.save_current_level()
-        print("CITYGEN meshes", count, "from", len(glbs), "glb")
+        materials = _city_materials(unreal, document)
+        count, unbound = _spawn_glbs(unreal, glbs, materials, run)
+        print("CITYGEN meshes", count, "from", len(glbs), "glb in", run["glbs"])
+        if document:
+            boxes, lanes = _massing(unreal, document, run, materials)
+            print("CITYGEN massing", boxes, "buildings past the mesh budget,", lanes, "road pieces outside the meshed streets")
+        if unbound:
+            print("CITYGEN slots left on the glTF material:", ", ".join(sorted(unbound)))
     else:
-        path = SPAWN if os.path.isfile(SPAWN) else SPAWN_FALLBACK
-        document = json.load(open(path))
+        if not document:
+            raise SystemExit("no GLB in %s and no spawn record at %s" % (run["glbs"], run["spawn"]))
         cube = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube")
         materials = _cube_materials(unreal)
         _buildings(unreal, document, cube, materials)
         _roads(unreal, document, cube, materials)
         _props(unreal, document, cube, materials)
-        unreal.EditorLevelLibrary.save_current_level()
         print("CITYGEN cubes buildings", len(document.get("buildings") or []))
+    _stage(unreal, document, run)
+    _save_level(unreal)
+    print("CITYGEN level", run["level"])
     print("City Sample was not opened. CitySamplePCG was not changed.")
 
 
-def _glbs():
-    if not os.path.isdir(MESH_SRC):
+def _open_level(unreal, level):
+    subsystem = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
+    if unreal.EditorAssetLibrary.does_asset_exist(level):
+        ok = subsystem.load_level(level)
+    else:
+        ok = subsystem.new_level(level)
+    if not ok:
+        raise SystemExit("could not open or create %s" % level)
+
+
+def _save_level(unreal):
+    unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_current_level()
+
+
+def _actors(unreal):
+    return unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+
+
+def _clear_previous(unreal, label):
+    """Destroy what an earlier run of this script spawned (its outliner folder)."""
+    sub = _actors(unreal)
+    gone = 0
+    for actor in sub.get_all_level_actors():
+        path = str(actor.get_folder_path())
+        if path == label or path.startswith(label + "/"):
+            sub.destroy_actor(actor)
+            gone += 1
+    if gone:
+        print("CITYGEN removed", gone, "actors from the previous run")
+
+
+def _glbs(folder):
+    if not os.path.isdir(folder):
         return []
-    return [os.path.join(MESH_SRC, name) for name in sorted(os.listdir(MESH_SRC)) if name.endswith(".glb")]
+    return [os.path.join(folder, name) for name in sorted(os.listdir(folder)) if name.endswith(".glb")]
 
 
-def _spawn_glbs(unreal, glbs, materials):
+def _spawn_glbs(unreal, glbs, materials, run):
+    import city_materials_ue
     assets = unreal.AssetToolsHelpers.get_asset_tools()
     library = unreal.EditorAssetLibrary
-    dest = FOLDER + "/Meshes"
+    dest = run["folder"] + "/Meshes"
     if not library.does_directory_exist(dest):
         library.make_directory(dest)
     spawned = 0
+    unbound = set()
     for filename in glbs:
         task = unreal.AssetImportTask()
         task.set_editor_property("filename", filename)
@@ -130,153 +210,246 @@ def _spawn_glbs(unreal, glbs, materials):
             asset = library.load_asset(path.split(".")[0])
             if not isinstance(asset, unreal.StaticMesh):
                 continue
-            _assign_slots(unreal, library, asset, materials)
-            actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
+            unbound.update(city_materials_ue.assign(unreal, asset, materials))
+            _no_nanite(unreal, asset)
+            if run["collision"]:
+                _complex_collision(unreal, asset)
+            library.save_loaded_asset(asset)
+            _drop_gltf_materials(unreal, path.split(".")[0])
+            actor = _actors(unreal).spawn_actor_from_class(
                 unreal.StaticMeshActor, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0))
             actor.set_actor_label(os.path.splitext(os.path.basename(filename))[0][:80])
-            actor.set_folder_path("SkyCityGenerated")
-            actor.static_mesh_component.set_static_mesh(asset)
-            actor.set_actor_scale3d(unreal.Vector(1, 1, 1))
+            actor.set_folder_path(run["label"] + "/Meshes")
+            component = actor.static_mesh_component
+            component.set_static_mesh(asset)
+            component.set_collision_profile_name("BlockAll")
             spawned += 1
-    return spawned
+    return spawned, unbound
 
 
-def _assign_slots(unreal, library, asset, materials):
-    slots = asset.get_editor_property("static_materials")
-    for index, slot in enumerate(slots):
-        name = str(slot.get_editor_property("material_slot_name")).split(".")[0]
-        mat = materials.get(name)
-        if mat is not None:
-            asset.set_material(index, mat)
-    library.save_loaded_asset(asset)
-
-
-def _city_materials(unreal):
+def _drop_gltf_materials(unreal, mesh_path):
+    """The glTF import makes a material per slot beside each mesh. Every slot is
+    rebound above, so those copies are unused; delete them (about 20 MB a city)."""
     library = unreal.EditorAssetLibrary
-    assets = unreal.AssetToolsHelpers.get_asset_tools()
-    editing = unreal.MaterialEditingLibrary
-    record = {}
-    path = os.path.join(ART, "materials", "materials.json")
-    if os.path.isfile(path):
-        record = json.load(open(path))
-    if not library.does_directory_exist(MAT_DIR):
-        library.make_directory(MAT_DIR)
-    made = {}
-    facade = {}
-    for slot, ident in SLOTS.items():
-        info = (record.get(ident) or {}).get("maps") or {}
-        textures = _textures(unreal, assets, library, ident, info)
-        if "color" not in textures:
+    folder = mesh_path.rsplit("/", 2)[0] + "/Materials"
+    if not folder.startswith(MESH_FOLDER_PREFIX) or not library.does_directory_exist(folder):
+        return
+    mesh = library.load_asset(mesh_path)
+    used = set()
+    for slot in mesh.get_editor_property("static_materials") or []:
+        mat = slot.get_editor_property("material_interface")
+        if mat:
+            used.add(mat.get_path_name().split(".")[0])
+    for path in library.list_assets(folder, recursive=True):
+        if path.split(".")[0] not in used:
+            library.delete_asset(path.split(".")[0])
+
+
+def meshed_ids(glb_folder):
+    """Building ids the GLBs already carry (city_manifest.json beside them)."""
+    path = os.path.join(glb_folder, "city_manifest.json")
+    if not os.path.isfile(path):
+        return set()
+    with open(path) as handle:
+        manifest = json.load(handle)
+    ids = set()
+    for entry in manifest.get("files") or []:
+        if isinstance(entry, dict):
+            ids.update(entry.get("buildings") or [])
+    return ids
+
+
+def massing_plan(document, meshed, pad=28.0):
+    """(buildings to box, roads to pave) for what the GLBs do not cover.
+
+    A road is paved when no piece of it crosses the meshed buildings' box
+    grown by pad metres: blender_city.py clips its street meshes to that box.
+    """
+    items = [item for item in document.get("buildings") or [] if item.get("kind") == "building"]
+    done = [item for item in items if item.get("id") in meshed]
+    todo = [item for item in items if item.get("id") not in meshed]
+    if not done:
+        return todo, list(document.get("roads") or [])
+    x0 = min(float(i["x"]) - float(i.get("w", 0)) for i in done) - pad
+    x1 = max(float(i["x"]) + float(i.get("w", 0)) for i in done) + pad
+    y0 = min(float(i["y"]) - float(i.get("d", 0)) for i in done) - pad
+    y1 = max(float(i["y"]) + float(i.get("d", 0)) for i in done) + pad
+    import generate_city
+    roads = [road for road in document.get("roads") or []
+             if not generate_city.clip_polyline(road.get("pts") or [], [x0, y0, x1, y1])]
+    return todo, roads
+
+
+def _massing(unreal, document, run, materials):
+    todo, roads = massing_plan(document, meshed_ids(run["glbs"]))
+    cube = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube")
+    wall = {"brick": "M_Brick", "concrete": "M_Concrete", "plaster": "M_Plaster", "metal": "M_Metal", "glass": "M_MassingGlass"}
+    fallback = materials.get("M_Concrete")
+    facades = _massing_materials(unreal, document)
+    for item in todo:
+        # A windowed pack facade laid out in metres (city_materials_ue.massing), else the wall scan.
+        mat = facades.get(item.get("district_type")) or facades.get("*") \
+            or materials.get(wall.get(item.get("wall") or "concrete", "M_Concrete")) or fallback
+        loc = item.get("ue") or [item["y"] * 100.0, item["x"] * 100.0, item["h"] * 50.0]
+        actor = _actor(unreal, cube, mat, item["id"], loc, (0, item.get("ue_yaw") or 0, 0),
+                       (item["w"], item["d"], item["h"]), folder="Massing")
+        component = actor.static_mesh_component
+        component.set_collision_profile_name("BlockAll")
+        for k, size in enumerate((item["w"], item["d"], item["h"])):
+            component.set_default_custom_primitive_data_float(k, float(size))
+    asphalt = materials.get("M_Asphalt") or fallback
+    pieces = 0
+    for road in roads:
+        pts = road.get("pts") or []
+        width = float(road.get("width") or 8.0)
+        for a, b in zip(pts, pts[1:]):
+            dx, dy = float(b[0]) - float(a[0]), float(b[1]) - float(a[1])
+            length = (dx * dx + dy * dy) ** 0.5
+            if length < 0.5:
+                continue
+            mx, my = (float(a[0]) + float(b[0])) / 2.0, (float(a[1]) + float(b[1])) / 2.0
+            actor = _actor(unreal, cube, asphalt, road["id"] + "_asphalt", (my * 100.0, mx * 100.0, -1.0),
+                           (0, _ue_yaw_of(dx, dy), 0), (length, width, 0.02), folder="Roads")
+            actor.static_mesh_component.set_collision_profile_name("BlockAll")
+            pieces += 1
+    return len(todo), pieces
+
+
+def _massing_materials(unreal, document):
+    import city_materials_ue
+    import pack_slots
+    sets = pack_slots.massing_sets(document, region=document.get("region") or "city")
+    for kind, entry in sorted(sets.items()):
+        print("CITYGEN massing facade", kind, entry["set_id"], "tile", entry["tile_m"])
+    return city_materials_ue.massing(unreal, unreal.AssetToolsHelpers.get_asset_tools(), unreal.EditorAssetLibrary,
+                                     unreal.MaterialEditingLibrary, MAT_DIR, TEX_DIR, sets)
+
+
+def _no_nanite(unreal, mesh):
+    """The glTF import turns Nanite on. Sky City's Mac build is Metal SM5 (no Nanite), where a
+    Nanite mesh draws its simplified fallback: torn facades and bow-tie panes. Use the full mesh."""
+    settings = mesh.get_editor_property("nanite_settings")
+    if settings.get_editor_property("enabled"):
+        settings.set_editor_property("enabled", False)
+        mesh.set_editor_property("nanite_settings", settings)
+
+
+def _complex_collision(unreal, mesh):
+    """Per-triangle collision: streets, curbs and facades are all drivable."""
+    body = mesh.get_editor_property("body_setup")
+    if body is None:
+        print("CITYGEN note: %s has no body setup; collision left as imported" % mesh.get_name())
+        return
+    body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
+
+
+def _city_materials(unreal, document):
+    import city_materials_ue
+    import pack_slots
+    import packs
+    record = pack_slots.load_record(ART)
+    plan = pack_slots.plan_slots(document, packs.load_library(), record, ART,
+                                 region=document.get("region") or "city")
+    for line in pack_slots.summary(plan):
+        print("CITYGEN slot", line)
+    materials = city_materials_ue.build(unreal, plan, MAT_DIR, TEX_DIR)
+    PLAN.clear()
+    PLAN.update(plan)
+    return materials
+
+
+def _stage(unreal, document, run):
+    """Sun, sky, fog, a ground slab under the region and a PlayerStart on a street."""
+    sub = _actors(unreal)
+    folder = run["label"] + "/Stage"
+
+    def spawn(cls, location=(0, 0, 0), rotation=(0, 0, 0), label=None):
+        actor = sub.spawn_actor_from_class(cls, unreal.Vector(*location), unreal.Rotator(*rotation))
+        actor.set_folder_path(folder)
+        if label:
+            actor.set_actor_label(label)
+        return actor
+
+    sun = spawn(unreal.DirectionalLight, (0, 0, 50000), (0, -38, -35), "Sun")
+    try:
+        sun.light_component.set_editor_property("atmosphere_sun_light", True)
+        sun.light_component.set_editor_property("intensity", 8.0)
+    except Exception:
+        pass
+    sky = spawn(unreal.SkyLight, (0, 0, 40000), label="SkyLight")
+    try:
+        sky.light_component.set_editor_property("real_time_capture", True)
+    except Exception:
+        pass
+    spawn(unreal.SkyAtmosphere, label="SkyAtmosphere")
+    fog = spawn(unreal.ExponentialHeightFog, (0, 0, -100), label="HeightFog")
+    try:
+        # The default density whites out a 1 km city; keep a light haze for depth.
+        fog.component.set_editor_property("fog_density", FOG_DENSITY)
+        fog.component.set_editor_property("fog_height_falloff", 0.2)
+    except Exception:
+        pass
+    bounds = document.get("bounds") or _bounds_of(document)
+    if bounds:
+        _ground(unreal, spawn, bounds)
+    start = _start_on_street(document)
+    spawn(unreal.PlayerStart, start[0], start[1], "PlayerStart")
+    print("CITYGEN player start", [round(v) for v in start[0]], "yaw", round(start[1][2]))
+
+
+def _ground(unreal, spawn, bounds):
+    x0, y0, x1, y1 = (float(v) for v in bounds)
+    pad = GROUND_PAD_M
+    cx, cy = (x0 + x1) / 2.0, (y0 + y1) / 2.0
+    cube = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube")
+    # UE X is plan north (y), UE Y is plan east (x). The cube is 1 m; top at z = -2 cm.
+    slab = spawn(unreal.StaticMeshActor, (cy * 100.0, cx * 100.0, -7.0), label="GroundSlab")
+    slab.static_mesh_component.set_static_mesh(cube)
+    slab.set_actor_scale3d(unreal.Vector((y1 - y0) + 2 * pad, (x1 - x0) + 2 * pad, 0.1))
+    size = ((y1 - y0) + 2 * pad, (x1 - x0) + 2 * pad)
+    mat = None
+    if PLAN.get("M_Paving", {}).get("textures"):
+        # One cube face spans the region: tile the paving every tile_m metres instead of stretching it.
+        import city_materials_ue
+        mat = city_materials_ue.ground_tiled(
+            unreal, unreal.AssetToolsHelpers.get_asset_tools(), unreal.EditorAssetLibrary,
+            unreal.MaterialEditingLibrary, MAT_DIR, "M_GroundSlab", PLAN["M_Paving"], size)
+    mat = mat or unreal.EditorAssetLibrary.load_asset(MAT_DIR + "/M_Paving") \
+        or unreal.EditorAssetLibrary.load_asset(MAT_DIR + "/M_Concrete")
+    if mat:
+        slab.static_mesh_component.set_material(0, mat)
+    slab.static_mesh_component.set_collision_profile_name("BlockAll")
+
+
+def _bounds_of(document):
+    xs, ys = [], []
+    for item in document.get("buildings") or []:
+        xs.append(float(item.get("x", 0)))
+        ys.append(float(item.get("y", 0)))
+    if not xs:
+        return None
+    return [min(xs), min(ys), max(xs), max(ys)]
+
+
+def _start_on_street(document):
+    """Middle of the longest major (else any) road, facing along it, 1.5 m up."""
+    import math
+    best, best_len = None, -1.0
+    for road in document.get("roads") or []:
+        pts = road.get("pts") or []
+        if len(pts) < 2:
             continue
-        if slot in _facade_names():
-            facade[slot] = textures
-        else:
-            made[slot] = _textured(unreal, assets, library, editing, slot, textures)
-    if facade:
-        # One master, instances per wall slot. Wear is the mesh vertex colour.
-        made.update(_facade_materials().apply(unreal, assets, library, editing, MAT_DIR, facade))
-    made["M_Glass"] = _glass(unreal, assets, library, editing, "M_Glass")
-    made["M_GlassLit"] = made["M_Glass"]
-    for name, rgb in FLATS.items():
-        made[name] = _flat(unreal, assets, library, editing, name, rgb)
-    return made
-
-
-def _facade_names():
-    import os as _os
-    import sys as _sys
-    folder = _os.path.dirname(_os.path.abspath(__file__)) if "__file__" in globals() else _os.path.join(ROOT, "Scripts", "city")
-    if folder not in _sys.path:
-        _sys.path.insert(0, folder)
-    import facade_grime
-    return facade_grime.FACADE_MATERIALS
-
-
-def _facade_materials():
-    import facade_material_ue
-    return facade_material_ue
-
-
-def _textures(unreal, assets, library, ident, maps):
-    out = {}
-    for kind, rel in maps.items():
-        src = os.path.join(ART, "materials", rel)
-        if not os.path.isfile(src):
-            continue
-        if not src.lower().endswith((".jpg", ".jpeg", ".png")):
-            continue
-        dest = TEX_DIR + "/" + ident
-        task = unreal.AssetImportTask()
-        task.set_editor_property("filename", src)
-        task.set_editor_property("destination_path", dest)
-        task.set_editor_property("automated", True)
-        task.set_editor_property("replace_existing", True)
-        task.set_editor_property("save", True)
-        assets.import_asset_tasks([task])
-        paths = list(task.get_editor_property("imported_object_paths") or [])
-        if not paths:
-            continue
-        tex = library.load_asset(paths[0])
-        if kind == "color":
-            tex.set_editor_property("srgb", True)
-        else:
-            tex.set_editor_property("srgb", False)
-            if kind == "normal":
-                tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
-                tex.set_editor_property("flip_green_channel", True)
-        library.save_loaded_asset(tex)
-        out[kind] = paths[0].split(".")[0]
-    return out
-
-
-def _textured(unreal, assets, library, editing, slot, textures):
-    if library.does_asset_exist(MAT_DIR + "/" + slot):
-        library.delete_asset(MAT_DIR + "/" + slot)
-    mat = assets.create_asset(slot, MAT_DIR, unreal.Material, unreal.MaterialFactoryNew())
-    color = editing.create_material_expression(mat, unreal.MaterialExpressionTextureSample, -400, -200)
-    color.set_editor_property("texture", library.load_asset(textures["color"]))
-    editing.connect_material_property(color, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
-    if "rough" in textures:
-        rough = editing.create_material_expression(mat, unreal.MaterialExpressionTextureSample, -400, 80)
-        rough.set_editor_property("texture", library.load_asset(textures["rough"]))
-        rough.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_LINEAR_COLOR)
-        editing.connect_material_property(rough, "R", unreal.MaterialProperty.MP_ROUGHNESS)
-    if "normal" in textures:
-        normal = editing.create_material_expression(mat, unreal.MaterialExpressionTextureSample, -400, 280)
-        normal.set_editor_property("texture", library.load_asset(textures["normal"]))
-        normal.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
-        editing.connect_material_property(normal, "RGB", unreal.MaterialProperty.MP_NORMAL)
-    editing.recompile_material(mat)
-    library.save_loaded_asset(mat)
-    return mat
-
-
-def _glass(unreal, assets, library, editing, name):
-    if library.does_asset_exist(MAT_DIR + "/" + name):
-        library.delete_asset(MAT_DIR + "/" + name)
-    mat = assets.create_asset(name, MAT_DIR, unreal.Material, unreal.MaterialFactoryNew())
-    mat.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
-    const = editing.create_material_expression(mat, unreal.MaterialExpressionConstant3Vector, -300, 0)
-    const.set_editor_property("constant", unreal.LinearColor(0.55, 0.70, 0.82, 1))
-    editing.connect_material_property(const, "", unreal.MaterialProperty.MP_BASE_COLOR)
-    opacity = editing.create_material_expression(mat, unreal.MaterialExpressionConstant, -300, 160)
-    opacity.set_editor_property("r", 0.55)
-    editing.connect_material_property(opacity, "", unreal.MaterialProperty.MP_OPACITY)
-    editing.recompile_material(mat)
-    library.save_loaded_asset(mat)
-    return mat
-
-
-def _flat(unreal, assets, library, editing, name, rgb):
-    if library.does_asset_exist(MAT_DIR + "/" + name):
-        library.delete_asset(MAT_DIR + "/" + name)
-    mat = assets.create_asset(name, MAT_DIR, unreal.Material, unreal.MaterialFactoryNew())
-    const = editing.create_material_expression(mat, unreal.MaterialExpressionConstant3Vector, -200, 0)
-    const.set_editor_property("constant", unreal.LinearColor(rgb[0], rgb[1], rgb[2], 1))
-    editing.connect_material_property(const, "", unreal.MaterialProperty.MP_BASE_COLOR)
-    editing.recompile_material(mat)
-    library.save_loaded_asset(mat)
-    return mat
+        length = sum(math.hypot(b[0] - a[0], b[1] - a[1]) for a, b in zip(pts, pts[1:]))
+        rank = length * (2.0 if road.get("cls") == "major" else 1.0)
+        if rank > best_len:
+            best, best_len = pts, rank
+    if not best:
+        return (0.0, 0.0, 150.0), (0.0, 0.0, 0.0)
+    i = max(0, len(best) // 2 - 1)
+    a, b = best[i], best[i + 1]
+    mx, my = (a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0
+    yaw = _ue_yaw_of(b[0] - a[0], b[1] - a[1])
+    return (my * 100.0, mx * 100.0, 150.0), (0.0, 0.0, yaw)
 
 
 def _cube_materials(unreal):
@@ -352,7 +525,7 @@ def _props(unreal, document, cube, materials):
     for prop in document.get("props") or []:
         kind = prop.get("kind") or "lamp"
         loc = (float(prop["y"]) * 100.0, float(prop["x"]) * 100.0, scale.get(kind, (1, 1, 1))[2] * 50.0)
-        _actor(unreal, cube, materials.get(slot.get(kind), "metal"), prop.get("id") or kind,
+        _actor(unreal, cube, materials.get(slot.get(kind)) or materials["metal"], prop.get("id") or kind,
                loc, (0, float(prop.get("yaw") or 0), 0), scale.get(kind, (1, 1, 1)))
 
 
@@ -361,12 +534,13 @@ def _ue_yaw_of(dx, dy):
     return 90.0 - math.degrees(math.atan2(dy, dx))
 
 
-def _actor(unreal, cube, material, label, location, rotator, scale):
-    actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
+def _actor(unreal, cube, material, label, location, rotator, scale, folder="Cubes"):
+    """rotator is (pitch, yaw, roll). unreal.Rotator's positional order is roll, pitch, yaw."""
+    actor = _actors(unreal).spawn_actor_from_class(
         unreal.StaticMeshActor, unreal.Vector(location[0], location[1], location[2]),
-        unreal.Rotator(rotator[0], rotator[1], rotator[2]))
+        unreal.Rotator(pitch=rotator[0], yaw=rotator[1], roll=rotator[2]))
     actor.set_actor_label(str(label)[:80])
-    actor.set_folder_path("SkyCityGenerated")
+    actor.set_folder_path(OUTLINER + "/" + folder)
     mesh = actor.static_mesh_component
     mesh.set_static_mesh(cube)
     mesh.set_material(0, material)

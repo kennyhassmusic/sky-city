@@ -16,6 +16,22 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 
 ## Entries
 
+## 2026-10-23 20:55 CDT — Claude Code (Kenny's Mac) — Chicago Loop generated map built, imported, driven
+- State at start: `main` `a25704a` plus the scripts-only work below (uncommitted), tests OK
+- Did: branch `cursor/chicago-gen-map`; headless Blender export of the Loop (`SourceArt/CityGen/chicago`, 12 GLBs, 228.5 MiB; region budget lowered 240 → 225 so the PR stays under 300 MiB with the imported Content); UE build (`Build.sh … -NoUBA`); editor import into `/Game/Maps/SkyCityChicagoGen`; PIE drive (street at 122 mph, wall rides, flight). Importer fixes found in the editor: Nanite off on import (SM5 drew the fallback, torn facades), master materials now get default textures and Masks samplers (M_Facade, ground slots and massing failed to compile → grey checker), `unreal.Rotator` argument order in `_actor`, fog density, glTF placeholder materials deleted (−20 MB), `M_Hydrant` flat. New: `pack_slots.massing_sets()` + `M_MassingFacade` (windowed pack facades in metres on the 296 massing boxes), tiled `M_GroundSlab`. Tests: test_city 46, test_profiles 12, test_packs 13, test_generate_city 10, all OK. Report: `CHICAGO_REPORT.md`
+- Found: only 58 of 344 meshed buildings fit the LFS budget (rest are massing); street GLBs 26/29 MiB (pr-guard warning, not failure); wall rides snag on facade ledges; ground ends at the slab; one MassEntity crash at PIE start (engine) → all in the report
+- Asks for Kenny: review CHICAGO_REPORT.md; `maintainer-approved` for Config/Source if this goes to a PR
+- SCALE CHECK: no change
+- Next: shrink the GLBs (instancing / compression) so more of the Loop ships as real meshes
+
+## 2026-10-23 23:05 UTC — Claude (claude.ai, Mac-linked) — Chicago generated map: scripts done, Mac steps pending
+- State at start: `main` `a25704a`, tests OK
+- Did: `--region chicago_loop` crop (1.43 km², 354 buildings, 352 roads); pack slots + real glass in the UE material import; `import_city_ue.py` takes a GLB folder and level, adds collision, stage and massing; `blender_city.py` region mode; Chicago map in Maps[] and MapsToCook. Tests: test_city 46, test_profiles 12, test_packs 12, test_generate_city 10, all OK. Marker: `docs/AGENT_OPS/QUEUE/reconcile/2026-10-23-chicago-gen-map.md`
+- Found: no windowless pack fits tech/eclectic_mix, so Loop walls stay CC0 (ground uses tech packs); pack curbs are banded strips, left flat; the session could not run macOS binaries → Blender, UE build, import and PIE not run
+- Asks for Kenny: run the four commands in CHICAGO_REPORT.md (branch+commit, Blender, Build.sh, editor import), or give me a way to run them; `maintainer-approved` for Config/Source
+- SCALE CHECK: no change
+- Next: Blender export of the Loop, import into SkyCityChicagoGen, drive it and take the three screenshots
+
 ## 2026-10-23 13:30 UTC — cursor cloud agent — texture packs committed and loader wired
 - State at start: branch `cursor/texture-packs-wired-04ef` off `cursor/texture-pack-loader-04ef` (`8d7e6d0`). A prior review: `districts.load_pack` read `Scripts/city/packs/<district>/…`, which never existed, so every facade silently fell back to CC0. Packs lived outside the repo at `/workspace/skycity/ai_textures` (v4, audit ALL BLOCKING PASS).
 - Did:

@@ -83,9 +83,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster")
 	bool bRollAssist = true;
 
-	/** Maps the Garage (Menu button) can switch between. */
+	/** Maps the Garage (Menu button) can switch between. SkyCityChicagoGen is the generated Chicago Loop (Scripts/city/import_city_ue.py). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster")
-	TArray<FName> Maps = { FName(TEXT("/Game/Maps/SkyCityMashup")), FName(TEXT("/Game/Maps/McGregor")), FName(TEXT("/Game/Maps/McGregorNight")), FName(TEXT("/Game/Maps/McGregor?mode=build")) };
+	TArray<FName> Maps = { FName(TEXT("/Game/Maps/SkyCityMashup")), FName(TEXT("/Game/Maps/SkyCityChicagoGen")), FName(TEXT("/Game/Maps/McGregor")), FName(TEXT("/Game/Maps/McGregorNight")), FName(TEXT("/Game/Maps/McGregor?mode=build")) };
 
 	// Scripted input for automated driving tests: while bTestInput is on these replace the pad.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster|Test") bool bTestInput = false;

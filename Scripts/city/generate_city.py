@@ -13,6 +13,14 @@ the spawn record.
 
 Run: python3 -I Scripts/city/generate_city.py
 Writes (gitignored): Saved/CityGen/sky_city_spawn.json
+
+Region crop: python3 -I Scripts/city/generate_city.py --region chicago_loop
+keeps only the lots, landmarks and road pieces inside that region's rectangle,
+in the same plan metres (Chicago is unrotated around the State Street bridge,
+the origin build_mashup_data.py uses). Only that city's lots and roads are kept,
+because the mashup stitches Austin in north of the seam. Writes
+Saved/CityGen/sky_city_spawn_<region>.json, with that region's level and folder.
+Without --region nothing changes.
 Seed is 7, the same seed plan_buildings used. Two builds of one plan match.
 """
 import json
@@ -57,6 +65,21 @@ SPAWN_NAME = "sky_city_spawn.json"
 LEVEL = "/Game/Maps/SkyCityGenerated"
 FOLDER = "/Game/City/Generated"
 
+# Plan frame anchors, the same numbers as Scripts/mashup/build_mashup_data.py.
+# Chicago is not rotated in the plan: plan metres are its local metres.
+CHICAGO_ORIGIN = (41.88756, -87.6278)  # State Street bridge
+CHICAGO_BOX = (41.860, -87.665, 41.910, -87.600)  # lat0, lon0, lat1, lon1
+# A region is a lat/lon rectangle inside one city's box. chicago_loop runs from
+# Harrison St to Lake St and Wells-ish to Michigan Ave: about 1.1 x 1.3 km.
+REGIONS = {
+    "chicago_loop": {
+        "city": "chicago",
+        "latlon": (41.8740, -87.6370, 41.8860, -87.6240),
+        "level": "/Game/Maps/SkyCityChicagoGen",
+        "folder": "/Game/City/Generated/Chicago",
+    },
+}
+
 
 def build_city(plan, buildings, landmarks=None, seed=SEED):
     """One deterministic city. The caller's dicts are not modified."""
@@ -65,11 +88,135 @@ def build_city(plan, buildings, landmarks=None, seed=SEED):
     return model_mod.regenerate(city, "buildings")
 
 
-def build_from_disk(root=None):
+def build_from_disk(root=None, region=None):
     root = Path(root) if root else skyline.project_root()
     plan = seeder.read_json(root / "Saved" / "Mashup" / "plan_v3.json")
     buildings = seeder.read_json(root / "Saved" / "Mashup" / "buildings_v3.json")
-    return build_city(plan, buildings, plan.get("landmarks") or [], seed=SEED)
+    if region:
+        plan, buildings = crop_inputs(plan, buildings, region)
+    city = build_city(plan, buildings, plan.get("landmarks") or [], seed=SEED)
+    if region:
+        city["region"] = region
+    return city
+
+
+def latlon_to_plan(lat, lon, origin=CHICAGO_ORIGIN):
+    """Local metres, x east, y north: build_mashup_data.Proj, so plan coords match."""
+    lat0, lon0 = origin
+    kx = 111320.0 * math.cos(math.radians(lat0))
+    return ((lon - lon0) * kx, (lat - lat0) * 110574.0)
+
+
+def region_rect(name):
+    """[x0, y0, x1, y1] in plan metres. Refuses a region outside its city's box."""
+    spec = REGIONS.get(name)
+    if not spec:
+        raise ValueError("unknown region %r (have: %s)" % (name, ", ".join(sorted(REGIONS))))
+    lat0, lon0, lat1, lon1 = spec["latlon"]
+    b0, b1, b2, b3 = CHICAGO_BOX
+    if not (b0 <= lat0 < lat1 <= b2 and b1 <= lon0 < lon1 <= b3):
+        raise ValueError("region %r is outside the Chicago box" % name)
+    x0, y0 = latlon_to_plan(lat0, lon0)
+    x1, y1 = latlon_to_plan(lat1, lon1)
+    return [x0, y0, x1, y1]
+
+
+def crop_inputs(plan, buildings, region, rect=None):
+    """Copies of plan and buildings holding only what lies inside the region.
+
+    Lots and landmarks are kept by their centre. Roads are clipped to the
+    rectangle, so a street that crosses the edge keeps the inside piece (or
+    pieces). Only rows from the region's city are kept; a row with no city
+    tag is kept. Bounds become the rectangle. The inputs are not modified.
+    """
+    spec = REGIONS.get(region) or {}
+    rect = [float(v) for v in (rect or region_rect(region))]
+    city = spec.get("city")
+    x0, y0, x1, y1 = rect
+
+    def inside(x, y):
+        return x0 <= x <= x1 and y0 <= y <= y1
+
+    def ours(row, key="city"):
+        tag = row.get(key)
+        return not tag or not city or str(tag).startswith(city)
+
+    out_plan = dict(plan)
+    out_plan["bounds"] = list(rect)
+    roads = []
+    for road in plan.get("roads") or []:
+        if not ours(road):
+            continue
+        for k, piece in enumerate(clip_polyline(road.get("pts") or [], rect)):
+            copy = dict(road)
+            copy["pts"] = piece
+            if k:
+                copy["id"] = "%s_c%d" % (road.get("id") or "road", k)
+            roads.append(copy)
+    out_plan["roads"] = roads
+    out_plan["landmarks"] = [
+        dict(item) for item in plan.get("landmarks") or []
+        if ours(item) and inside(*[float(v) for v in (item.get("pos") or [1e9, 1e9])[:2]])
+    ]
+    out_plan["districts"] = []
+    rows = buildings.get("buildings") if isinstance(buildings, dict) else buildings
+    kept = [dict(row) for row in rows or []
+            if ours(row, "district") and inside(float(row.get("x", 1e9)), float(row.get("y", 1e9)))]
+    out_buildings = dict(buildings) if isinstance(buildings, dict) else {}
+    out_buildings["buildings"] = kept
+    return out_plan, out_buildings
+
+
+def clip_polyline(pts, rect):
+    """Clip a polyline to an axis-aligned rectangle. Returns the inside runs (2+ points)."""
+    x0, y0, x1, y1 = rect
+    runs, cur = [], []
+    pts = [(float(p[0]), float(p[1])) for p in pts]
+    for a, b in zip(pts, pts[1:]):
+        seg = _clip_segment(a, b, x0, y0, x1, y1)
+        if not seg:
+            if len(cur) > 1:
+                runs.append(cur)
+            cur = []
+            continue
+        p, q = seg
+        p = [round(p[0], 2), round(p[1], 2)]
+        q = [round(q[0], 2), round(q[1], 2)]
+        if cur and cur[-1] == p:
+            cur.append(q)
+        else:
+            if len(cur) > 1:
+                runs.append(cur)
+            cur = [p, q]
+        if q != [round(b[0], 2), round(b[1], 2)]:
+            runs.append(cur)
+            cur = []
+    if len(cur) > 1:
+        runs.append(cur)
+    return [run for run in runs if geom.dist(run[0], run[-1]) > 0.5 or len(run) > 2]
+
+
+def _clip_segment(a, b, x0, y0, x1, y1):
+    """Liang-Barsky. None when the segment misses the rectangle."""
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    t0, t1 = 0.0, 1.0
+    for p, q in ((-dx, a[0] - x0), (dx, x1 - a[0]), (-dy, a[1] - y0), (dy, y1 - a[1])):
+        if p == 0:
+            if q < 0:
+                return None
+            continue
+        t = q / p
+        if p < 0:
+            if t > t1:
+                return None
+            t0 = max(t0, t)
+        else:
+            if t < t0:
+                return None
+            t1 = min(t1, t)
+    if t1 - t0 < 1e-9:
+        return None
+    return (a[0] + dx * t0, a[1] + dy * t0), (a[0] + dx * t1, a[1] + dy * t1)
 
 
 def spawn_document(city):
@@ -129,17 +276,26 @@ def spawn_document(city):
             "x": prop.get("x"), "y": prop.get("y"), "yaw": prop.get("yaw") or 0,
             "label": prop.get("label") or "",
         })
-    return {
+    region = REGIONS.get(city.get("region") or "") or {}
+    document = {
         "seed": int(city.get("seed") or SEED),
         "hash": model_mod.manifest_hash(city),
-        "level": LEVEL,
-        "folder": FOLDER,
+        "level": region.get("level") or LEVEL,
+        "folder": region.get("folder") or FOLDER,
         "frame": "plan metres, x east, y north. UE centimetres: X = y*100, Y = x*100, Z up.",
         "note": "Spawn beside City Sample. Do not open SkyCityMashup and do not remove CitySamplePCG.",
         "buildings": buildings,
         "roads": roads,
         "props": props,
     }
+    if city.get("region"):
+        document["region"] = city["region"]
+        document["bounds"] = [round(float(v), 2) for v in city.get("bounds") or []]
+    return document
+
+
+def spawn_name(region=None):
+    return "sky_city_spawn_%s.json" % region if region else SPAWN_NAME
 
 
 def write_spawn(city, dest):
@@ -451,12 +607,17 @@ def _disc(buf, width, height, cx, cy, radius, colour):
                 buf[k + 2] = colour[2]
 
 
-def main():
+def main(argv=None):
+    import argparse
+    parser = argparse.ArgumentParser(description="Write the Sky City spawn record.")
+    parser.add_argument("--region", choices=sorted(REGIONS), help="crop to one region (default: whole city)")
+    args = parser.parse_args(argv)
     root = skyline.project_root()
     out = root / "Saved" / "CityGen"
-    city = build_from_disk(root)
-    document = write_spawn(city, out / SPAWN_NAME)
-    example = Path(__file__).resolve().parent / "examples" / SPAWN_NAME
+    city = build_from_disk(root, region=args.region)
+    name = spawn_name(args.region)
+    document = write_spawn(city, out / name)
+    example = Path(__file__).resolve().parent / "examples" / name
     example.parent.mkdir(parents=True, exist_ok=True)
     example.write_text(json.dumps(document))
     kinds = {}
@@ -467,7 +628,9 @@ def main():
     print("buildings", sum(1 for item in document["buildings"] if item["kind"] == "building"))
     print("roads", len(document["roads"]))
     print("props", " ".join("%s=%d" % (key, kinds[key]) for key in sorted(kinds)))
-    print("spawn", out / SPAWN_NAME)
+    if args.region:
+        print("region", args.region, "bounds", document.get("bounds"))
+    print("spawn", out / name)
 
 
 if __name__ == "__main__":
