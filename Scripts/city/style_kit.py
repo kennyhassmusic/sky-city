@@ -62,11 +62,39 @@ DEFAULT_STYLE = "modern_mixed"
 # Flat colours (RGB, roughness, metallic) the UE side builds for frames, trims and glass tints.
 FRAMES = {"bronze": (0.30, 0.19, 0.10, 0.45, 0.8), "green": (0.06, 0.13, 0.09, 0.55, 0.0),
           "white": (0.82, 0.81, 0.77, 0.6, 0.0), "silver": (0.58, 0.60, 0.62, 0.35, 0.9),
-          "black": (0.035, 0.035, 0.04, 0.5, 0.2)}
+          "black": (0.035, 0.035, 0.04, 0.5, 0.2), "brown": (0.20, 0.13, 0.08, 0.55, 0.0),
+          "vinyl": (0.88, 0.87, 0.83, 0.5, 0.0)}
 TRIMS = {"limestone": (0.70, 0.66, 0.58, 0.8, 0.0), "painted": (0.80, 0.78, 0.72, 0.7, 0.0),
-         "metal": (0.48, 0.50, 0.52, 0.4, 0.8), "concrete": (0.54, 0.53, 0.50, 0.85, 0.0)}
+         "metal": (0.48, 0.50, 0.52, 0.4, 0.8), "concrete": (0.54, 0.53, 0.50, 0.85, 0.0),
+         # Walkup kit (walkup.py): stone trim, pressed-metal cornices, storefront paints, awnings,
+         # back porches and roof clutter.
+         "brownstone": (0.34, 0.24, 0.19, 0.85, 0.0), "terracotta": (0.58, 0.33, 0.22, 0.8, 0.0),
+         "coping": (0.58, 0.56, 0.52, 0.85, 0.0),
+         "pm_cream": (0.76, 0.72, 0.60, 0.5, 0.3), "pm_green": (0.18, 0.28, 0.22, 0.5, 0.3),
+         "pm_grey": (0.42, 0.43, 0.42, 0.45, 0.4), "pm_brown": (0.28, 0.20, 0.14, 0.5, 0.3),
+         "sf_green": (0.07, 0.22, 0.15, 0.55, 0.0), "sf_red": (0.42, 0.07, 0.05, 0.55, 0.0),
+         "sf_black": (0.03, 0.03, 0.03, 0.45, 0.1), "sf_blue": (0.07, 0.13, 0.30, 0.55, 0.0),
+         "sf_cream": (0.78, 0.72, 0.58, 0.6, 0.0), "sf_teal": (0.09, 0.32, 0.33, 0.55, 0.0),
+         "sf_tile": (0.62, 0.60, 0.55, 0.3, 0.0), "sf_alum": (0.62, 0.63, 0.64, 0.35, 0.9),
+         "awn_red": (0.48, 0.07, 0.06, 0.9, 0.0), "awn_green": (0.05, 0.23, 0.11, 0.9, 0.0),
+         "awn_blue": (0.06, 0.11, 0.32, 0.9, 0.0), "awn_black": (0.04, 0.04, 0.04, 0.9, 0.0),
+         "wood": (0.40, 0.31, 0.22, 0.9, 0.0), "wood_grey": (0.47, 0.45, 0.41, 0.9, 0.0),
+         "galv": (0.55, 0.56, 0.56, 0.45, 0.85), "metal_dark": (0.12, 0.12, 0.13, 0.5, 0.6),
+         "condenser": (0.66, 0.66, 0.63, 0.5, 0.3), "membrane": (0.13, 0.13, 0.14, 0.9, 0.0),
+         "skylight": (0.30, 0.36, 0.38, 0.2, 0.3), "vinyl": (0.86, 0.85, 0.80, 0.6, 0.0)}
 GLASS = {"clear": ((0.02, 0.025, 0.03), 0.06, 0.5), "blue": ((0.04, 0.08, 0.11), 0.22, 0.75),
          "grey": ((0.03, 0.035, 0.035), 0.14, 0.65)}
+# Pane looks that are not a style (walkup.py): "KIT_Pane|lit:<look>" takes this frame and glass.
+PANE_LOOKS = {"wu_white": ("white", "clear"), "wu_green": ("green", "clear"), "wu_brown": ("brown", "clear"),
+              "wu_black": ("black", "clear"), "wu_vinyl": ("vinyl", "clear"), "wu_alum": ("silver", "clear")}
+
+
+def pane_look(name):
+    """(frame, glass) of a pane group's look: a style, or one of PANE_LOOKS."""
+    if name in PANE_LOOKS:
+        return PANE_LOOKS[name]
+    style = STYLES.get(name) or STYLES[DEFAULT_STYLE]
+    return style["frame"], style["glass"]
 # Wall tints: multiplied into the wall swatch per building (per-instance custom data in UE).
 TINTS = ((1.0, 1.0, 1.0), (0.88, 0.88, 0.9), (1.08, 1.02, 0.94), (0.94, 0.98, 1.05), (1.14, 1.1, 1.04))
 WALL_SETS_PER_FAMILY = 3

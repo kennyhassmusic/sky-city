@@ -106,7 +106,14 @@ def build(out_dir, library=None):
     library = library if library is not None else packs.load_library()
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
+    record_path = out / "swatches.json"
+    # Keep brick_swatches.py's own entries (source "generated"): the two scripts can run in
+    # either order and neither drops the other's rows.
     record = {}
+    if record_path.is_file():
+        with open(record_path) as handle:
+            record = {set_id: entry for set_id, entry in json.load(handle).items()
+                      if entry.get("source") == "generated"}
     for set_id in style_kit.wall_sets(library):
         item = next(entry for entry in library["sets"] if entry["id"] == set_id)
         swatch = cut(item)

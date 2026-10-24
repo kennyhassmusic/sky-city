@@ -12,7 +12,8 @@ belt course, stepped crowns, corner pilasters, frame and glass colour, its
 family's wall swatch with a per-building tint, a storefront on the street
 faces of the ground floor, and wall and sidewalk decals at street level.
 What the kit leaves out: awnings and shop interiors, doors, air conditioners,
-roof units and facade grime.
+roof units and facade grime. Brick walkups are the exception: walkup.py lays
+them out as rows of 25 ft storefront lots with all of that.
 
 Modules, all 1 m long (X) and 1 m tall (Z), scaled per instance; Y is depth
 into the building (negative is proud of the wall):
@@ -27,6 +28,13 @@ into the building (negative is proud of the wall):
   KIT_RoofCap     parapet with coping on every roof and terrace edge.
   KIT_Panel       a storefront panel 2 cm proud of the wall.
   KIT_Decal       a wall decal 3 cm proud; KIT_DecalFloor, the same lying on the sidewalk.
+  Walkup kit (walkup.py lays these out for brick_walkup buildings):
+  KIT_Box         closed box, X, Y, Z 0..1: chimneys, condensers, posts, decks, doors.
+  KIT_Bracket     cornice console, Y -1..0, deepest at the top.
+  KIT_ArchLintel  segmental arch lintel, Y -1..0.1, arched lower edge.
+  KIT_Keystone    keystone, wider at the top, Y -1..0.1.
+  KIT_Awning      shed awning: high at the wall (Z 1), low and proud at Y -1, with a valance.
+  KIT_Dish        roof satellite dish on a stub mast, facing -Y.
 
 Frames: plan metres (x east, y north, z up) in, Unreal centimetres out:
 X = y * 100, Y = x * 100, Z = z * 100. Each instance is [x, y, z, yaw, sx, sy, sz]
@@ -42,6 +50,8 @@ decal:<id>, M_<leaf material>, roof, collision.
 
 Collision is one plain box per setback tier (the footprint is a quad), so the
 car meets a flat wall at the facade plane instead of every sill and pier.
+Shadows: one hidden box per tier (SHADOW), inset SHADOW_INSET behind the
+panes, casts the building's shadow, because glass casts none.
 
 Pure Python. Run (writes Saved/CityGen/kit_layout_<region>.json):
   python3 -I Scripts/city/kit_layout.py --region chicago_loop
@@ -79,13 +89,19 @@ CURTAINS = {"red": "M_CurtainRed", "green": "M_CurtainGreen", "cream": "M_Curtai
 # realism.CURTAINS order, for bays with no room.
 CURTAIN_ORDER = ("M_CurtainRed", "M_CurtainGreen", "M_CurtainCream", "M_CurtainBlue")
 MODULES = ("KIT_Wall", "KIT_Pier", "KIT_Corner", "KIT_Pane", "KIT_PaneCurtain", "KIT_Leaf", "KIT_RoofCap",
-           "KIT_Sill", "KIT_Cornice", "KIT_Panel", "KIT_Decal", "KIT_DecalFloor")
+           "KIT_Sill", "KIT_Cornice", "KIT_Panel", "KIT_Decal", "KIT_DecalFloor",
+           # The walkup kit (walkup.py).
+           "KIT_Box", "KIT_Bracket", "KIT_ArchLintel", "KIT_Keystone", "KIT_Awning", "KIT_Dish")
 TINTED = ("KIT_Wall", "KIT_Pier", "KIT_Corner")
 # Street dressing: chance per slot, metres per slot.
 WALL_DECAL_CHANCE, WALL_DECAL_EVERY = 0.3, 8.0
 GROUND_DECAL_CHANCE, GROUND_DECAL_EVERY = 0.35, 10.0
 STREET_ROLES = ("front", "side")
 COLLISION = "KIT_Wall|collision"
+# Shadow-only proxy: glass casts no shadow, so a tower's window bands let sun through in stripes.
+# A hidden box per tier, inset behind the panes' room backs, casts the building's shadow instead.
+SHADOW = "KIT_Wall|shadow"
+SHADOW_INSET = 0.85
 
 
 def to_ue(x, y, z):
@@ -152,6 +168,9 @@ class Layout(object):
             "groups": {key: items for key, items in sorted(self.groups.items())},
             "looks": {bid: {"style": look["style"], "family": look["family"], "wall": look["wall"], "tint": look["tint"]}
                       for bid, look in sorted(getattr(self, "looks", {}).items())},
+            "lots": [{"id": lot["id"], "floors": lot["floors"], "top": round(lot["top"], 2), "tone": lot["tone"],
+                      "cornice": lot["cornice"]["kind"], "storefront": lot["storefront"]["condition"],
+                      "vacant": lot["vacant"]} for lot in getattr(self, "lots", [])],
         }
 
 
@@ -388,6 +407,10 @@ def solids(layout, building, look=None):
         top = z1 + profiles.CURB_RISE
         bottom = (z0 + profiles.CURB_RISE) if index else 0.0
         layout.add(COLLISION, run(corner, u, v, lu, bottom, lu, lv, top - bottom))
+        if lu > 2 * SHADOW_INSET + 0.5 and lv > 2 * SHADOW_INSET + 0.5:
+            inner = (corner[0] + (u[0] + v[0]) * SHADOW_INSET, corner[1] + (u[1] + v[1]) * SHADOW_INSET)
+            layout.add(SHADOW, run(inner, u, v, lu - 2 * SHADOW_INSET, bottom, lu - 2 * SHADOW_INSET,
+                                   lv - 2 * SHADOW_INSET, top - ROOF_SLAB - bottom))
         layout.add("KIT_Wall|roof", run(corner, u, v, lu, top - ROOF_SLAB, lu, lv, ROOF_SLAB))
         centre = geom.centroid(poly)
         for a, b in zip(poly, poly[1:] + poly[:1]):
@@ -413,17 +436,24 @@ def build_layout(city, ids=None, library=None, styled=True):
     needs the texture-pack library). Off, every building gets the plain kit
     (CC0 walls by material, no storefronts or decals, no jitter).
     """
+    import walkup
     layout = Layout()
     looks = style_kit.look_for(city, library) if styled else {}
     specs = [spec for spec in city.get("buildings") or []
              if spec.get("facades") and spec.get("role") != "landmark" and (ids is None or spec.get("id") in ids)]
+    # Styled brick walkups are rows of 25 ft lots with their own kit (walkup.py).
+    rows = [spec for spec in specs if styled and walkup.is_walkup(spec) and walkup.frame_of(spec)]
+    row_ids = {spec["id"] for spec in rows}
     for building in sorted(specs, key=lambda spec: spec.get("id") or ""):
+        layout.buildings += 1
+        if building["id"] in row_ids:
+            continue
         look = Look(building, looks.get(building["id"]), jitter=styled)
         for facade in building.get("facades") or []:
             facade_record(layout, building, facade, look)
         solids(layout, building, look)
-        layout.buildings += 1
-    layout.looks = {bid: looks[bid] for bid in sorted(looks) if ids is None or bid in ids}
+    layout.lots = walkup.layout_buildings(layout, rows) if rows else []
+    layout.looks = {bid: looks[bid] for bid in sorted(looks) if (ids is None or bid in ids) and bid not in row_ids}
     return layout
 
 

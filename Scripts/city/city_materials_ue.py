@@ -319,10 +319,13 @@ DECAL_MASTER = "M_KitDecal"
 def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layout, swatch_dir, pack_library):
     """Every material the styled kit layout names, keyed by its group material (set:..., trim:..., ...).
 
-    Wall swatches (kit_swatches.py) and storefronts (the pack sets) are
-    instances of M_KitWall; frames and trims are flats; each style's glass is
-    the city glass with its tint; decals are instances of M_KitDecal (masked
-    by the decal's alpha). Returns {material key: material}.
+    Wall swatches (kit_swatches.py, brick_swatches.py) and storefronts (the
+    pack sets) are instances of M_KitWall; frames and trims are flats; each
+    style's glass is the city glass with its tint; decals (pack decals,
+    "decal:<id>") and walkup decals (walkup_decals.py, "gdecal:<name>") are
+    both instances of M_KitDecal (masked by the decal's alpha); the walkup
+    decals come from the "decals" folder next to swatch_dir. Returns
+    {material key: material}.
     """
     import json
     import profiles
@@ -335,6 +338,12 @@ def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layo
         with open(record_path) as handle:
             swatches = json.load(handle)
     by_id = {item["id"]: item for item in (pack_library or {}).get("sets") or []}
+    decal_dir = os.path.join(os.path.dirname(swatch_dir), "decals")
+    gdecals = {}
+    gdecal_record_path = os.path.join(decal_dir, "decals.json")
+    if os.path.isfile(gdecal_record_path):
+        with open(gdecal_record_path) as handle:
+            gdecals = json.load(handle)
 
     def textures_of(paths, set_id):
         entry = {"set_id": set_id, "maps": paths}
@@ -375,17 +384,27 @@ def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layo
     decal_master = None
     for key in sorted(keys):
         kind, _, name = key.partition(":")
-        if kind != "decal" or name not in by_id:
-            continue
-        import pack_slots
-        albedo = pack_slots._albedo(by_id[name])
-        textures = textures_of({"color": str(albedo)}, name)
-        if "color" not in textures:
+        if kind == "decal" and name in by_id:
+            import pack_slots
+            albedo = pack_slots._albedo(by_id[name])
+            textures = textures_of({"color": str(albedo)}, name)
+            if "color" not in textures:
+                continue
+            inst_name = "MI_KitDecal_" + name
+        elif kind == "gdecal":
+            file_name = (gdecals.get(name) or {}).get("file") or (name + ".png")
+            path = os.path.join(decal_dir, file_name)
+            if not os.path.isfile(path):
+                continue
+            textures = textures_of({"color": path}, "gdecal_" + name)
+            if "color" not in textures:
+                continue
+            inst_name = "MI_KitGDecal_" + name
+        else:
             continue
         decal_master = decal_master or _decal_master(unreal, assets, library, editing, mat_dir, textures["color"])
         import facade_material_ue
-        inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir, "MI_KitDecal_" + name,
-                                                 decal_master)
+        inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir, inst_name, decal_master)
         facade_material_ue._set_tex(editing, library, inst, "Decal", textures["color"])
         editing.update_material_instance(inst)
         library.save_loaded_asset(inst)
@@ -541,6 +560,8 @@ def _flat(unreal, assets, library, editing, mat_dir, name, rgb, roughness, metal
     rough = editing.create_material_expression(mat, unreal.MaterialExpressionConstant, -300, 160)
     rough.set_editor_property("r", float(roughness))
     editing.connect_material_property(rough, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    # The kit draws flats on HISMs; without the flag a cooked build falls back to the default material.
+    mat.set_editor_property("used_with_instanced_static_meshes", True)
     editing.recompile_material(mat)
     library.save_loaded_asset(mat)
     return mat

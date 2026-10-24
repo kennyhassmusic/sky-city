@@ -1,4 +1,58 @@
 {
+ "brk_brown": {
+  "color": "brk_brown_color.png",
+  "rough": "brk_brown_rough.png",
+  "source": "generated",
+  "tile_m": [
+   2.4,
+   2.4
+  ]
+ },
+ "brk_buff": {
+  "color": "brk_buff_color.png",
+  "rough": "brk_buff_rough.png",
+  "source": "generated",
+  "tile_m": [
+   2.4,
+   2.4
+  ]
+ },
+ "brk_clinker": {
+  "color": "brk_clinker_color.png",
+  "rough": "brk_clinker_rough.png",
+  "source": "generated",
+  "tile_m": [
+   2.4,
+   2.4
+  ]
+ },
+ "brk_common": {
+  "color": "brk_common_color.png",
+  "rough": "brk_common_rough.png",
+  "source": "generated",
+  "tile_m": [
+   2.4,
+   2.4
+  ]
+ },
+ "brk_cream": {
+  "color": "brk_cream_color.png",
+  "rough": "brk_cream_rough.png",
+  "source": "generated",
+  "tile_m": [
+   2.4,
+   2.4
+  ]
+ },
+ "brk_red": {
+  "color": "brk_red_color.png",
+  "rough": "brk_red_rough.png",
+  "source": "generated",
+  "tile_m": [
+   2.4,
+   2.4
+  ]
+ },
  "fac_apartments_distressed_v05": {
   "color": "fac_apartments_distressed_v05_color.png",
   "rough": "fac_apartments_distressed_v05_rough.png",
@@ -168,6 +222,15 @@
   "tile_m": [
    4.0,
    3.7969
+  ]
+ },
+ "roof_membrane": {
+  "color": "roof_membrane_color.png",
+  "rough": "roof_membrane_rough.png",
+  "source": "generated",
+  "tile_m": [
+   2.4,
+   2.4
   ]
  }
 }

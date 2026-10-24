@@ -1,0 +1,184 @@
+{
+ "gate_accordion": {
+  "file": "gate_accordion.png",
+  "size_m": [
+   2.0,
+   2.0
+  ]
+ },
+ "gate_rolldown": {
+  "file": "gate_rolldown.png",
+  "size_m": [
+   2.0,
+   2.0
+  ]
+ },
+ "ghost_01": {
+  "file": "ghost_01.png",
+  "size_m": [
+   6.0,
+   4.0
+  ]
+ },
+ "ghost_02": {
+  "file": "ghost_02.png",
+  "size_m": [
+   6.0,
+   4.0
+  ]
+ },
+ "ghost_03": {
+  "file": "ghost_03.png",
+  "size_m": [
+   6.0,
+   4.0
+  ]
+ },
+ "ghost_04": {
+  "file": "ghost_04.png",
+  "size_m": [
+   6.0,
+   4.0
+  ]
+ },
+ "ghost_05": {
+  "file": "ghost_05.png",
+  "size_m": [
+   6.0,
+   4.0
+  ]
+ },
+ "ghost_06": {
+  "file": "ghost_06.png",
+  "size_m": [
+   6.0,
+   4.0
+  ]
+ },
+ "patch_01": {
+  "file": "patch_01.png",
+  "size_m": [
+   1.5,
+   1.0
+  ]
+ },
+ "patch_02": {
+  "file": "patch_02.png",
+  "size_m": [
+   1.5,
+   1.0
+  ]
+ },
+ "plywood": {
+  "file": "plywood.png",
+  "size_m": [
+   2.0,
+   2.0
+  ]
+ },
+ "sign_01": {
+  "file": "sign_01.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "sign_02": {
+  "file": "sign_02.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "sign_03": {
+  "file": "sign_03.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "sign_04": {
+  "file": "sign_04.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "sign_05": {
+  "file": "sign_05.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "sign_06": {
+  "file": "sign_06.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "sign_07": {
+  "file": "sign_07.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "sign_08": {
+  "file": "sign_08.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "sign_09": {
+  "file": "sign_09.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "sign_10": {
+  "file": "sign_10.png",
+  "size_m": [
+   4.0,
+   0.6
+  ]
+ },
+ "soot_01": {
+  "file": "soot_01.png",
+  "size_m": [
+   4.0,
+   1.2
+  ]
+ },
+ "soot_02": {
+  "file": "soot_02.png",
+  "size_m": [
+   4.0,
+   1.2
+  ]
+ },
+ "streak_01": {
+  "file": "streak_01.png",
+  "size_m": [
+   0.9,
+   1.2
+  ]
+ },
+ "streak_02": {
+  "file": "streak_02.png",
+  "size_m": [
+   0.9,
+   1.2
+  ]
+ },
+ "streak_03": {
+  "file": "streak_03.png",
+  "size_m": [
+   0.9,
+   1.2
+  ]
+ }
+}

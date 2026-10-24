@@ -14,6 +14,9 @@ which lays the scan or pack tile out in metres along each instance's own axes,
 so a scaled module never stretches its texture. Glass is the city's real glass,
 lit rooms are emissive, blinds and curtains are the mesher's flats.
 
+Shadows: glass casts none, so a hidden KIT_Wall component (kit_layout.SHADOW,
+one box per tier inset behind the panes) casts each building's shadow.
+
 Collision: the facade components have none. One hidden component of KIT_Wall
 boxes (simple box collision, one per setback tier) blocks the car, so a wall
 ride runs on a flat wall at the facade plane instead of catching every sill.
@@ -25,7 +28,9 @@ import os
 
 MESH_OF = {name: name for name in (
     "KIT_Wall", "KIT_Pier", "KIT_Corner", "KIT_Pane", "KIT_PaneCurtain", "KIT_Leaf", "KIT_RoofCap",
-    "KIT_Sill", "KIT_Cornice", "KIT_Panel", "KIT_Decal", "KIT_DecalFloor")}
+    "KIT_Sill", "KIT_Cornice", "KIT_Panel", "KIT_Decal", "KIT_DecalFloor",
+    # Walkup kit (walkup.py).
+    "KIT_Box", "KIT_Bracket", "KIT_ArchLintel", "KIT_Keystone", "KIT_Awning", "KIT_Dish")}
 # Default slot bindings; each component overrides its own (see _material_for).
 FIXED = {"M_Glass": "M_Glass", "M_Frame": "M_TrimDark", "M_Trim": "M_TrimDark", "M_Coping": "M_TrimDark"}
 BACK = {"lit": "M_InteriorLit", "dark": "M_Interior"}
@@ -93,7 +98,7 @@ def _material_for(key, walls, materials, styled=None):
     module, _, variant = key.partition("|")
     kind, _, name = variant.partition(":")
     out = []
-    if variant == "collision":
+    if variant in ("collision", "shadow"):
         return out
     if variant == "roof":
         out.append(("M_Wall", materials.get("M_Roof")))
@@ -105,15 +110,15 @@ def _material_for(key, walls, materials, styled=None):
     elif kind == "cc0":
         out.append(("M_Wall", walls.get(name) or walls.get("concrete")))
     elif kind in ("lit", "dark") and module in ("KIT_Pane", "KIT_PaneCurtain"):
-        style = style_kit.STYLES.get(name) or style_kit.STYLES[style_kit.DEFAULT_STYLE]
+        frame, glass = style_kit.pane_look(name)
         out.append(("M_PaneBack", materials.get(BACK[kind])))
-        out.append(("M_Frame", styled.get("frame:" + style["frame"])))
-        out.append(("M_Glass", styled.get("glass:" + style["glass"]) or materials.get("M_Glass")))
+        out.append(("M_Frame", styled.get("frame:" + frame)))
+        out.append(("M_Glass", styled.get("glass:" + glass) or materials.get("M_Glass")))
     elif module in ("KIT_Pane", "KIT_PaneCurtain"):
         out.append(("M_PaneBack", materials.get(BACK.get(variant, "M_Interior"))))
     elif kind == "sf":
         out.append(("M_Panel", styled.get(variant)))
-    elif kind == "decal":
+    elif kind in ("decal", "gdecal"):
         out.append(("M_Decal", styled.get(variant)))
     elif module == "KIT_Leaf":
         out.append(("M_Leaf", materials.get(variant) or materials.get("M_Blind")))
@@ -267,6 +272,14 @@ def _actor_with(unreal, groups, meshes, walls, materials, name, folder, stats, s
             comp.set_collision_profile_name("BlockAll")
             comp.set_editor_property("visible", False)
             comp.set_editor_property("cast_shadow", False)
+        elif key.endswith("|shadow"):
+            # Shadow-only proxy (kit_layout.SHADOW): never drawn, never collides, only casts.
+            comp.set_collision_profile_name("NoCollision")
+            comp.set_editor_property("visible", False)
+            comp.set_editor_property("hidden_in_game", True)
+            comp.set_editor_property("cast_shadow", True)
+            comp.set_editor_property("cast_hidden_shadow", True)
+            comp.set_editor_property("component_tags", [unreal.Name("kit_shadow")])
         else:
             comp.set_collision_profile_name("NoCollision")
             comp.set_editor_property("cast_shadow", module not in ("KIT_Leaf", "KIT_Decal", "KIT_DecalFloor", "KIT_Panel"))
