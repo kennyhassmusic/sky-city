@@ -210,22 +210,34 @@ KIT_WALLS = {"brick": "M_Brick", "concrete": "M_Concrete", "plaster": "M_Plaster
 
 
 def kit_walls(unreal, assets, library, editing, mat_dir, plan):
-    """wall name -> instance of M_KitWall, for the facade kit's boxes.
-
-    Kit modules are 1 m boxes scaled per instance, so their own UVs would
-    stretch. The master projects in metres instead, along the instance's own
-    axes taken to world space: U along local X (local Y on the end faces),
-    V down the wall from world Z (local Y on tops). Neighbouring modules of a
-    facade share the projection, so brick runs on across piers and spans.
-    The tile is the slot's tile_m (pack) or uv_m (scan). Built after build(),
-    which imports the textures (plan entries carry them).
-    """
-    import facade_material_ue
+    """wall name -> instance of M_KitWall (the CC0 or pack slot textures), for unstyled kit walls."""
     found = {name: (plan or {}).get(slot) for name, slot in KIT_WALLS.items()}
     found = {name: entry for name, entry in found.items() if entry and (entry.get("textures") or {}).get("color")}
     if not found:
         return {}
     first = found[sorted(found)[0]]["textures"]
+    master = kit_wall_master(unreal, assets, library, editing, mat_dir, first)
+    made = {}
+    for name, entry in sorted(found.items()):
+        tile_m = entry.get("tile_m") or entry.get("uv_m") or [3.0, 3.0]
+        made[name] = kit_wall_instance(unreal, assets, library, editing, mat_dir, master, "MI_KitWall_" + name,
+                                       entry["textures"], tile_m)
+    return made
+
+
+def kit_wall_master(unreal, assets, library, editing, mat_dir, defaults):
+    """M_KitWall: a scan, swatch or storefront laid out in metres along each instance's own axes.
+
+    Kit modules are 1 m boxes and quads scaled per instance, so their own UVs
+    would stretch. The master projects in metres instead, along the
+    instance's own axes taken to world space: U along local X (local Y on the
+    end faces), V down from world Z minus OriginZ (local Y on tops).
+    Neighbouring modules of a facade share the projection, so brick runs on
+    across piers and spans. TileW/TileH are the texture's size in metres.
+    The base colour is multiplied by a tint from per-instance custom data
+    0..2 (the building's tint, style_kit.TINTS; 1 where a component has none).
+    """
+    import facade_material_ue
     mat = facade_material_ue.fresh_material(unreal, assets, library, editing, mat_dir, KIT_MASTER)
     g = facade_material_ue._Graph(unreal, editing, mat)
     world = g.div(g.node(unreal.MaterialExpressionWorldPosition, -2400, 0), 100.0, -2200, 0)
@@ -254,7 +266,10 @@ def kit_walls(unreal, assets, library, editing, mat_dir, plan):
     on_x = g.mask(facing, True, False, False, False, -1700, 460)
     on_z = g.mask(facing, False, False, True, False, -1700, 540)
     along = g.dot(world, g.lerp(ax, ay, on_x, -1700, 260), -1500, 200)
-    down = g.mul(g.mask(world, False, False, True, False, -1700, 100), -1.0, -1500, 100)
+    origin_z = g.node(unreal.MaterialExpressionScalarParameter, -1900, 60)
+    origin_z.set_editor_property("parameter_name", "OriginZ")
+    origin_z.set_editor_property("default_value", 0.0)
+    down = g.mul(g.sub(g.mask(world, False, False, True, False, -1800, 100), origin_z, -1650, 100), -1.0, -1500, 100)
     across = g.dot(world, ay, -1500, 320)
     tile = []
     for k, name in enumerate(("TileW", "TileH")):
@@ -265,29 +280,136 @@ def kit_walls(unreal, assets, library, editing, mat_dir, plan):
     u = g.div(along, tile[0], -1300, 200)
     v = g.div(g.lerp(down, across, on_z, -1400, 140), tile[1], -1300, 140)
     uv = g.append(u, v, -1150, 170)
-    base = g.tex("BaseColor", -950, 0, library.load_asset(first["color"]))
-    rough = g.tex("Roughness", -950, 300, library.load_asset(first.get("rough") or first["color"]))
+    base = g.tex("BaseColor", -950, 0, library.load_asset(defaults["color"]))
+    rough = g.tex("Roughness", -950, 300, library.load_asset(defaults.get("rough") or defaults["color"]))
     rough.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_MASKS)
     for sample in (base, rough):
         g.wire(uv, sample, in_hint="UVs", in_index=0)
-    g.to_property(base, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
+    tint = []
+    for k in range(3):
+        node = g.node(unreal.MaterialExpressionPerInstanceCustomData, -950, -260 + 60 * k)
+        node.set_editor_property("data_index", k)
+        node.set_editor_property("const_default_value", 1.0)
+        tint.append(node)
+    rgb = g.append(g.append(tint[0], tint[1], -800, -230), tint[2], -700, -200)
+    g.to_property(g.mul(g.mask(base, True, True, True, False, -800, 0), rgb, -600, -60), "",
+                  unreal.MaterialProperty.MP_BASE_COLOR)
     g.to_property(g.mask(rough, True, False, False, False, -750, 300), "", unreal.MaterialProperty.MP_ROUGHNESS)
     editing.recompile_material(mat)
     library.save_loaded_asset(mat)
+    return mat
+
+
+def kit_wall_instance(unreal, assets, library, editing, mat_dir, master, name, textures, tile_m, origin_z=0.0):
+    import facade_material_ue
+    inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir, name, master)
+    facade_material_ue._set_tex(editing, library, inst, "BaseColor", textures.get("color"))
+    facade_material_ue._set_tex(editing, library, inst, "Roughness", textures.get("rough"))
+    editing.set_material_instance_scalar_parameter_value(inst, "TileW", float(tile_m[0]))
+    editing.set_material_instance_scalar_parameter_value(inst, "TileH", float(tile_m[1]))
+    editing.set_material_instance_scalar_parameter_value(inst, "OriginZ", float(origin_z))
+    editing.update_material_instance(inst)
+    library.save_loaded_asset(inst)
+    return inst
+
+
+DECAL_MASTER = "M_KitDecal"
+
+
+def kit_style_materials(unreal, assets, library, editing, mat_dir, tex_dir, layout, swatch_dir, pack_library):
+    """Every material the styled kit layout names, keyed by its group material (set:..., trim:..., ...).
+
+    Wall swatches (kit_swatches.py) and storefronts (the pack sets) are
+    instances of M_KitWall; frames and trims are flats; each style's glass is
+    the city glass with its tint; decals are instances of M_KitDecal (masked
+    by the decal's alpha). Returns {material key: material}.
+    """
+    import json
+    import profiles
+    import style_kit
+    keys = set(key.split("|", 1)[1] for key in layout.get("groups") or {} if "|" in key)
     made = {}
-    for name, entry in sorted(found.items()):
-        textures = entry["textures"]
-        inst_name = "MI_KitWall_" + name
-        inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir, inst_name, mat)
-        facade_material_ue._set_tex(editing, library, inst, "BaseColor", textures.get("color"))
-        facade_material_ue._set_tex(editing, library, inst, "Roughness", textures.get("rough"))
-        tile_m = entry.get("tile_m") or entry.get("uv_m") or [3.0, 3.0]
-        editing.set_material_instance_scalar_parameter_value(inst, "TileW", float(tile_m[0]))
-        editing.set_material_instance_scalar_parameter_value(inst, "TileH", float(tile_m[1]))
+    swatches = {}
+    record_path = os.path.join(swatch_dir, "swatches.json")
+    if os.path.isfile(record_path):
+        with open(record_path) as handle:
+            swatches = json.load(handle)
+    by_id = {item["id"]: item for item in (pack_library or {}).get("sets") or []}
+
+    def textures_of(paths, set_id):
+        entry = {"set_id": set_id, "maps": paths}
+        return _textures(unreal, assets, library, entry, tex_dir)
+
+    master = None
+    for key in sorted(keys):
+        kind, _, name = key.partition(":")
+        if kind == "set" and name in swatches:
+            sw = swatches[name]
+            textures = textures_of({"color": os.path.join(swatch_dir, sw["color"]),
+                                    "rough": os.path.join(swatch_dir, sw["rough"]) if sw.get("rough") else None},
+                                   "swatch_" + name)
+            if "color" not in textures:
+                continue
+            master = master or kit_wall_master(unreal, assets, library, editing, mat_dir, textures)
+            made[key] = kit_wall_instance(unreal, assets, library, editing, mat_dir, master, "MI_KitSwatch_" + name,
+                                          textures, sw["tile_m"])
+        elif kind == "sf" and name in by_id:
+            item = by_id[name]
+            maps = item.get("maps") or {}
+            import pack_slots
+            rough = pack_slots._resolve(item, maps.get("roughness"))
+            textures = textures_of({"color": str(pack_slots._albedo(item)),
+                                    "rough": str(rough) if rough and rough.is_file() else None}, name)
+            if "color" not in textures:
+                continue
+            master = master or kit_wall_master(unreal, assets, library, editing, mat_dir, textures)
+            scale = item.get("scale_m") or {"width": 4.5, "height": 4.5}
+            made[key] = kit_wall_instance(unreal, assets, library, editing, mat_dir, master, "MI_KitPanel_" + name,
+                                          textures, [scale["width"], scale["height"]], profiles.CURB_RISE)
+    for name, (r, g, b, rough, metal) in style_kit.TRIMS.items():
+        made["trim:" + name] = _flat(unreal, assets, library, editing, mat_dir, "M_KitTrim_" + name, (r, g, b), rough, metal)
+    for name, (r, g, b, rough, metal) in style_kit.FRAMES.items():
+        made["frame:" + name] = _flat(unreal, assets, library, editing, mat_dir, "M_KitFrame_" + name, (r, g, b), rough, metal)
+    for name, (tint, head_on, grazing) in style_kit.GLASS.items():
+        made["glass:" + name] = _glass(unreal, assets, library, editing, mat_dir, "M_KitGlass_" + name, tint, head_on, grazing)
+    decal_master = None
+    for key in sorted(keys):
+        kind, _, name = key.partition(":")
+        if kind != "decal" or name not in by_id:
+            continue
+        import pack_slots
+        albedo = pack_slots._albedo(by_id[name])
+        textures = textures_of({"color": str(albedo)}, name)
+        if "color" not in textures:
+            continue
+        decal_master = decal_master or _decal_master(unreal, assets, library, editing, mat_dir, textures["color"])
+        import facade_material_ue
+        inst = facade_material_ue.fresh_instance(unreal, assets, library, editing, mat_dir, "MI_KitDecal_" + name,
+                                                 decal_master)
+        facade_material_ue._set_tex(editing, library, inst, "Decal", textures["color"])
         editing.update_material_instance(inst)
         library.save_loaded_asset(inst)
-        made[name] = inst
+        made[key] = inst
     return made
+
+
+def _decal_master(unreal, assets, library, editing, mat_dir, default_texture):
+    """Masked by the texture's alpha; V flipped (the kit quads run their V up)."""
+    import facade_material_ue
+    mat = facade_material_ue.fresh_material(unreal, assets, library, editing, mat_dir, DECAL_MASTER)
+    mat.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+    g = facade_material_ue._Graph(unreal, editing, mat)
+    coord = g.node(unreal.MaterialExpressionTextureCoordinate, -900, 0)
+    flipped = g.append(g.mask(coord, True, False, False, False, -750, -40),
+                       g.one_minus(g.mask(coord, False, True, False, False, -750, 40), -650, 40), -550, 0)
+    tex = g.tex("Decal", -400, 0, library.load_asset(default_texture))
+    g.wire(flipped, tex, in_hint="UVs", in_index=0)
+    g.to_property(tex, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
+    g.to_property(tex, "A", unreal.MaterialProperty.MP_OPACITY_MASK)
+    g.to_property(g.const(0.85, -400, 260), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    editing.recompile_material(mat)
+    library.save_loaded_asset(mat)
+    return mat
 
 
 def ground_tiled(unreal, assets, library, editing, mat_dir, name, entry, size_m):
@@ -407,8 +529,12 @@ def _glass(unreal, assets, library, editing, mat_dir, name, tint, opacity_head_o
     return mat
 
 
-def _flat(unreal, assets, library, editing, mat_dir, name, rgb, roughness):
+def _flat(unreal, assets, library, editing, mat_dir, name, rgb, roughness, metallic=0.0):
     mat = _fresh(unreal, assets, library, mat_dir, name)
+    if metallic:
+        metal = editing.create_material_expression(mat, unreal.MaterialExpressionConstant, -300, 260)
+        metal.set_editor_property("r", float(metallic))
+        editing.connect_material_property(metal, "", unreal.MaterialProperty.MP_METALLIC)
     const = editing.create_material_expression(mat, unreal.MaterialExpressionConstant3Vector, -300, 0)
     const.set_editor_property("constant", unreal.LinearColor(rgb[0], rgb[1], rgb[2], 1))
     editing.connect_material_property(const, "", unreal.MaterialProperty.MP_BASE_COLOR)

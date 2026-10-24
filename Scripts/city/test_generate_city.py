@@ -168,6 +168,24 @@ class ImportArgsTest(unittest.TestCase):
                                                                  "--no-streets"]))
         self.assertEqual(import_city_ue.select_glbs(glbs, bare), [])
 
+    def test_read_only_outputs_are_reported_before_import(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            old = import_city_ue.ROOT
+            try:
+                import_city_ue.ROOT = tmp
+                folder = os.path.join(tmp, "Content", "City", "Gen")
+                os.makedirs(folder)
+                locked = os.path.join(folder, "M_A.uasset")
+                open(locked, "w").close()
+                open(os.path.join(folder, "M_B.uasset"), "w").close()
+                os.chmod(locked, 0o444)
+                run = {"folder": "/Game/City/Gen", "level": "/Game/Maps/Test"}
+                self.assertEqual(import_city_ue.read_only_outputs(run), [os.path.join("Content", "City", "Gen", "M_A.uasset")])
+                os.chmod(locked, 0o644)
+                self.assertEqual(import_city_ue.read_only_outputs(run), [])
+            finally:
+                import_city_ue.ROOT = old
+
     def test_player_start_on_longest_major_street(self):
         document = {"roads": [
             {"cls": "minor", "pts": [[0, 0], [400, 0]]},
@@ -213,8 +231,8 @@ class KitLayoutTest(unittest.TestCase):
         two = kit_layout.build_layout(self.city).document("test")
         self.assertEqual(json.dumps(one, sort_keys=True), json.dumps(two, sort_keys=True))
         self.assertEqual(one["buildings"], len(self.specs))
-        self.assertGreater(one["counts"].get("KIT_Pane|lit", 0) + one["counts"].get("KIT_Pane|dark", 0)
-                           + one["counts"].get("KIT_PaneCurtain|lit", 0) + one["counts"].get("KIT_PaneCurtain|dark", 0), 0)
+        self.assertGreater(sum(count for key, count in one["counts"].items()
+                               if key.split("|")[0] in ("KIT_Pane", "KIT_PaneCurtain")), 0)
         for key in one["groups"]:
             self.assertIn(key.split("|")[0], kit_layout.MODULES)
 
@@ -253,6 +271,41 @@ class KitLayoutTest(unittest.TestCase):
         self.assertAlmostEqual(box[4] * box[5], area, delta=area * 0.02)
         self.assertAlmostEqual(box[2], 0.0)  # the ground tier's box starts at the street
 
+    def test_storefronts_and_decals_dress_the_street(self):
+        layout = kit_layout.build_layout(self.city)
+        keys = set(layout.groups)
+        self.assertTrue(any(key.startswith("KIT_Panel|sf:") for key in keys))
+        self.assertTrue(any(key.startswith("KIT_Decal|decal:") for key in keys))
+        # Storefronts only on the ground floor: every panel starts at the curb.
+        for key, items in layout.groups.items():
+            if key.startswith("KIT_Panel|"):
+                for item in items:
+                    self.assertAlmostEqual(item[2], 15.0, delta=0.5)  # CURB_RISE in cm
+        # Tinted wall groups carry an RGB tint per instance.
+        for key, items in layout.groups.items():
+            if key.split("|")[0] in kit_layout.TINTED and "|set:" in key:
+                self.assertTrue(all(len(item) == 10 for item in items))
+
+    def test_unstyled_layout_is_the_plain_kit(self):
+        layout = kit_layout.build_layout(self.city, styled=False)
+        self.assertFalse(any(key.startswith(("KIT_Panel", "KIT_Decal")) for key in layout.groups))
+
+    def test_partition_keeps_groups_whole_and_sublevels_small(self):
+        import kit_city_ue
+        layout = {"groups": {
+            "A": [[i * 100.0, 0, 0, 0, 1, 1, 1] for i in range(250)],
+            "B": [[0, 0, 0, 0, 1, 1, 1]] * 30,
+            "C": [[50000.0 * (i % 3), 0, 0, 0, 1, 1, 1] for i in range(90)],
+        }}
+        parts = kit_city_ue.partition(layout, split_over=100, cap=120, tile_cm=10000.0)
+        self.assertEqual(parts, kit_city_ue.partition(layout, split_over=100, cap=120, tile_cm=10000.0))
+        self.assertTrue(all(sum(len(items) for items in part.values()) <= 120 for part in parts))
+        total = {key: sum(len(part.get(key, [])) for part in parts) for key in layout["groups"]}
+        self.assertEqual(total, {"A": 250, "B": 30, "C": 90})
+        self.assertEqual(sum(1 for part in parts if "B" in part), 1)  # small groups stay one component
+        self.assertEqual(sum(1 for part in parts if "C" in part), 1)
+        self.assertGreater(sum(1 for part in parts if "A" in part), 1)  # a big one is cut
+
     def test_dressing_follows_the_mesher(self):
         spec = self.specs[0]
         facade = spec["facades"][0]
@@ -263,6 +316,70 @@ class KitLayoutTest(unittest.TestCase):
                 mat, along, width, inset = leaf
                 self.assertTrue(mat.startswith("M_Blind") or mat.startswith("M_Curtain"))
                 self.assertLessEqual(along + width, 1.6 + 1e-6)
+
+
+class StyleKitTest(unittest.TestCase):
+    """Building variety: style -> pack families, per-style kit numbers, neighbours differ."""
+
+    @classmethod
+    def setUpClass(cls):
+        import packs
+        import style_kit
+        cls.packs, cls.style_kit = packs, style_kit
+        cls.library = packs.load_library()
+
+    def test_styles_map_to_the_brief_families(self):
+        styles = self.style_kit.STYLES
+        self.assertEqual(styles["art_deco"]["families"], ("historic_old",))
+        self.assertEqual(styles["prewar_masonry"]["families"], ("historic_old",))
+        self.assertEqual(styles["brick_walkup"]["families"], ("apartments_condos",))
+        self.assertEqual(styles["glass_curtain"]["families"], ("tech", "brand_new"))
+        self.assertEqual(styles["modern_mixed"]["families"], ("eclectic_mix", "industrial_commercial"))
+        # Each style has its own numbers.
+        self.assertLess(styles["art_deco"]["aspect"], styles["glass_curtain"]["aspect"])
+        self.assertIsNone(styles["glass_curtain"]["sill"])
+        self.assertEqual(len(styles["art_deco"]["crown"]), 2)  # a stepped crown
+        self.assertEqual(len({style["frame"] for style in styles.values()}), len(styles))
+
+    def test_every_family_has_walls_a_storefront_and_decals(self):
+        for family in sorted({fam for style in self.style_kit.STYLES.values() for fam in style["families"]}):
+            dress = self.style_kit.family_dressing(self.library, family)
+            self.assertTrue(dress["walls"], family)
+            self.assertTrue(dress["storefront"], family)
+            self.assertTrue(dress["wall_decals"] or dress["ground_decals"], family)
+
+    def test_neighbours_do_not_repeat(self):
+        spec = {"floors": [{"z": 0, "h": 3.5, "polygon": [[0, 0], [10, 0], [10, 10], [0, 10]]}],
+                "facades": [{"a": [0, 0], "b": [10, 0], "normal": [0, -1], "z": 0, "h": 3.5, "floor": 0}]}
+        buildings = []
+        for k in range(8):
+            building = json.loads(json.dumps(spec))
+            building.update({"id": "b%d" % k, "style": "modern_mixed", "seed": 7, "block_id": "blk"})
+            building["footprint"] = [[x + 12 * k, y] for x, y in [[0, 0], [10, 0], [10, 10], [0, 10]]]
+            buildings.append(building)
+        looks = self.style_kit.look_for({"buildings": buildings}, self.library)
+        self.assertEqual(looks, self.style_kit.look_for({"buildings": buildings}, self.library))
+        for a, b in zip(sorted(looks), sorted(looks)[1:]):
+            self.assertNotEqual(looks[a]["wall"], looks[b]["wall"])
+            self.assertNotEqual(looks[a]["tint"], looks[b]["tint"])
+        for look in looks.values():
+            self.assertIn(look["family"], ("eclectic_mix", "industrial_commercial"))
+
+    def test_style_sets_the_window_proportions(self):
+        base = {"id": "x", "seed": 7, "floors": [], "materials": {"wall": "brick", "trim": "plaster"},
+                "facades": [{"a": [0, 0], "b": [30, 0], "length": 30.0, "normal": [0, -1], "z": 10, "h": 3.6,
+                             "floor": 3, "role": "front"}]}
+        widths = {}
+        for style in ("art_deco", "glass_curtain"):
+            building = dict(base, style=style)
+            layout = kit_layout.Layout()
+            kit_layout.facade_record(layout, building, building["facades"][0], kit_layout.Look(building, jitter=False))
+            panes = [item for key, items in layout.groups.items() if key.split("|")[0].startswith("KIT_Pane")
+                     for item in items]
+            widths[style] = (len(panes), panes[0][4] / panes[0][6])
+        self.assertGreater(widths["art_deco"][0], widths["glass_curtain"][0])  # narrow deco bays, more of them
+        self.assertLess(widths["art_deco"][1], 1.0)  # taller than wide
+        self.assertGreater(widths["glass_curtain"][1], 1.0)
 
 
 if __name__ == "__main__":

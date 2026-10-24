@@ -1,0 +1,173 @@
+{
+ "fac_apartments_distressed_v05": {
+  "color": "fac_apartments_distressed_v05_color.png",
+  "rough": "fac_apartments_distressed_v05_rough.png",
+  "source": "band",
+  "tile_m": [
+   6.0,
+   2.1504
+  ]
+ },
+ "fac_apartments_low_v03": {
+  "color": "fac_apartments_low_v03_color.png",
+  "rough": "fac_apartments_low_v03_rough.png",
+  "source": "band",
+  "tile_m": [
+   3.0,
+   2.2031
+  ]
+ },
+ "fac_apartments_low_v05": {
+  "color": "fac_apartments_low_v05_color.png",
+  "rough": "fac_apartments_low_v05_rough.png",
+  "source": "band",
+  "tile_m": [
+   3.0,
+   2.3086
+  ]
+ },
+ "fac_apartments_mid_v03": {
+  "color": "fac_apartments_mid_v03_color.png",
+  "rough": "fac_apartments_mid_v03_rough.png",
+  "source": "band",
+  "tile_m": [
+   3.0,
+   1.7344
+  ]
+ },
+ "fac_brand_new": {
+  "color": "fac_brand_new_color.png",
+  "rough": "fac_brand_new_rough.png",
+  "source": "band",
+  "tile_m": [
+   3.6,
+   1.3289
+  ]
+ },
+ "fac_brand_new_v02": {
+  "color": "fac_brand_new_v02_color.png",
+  "rough": "fac_brand_new_v02_rough.png",
+  "source": "band",
+  "tile_m": [
+   3.6,
+   2.0953
+  ]
+ },
+ "fac_brand_new_v03": {
+  "color": "fac_brand_new_v03_color.png",
+  "rough": "fac_brand_new_v03_rough.png",
+  "source": "pier",
+  "tile_m": [
+   1.5188,
+   4.8
+  ]
+ },
+ "fac_eclectic_mix_v03": {
+  "color": "fac_eclectic_mix_v03_color.png",
+  "rough": "fac_eclectic_mix_v03_rough.png",
+  "source": "band",
+  "tile_m": [
+   3.5,
+   3.0488
+  ]
+ },
+ "fac_eclectic_mix_v04": {
+  "color": "fac_eclectic_mix_v04_color.png",
+  "rough": "fac_eclectic_mix_v04_rough.png",
+  "source": "band",
+  "tile_m": [
+   3.5,
+   2.3721
+  ]
+ },
+ "fac_eclectic_mix_v05": {
+  "color": "fac_eclectic_mix_v05_color.png",
+  "rough": "fac_eclectic_mix_v05_rough.png",
+  "source": "band",
+  "tile_m": [
+   7.0,
+   2.5771
+  ]
+ },
+ "fac_historic_old": {
+  "color": "fac_historic_old_color.png",
+  "rough": "fac_historic_old_rough.png",
+  "source": "band",
+  "tile_m": [
+   3.8,
+   1.4844
+  ]
+ },
+ "fac_historic_old_v02": {
+  "color": "fac_historic_old_v02_color.png",
+  "rough": "fac_historic_old_v02_rough.png",
+  "source": "band",
+  "tile_m": [
+   7.6,
+   1.9742
+  ]
+ },
+ "fac_historic_old_v03": {
+  "color": "fac_historic_old_v03_color.png",
+  "rough": "fac_historic_old_v03_rough.png",
+  "source": "band",
+  "tile_m": [
+   7.6,
+   1.8258
+  ]
+ },
+ "fac_industrial_commercial": {
+  "color": "fac_industrial_commercial_color.png",
+  "rough": "fac_industrial_commercial_rough.png",
+  "source": "band",
+  "tile_m": [
+   10.0,
+   7.2656
+  ]
+ },
+ "fac_industrial_commercial_v03": {
+  "color": "fac_industrial_commercial_v03_color.png",
+  "rough": "fac_industrial_commercial_v03_rough.png",
+  "source": "band",
+  "tile_m": [
+   5.0,
+   7.9199
+  ]
+ },
+ "fac_industrial_commercial_v04": {
+  "color": "fac_industrial_commercial_v04_color.png",
+  "rough": "fac_industrial_commercial_v04_rough.png",
+  "source": "band",
+  "tile_m": [
+   5.0,
+   3.584
+  ]
+ },
+ "fac_tech": {
+  "color": "fac_tech_color.png",
+  "rough": "fac_tech_rough.png",
+  "source": "band",
+  "tile_m": [
+   4.0,
+   2.8828
+  ]
+ },
+ "fac_tech_v02": {
+  "color": "fac_tech_v02_color.png",
+  "rough": "fac_tech_v02_rough.png",
+  "source": "band",
+  "tile_m": [
+   8.0,
+   2.7578
+  ]
+ },
+ "fac_tech_v03": {
+  "color": "fac_tech_v03_color.png",
+  "rough": "fac_tech_v03_rough.png",
+  "source": "band",
+  "tile_m": [
+   4.0,
+   3.7969
+  ]
+ }
+}

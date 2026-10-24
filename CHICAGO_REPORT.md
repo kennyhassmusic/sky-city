@@ -1,11 +1,117 @@
 # Chicago generated map: report
 
 Branch `cursor/chicago-gen-map`. Pass 1 is `4e33b22`: region crop, Blender export, UE import, drivable. Pass 2 is
-this commit, which fixes the import pipeline: Draco and street tiles, import bugs, the facade kit with HISM, and box
-collision. Committed locally, not pushed or merged. The generator (`generate_city.py`, `block.py`, the city model)
-is unchanged: both spawn hashes are the same as in pass 1.
+`5fdd9bd`: Draco and street tiles, import fixes, the facade kit with HISM, and box collision. Pass 3 is this commit:
+building variety. Committed locally, not pushed or merged. The generator (`generate_city.py`, `block.py`, the city
+model) is unchanged: both spawn hashes are the same as in pass 1.
 
-## Pass 2 in one table
+## Pass 3: building variety
+
+![Five styles from the air](artifacts/previews/chicago_loop/ue_styles_aerial.jpg)
+![Four styles from the street](artifacts/previews/chicago_loop/ue_styles_street.jpg)
+
+- `ue_styles_aerial.jpg`: the cluster around `b_lot_osm_22` from above. It shows green ornate eclectic
+  (modern_mixed), terracotta and dark brick and cream masonry (art deco and prewar), and white and blue-grey glass
+  (glass_curtain).
+- `ue_styles_street.jpg`: street level at the same cluster. A brick walkup (`b_lot_osm_22`, red-brick swatch,
+  white frames and sills, storefront base) sits in front of the dark-brick prewar `b_lot_osm_189`, the cream prewar
+  `b_lot_osm_203`, the glass `b_lot_osm_277`, and more walkups down the street.
+- `ue_styles_closeup.jpg`: five looks side by side. Green eclectic with sills, the stepped dark art deco tower,
+  dark-brick and cream prewar, terracotta brick, and curtain glass.
+- `ue_storefront_closeup.jpg`: a walkup front: brick swatch, white sills, cornice, the apartments storefront on the
+  ground floor, and a graffiti decal.
+
+### Style → look
+
+| Style (buildings) | Families | Bay / pier (m) | Window w/h, height | Sills (h, out) | Crown bands (h, out) | Belt | Corner proud | Frame / glass / trim |
+|---|---|---|---|---|---|---|---|---|
+| art_deco (24) | historic_old | 3.7 / 0.62 | 0.55, 62% of floor | 0.10, 0.10 | 1.4, 0.45 + 0.7, 0.25 (stepped) | 0.45, 0.15 | 0.16 | bronze / clear / limestone |
+| prewar_masonry (31) | historic_old | 3.35 / 0.46 | 0.70, 56% | 0.08, 0.09 | 0.9, 0.6 (heavy cornice) | 0.3, 0.12 | 0.08 | green / clear / limestone |
+| brick_walkup (61) | apartments_condos | 3.4 / 0.40 | 0.78, 50% | 0.06, 0.06 | 0.5, 0.35 | none | 0.04 | white / clear / painted |
+| glass_curtain (109) | tech, brand_new | 3.0 / 0.14 | 1.60, 76% (curtain wall) | none | 0.35, 0.06 (metal band) | none | 0 | silver / blue / metal |
+| modern_mixed (129) | eclectic_mix, industrial_commercial | 3.25 / 0.32 | 1.25, 60% | 0.03, 0.04 | 0.7, 0.12 | none | 0 | black / grey / concrete |
+
+- **Parameters** live in `Scripts/city/style_kit.py` (`STYLES`). Each building jitters its window aspect (±10%),
+  pier (−15% to +20%) and window height (±4 points) from its own seed.
+- **Wall materials:** each family's facade bodies, cut by `Scripts/city/kit_swatches.py` into window-free wall
+  swatches (`SourceArt/CityGen/kit/swatches`, 19 sets, 4.5 MB, contact sheet `kit_wall_swatches.jpg`).
+  - The cut takes the widest all-wall band from the mask (B = wall, not glass or frame), trims 6% off each end,
+    and mirrors it so it tiles vertically. A tile with no band gives its widest pier strip instead.
+  - The packs' "windowless" sets are boarded-up fronts whose masks call the boards wall, so they are left out.
+  - Walkups use the four brick apartments bodies, chosen by eye (`WALL_OVERRIDES`); the seeded pick landed on
+    render and glass.
+- **Street dressing**, all with no collision:
+  - Every front and side ground floor gets its family's pack storefront: 1,062 panels, with corner pilasters at
+    each end.
+  - 2,419 wall decals (stains, cracks, rust, paint, graffiti) on the first two floors, and 315 sidewalk decals
+    (litter, manholes, markings, tactile paving).
+- **Neighbour variety** (`style_kit.look_for`): buildings on the same block or within 30 m don't share a wall set
+  or a tint. The tint is one of five, multiplied into the swatch through per-instance custom data. The family is
+  picked per building, so glass towers alternate tech and brand_new, and modern buildings alternate eclectic and
+  industrial. Spread: 7 style/family pairs and 19 wall sets across 354 buildings; no set is used more than 25 times.
+
+### New in the kit
+- **Modules:** `KIT_Sill`, `KIT_Cornice` (crowns and belt courses, with a drip), `KIT_Panel` (storefront),
+  `KIT_Decal` and `KIT_DecalFloor`. The sill moved out of `KIT_Pane`, so each style sets its own.
+- **Fixed a pass-2 bug:** `KIT_Pier` was authored 0.34 m deep and also scaled by 0.34, so piers were 12 cm deep.
+  The modules are now authored at unit depth.
+- **Materials:**
+  - `M_KitWall` gains `OriginZ`, so storefronts start at the curb, and the per-instance tint.
+  - `M_KitDecal` is new: masked by the decal's alpha.
+  - Each style's frame and trim is a flat colour, and its glass is the city glass with its own tint.
+- **Packing:** groups now stay whole, one HISM each for the city. Only groups over 60k instances are cut into
+  300 m squares, and the pieces are packed into 10 sublevels of at most 100k instances (`kit_city_ue.partition`).
+  The first styled import used 300 m tiles and came to 1,506 components and 2,523 drawn sections; packing brought
+  that to 121 components and 756 sections.
+- **Importer safety:** `import_city_ue.py` now checks first for read-only outputs (Git LFS makes committed lockable
+  files read-only) and stops with a clear message, instead of failing on each save. After a rebuild it deletes kit
+  sublevels a different layout left behind.
+
+### Pass 2 → pass 3
+| | Pass 2 (plain kit) | Pass 3 (styled kit) |
+|---|---|---|
+| Looks | one kit, 4 CC0 walls | 5 styles, 7 families, 19 wall sets × 5 tints, storefronts, decals |
+| Instances / groups | 702,138 / 25 | 943,856 / 116 |
+| HISM components / sublevels | 264 / 11 | **121 / 10** |
+| Drawn mesh sections | 982 | **756** |
+| Triangles | 8.67 M | 10.64 M |
+| Load (warm DDC) | 0.72 s | 0.79 s |
+| GPU aerial / street (mean of 6) | 23.3 / 17.8 ms | 25.4 / 21.4 ms |
+| Memory the level adds: process / vertex buffers / textures | +1,419 / +42 / +15 MB | +1,613 / +32 / +44 MB |
+| Level files | 92 MB in 11 files | 133 MB in 10 files (largest 14.7 MB) |
+| LFS in the change | 214.9 MiB | 182.8 MiB |
+
+The street frame costs 3.6 ms more: 22% more triangles (sills, cornices, wider curtain bays) and masked decals.
+The textures (swatches, storefronts, decals) add 30 MB.
+
+### Pass 3 tests
+- **Unit tests:** test_city 46, test_profiles 12, test_packs 13 and test_generate_city 23, all OK. 8 tests are new
+  in this pass:
+  - `KitLayoutTest`: storefronts and decals on the street; the unstyled layout is the plain kit.
+  - `StyleKitTest`: the brief's families; every family has walls, a storefront and decals; neighbours don't repeat;
+    style sets the window proportions.
+  - Packing keeps groups whole and sublevels small.
+  - Read-only outputs are reported before an import.
+- **Determinism:** both spawn hashes unchanged; the kit layout and the swatches are byte-identical when rerun.
+- **Import:** 347 s. Fresh load: map check 0 errors, no material or load errors. One import logged 33 compile
+  warnings from `M_KitWall`'s instances while the master was being rebuilt; the final master compiles cleanly.
+- **PIE:** the wall ride still climbs the 263 m face to 319 m, and the street drive covers 275 m on the ground.
+
+### Pass 3: what didn't work, or isn't done
+- **Street GPU +3.6 ms.** Pane LODs (still not done) would win it back.
+- **Roofs** are still flat grey slabs. Crowns read at street level, but not much from the aerial.
+- **Storefront texture.** Each family has one storefront set, so neighbouring storefronts of the same family match.
+  The wall set and tint still differ.
+- **Swatch quality.** The cuts are good but not perfect: a few bands still show a sliver of sill. The historic and
+  eclectic swatches carry ornate details at a fixed spacing.
+- **Decals.** Not projected decals, just quads 3 cm proud, so they don't wrap corners. A few eclectic ones are
+  whimsical (paint splats, gum).
+- **Glass towers and storefronts.** Glass_curtain buildings get a tech or brand_new storefront panel on their ground
+  floor, not a glazed lobby.
+- **Lockable files.** Every commit sets the generated lockable files read-only again. Before re-importing, either
+  `git lfs lock` them or `chmod u+w` them; the importer now says so instead of failing.
+
+## Pass 2 (`5fdd9bd`) in one table
 
 The Chicago Loop level `/Game/Maps/SkyCityChicagoGen`, before (4e33b22) and after (this commit). Same machine,
 same cameras, same scripts.
@@ -159,7 +265,8 @@ The aerial frame costs 6 ms more because it now draws 354 real towers (8.7 M tri
 - LFS in this change: 214.9 MiB across 189 files (pr-guard limit 300), none over 25 MiB.
 
 ## Screenshots
-All in `artifacts/previews/chicago_loop/`. The pass 1 versions are in `4e33b22`
+All in `artifacts/previews/chicago_loop/`. Pass 3's are listed above. `ue_aerial.jpg` and `ue_street_editor.jpg` are
+now the styled city at the measurement cameras. The list below is from pass 2. The pass 1 versions are in `4e33b22`
 (`git show 4e33b22:artifacts/previews/chicago_loop/ue_aerial.jpg`).
 - `ue_aerial.jpg`: aerial, editor camera. All 354 towers with windows and lit rooms; before, 296 were flat boxes.
 - `ue_street_level.jpg`: in game, the Roadster down the start street (Draco street tiles, kit towers).

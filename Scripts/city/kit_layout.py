@@ -3,31 +3,42 @@
 The baked pipeline meshes each tower in Blender and ships it as a GLB. The kit
 pipeline ships a handful of small modules (SourceArt/CityGen/kit, from
 blender_facade_kit.py) and this layout; import_city_ue.py --buildings kit
-places the modules as instanced static meshes (HISM). The layout follows the
-mesher exactly (blender_city._fitted_facade): the same facade records from the
-city model, the same face_uv.fit_bays() pane fit, the same sill and head, the
-same lit rooms (grammar.room_of / bay_lit) and the same blinds and curtains
-(realism.dress_opening). What the kit leaves out: storefront awnings and shop
-interiors, doors, air conditioners and roof units.
+places the modules as instanced static meshes (HISM). The layout walks the
+same facade records as the mesher (blender_city._fitted_facade), with the same
+face_uv.fit_bays() pane fit, lit rooms (grammar.room_of / bay_lit) and blinds
+and curtains (realism.dress_opening). Each building's style sets its own kit
+numbers and look (style_kit.py): bay, pier, window aspect and height, sills,
+belt course, stepped crowns, corner pilasters, frame and glass colour, its
+family's wall swatch with a per-building tint, a storefront on the street
+faces of the ground floor, and wall and sidewalk decals at street level.
+What the kit leaves out: awnings and shop interiors, doors, air conditioners,
+roof units and facade grime.
 
 Modules, all 1 m long (X) and 1 m tall (Z), scaled per instance; Y is depth
-into the building, in metres, and is not scaled except for boxes:
-  KIT_Wall     box, X 0..1, Y 0..1 (inward), Z 0..1. Wall spans under the
-               sills and above the heads, the roof slab, and collision.
-  KIT_Pier     box like KIT_Wall, for the piers between panes.
-  KIT_Corner   box standing CORNER_PROUD proud of the wall, for end pilasters.
-  KIT_Pane     window bay: glass at PANE_GLASS_IN, back panel at PANE_BACK_IN,
-               a frame and a sill. KIT_PaneCurtain is the same with no sill
-               (curtain wall).
-  KIT_Leaf     one plane at LEAF_IN: a blind or a curtain leaf.
-  KIT_RoofCap  parapet with a coping lip, on every roof and terrace edge.
+into the building (negative is proud of the wall):
+  KIT_Wall        box, Y 0..1. Wall spans, the roof slab, collision.
+  KIT_Pier        pier between panes (front and reveals).
+  KIT_Corner      end pilaster, Y -1..1 scaled to the style's proud.
+  KIT_Pane        window bay: glass at PANE_GLASS_IN, room back at PANE_BACK_IN,
+                  frame and reveals. KIT_PaneCurtain: the curtain-wall bay.
+  KIT_Sill        sill, Y -1..0.15 scaled to the style's projection.
+  KIT_Cornice     crown or belt band with a drip, Y -1..0.1 scaled to its projection.
+  KIT_Leaf        a blind or curtain leaf at LEAF_IN.
+  KIT_RoofCap     parapet with coping on every roof and terrace edge.
+  KIT_Panel       a storefront panel 2 cm proud of the wall.
+  KIT_Decal       a wall decal 3 cm proud; KIT_DecalFloor, the same lying on the sidewalk.
 
 Frames: plan metres (x east, y north, z up) in, Unreal centimetres out:
-X = y * 100, Y = x * 100, Z = z * 100. Each instance is [x, y, z, yaw, sx, sy, sz]:
-its module's local origin (start of the run, on the facade plane, at the
-bottom), Unreal yaw in degrees, and scale in metres. Local +Y always points
-into the building: a run whose yaw would put +Y outward starts from its other
-end instead, so no instance is mirrored (negative scale would flip culling).
+X = y * 100, Y = x * 100, Z = z * 100. Each instance is [x, y, z, yaw, sx, sy, sz]
+(plus [r, g, b], the wall tint, on tinted groups): its module's local origin
+(start of the run, on the facade plane, at the bottom), Unreal yaw in degrees,
+and scale in metres. Local +Y always points into the building: a run whose
+yaw would put +Y outward starts from its other end instead, so no instance is
+mirrored (negative scale would flip culling).
+
+Group keys are "<module>|<material>": set:<wall set> (tinted), cc0:<wall>,
+trim:<name>, frame:<name>, lit:<style>, dark:<style>, sf:<storefront>,
+decal:<id>, M_<leaf material>, roof, collision.
 
 Collision is one plain box per setback tier (the footprint is a quad), so the
 car meets a flat wall at the facade plane instead of every sill and pier.
@@ -51,6 +62,7 @@ import face_uv  # noqa: E402
 import geom  # noqa: E402
 import grammar  # noqa: E402
 import profiles  # noqa: E402
+import style_kit  # noqa: E402
 
 # Depths into the building (metres), the mesher's numbers.
 SPAN_DEPTH = 0.28
@@ -66,7 +78,13 @@ BLIND_WIDTH = 0.92
 CURTAINS = {"red": "M_CurtainRed", "green": "M_CurtainGreen", "cream": "M_CurtainCream", "blue": "M_CurtainBlue"}
 # realism.CURTAINS order, for bays with no room.
 CURTAIN_ORDER = ("M_CurtainRed", "M_CurtainGreen", "M_CurtainCream", "M_CurtainBlue")
-MODULES = ("KIT_Wall", "KIT_Pier", "KIT_Corner", "KIT_Pane", "KIT_PaneCurtain", "KIT_Leaf", "KIT_RoofCap")
+MODULES = ("KIT_Wall", "KIT_Pier", "KIT_Corner", "KIT_Pane", "KIT_PaneCurtain", "KIT_Leaf", "KIT_RoofCap",
+           "KIT_Sill", "KIT_Cornice", "KIT_Panel", "KIT_Decal", "KIT_DecalFloor")
+TINTED = ("KIT_Wall", "KIT_Pier", "KIT_Corner")
+# Street dressing: chance per slot, metres per slot.
+WALL_DECAL_CHANCE, WALL_DECAL_EVERY = 0.3, 8.0
+GROUND_DECAL_CHANCE, GROUND_DECAL_EVERY = 0.35, 10.0
+STREET_ROLES = ("front", "side")
 COLLISION = "KIT_Wall|collision"
 
 
@@ -85,7 +103,7 @@ def _local_y(yaw_deg):
     return (-math.sin(r), math.cos(r))
 
 
-def run(start, tangent, inward, length, z, sx, sy, sz):
+def run(start, tangent, inward, length, z, sx, sy, sz, tint=None):
     """One instance along a plan run. Local +Y is made to point along inward."""
     tx, ty = tangent
     yaw = ue_yaw(tx, ty)
@@ -95,16 +113,10 @@ def run(start, tangent, inward, length, z, sx, sy, sz):
         start = (start[0] + tx * length, start[1] + ty * length)
         yaw = ue_yaw(-tx, -ty)
     ux, uy, uz = to_ue(start[0], start[1], z)
-    return [round(ux, 1), round(uy, 1), round(uz, 1), round(yaw, 3), round(sx, 4), round(sy, 4), round(sz, 4)]
-
-
-def target_window_h(building, floor_h, opening):
-    """blender_city._target_window_h."""
-    floor_h = float(floor_h or 3.0)
-    if opening == "curtain":
-        return min(floor_h * 0.76, floor_h - 0.48)
-    frac = float(building.get("head") or 0.74) - float(building.get("sill") or 0.32)
-    return floor_h * max(0.36, min(0.58, frac))
+    item = [round(ux, 1), round(uy, 1), round(uz, 1), round(yaw, 3), round(sx, 4), round(sy, 4), round(sz, 4)]
+    if tint is not None:
+        item.extend(round(float(c), 3) for c in tint)
+    return item
 
 
 def _materials(building):
@@ -138,11 +150,46 @@ class Layout(object):
             "instances": sum(counts.values()),
             "counts": counts,
             "groups": {key: items for key, items in sorted(self.groups.items())},
+            "looks": {bid: {"style": look["style"], "family": look["family"], "wall": look["wall"], "tint": look["tint"]}
+                      for bid, look in sorted(getattr(self, "looks", {}).items())},
         }
 
 
-def facade_record(layout, building, facade):
-    """blender_city._fitted_facade, as kit instances."""
+class Look(object):
+    """One building's kit look: wall group, tint, style numbers and its street dressing."""
+
+    def __init__(self, building, look=None, jitter=True):
+        look = look or {}
+        self.building = building
+        self.style = style_kit.style_of(building)
+        self.p = style_kit.params(building, jitter=jitter)
+        wall, trim, _metal = _materials(building)
+        self.wall = ("set:" + look["wall"]) if look.get("wall") else ("cc0:" + wall)
+        self.tint = style_kit.TINTS[int(look.get("tint") or 0) % len(style_kit.TINTS)] if look.get("wall") else None
+        self.trim = "trim:" + self.p["trim"]
+        self.frame = "frame:" + self.p["frame"]
+        self.storefront = look.get("storefront")
+        self.storefront_size = look.get("storefront_size") or [4.5, 4.5]
+        self.wall_decals = look.get("wall_decals") or []
+        self.ground_decals = look.get("ground_decals") or []
+
+    def wall_key(self, module):
+        return module + "|" + self.wall
+
+    def pier_key(self, module):
+        # A curtain wall's piers are its mullions: the frame metal, not the spandrel.
+        return module + "|" + (self.frame if self.p["curtain"] else self.wall)
+
+
+def _face_seed(facade):
+    a = facade.get("a") or (0, 0)
+    return "%d:%.1f:%.1f" % (int(facade.get("floor") or 0), float(a[0]), float(a[1]))
+
+
+def facade_record(layout, building, facade, look=None):
+    """One facade record (an edge of one floor) as kit instances."""
+    look = look or Look(building, jitter=False)
+    p = look.p
     ax, ay = float(facade["a"][0]), float(facade["a"][1])
     bx, by = float(facade["b"][0]), float(facade["b"][1])
     length = float(facade.get("length") or 0.0) or math.hypot(bx - ax, by - ay)
@@ -154,36 +201,47 @@ def facade_record(layout, building, facade):
     z0 = float(facade["z"]) + profiles.CURB_RISE
     floor_h = float(facade["h"])
     z1 = z0 + floor_h
+    floor = int(facade.get("floor") or 0)
     opening = facade.get("opening") or "punched"
-    wall, trim, metal = _materials(building)
-    field = metal if opening == "curtain" else wall
-    pier = float(building.get("pier_m") or 0.3)
-    lay = face_uv.fit_bays(length, floor_h, pier, face_uv.WINDOW_ASPECT,
-                           target_window_h(building, floor_h, opening))
-    if lay["wh"] < 0.4 or lay["ww"] < 0.45 or lay["ww"] / lay["wh"] < 0.2:
-        layout.add("KIT_Wall|" + field, run((ax, ay), tangent, inward, length, z0, length, SPAN_DEPTH, floor_h))
+    curtain = p["curtain"] or opening == "curtain"
+    tint = look.tint
+    field = look.wall_key("KIT_Wall")
+    _street_decals(layout, building, facade, look, (ax, ay), tangent, inward, length, z0, floor_h)
+    if floor == 0 and look.storefront and facade.get("role") in STREET_ROLES and floor_h >= 3.0 and length >= 3.0:
+        _storefront(layout, look, (ax, ay), tangent, inward, length, z0, floor_h)
+        _belt(layout, look, (ax, ay), tangent, inward, length, z1)
         return
-    sill = z0 + max(0.2, (floor_h - lay["wh"]) * (0.28 if opening == "curtain" else 0.55))
+    lay = face_uv.fit_bays(length, floor_h, p["pier_m"], p["aspect"], style_kit.window_height(p, floor_h))
+    if lay["wh"] < 0.4 or lay["ww"] < 0.3 or lay["ww"] / lay["wh"] < 0.15:
+        layout.add(field, run((ax, ay), tangent, inward, length, z0, length, SPAN_DEPTH, floor_h, tint))
+        return
+    sill = z0 + max(0.2, (floor_h - lay["wh"]) * (0.28 if curtain else 0.55))
     head = sill + lay["wh"]
     if head > z1 - 0.12:
         head = z1 - 0.12
         sill = head - lay["wh"]
-    layout.add("KIT_Wall|" + field, run((ax, ay), tangent, inward, length, z0, length, SPAN_DEPTH, sill - z0))
-    layout.add("KIT_Wall|" + field, run((ax, ay), tangent, inward, length, head, length, SPAN_DEPTH, z1 - head))
-    pane = "KIT_PaneCurtain" if opening == "curtain" else "KIT_Pane"
+    layout.add(field, run((ax, ay), tangent, inward, length, z0, length, SPAN_DEPTH, sill - z0, tint))
+    layout.add(field, run((ax, ay), tangent, inward, length, head, length, SPAN_DEPTH, z1 - head, tint))
+    pane = "KIT_PaneCurtain" if curtain else "KIT_Pane"
+    proud = max(0.02, p["corner_proud"])
     cursor = 0.0
     for index in range(lay["count"]):
         pier_w = lay["end"] if index == 0 else lay["pier"]
         start = (ax + tangent[0] * cursor, ay + tangent[1] * cursor)
         if index == 0:
-            layout.add("KIT_Corner|" + trim, run(start, tangent, inward, pier_w, z0, pier_w, 1.0, floor_h))
+            layout.add(look.pier_key("KIT_Corner"), run(start, tangent, inward, pier_w, z0, pier_w, proud, floor_h, tint))
         else:
-            layout.add("KIT_Pier|" + trim, run(start, tangent, inward, pier_w, z0, pier_w, PIER_DEPTH, floor_h))
+            layout.add(look.pier_key("KIT_Pier"), run(start, tangent, inward, pier_w, z0, pier_w, PIER_DEPTH, floor_h, tint))
         cursor += pier_w
         origin = (ax + tangent[0] * cursor, ay + tangent[1] * cursor)
         lit, leaf = dressing(building, facade, index, lay["ww"])
-        layout.add("%s|%s" % (pane, "lit" if lit else "dark"),
+        layout.add("%s|%s:%s" % (pane, "lit" if lit else "dark", look.style),
                    run(origin, tangent, inward, lay["ww"], sill, lay["ww"], 1.0, head - sill))
+        if p["sill"] and not curtain:
+            sill_h, sill_out = p["sill"]
+            sill_start = (origin[0] - tangent[0] * 0.03, origin[1] - tangent[1] * 0.03)
+            layout.add("KIT_Sill|" + look.trim, run(sill_start, tangent, inward, lay["ww"] + 0.06, sill - sill_h,
+                                                    lay["ww"] + 0.06, sill_out, sill_h))
         if leaf:
             mat, along, width, inset = leaf
             leaf_start = (origin[0] + tangent[0] * along, origin[1] + tangent[1] * along)
@@ -193,7 +251,66 @@ def facade_record(layout, building, facade):
     rest = length - cursor
     if rest > 0.02:
         start = (ax + tangent[0] * cursor, ay + tangent[1] * cursor)
-        layout.add("KIT_Corner|" + trim, run(start, tangent, inward, rest, z0, rest, 1.0, floor_h))
+        layout.add(look.pier_key("KIT_Corner"), run(start, tangent, inward, rest, z0, rest, proud, floor_h, tint))
+    if floor == 0:
+        _belt(layout, look, (ax, ay), tangent, inward, length, z1)
+
+
+def _storefront(layout, look, a, tangent, inward, length, z0, floor_h):
+    """Ground floor on a street face: a pilaster at each end, the family's storefront between, wall above."""
+    p = look.p
+    end = min(0.45, length * 0.1)
+    proud = max(0.02, p["corner_proud"])
+    panel_h = min(floor_h - 0.25, float(look.storefront_size[1]))
+    layout.add(look.pier_key("KIT_Corner"), run(a, tangent, inward, end, z0, end, proud, floor_h, look.tint))
+    far = (a[0] + tangent[0] * (length - end), a[1] + tangent[1] * (length - end))
+    layout.add(look.pier_key("KIT_Corner"), run(far, tangent, inward, end, z0, end, proud, floor_h, look.tint))
+    start = (a[0] + tangent[0] * end, a[1] + tangent[1] * end)
+    width = length - 2 * end
+    layout.add("KIT_Panel|sf:" + look.storefront, run(start, tangent, inward, width, z0, width, 1.0, panel_h))
+    if floor_h - panel_h > 0.05:
+        layout.add(look.wall_key("KIT_Wall"), run(start, tangent, inward, width, z0 + panel_h, width, SPAN_DEPTH,
+                                                   floor_h - panel_h, look.tint))
+
+
+def _belt(layout, look, a, tangent, inward, length, z):
+    """A belt course along the top of the ground floor, for styles that have one."""
+    if look.p.get("belt"):
+        height, out = look.p["belt"]
+        layout.add("KIT_Cornice|" + look.trim, run(a, tangent, inward, length, z - height, length, out, height))
+
+
+def _street_decals(layout, building, facade, look, a, tangent, inward, length, z0, floor_h):
+    """Stains, cracks and posters on the first two floors; litter, manholes and markings on the sidewalk."""
+    seed, bid = int(building.get("seed") or 1), building["id"]
+    floor = int(facade.get("floor") or 0)
+    key = _face_seed(facade)
+    if floor <= 1 and look.wall_decals:
+        for slot in range(int(length // WALL_DECAL_EVERY) + 1):
+            if geom.rnd(seed, bid, key, slot, "wdecal") >= WALL_DECAL_CHANCE:
+                continue
+            decal = look.wall_decals[int(geom.rnd(seed, bid, key, slot, "wdecal_kind") * len(look.wall_decals))
+                                     % len(look.wall_decals)]
+            w = min(float(decal["size"][0]), length * 0.8, 3.0)
+            h = min(float(decal["size"][1]), floor_h * 0.8, 3.0)
+            along = geom.rnd(seed, bid, key, slot, "wdecal_x") * max(0.0, length - w)
+            z = z0 + 0.1 + geom.rnd(seed, bid, key, slot, "wdecal_z") * max(0.0, floor_h - h - 0.2)
+            start = (a[0] + tangent[0] * along, a[1] + tangent[1] * along)
+            layout.add("KIT_Decal|decal:" + decal["id"], run(start, tangent, inward, w, z, w, 1.0, h))
+    if floor == 0 and facade.get("role") == "front" and look.ground_decals:
+        outward = (-inward[0], -inward[1])
+        for slot in range(int(length // GROUND_DECAL_EVERY) + 1):
+            if geom.rnd(seed, bid, key, slot, "gdecal") >= GROUND_DECAL_CHANCE:
+                continue
+            decal = look.ground_decals[int(geom.rnd(seed, bid, key, slot, "gdecal_kind") * len(look.ground_decals))
+                                       % len(look.ground_decals)]
+            w = min(float(decal["size"][0]), length * 0.8, 3.0)
+            d = min(float(decal["size"][1]), 2.0)
+            along = geom.rnd(seed, bid, key, slot, "gdecal_x") * max(0.0, length - w)
+            off = 0.6 + 1.4 * geom.rnd(seed, bid, key, slot, "gdecal_o")
+            start = (a[0] + tangent[0] * along + outward[0] * (off + d), a[1] + tangent[1] * along + outward[1] * (off + d))
+            layout.add("KIT_DecalFloor|decal:" + decal["id"],
+                       run(start, tangent, inward, w, profiles.CURB_RISE + 0.008, w, d, 1.0))
 
 
 def dressing(building, facade, bay, width):
@@ -261,9 +378,9 @@ def box_of(poly):
     return corner, u, v, max(pu) - cu, max(pv) - cv
 
 
-def solids(layout, building):
-    """Collision box and roof slab per tier, parapet caps on every tier top edge."""
-    wall, trim, _metal = _materials(building)
+def solids(layout, building, look=None):
+    """Collision box and roof slab per tier; crown bands and a parapet on every tier top edge."""
+    look = look or Look(building, jitter=False)
     parapet = float(building.get("parapet_m") or DEFAULT_PARAPET)
     found = tiers(building)
     for index, (poly, z0, z1) in enumerate(found):
@@ -281,19 +398,32 @@ def solids(layout, building):
             n = (-t[1], t[0])
             mid = ((a[0] + b[0]) / 2.0 - centre[0], (a[1] + b[1]) / 2.0 - centre[1])
             inward = n if n[0] * mid[0] + n[1] * mid[1] < 0 else (-n[0], -n[1])
-            layout.add("KIT_RoofCap|" + trim, run(a, t, inward, length, top, length, CAP_DEPTH, parapet))
+            z = top
+            # Crown bands stack up from the roof line, each a little less proud (art deco steps).
+            for height, out in look.p.get("crown") or ():
+                layout.add("KIT_Cornice|" + look.trim, run(a, t, inward, length, z, length, out, height))
+                z += height
+            layout.add("KIT_RoofCap|" + look.trim, run(a, t, inward, length, z, length, CAP_DEPTH, parapet))
 
 
-def build_layout(city, ids=None):
-    """Layout for every building with facades (or only those in ids), sorted by id."""
+def build_layout(city, ids=None, library=None, styled=True):
+    """Layout for every building with facades (or only those in ids), sorted by id.
+
+    styled: each building takes its style's look (style_kit.look_for, which
+    needs the texture-pack library). Off, every building gets the plain kit
+    (CC0 walls by material, no storefronts or decals, no jitter).
+    """
     layout = Layout()
+    looks = style_kit.look_for(city, library) if styled else {}
     specs = [spec for spec in city.get("buildings") or []
              if spec.get("facades") and spec.get("role") != "landmark" and (ids is None or spec.get("id") in ids)]
     for building in sorted(specs, key=lambda spec: spec.get("id") or ""):
+        look = Look(building, looks.get(building["id"]), jitter=styled)
         for facade in building.get("facades") or []:
-            facade_record(layout, building, facade)
-        solids(layout, building)
+            facade_record(layout, building, facade, look)
+        solids(layout, building, look)
         layout.buildings += 1
+    layout.looks = {bid: looks[bid] for bid in sorted(looks) if ids is None or bid in ids}
     return layout
 
 

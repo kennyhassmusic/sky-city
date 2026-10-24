@@ -16,6 +16,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 
 ## Entries
 
+## 2026-10-24 00:05 CDT — Claude Code (Kenny's Mac) — Chicago building variety: five styles, pack families, storefronts, decals
+- State at start: `cursor/chicago-gen-map` `5fdd9bd`, tests OK
+- Did: `style_kit.py` (art_deco/prewar → historic_old, brick_walkup → apartments_condos, glass_curtain → tech/brand_new, modern_mixed → eclectic_mix/industrial_commercial; per-style bay, pier, window aspect/height, sills, crowns, belt, corners, frame/glass/trim; neighbour-aware look per building); `kit_swatches.py` (window-free wall swatches from the pack facades, 19 sets); new kit modules (sill, cornice, storefront panel, wall and floor decals); `M_KitWall` tint + OriginZ, `M_KitDecal`; storefronts on street ground floors, decals at street level; HISM packing by group (121 components, 756 drawn sections). Tests: test_city 46, test_profiles 12, test_packs 13, test_generate_city 23, all OK. Report: `CHICAGO_REPORT.md` (Pass 3)
+- Found: pass-2 pier depth was scaled twice (fixed); pack "windowless" sets are boarded-up fronts (excluded); 300 m tiles multiplied components to 1,506 (replaced by group packing); every commit re-sets lockable LFS files read-only (importer now checks first); killed the CrashReportClient holding port 8000, on Kenny's OK
+- Asks for Kenny: review CHICAGO_REPORT.md; street GPU +3.6 ms against pass 2 (pane LODs next)
+- SCALE CHECK: no change
+- Next: pane LOD1; roof dressing; more storefront sets per family
+
 ## 2026-10-23 23:05 CDT — Claude Code (Kenny's Mac) — Chicago import pipeline: Draco, street tiles, facade kit (HISM), box collision
 - State at start: `cursor/chicago-gen-map` `4e33b22`, tests OK
 - Did: Draco GLBs + 300 m street tiles in `blender_city.py` (228.6 MiB → 90.9 MB, all 346 meshed buildings, largest 21.5 MB); facade kit (`blender_facade_kit.py`, `kit_layout.py`, `kit_city_ue.py`, `M_KitWall`) assembling all 354 Loop towers from 7 modules as HISM in 11 tile sublevels; box collision per setback tier; import fixes (reuse materials instead of delete, stale mesh folders). Prototype block (9 towers) then rollout. Before/after: drawn sections 2,494 → 982, street GPU 20.0 → 17.8 ms, aerial 17.3 → 23.3 ms (354 real towers vs 296 boxes), memory +2,091 → +1,419 MB, load 1.03 → 0.72 s. Tests: test_city 46, test_profiles 12, test_packs 13, test_generate_city 15, all OK. Report: `CHICAGO_REPORT.md`

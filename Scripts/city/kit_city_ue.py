@@ -2,11 +2,12 @@
 
 Called by import_city_ue.py --buildings kit. Reads the layout from
 kit_layout.py (every module instance, already in Unreal centimetres) and the
-seven kit GLBs from blender_facade_kit.py. The city is cut into 400 m tiles;
-each tile is an always-loaded sublevel (<level>_Kit/<name>_Kit_<i>_<j>) with
-one actor holding one HierarchicalInstancedStaticMeshComponent per module and
-material (about 25). Each component draws all of its instances with one draw
-per material section. Tiles keep each level file well under pr-guard's 100 MB.
+kit GLBs from blender_facade_kit.py. Each module-and-material group is one
+HierarchicalInstancedStaticMeshComponent for the whole city (it culls its own
+instances), except groups too big for one, which are cut into 300 m squares.
+The components are packed into always-loaded sublevels
+(<level>_Kit/<name>_Kit_NN) of at most SUBLEVEL_CAP instances, which keeps
+each level file well under pr-guard's 25 MB warning (partition()).
 
 Materials: walls, piers, corners and parapets take M_KitWall (city_materials_ue.kit_walls),
 which lays the scan or pack tile out in metres along each instance's own axes,
@@ -22,12 +23,11 @@ Run through import_city_ue.py, in the editor, PIE off.
 import json
 import os
 
-MESH_OF = {
-    "KIT_Wall": "KIT_Wall", "KIT_Pier": "KIT_Pier", "KIT_Corner": "KIT_Corner", "KIT_Pane": "KIT_Pane",
-    "KIT_PaneCurtain": "KIT_PaneCurtain", "KIT_Leaf": "KIT_Leaf", "KIT_RoofCap": "KIT_RoofCap",
-}
-# Fixed slot bindings; M_Wall, M_PaneBack and M_Leaf change per component.
-FIXED = {"M_Glass": "M_Glass", "M_Frame": "M_TrimDark", "M_Coping": "M_TrimDark"}
+MESH_OF = {name: name for name in (
+    "KIT_Wall", "KIT_Pier", "KIT_Corner", "KIT_Pane", "KIT_PaneCurtain", "KIT_Leaf", "KIT_RoofCap",
+    "KIT_Sill", "KIT_Cornice", "KIT_Panel", "KIT_Decal", "KIT_DecalFloor")}
+# Default slot bindings; each component overrides its own (see _material_for).
+FIXED = {"M_Glass": "M_Glass", "M_Frame": "M_TrimDark", "M_Trim": "M_TrimDark", "M_Coping": "M_TrimDark"}
 BACK = {"lit": "M_InteriorLit", "dark": "M_Interior"}
 CHUNK = 20000
 
@@ -86,19 +86,39 @@ def _slot_index(mesh, slot_name):
     return -1
 
 
-def _material_for(key, walls, materials):
-    """(slot name, material) overrides for one layout key."""
+def _material_for(key, walls, materials, styled=None):
+    """(slot name, material) overrides for one layout key ("<module>|<material>", see kit_layout)."""
+    import style_kit
+    styled = styled or {}
     module, _, variant = key.partition("|")
+    kind, _, name = variant.partition(":")
     out = []
-    if module in ("KIT_Wall", "KIT_Pier", "KIT_Corner", "KIT_RoofCap"):
-        if variant == "roof":
-            out.append(("M_Wall", materials.get("M_Roof")))
-        elif variant != "collision":
-            out.append(("M_Wall", walls.get(variant) or walls.get("concrete")))
+    if variant == "collision":
+        return out
+    if variant == "roof":
+        out.append(("M_Wall", materials.get("M_Roof")))
+    elif kind in ("set", "frame", "trim"):
+        mat = styled.get(variant)
+        if mat is None and kind == "set":
+            mat = walls.get("concrete")
+        out.extend([("M_Wall", mat), ("M_Trim", mat)])
+    elif kind == "cc0":
+        out.append(("M_Wall", walls.get(name) or walls.get("concrete")))
+    elif kind in ("lit", "dark") and module in ("KIT_Pane", "KIT_PaneCurtain"):
+        style = style_kit.STYLES.get(name) or style_kit.STYLES[style_kit.DEFAULT_STYLE]
+        out.append(("M_PaneBack", materials.get(BACK[kind])))
+        out.append(("M_Frame", styled.get("frame:" + style["frame"])))
+        out.append(("M_Glass", styled.get("glass:" + style["glass"]) or materials.get("M_Glass")))
     elif module in ("KIT_Pane", "KIT_PaneCurtain"):
         out.append(("M_PaneBack", materials.get(BACK.get(variant, "M_Interior"))))
+    elif kind == "sf":
+        out.append(("M_Panel", styled.get(variant)))
+    elif kind == "decal":
+        out.append(("M_Decal", styled.get(variant)))
     elif module == "KIT_Leaf":
         out.append(("M_Leaf", materials.get(variant) or materials.get("M_Blind")))
+    if module == "KIT_RoofCap" and kind == "trim":
+        out.append(("M_Trim", styled.get(variant)))
     return [(slot, mat) for slot, mat in out if mat is not None]
 
 
@@ -116,19 +136,20 @@ def _subobject(unreal, actor, cls):
 
 def _transforms(unreal, items):
     out = []
-    for x, y, z, yaw, sx, sy, sz in items:
+    for item in items:
+        x, y, z, yaw, sx, sy, sz = item[:7]
         out.append(unreal.Transform(location=unreal.Vector(x, y, z), rotation=unreal.Rotator(roll=0.0, pitch=0.0, yaw=yaw),
                                     scale=unreal.Vector(sx, sy, sz)))
     return out
 
 
-TILE_CM = 40000.0  # 400 m: about 60k instances and an ~8 MB sublevel per tile in the Loop
+TILE_CM = 30000.0     # a group too big for one component is cut into 300 m squares
+SPLIT_OVER = 60000    # instances: groups above this are cut spatially
+SUBLEVEL_CAP = 100000  # instances per sublevel (~140 bytes each in the level file, so ~14 MB)
 
 
 def tiles_of(layout, tile_cm=TILE_CM):
-    """(i, j) -> {key: items}: instances bucketed by origin. HISM data lives in the
-    level file (~140 bytes an instance), so one level for the whole city would
-    pass pr-guard's 100 MB per-file limit; each tile is its own sublevel."""
+    """(i, j) -> {key: items}: instances bucketed by origin."""
     out = {}
     for key, items in layout["groups"].items():
         for item in items:
@@ -137,9 +158,42 @@ def tiles_of(layout, tile_cm=TILE_CM):
     return out
 
 
-def sublevel_path(level, cell):
+def partition(layout, split_over=SPLIT_OVER, cap=SUBLEVEL_CAP, tile_cm=TILE_CM):
+    """[ {key: items} ] per sublevel. Pure Python.
+
+    One HISM per group culls its own instances (per cluster), so most groups
+    stay whole: one component, one draw per section for the whole city. A
+    group over split_over instances is cut into tile_cm squares. The pieces
+    are then packed into sublevels of at most cap instances (largest first,
+    first fit), because HISM keeps its instances in the level file and one
+    file for the whole city would pass pr-guard's 100 MB limit.
+    """
+    pieces = []
+    for key, items in sorted(layout["groups"].items()):
+        if len(items) <= split_over:
+            pieces.append((key, items))
+            continue
+        cells = {}
+        for item in items:
+            cells.setdefault((int(item[0] // tile_cm), int(item[1] // tile_cm)), []).append(item)
+        pieces.extend((key, part) for _cell, part in sorted(cells.items()))
+    pieces.sort(key=lambda piece: (-len(piece[1]), piece[0]))
+    bins = []
+    for key, items in pieces:
+        for bin_ in bins:
+            if bin_["count"] + len(items) <= cap:
+                break
+        else:
+            bin_ = {"count": 0, "groups": {}}
+            bins.append(bin_)
+        bin_["groups"].setdefault(key, []).extend(items)
+        bin_["count"] += len(items)
+    return [bin_["groups"] for bin_ in bins]
+
+
+def sublevel_path(level, index):
     base = level.rsplit("/", 1)[-1]
-    return "%s_Kit/%s_Kit_%d_%d" % (level, base, cell[0], cell[1])
+    return "%s_Kit/%s_Kit_%02d" % (level, base, index)
 
 
 def drop_sublevels(unreal, level):
@@ -159,26 +213,40 @@ def drop_sublevels(unreal, level):
         print("CITYGEN removed kit sublevels:", len(gone))
 
 
-def build(unreal, layout, meshes, walls, materials, label, folder, level):
+def build(unreal, layout, meshes, walls, materials, label, folder, level, styled=None):
     """One always-loaded sublevel per tile, each with a <label>_Kit actor of HISMs. Returns stats."""
     drop_sublevels(unreal, level)
     editor = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
     stats = {"components": 0, "instances": 0, "sublevels": 0}
-    for cell, groups in sorted(tiles_of(layout).items()):
+    for index, groups in enumerate(partition(layout)):
         streaming = unreal.EditorLevelUtils.create_new_streaming_level(
-            unreal.LevelStreamingAlwaysLoaded, sublevel_path(level, cell), False)
+            unreal.LevelStreamingAlwaysLoaded, sublevel_path(level, index), False)
         if streaming is None:
-            raise SystemExit("could not create kit sublevel %s" % sublevel_path(level, cell))
+            raise SystemExit("could not create kit sublevel %s" % sublevel_path(level, index))
         unreal.EditorLevelUtils.make_level_current(streaming)
-        _actor_with(unreal, groups, meshes, walls, materials, "%s_Kit_%d_%d" % (label, cell[0], cell[1]), folder, stats)
+        _actor_with(unreal, groups, meshes, walls, materials, "%s_Kit_%02d" % (label, index), folder, stats, styled)
         stats["sublevels"] += 1
     editor.save_all_dirty_levels()
     # New actors (the stage) go back into the persistent level.
     editor.set_current_level_by_name("PersistentLevel")
+    _drop_unused_sublevels(unreal, level, {sublevel_path(level, index) for index in range(stats["sublevels"])})
     return stats
 
 
-def _actor_with(unreal, groups, meshes, walls, materials, name, folder, stats):
+def _drop_unused_sublevels(unreal, level, keep):
+    """Delete kit sublevel files a different layout left behind (none of the new ones)."""
+    library = unreal.EditorAssetLibrary
+    folder = level + "_Kit"
+    left = []
+    for path in library.list_assets(folder, recursive=False) if library.does_directory_exist(folder) else []:
+        package = path.split(".")[0]
+        if package not in keep and not library.delete_asset(package):
+            left.append(package)
+    if left:
+        print("CITYGEN note: could not delete old kit sublevels:", ", ".join(left))
+
+
+def _actor_with(unreal, groups, meshes, walls, materials, name, folder, stats, styled=None):
     sub = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
     actor = sub.spawn_actor_from_class(unreal.Actor, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0))
     actor.set_actor_label(name)
@@ -191,7 +259,7 @@ def _actor_with(unreal, groups, meshes, walls, materials, name, folder, stats):
             continue
         comp = _subobject(unreal, actor, unreal.HierarchicalInstancedStaticMeshComponent)
         comp.set_editor_property("static_mesh", mesh)
-        for slot_name, mat in _material_for(key, walls, materials):
+        for slot_name, mat in _material_for(key, walls, materials, styled):
             index = _slot_index(mesh, slot_name)
             if index >= 0:
                 comp.set_material(index, mat)
@@ -201,9 +269,18 @@ def _actor_with(unreal, groups, meshes, walls, materials, name, folder, stats):
             comp.set_editor_property("cast_shadow", False)
         else:
             comp.set_collision_profile_name("NoCollision")
-            comp.set_editor_property("cast_shadow", module not in ("KIT_Leaf",))
+            comp.set_editor_property("cast_shadow", module not in ("KIT_Leaf", "KIT_Decal", "KIT_DecalFloor", "KIT_Panel"))
+        tinted = len(items[0]) >= 10
+        if tinted:
+            comp.set_editor_property("num_custom_data_floats", 3)
         for start in range(0, len(items), CHUNK):
             comp.add_instances(_transforms(unreal, items[start:start + CHUNK]), False, False)
+        if tinted:
+            # The building's wall tint: M_KitWall multiplies its colour by custom data 0..2.
+            last = len(items) - 1
+            for index, item in enumerate(items):
+                for k in range(3):
+                    comp.set_custom_data_value(index, k, float(item[7 + k]), index == last and k == 2)
         stats["components"] += 1
         stats["instances"] += len(items)
     print("CITYGEN kit", name, sum(len(items) for items in groups.values()), "instances", flush=True)

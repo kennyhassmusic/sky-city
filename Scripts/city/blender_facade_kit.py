@@ -1,7 +1,8 @@
 """Build the facade kit: the small modules import_city_ue.py --buildings kit instances.
 
-Seven GLBs in SourceArt/CityGen/kit (KIT_Wall, KIT_Pier, KIT_Corner, KIT_Pane,
-KIT_PaneCurtain, KIT_Leaf, KIT_RoofCap). Sizes and depths are the mesher's
+Twelve GLBs in SourceArt/CityGen/kit (KIT_Wall, KIT_Pier, KIT_Corner, KIT_Pane,
+KIT_PaneCurtain, KIT_Leaf, KIT_RoofCap, KIT_Sill, KIT_Cornice, KIT_Panel,
+KIT_Decal, KIT_DecalFloor; kit_layout.py describes each). Sizes and depths are the mesher's
 (kit_layout.py holds them, and kit_layout places the modules exactly where
 blender_city._fitted_facade puts its spans, piers and panes). Every module is
 1 m long and 1 m tall and is scaled per instance in Unreal.
@@ -11,10 +12,10 @@ mapping the city GLBs go through). Local +Y in Unreal is "into the building",
 so here the depth runs along Blender -Y. Faces are wound so their normals
 face the way given, not left to a recalculation.
 
-Material slots (names are what Unreal binds): M_Wall (walls, piers, corners,
-roof slab and parapets take the wall or trim material per HISM), M_Glass,
-M_PaneBack (lit or dark room), M_Frame (frames, sills, reveals), M_Leaf
-(blind or curtain), M_Coping.
+Material slots (names are what Unreal binds, per HISM): M_Wall (walls, piers,
+corners, roof slab, parapet), M_Trim (sills, crowns, belts, coping), M_Glass,
+M_PaneBack (lit or dark room), M_Frame (frames and reveals), M_Leaf (blind or
+curtain), M_Panel (storefront), M_Decal.
 
 Run (Blender 5.2.x, headless):
   /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \\
@@ -47,8 +48,6 @@ def _root():
 
 OUT = os.environ.get("SKYCITY_KIT_OUT") or os.path.join(_root(), "SourceArt", "CityGen", "kit")
 FRAME_W = 0.035      # frame strip, in the pane's unit square
-SILL_H = 0.035
-SILL_OUT = 0.05      # sill stands this far proud of the wall plane (metres)
 COPING_H = 0.08
 COPING_OUT = 0.04
 
@@ -122,19 +121,54 @@ def wall():
 
 def pier():
     k = Kit("KIT_Pier")
-    # Between two panes: the front and the two reveals. Floors stack, so no top or bottom.
-    k.box(0, 1, 0, kit.PIER_DEPTH, 0, 1, "M_Wall", skip=("back", "top", "bottom"))
+    # Between two panes: the front and the two reveals, 1 m deep (scaled to PIER_DEPTH).
+    # Floors stack, so no top or bottom.
+    k.box(0, 1, 0, 1, 0, 1, "M_Wall", skip=("back", "top", "bottom"))
     return k.finish()
 
 
 def corner():
     k = Kit("KIT_Corner")
-    # End pilaster, a little proud of the wall so the corner reads.
-    k.box(0, 1, -kit.CORNER_PROUD, kit.PIER_DEPTH, 0, 1, "M_Wall", skip=("back",))
+    # End pilaster: Y -1..1, scaled to the style's proud, so it stands out of the wall by that much.
+    k.box(0, 1, -1, 1, 0, 1, "M_Wall", skip=("back",))
     return k.finish()
 
 
-def pane(name, sill):
+def sill():
+    k = Kit("KIT_Sill")
+    # Proud by its Y scale; tucks 0.15 of that under the pane. Seen from the street: front, top, ends, underside.
+    k.box(0, 1, -1, 0.15, 0, 1, "M_Trim", skip=("back",))
+    return k.finish()
+
+
+def cornice():
+    k = Kit("KIT_Cornice")
+    # A crown or belt band, proud by its Y scale, with a drip moulding along its top edge.
+    k.box(0, 1, -1, 0.1, 0, 0.8, "M_Trim", skip=("back",))
+    k.box(0, 1, -1.15, 0.1, 0.8, 1, "M_Trim", skip=("back",))
+    return k.finish()
+
+
+def panel():
+    k = Kit("KIT_Panel")
+    k.quad([(0, -0.02, 0), (1, -0.02, 0), (1, -0.02, 1), (0, -0.02, 1)], (0, -1, 0), "M_Panel")
+    return k.finish()
+
+
+def decal():
+    k = Kit("KIT_Decal")
+    k.quad([(0, -0.03, 0), (1, -0.03, 0), (1, -0.03, 1), (0, -0.03, 1)], (0, -1, 0), "M_Decal")
+    return k.finish()
+
+
+def decal_floor():
+    k = Kit("KIT_DecalFloor")
+    # Lying on the sidewalk: X along the facade, Y towards it, facing up.
+    k.quad([(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)], (0, 0, 1), "M_Decal")
+    return k.finish()
+
+
+def pane(name):
     k = Kit(name)
     g, back = kit.PANE_GLASS_IN, kit.PANE_BACK_IN
     k.quad([(0, g, 0), (1, g, 0), (1, g, 1), (0, g, 1)], (0, -1, 0), "M_Glass")
@@ -149,9 +183,7 @@ def pane(name, sill):
     for a0, a1, z0, z1 in ((0, FRAME_W, 0, 1), (1 - FRAME_W, 1, 0, 1), (FRAME_W, 1 - FRAME_W, 1 - FRAME_W, 1),
                            (FRAME_W, 1 - FRAME_W, 0, FRAME_W)):
         k.quad([(a0, f, z0), (a1, f, z0), (a1, f, z1), (a0, f, z1)], (0, -1, 0), "M_Frame")
-    if sill:
-        # Only the faces seen from the street: the front and the top.
-        k.box(-0.02, 1.02, -SILL_OUT, 0.1, -SILL_H, 0, "M_Frame", skip=("back", "bottom", "left", "right"))
+    # Sills are their own module (KIT_Sill): each style sets its own.
     return k.finish()
 
 
@@ -166,7 +198,7 @@ def roof_cap():
     k = Kit("KIT_RoofCap")
     # Parapet wall (scaled to the parapet height and depth) and a proud coping on top.
     k.box(0, 1, 0, 1, 0, 1 - COPING_H, "M_Wall", skip=("bottom", "top"))
-    k.box(0, 1, -COPING_OUT, 1 + COPING_OUT, 1 - COPING_H, 1, "M_Coping", skip=())
+    k.box(0, 1, -COPING_OUT, 1 + COPING_OUT, 1 - COPING_H, 1, "M_Trim", skip=())
     return k.finish()
 
 
@@ -185,7 +217,8 @@ def main():
     for ob in list(bpy.data.objects):
         bpy.data.objects.remove(ob, do_unlink=True)
     os.makedirs(OUT, exist_ok=True)
-    made = [wall(), pier(), corner(), pane("KIT_Pane", True), pane("KIT_PaneCurtain", False), leaf(), roof_cap()]
+    made = [wall(), pier(), corner(), pane("KIT_Pane"), pane("KIT_PaneCurtain"), leaf(), roof_cap(),
+            sill(), cornice(), panel(), decal(), decal_floor()]
     names = {ob.name for ob in made}
     if names != set(kit.MODULES):
         raise SystemExit("kit modules %s do not match kit_layout.MODULES %s" % (sorted(names), sorted(kit.MODULES)))

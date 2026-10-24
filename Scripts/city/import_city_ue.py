@@ -145,6 +145,11 @@ def main(argv=None):
     TEX_DIR = run["folder"] + "/Textures"
     if run["level"].rsplit("/", 1)[-1] == "SkyCityMashup":
         raise SystemExit("import_city_ue.py never writes into SkyCityMashup")
+    locked = read_only_outputs(run)
+    if locked:
+        raise SystemExit("%d files this import rewrites are read-only (Git LFS keeps lockable .uasset/.umap files "
+                         "read-only until they are locked), e.g. %s. Run git lfs lock on them, or chmod u+w if "
+                         "nobody else edits them, then import again." % (len(locked), locked[0]))
     _open_level(unreal, run["level"])
     _clear_previous(unreal, run["label"])
     glbs = select_glbs(_glbs(run["glbs"]), run)
@@ -206,6 +211,27 @@ def _clear_previous(unreal, label):
         print("CITYGEN removed", gone, "actors from the previous run")
 
 
+def content_path(game_path):
+    """/Game/Maps/X -> <project>/Content/Maps/X."""
+    return os.path.join(ROOT, "Content", game_path[len("/Game/"):]) if game_path.startswith("/Game/") else None
+
+
+def read_only_outputs(run):
+    """Files the import must rewrite or delete that the file system won't let it (checked before anything changes)."""
+    out = []
+    roots = [content_path(run["folder"]), content_path(run["level"] + "_Kit")]
+    level_file = content_path(run["level"] + ".umap")
+    candidates = [level_file] if level_file and os.path.isfile(level_file) else []
+    for root in roots:
+        if root and os.path.isdir(root):
+            for folder, _dirs, files in os.walk(root):
+                candidates.extend(os.path.join(folder, name) for name in files)
+    for path in sorted(candidates):
+        if not os.access(path, os.W_OK):
+            out.append(os.path.relpath(path, ROOT))
+    return out
+
+
 def select_glbs(glbs, run):
     """Which GLBs this run imports. Kit runs take only the street tiles (the kit builds the towers)."""
     def street(path):
@@ -236,9 +262,14 @@ def _kit(unreal, run, materials):
         layout = kit_layout.build_layout(city, run["ids"]).document(run["document"].get("region"))
     meshes = kit_city_ue.import_kit(unreal, run["kit"], run["folder"] + "/Kit")
     kit_city_ue.prepare(unreal, meshes, materials, _drop_gltf_materials)
-    walls = city_materials_ue.kit_walls(unreal, unreal.AssetToolsHelpers.get_asset_tools(), unreal.EditorAssetLibrary,
-                                        unreal.MaterialEditingLibrary, MAT_DIR, PLAN)
-    stats = kit_city_ue.build(unreal, layout, meshes, walls, materials, run["label"], run["label"] + "/Kit", run["level"])
+    tools, library, editing = unreal.AssetToolsHelpers.get_asset_tools(), unreal.EditorAssetLibrary, unreal.MaterialEditingLibrary
+    walls = city_materials_ue.kit_walls(unreal, tools, library, editing, MAT_DIR, PLAN)
+    import packs
+    styled = city_materials_ue.kit_style_materials(unreal, tools, library, editing, MAT_DIR, TEX_DIR, layout,
+                                                   os.path.join(run["kit"], "swatches"), packs.load_library())
+    print("CITYGEN kit style materials", len(styled))
+    stats = kit_city_ue.build(unreal, layout, meshes, walls, materials, run["label"], run["label"] + "/Kit", run["level"],
+                              styled)
     print("CITYGEN kit buildings", layout.get("buildings"), "sublevels", stats["sublevels"],
           "components", stats["components"], "instances", stats["instances"])
 
