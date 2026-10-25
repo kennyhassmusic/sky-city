@@ -16,6 +16,14 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 
 ## Entries
 
+## 2026-10-25 15:30 CDT — cursor cloud agent — City Generator Vision and State committed
+- State at start: branch `main` at `a25704a`. Phase 0 gap 13: the Vision and State docs existed only as Kenny's 2026-10-25 delivery, not in this repo.
+- Did: branch `cursor/city-generator-vision-state-06a4`. Added `docs/CITY_GENERATOR_VISION.md` and `docs/CITY_GENERATOR_STATE.md` byte-for-byte from that delivery. Linked both from the top of `AGENTS.md` and `CLAUDE.md` (Vision = stable contract, State = living gaps; City Shape in building-types is the master spine; this repo's generator becomes the OSM importer and City Shape consumer). Marker: `docs/AGENT_OPS/QUEUE/reconcile/2026-10-25-city-generator-vision-state.md`. No generator, mesher, or `Scripts/city` doc was moved or rewritten. An AI wrote the links and this log; the two source docs are Kenny's text.
+- Found: nothing in the generator to change for this gap. Owner decisions 2026-10-25 are already inside the Vision (spine, HISM shipping path, seeded test city first, merge at sign-off) plus the standing note that assets are not frozen.
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: later Phase 0/2 work — port `roadnet.py` and the seeder so they write a City Shape document. Not this PR.
+
 ## 2026-10-23 13:30 UTC — cursor cloud agent — texture packs committed and loader wired
 - State at start: branch `cursor/texture-packs-wired-04ef` off `cursor/texture-pack-loader-04ef` (`8d7e6d0`). A prior review: `districts.load_pack` read `Scripts/city/packs/<district>/…`, which never existed, so every facade silently fell back to CC0. Packs lived outside the repo at `/workspace/skycity/ai_textures` (v4, audit ALL BLOCKING PASS).
 - Did:

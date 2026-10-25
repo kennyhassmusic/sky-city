@@ -2,6 +2,15 @@
 
 Hand this file to your AI coding assistant (Claude Code, Codex, Cursor or any other) before it touches the repo. The person you work for should skim it too.
 
+## City Generator
+
+Read these before changing the city generator.
+
+- [`docs/CITY_GENERATOR_VISION.md`](docs/CITY_GENERATOR_VISION.md) is the **stable contract**: layers, invariants, placement rules, and the build path. Change it only when the owner changes the vision.
+- [`docs/CITY_GENERATOR_STATE.md`](docs/CITY_GENERATOR_STATE.md) is the **living gaps** record: current state per layer, ranked gaps, and where the build path stands. Update it when a milestone merges.
+
+**City Shape** (in the building-types repo) is the master spine. This repo's generator becomes the OSM importer that writes a City Shape document, and a consumer of the City Shape export.
+
 ## What Sky City is
 
 An open-world driving and flying game in **Unreal Engine 5.8** for **Apple Silicon Macs**. The Chicago Loop and lakefront are stitched to downtown Austin (about 3.6 x 3.6 km, streets generated from OpenStreetMap), with a Texas rocket test site ("McGregor") on the side. You drive, boost, wall-ride and fly the **Skyster Roadster**, whose physics are ported from Kenny's browser game Skyster. Early and playable. Free: https://kornontheken.itch.io/sky-city. Repo: https://github.com/kennyhassmusic/sky-city. Owner: Kenny Hass Music LLC (Kenny Hass reviews everything).

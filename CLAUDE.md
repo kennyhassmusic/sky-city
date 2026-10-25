@@ -10,6 +10,15 @@ car brand is the invented **Volta Motors**.
 
 Rules and setup for AI assistants working on a contribution: @AGENTS.md
 
+## City Generator
+
+Read these before changing the city generator.
+
+- [`docs/CITY_GENERATOR_VISION.md`](docs/CITY_GENERATOR_VISION.md) is the **stable contract**: layers, invariants, placement rules, and the build path. Change it only when the owner changes the vision.
+- [`docs/CITY_GENERATOR_STATE.md`](docs/CITY_GENERATOR_STATE.md) is the **living gaps** record: current state per layer, ranked gaps, and where the build path stands. Update it when a milestone merges.
+
+**City Shape** (in the building-types repo) is the master spine. This repo's generator becomes the OSM importer that writes a City Shape document, and a consumer of the City Shape export.
+
 ## The city (brief, to grow with Kenny)
 
 - Chicago's bones: the Loop's dense grid of towers, the river with its bridges, the elevated L,
