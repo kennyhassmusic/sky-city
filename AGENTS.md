@@ -9,7 +9,7 @@ Read these before changing the city generator.
 - [`docs/CITY_GENERATOR_VISION.md`](docs/CITY_GENERATOR_VISION.md) is the **stable contract**: layers, invariants, placement rules, and the build path. Change it only when the owner changes the vision.
 - [`docs/CITY_GENERATOR_STATE.md`](docs/CITY_GENERATOR_STATE.md) is the **living gaps** record: current state per layer, ranked gaps, and where the build path stands. Update it when a milestone merges.
 
-**City Shape** (in the building-types repo) is the master spine. This repo's generator becomes the OSM importer that writes a City Shape document, and a consumer of the City Shape export.
+**City Shape** (in the building-types repo) is the master spine. The OSM importer that writes a City Shape document lives in building-types. This repo consumes that export: `python3 -I Scripts/city/cityshape.py <file>` (see [`docs/CITY_SHAPE_CONSUME.md`](docs/CITY_SHAPE_CONSUME.md)).
 
 ## What Sky City is
 

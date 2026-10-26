@@ -2,7 +2,9 @@
 
 OpenStreetMap is one seeder, not the generator. plan_v3.json and buildings_v3.json can
 fill the districts, roads and a first guess at lots. A blank canvas and the one-block
-study in skyline.yaml are the other seeders. A later AI link calls the same functions.
+study in skyline.yaml are the other seeders. seed_from_city_shape reads a City Shape
+v1 document from building-types into the same city model. A later AI link calls the
+same functions.
 
 Those OSM files are Git LFS. A fresh clone often has the pointer text instead of the
 JSON. read_json refuses that, with a message that says to pull LFS or to build from
@@ -44,6 +46,17 @@ def read_json(path):
 def seed_blank(bounds, seed):
     """An empty city: bounds and a seed, no districts yet. draw_road and add_district fill it."""
     return model_mod.new_model(bounds, seed)
+
+
+def seed_from_city_shape(doc, seed=None):
+    """A city model from a City Shape v1 document written by building-types.
+
+    The roads are drive centrelines for network.py. Districts and water are
+    copied only when the document already has them. The command line is
+    Scripts/city/cityshape.py.
+    """
+    import cityshape
+    return cityshape.to_city_model(doc, seed=seed)
 
 
 def seed_from_files(root=None):
