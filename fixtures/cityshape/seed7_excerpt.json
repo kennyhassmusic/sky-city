@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "seed": 7,
+  "roads": {
+    "nodes": [
+      {"id": "n00", "pos": [0, 0], "kind": "junction"},
+      {"id": "n10", "pos": [80, 0], "kind": "junction"},
+      {"id": "n20", "pos": [160, 0], "kind": "junction"},
+      {"id": "n01", "pos": [0, 60], "kind": "junction"},
+      {"id": "n11", "pos": [80, 60], "kind": "junction"},
+      {"id": "n21", "pos": [160, 60], "kind": "junction"},
+      {"id": "ix0", "pos": [-40, 120], "kind": "interchange"},
+      {"id": "ix1", "pos": [200, 120], "kind": "interchange"},
+      {"id": "stub", "pos": [200, 60], "kind": "stub"}
+    ],
+    "edges": [
+      {"id": "e_south", "from": "n00", "to": "n10", "class": "local", "lanes": 2},
+      {"id": "e_south2", "from": "n10", "to": "n20", "class": "local", "lanes": 2},
+      {"id": "e_west", "from": "n00", "to": "n01", "class": "collector", "lanes": 2},
+      {"id": "e_mid", "from": "n10", "to": "n11", "class": "local", "lanes": 2},
+      {"id": "e_east", "from": "n20", "to": "n21", "class": "alley", "lanes": 1},
+      {"id": "e_north", "from": "n01", "to": "n11", "class": "arterial", "lanes": 4, "name": "North Avenue"},
+      {"id": "e_north2", "from": "n11", "to": "n21", "class": "arterial", "lanes": 4, "name": "North Avenue"},
+      {
+        "id": "e_hwy",
+        "from": "ix0",
+        "to": "ix1",
+        "class": "highway",
+        "lanes": 4,
+        "bridge": true,
+        "oneway": true,
+        "polyline": [[-40, 120], [40, 130], [120, 128], [200, 120]]
+      },
+      {"id": "e_stub", "from": "n21", "to": "stub", "class": "local", "lanes": 2, "stub": true},
+      {"id": "e_link", "from": "n01", "to": "ix0", "class": "collector", "lanes": 2}
+    ]
+  },
+  "water": [
+    {"id": "pond", "polygon": [[20, 20], [50, 20], [50, 40], [20, 40]]}
+  ]
+}

@@ -16,6 +16,15 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 
 ## Entries
 
+## 2026-10-26 00:50 CDT — cursor cloud agent — City Shape v1 consumer
+- State at start: branch `main` at `3bf10d9`. Phase 0 decision: City Shape v1 is the master document; the OSM importer lives in building-types; this repo consumes the export.
+- Did: branch `cursor/cityshape-consume-194c`. `Scripts/city/cityshape.py` reads a City Shape v1 document (`roads.nodes`, `roads.edges`, water when present) into the drive centrelines `network.node_roads` already walks. `seeder.seed_from_city_shape` is the same entry. Class map is the reverse of the importer (arterial → major, collector → mid, local → minor, alley → minor with `shape_class` alley). CLI: `python3 -I Scripts/city/cityshape.py <file>`. Fixture `fixtures/cityshape/seed7_excerpt.json` (trimmed seed-7 shape, not the pipeline dump). Docs: `docs/CITY_SHAPE_CONSUME.md`. An AI wrote this.
+- Found: building-types is not readable from this checkout, so the reader follows the v1 contract in `docs/CITY_GENERATOR_VISION.md` / `docs/CITY_GENERATOR_STATE.md` (nodes, edges, class, lanes, bridge, tunnel, stub, water polygons) and accepts the endpoint and position names those docs use. A real pipeline JSON that uses a different key will fail with `city shape:` and the key it saw.
+- Asks for Kenny: if a pipeline export uses field names this reader rejects, point the command at that file and send the error line.
+- SCALE CHECK: no change
+- Next: when a building-types `--seed 7` or `--osm chicago` JSON is on disk, run `python3 -I Scripts/city/cityshape.py` on it and keep the graph non-empty.
+- Tests: `python3 -I Scripts/city/test_cityshape.py` 13 OK. `python3 -I Scripts/city/test_city.py` 46 OK. `python3 -I Scripts/city/test_generate_city.py` OK. Fixture command: 9 nodes, 10 edges, 10 drive roads, 12 graph edges, 2 block faces, 1 water polygon, 1 component.
+
 ## 2026-10-25 15:30 CDT — cursor cloud agent — City Generator Vision and State committed
 - State at start: branch `main` at `a25704a`. Phase 0 gap 13: the Vision and State docs existed only as Kenny's 2026-10-25 delivery, not in this repo.
 - Did: branch `cursor/city-generator-vision-state-06a4`. Added `docs/CITY_GENERATOR_VISION.md` and `docs/CITY_GENERATOR_STATE.md` byte-for-byte from that delivery. Linked both from the top of `AGENTS.md` and `CLAUDE.md` (Vision = stable contract, State = living gaps; City Shape in building-types is the master spine; this repo's generator becomes the OSM importer and City Shape consumer). Marker: `docs/AGENT_OPS/QUEUE/reconcile/2026-10-25-city-generator-vision-state.md`. No generator, mesher, or `Scripts/city` doc was moved or rewritten. An AI wrote the links and this log; the two source docs are Kenny's text.
