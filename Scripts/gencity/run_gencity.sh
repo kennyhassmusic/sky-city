@@ -1,8 +1,10 @@
 #!/bin/bash
 # One round of the generated-city drive level: import (headless), plan, drive test + shots (PIE), clean-load read.
 #   Scripts/gencity/run_gencity.sh <building-types worktree> <seed> <tag> [import|landcover|drive|all]
-# Takes the shared Unreal lock (~/UnrealProjects/_bt_mgmt/UNREAL.lock, owner lane7) for the editor runs and frees it
-# after. The generator run (pipeline.py --seed N) happens before this, in the building-types worktree.
+# Takes the shared Unreal lock (~/UnrealProjects/_bt_mgmt/UNREAL.lock, owner $GEN_LOCK_OWNER, default lane7) for the
+# editor runs and frees it after; waits while UNREAL.next names another lane. The generator run (pipeline.py --seed N)
+# happens before this, in the building-types worktree. The import builds water B (our own river and lake water, the
+# channel cut into the ground; GEN_WATER=flat for the older flat surface, GEN_WATER_LOOK=v1|bright).
 set -u
 BT="$1"; SEED="$2"; TAG="$3"; WHAT="${4:-all}"
 HERE="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -18,13 +20,18 @@ LOGS="$HERE/Saved/GenCity/logs"; mkdir -p "$LOGS" "$TMPDIR"
 PYHERE="${GEN_LINK:-$HERE}"
 case "$PYHERE" in *" "*) echo "set GEN_LINK to a space-free symlink of $HERE" >&2; exit 2;; esac
 
+OWNER="${GEN_LOCK_OWNER:-lane7}"
+NEXT="$HOME/UnrealProjects/_bt_mgmt/UNREAL.next"
+next_ok() {   # UNREAL.next naming another lane means wait, even when the lock is free
+  [ ! -f "$NEXT" ] || grep -qx "$OWNER" "$NEXT"
+}
 take_lock() {
-  until mkdir "$LOCK" 2>/dev/null; do [ $((SECONDS % 60)) -lt 2 ] && echo "$(date +%H:%M:%S) lock held by $(cat "$LOCK/owner" 2>/dev/null)"; sleep 2; done
-  echo "lane7" > "$LOCK/owner"; HELD=1; echo "$(date +%H:%M:%S) lock taken"
+  until next_ok && mkdir "$LOCK" 2>/dev/null; do [ $((SECONDS % 60)) -lt 2 ] && echo "$(date +%H:%M:%S) lock held by $(cat "$LOCK/owner" 2>/dev/null)"; sleep 2; done
+  echo "$OWNER" > "$LOCK/owner"; HELD=1; echo "$(date +%H:%M:%S) lock taken"
 }
 HELD=0
 free_lock() {   # only ever the lock this run took (never another lane's)
-  if [ "$HELD" = 1 ] && [ "$(cat "$LOCK/owner" 2>/dev/null)" = lane7 ]; then
+  if [ "$HELD" = 1 ] && [ "$(cat "$LOCK/owner" 2>/dev/null)" = "$OWNER" ]; then
     rm -f "$LOCK/owner"; rmdir "$LOCK" 2>/dev/null; echo "$(date +%H:%M:%S) lock freed"
   fi
 }
@@ -43,7 +50,7 @@ take_lock
 if [ "$WHAT" = import ] || [ "$WHAT" = all ]; then
   sync_pack
   rm -f "$HERE/Saved/GenCity/import_status_$REGION.json"
-  GEN_BT="$BT" GEN_SEED="$SEED" "$UE_CMD" "$HERE/SkyCity.uproject" /Engine/Maps/Entry -unattended -nosplash \
+  GEN_BT="$BT" GEN_SEED="$SEED" GEN_WATER="${GEN_WATER:-b}" "$UE_CMD" "$HERE/SkyCity.uproject" /Engine/Maps/Entry -unattended -nosplash \
     -abslog="$LOGS/import_$TAG.log" -ExecutePythonScript="$HERE/Scripts/gencity/import_gencity_ue.py" > /dev/null 2>&1
   cat "$HERE/Saved/GenCity/import_status_$REGION.json" || exit 1
   grep -q '"ok"' "$HERE/Saved/GenCity/import_status_$REGION.json" || exit 1

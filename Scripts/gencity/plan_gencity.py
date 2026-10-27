@@ -152,6 +152,54 @@ def garage_ramp(layout, back_m=12.0):
             "plates": len(plates)}
 
 
+def river_bridge(zoned, flow):
+    """A car pose on the road bridge nearest the middle of the city's river (water B), the chase camera off to the
+    side so the river runs through the picture; None when there is no river or no road crosses it."""
+    rivers = (flow or {}).get("rivers") or []
+    if not rivers:
+        return None
+    st = rivers[0]["stations"]
+    mid = st[len(st) // 2]["at"]
+
+    def side(p):
+        s = min(st, key=lambda q: (q["at"][0] - p[0]) ** 2 + (q["at"][1] - p[1]) ** 2)
+        f = s["flow"]
+        return f[0] * (p[1] - s["at"][1]) - f[1] * (p[0] - s["at"][0])
+
+    best = None
+    for ident, (a, b, cls) in sorted(_edges(zoned).items()):
+        if cls not in ("arterial", "collector", "highway", "local"):
+            continue
+        sa, sb = side(a), side(b)
+        if sa * sb >= 0:
+            continue
+        t = sa / (sa - sb)
+        x, y = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
+        d = math.hypot(x - mid[0], y - mid[1]) + (0.0 if cls in ("arterial", "collector") else 400.0)
+        if best is None or d < best[0]:
+            best = (d, ident, a, b, t)
+    if best is None:
+        return None
+    _d, ident, a, b, t = best
+    return _pose("river_bridge", None, a, b, t, {"road": ident, "cam": {"dist_m": 16.0, "yaw": 70.0, "elev": 14.0}})
+
+
+def _waterflow(bt_root, saved, region):
+    """The city's waterflow (building-types city_waterflow.py): the file, else derived from the water record."""
+    path = os.path.join(saved, "waterflow_%s.json" % region)
+    if os.path.isfile(path):
+        return json.load(open(path))
+    wpath = os.path.join(saved, "water_%s.json" % region)
+    if not os.path.isfile(wpath):
+        return None
+    sys.path.insert(0, os.path.join(bt_root, "Scripts", "city"))
+    import city_waterflow
+    recs = json.load(open(wpath)).get("water") or []
+    return city_waterflow.document({"features": [{"id": r["id"], "name": r.get("name") or "", "type": "water",
+                                                  "level": r.get("level", 0.0), "points": r["polygon"]} for r in recs]},
+                                   region)
+
+
 def plan(bt_root, region, waypoint_m=60.0):
     saved = os.path.join(bt_root, "Saved", "CityGen")
     spawn = json.load(open(os.path.join(saved, "spawn_%s.json" % region)))
@@ -189,6 +237,9 @@ def plan(bt_root, region, waypoint_m=60.0):
     # up, looking over the city along the street.
     a, b = route["pts"][0], route["pts"][-1]
     shots.append(_pose("aerial", None, a, b, 0.25, {"cam": {"dist_m": 450.0, "yaw": 0.0, "elev": 40.0}}))
+    bridge = river_bridge(zoned, _waterflow(bt_root, saved, region))
+    if bridge:
+        shots.append(bridge)
     layout_path = os.path.join(saved, "kit_layout_%s.json" % region)
     ramp = garage_ramp(json.load(open(layout_path))) if os.path.isfile(layout_path) else None
     if ramp:

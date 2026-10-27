@@ -17,6 +17,12 @@ GEN_LINK=<space-free symlink to this folder> GEN_PACK=<building-types assets/sta
 | land cover (headless) | `landcover_gencity_ue.py` | hero trees/shrubs/logs (HISM per slot) and field slabs from the land-cover stage, with the starter pack's `/Game/LandCover` (copied in) |
 | drive + shots (PIE) | `drive_gencity_ue.py`, `read_gencity.py` | `Saved/GenCity/drive_<tag>.json`: 20 s full throttle along the route (stays above ground, inside the city), frame time, chase-camera shots per zone + aerial, clean load from the log |
 
+Water B (Kenny's pick, 2026-10-27) comes in with the import: building-types `water_ue.py` cuts the ground slab along
+the river (and around lakes), builds the riverbed and banks and the water surfaces with our own `M_L9_Water` /
+`M_L9_Bed` (looks in `MI_L9_Water` / `MI_L9_Bed`; `GEN_WATER=flat` for the old flat surface, `GEN_WATER_LOOK=v1|bright`).
+`run_water_gencity.sh <bt> <seed> <tag> look <v1|bright>` retunes the instances without a re-import;
+`... shots` takes the water poses (Saved/Water/plan.json). The plan adds a `river_bridge` shot.
+
 Every editor run takes the shared Unreal lock (`~/UnrealProjects/_bt_mgmt/UNREAL.lock`). Generated content is not
 committed (`.gitignore`). No City Sample content goes into the level: the generator's content lives under
 `/Game/GenCity`, `/Game/CityGen` and `/Game/LandCover`, and this branch switches the CitySamplePCG plugin off.

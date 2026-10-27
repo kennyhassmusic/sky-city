@@ -5,6 +5,8 @@ quits when done. The building-types importer (Scripts/city/import_city_ue.py in 
                                  straight major street, the route in <bt>/Saved/CityGen/drive_<region>.json
   --game-mode BP_SkyCityGameMode the level spawns the Skyster (ASkysterCar) as the player pawn
   --project <this project>       the read-only check looks at this project's Content
+  --water b                      water B: our own river and lake water, the channel and banks cut into the ground
+                                 (GEN_WATER=flat for the older flat surface, GEN_WATER_LOOK=v1|bright)
 Content lands in /Game/GenCity/<Name> (never /Game/City: that is City Sample and Sky City's own city), the level in
 /Game/Maps/GenCity_<Name>. Generated content is not committed (.gitignore: Content/GenCity, Content/Maps/GenCity_*).
 
@@ -95,7 +97,12 @@ def main():
                              "--level", "/Game/Maps/GenCity_%s" % name,
                              "--folder", "/Game/GenCity/%s" % name,
                              "--game-mode", GAME_MODE,
-                             "--project", root])
+                             "--project", root,
+                             # Water B (Kenny's pick, 2026-10-27): our own river/lake water and the channel cut into
+                             # the ground (building-types water_ue.py). GEN_WATER=flat keeps the older flat surface;
+                             # GEN_WATER_LOOK picks a water_ue.LOOKS entry (default "bright").
+                             "--water", os.environ.get("GEN_WATER", "b")]
+                            + (["--water-look", os.environ["GEN_WATER_LOOK"]] if os.environ.get("GEN_WATER_LOOK") else []))
         result = {"import": "ok", "region": region, "level": "/Game/Maps/GenCity_%s" % name}
         if os.environ.get("GEN_LIGHT", "1") != "0":
             import unreal
