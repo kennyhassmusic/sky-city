@@ -12,8 +12,12 @@ export TMPDIR="$HOME/UnrealProjects/_lane9_tmp"; mkdir -p "$TMPDIR"
 LOCK="$HOME/UnrealProjects/_bt_mgmt/UNREAL.lock"
 LOGS="$HERE/Saved/Water/logs"; mkdir -p "$LOGS"
 HELD=0
+NEXT="$HOME/UnrealProjects/_bt_mgmt/UNREAL.next"
+next_ok() {   # UNREAL.next naming another lane means: wait, even when the lock is free
+  [ ! -f "$NEXT" ] || grep -qx "lane9" "$NEXT"
+}
 take_lock() {
-  until mkdir "$LOCK" 2>/dev/null; do [ $((SECONDS % 120)) -lt 3 ] && echo "$(date +%H:%M:%S) lock held by $(cat "$LOCK/owner" 2>/dev/null)"; sleep 3; done
+  until next_ok && mkdir "$LOCK" 2>/dev/null; do [ $((SECONDS % 120)) -lt 3 ] && echo "$(date +%H:%M:%S) lock held by $(cat "$LOCK/owner" 2>/dev/null)"; sleep 3; done
   echo "lane9" > "$LOCK/owner"; HELD=1; echo "$(date +%H:%M:%S) lock taken"
 }
 free_lock() {
