@@ -261,7 +261,8 @@ def tick(dt):
             loc = p.get_actor_location()
             wps = PLAN["ramp"].get("waypoints_ue") or []
             wi = st.setdefault("ramp_wi", 0)
-            while wi < len(wps) - 1 and math.hypot(wps[wi][0] - loc.x, wps[wi][1] - loc.y) < 250.0:
+            # tight waypoints: cutting the corner into the ramp lane puts a wheel on its guard wall's end
+            while wi < len(wps) - 1 and math.hypot(wps[wi][0] - loc.x, wps[wi][1] - loc.y) < (80.0 if wi == 0 else 250.0):
                 wi += 1
             st["ramp_wi"] = wi
             if wps:
@@ -269,7 +270,12 @@ def tick(dt):
                 err = wrap(want - p.get_actor_rotation().yaw)
                 p.set_editor_property("test_steer", max(-1.0, min(1.0, err / 25.0)))
                 # slow on the turn, then climb
-                p.set_editor_property("test_throttle", RAMP_THROTTLE * (0.6 if abs(err) > 25.0 else 1.0))
+                near = wi == 0 and math.hypot(wps[0][0] - loc.x, wps[0][1] - loc.y) < 1500.0
+                p.set_editor_property("test_throttle", RAMP_THROTTLE * (0.5 if abs(err) > 25.0 or near else 1.0))
+                if near and math.hypot(wps[0][0] - loc.x, wps[0][1] - loc.y) < 400.0:
+                    p.set_editor_property("test_brake", 0.6)        # come to the turn slowly, then swing onto the ramp
+                else:
+                    p.set_editor_property("test_brake", 0.0)
             g = ground_under(gw, p)
             r["frames"] += 1
             r["max_z"] = max(r["max_z"], round(loc.z))

@@ -114,7 +114,8 @@ def garage_ramp(layout, back_m=12.0):
             # lane 5's entry record: drive in on yaw from at_cm, turn at lane_cm onto ramp_yaw, climb from the plate
             fp = e["first_plate_cm"]
             ry = math.radians(e["ramp_yaw"])
-            up = [round(fp[0] + math.cos(ry) * 2000.0, 1), round(fp[1] + math.sin(ry) * 2000.0, 1), fp[2]]
+            up = e.get("ramp_top_cm") or [round(fp[0] + math.cos(ry) * 2000.0, 1),
+                                           round(fp[1] + math.sin(ry) * 2000.0, 1), fp[2]]
             return {"lot": lot["id"], "start_ue": [e["at_cm"][0], e["at_cm"][1], 100.0], "yaw": e["yaw"],
                     "waypoints_ue": [e["lane_cm"], fp, up], "first_plate_ue": fp, "ramp_yaw": e["ramp_yaw"],
                     "source": "ramp_entry"}
