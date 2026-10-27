@@ -67,6 +67,6 @@ fi
 if [ "$WHAT" = drive ] || [ "$WHAT" = all ]; then
   rm -f "$HERE/Saved/GenCity/drive_$TAG.json"
   "$UE" "$HERE/SkyCity.uproject" "/Game/Maps/GenCity_Seed$SEED" -nosplash "$THROTTLE_OFF" -abslog="$LOGS/drive_$TAG.log" \
-    -ExecCmds="py $PYHERE/Scripts/gencity/drive_gencity_ue.py region=$REGION tag=$TAG" > /dev/null 2>&1
+    -ExecCmds="py $PYHERE/Scripts/gencity/drive_gencity_ue.py region=$REGION tag=$TAG ${GEN_DRIVE_ARGS:-}" > /dev/null 2>&1
   python3 -I "$HERE/Scripts/gencity/read_gencity.py" "$TAG"
 fi

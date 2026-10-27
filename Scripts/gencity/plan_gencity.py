@@ -116,9 +116,25 @@ def garage_ramp(layout, back_m=12.0):
             ry = math.radians(e["ramp_yaw"])
             up = e.get("ramp_top_cm") or [round(fp[0] + math.cos(ry) * 2000.0, 1),
                                            round(fp[1] + math.sin(ry) * 2000.0, 1), fp[2]]
+            wps = [e["lane_cm"], fp, up]
+            if e.get("turn_cm") and e.get("turn_end_cm"):
+                # lane 5 v5: straight to turn_cm, an arc of turn_radius_m to turn_end_cm, then up the ramp
+                t0, t1 = e["turn_cm"], e["turn_end_cm"]
+                h0 = math.radians(e["yaw"])
+                # arc centre: from turn_cm, perpendicular to the entry heading, on turn_end's side
+                nx, ny = -math.sin(h0), math.cos(h0)
+                side = 1.0 if (t1[0] - t0[0]) * nx + (t1[1] - t0[1]) * ny > 0 else -1.0
+                r = float(e.get("turn_radius_m") or 3.5) * 100.0
+                cx, cy = t0[0] + side * nx * r, t0[1] + side * ny * r
+                a0, a1 = math.atan2(t0[1] - cy, t0[0] - cx), math.atan2(t1[1] - cy, t1[0] - cx)
+                da = math.atan2(math.sin(a1 - a0), math.cos(a1 - a0))
+                arc = [[round(cx + r * math.cos(a0 + da * k / 6.0), 1), round(cy + r * math.sin(a0 + da * k / 6.0), 1), t0[2]]
+                       for k in range(1, 7)]
+                wps = [t0] + arc + [fp, up]
             return {"lot": lot["id"], "start_ue": [e["at_cm"][0], e["at_cm"][1], 100.0], "yaw": e["yaw"],
-                    "waypoints_ue": [e["lane_cm"], fp, up], "first_plate_ue": fp, "ramp_yaw": e["ramp_yaw"],
-                    "source": "ramp_entry"}
+                    "waypoints_ue": wps, "first_plate_ue": fp, "ramp_yaw": e["ramp_yaw"],
+                    "source": "ramp_entry", "turn_radius_m": e.get("turn_radius_m"),
+                    "rear_axle": "rear axle" in (e.get("note") or "") or float(e.get("turn_radius_m") or 0) >= 5.0}
     plates = (layout.get("groups") or {}).get("KIT_Awning|collision") or []
     if len(plates) < 2:
         return None

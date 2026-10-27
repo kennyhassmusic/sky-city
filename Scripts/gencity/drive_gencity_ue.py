@@ -53,6 +53,9 @@ OUT = os.path.join(ROOT, "Saved", "GenCity", "drive_%s.json" % TAG)
 SHOTS = os.path.join(ROOT, "Saved", "Screenshots", "MacEditor")
 RAMP_SECS = float(KV.get("ramp_secs", "18"))
 RAMP_THROTTLE = float(KV.get("ramp_throttle", "0.45"))
+RAMP_FRAMES = float(KV.get("ramp_frames", "0"))
+RAMP_TURN_MS = float(KV.get("ramp_turn_ms", "2.0"))     # speed cap through the turn (m/s)
+REAR_AXLE_CM = 148.26                                     # SkysterCar.cpp SkyRig WHEELS: rear axle behind the origin          # seconds between climb frames (0: none)
 SHOT_CVARS = ("r.MotionBlurQuality 0", "r.DefaultFeature.MotionBlur 0", "r.AntiAliasingMethod 1")
 ZERO = {"test_throttle": 0.0, "test_brake": 0.0, "test_steer": 0.0, "test_pitch": 0.0, "test_roll": 0.0,
         "test_stop": 0.0, "test_jump": False, "test_boost": False, "test_fly": False, "test_slide": False}
@@ -253,16 +256,22 @@ def tick(dt):
             st["ramp_z0"] = loc.z
             p.set_editor_property("test_brake", 0.0)
             p.set_editor_property("test_throttle", RAMP_THROTTLE)
-            st["ramp_t0"] = now
+            st["ramp_t0"] = unreal.GameplayStatics.get_time_seconds(gw)   # game time: hitches don't eat the run
             st["phase"] = "ramp"
             return
         if st["phase"] == "ramp":
             r = res["ramp"]
+            gnow = unreal.GameplayStatics.get_time_seconds(gw)
             loc = p.get_actor_location()
+            if PLAN["ramp"].get("rear_axle"):
+                # lane 5's route points are rear-axle positions: steer the rear axle (1.48 m behind the origin)
+                f = p.get_actor_forward_vector()
+                loc = unreal.Vector(loc.x - f.x * REAR_AXLE_CM, loc.y - f.y * REAR_AXLE_CM, loc.z)
             wps = PLAN["ramp"].get("waypoints_ue") or []
             wi = st.setdefault("ramp_wi", 0)
             # tight waypoints: cutting the corner into the ramp lane puts a wheel on its guard wall's end
-            while wi < len(wps) - 1 and math.hypot(wps[wi][0] - loc.x, wps[wi][1] - loc.y) < (80.0 if wi == 0 else 250.0):
+            nturn = max(1, len(wps) - 2)                      # every waypoint before the first plate is a turn point
+            while wi < len(wps) - 1 and math.hypot(wps[wi][0] - loc.x, wps[wi][1] - loc.y) < (90.0 if wi < nturn else 250.0):
                 wi += 1
             st["ramp_wi"] = wi
             if wps:
@@ -270,10 +279,16 @@ def tick(dt):
                 err = wrap(want - p.get_actor_rotation().yaw)
                 p.set_editor_property("test_steer", max(-1.0, min(1.0, err / 25.0)))
                 # slow on the turn, then climb
-                near = wi == 0 and math.hypot(wps[0][0] - loc.x, wps[0][1] - loc.y) < 1500.0
+                near = wi < nturn and math.hypot(wps[wi][0] - loc.x, wps[wi][1] - loc.y) < 1500.0
                 p.set_editor_property("test_throttle", RAMP_THROTTLE * (0.5 if abs(err) > 25.0 or near else 1.0))
-                if near and math.hypot(wps[0][0] - loc.x, wps[0][1] - loc.y) < 400.0:
-                    p.set_editor_property("test_brake", 0.6)        # come to the turn slowly, then swing onto the ramp
+                v = p.get_speed_mph() / 2.23694
+                cap = RAMP_TURN_MS if near else 99.0              # the planned turn radius needs a slow car (lock fades)
+                if v > cap:
+                    p.set_editor_property("test_throttle", 0.0)
+                    p.set_editor_property("test_brake", 0.5)
+                elif near and v > cap * 0.8:
+                    p.set_editor_property("test_throttle", RAMP_THROTTLE * 0.3)
+                    p.set_editor_property("test_brake", 0.0)
                 else:
                     p.set_editor_property("test_brake", 0.0)
             g = ground_under(gw, p)
@@ -284,9 +299,13 @@ def tick(dt):
             elif loc.z < g["z"] - 5.0:
                 r["below_ground"] += 1
             if g is not None and r["frames"] % 10 == 0:
-                r.setdefault("track", []).append([round(now - st["ramp_t0"], 2), round(loc.x), round(loc.y),
+                r.setdefault("track", []).append([round(gnow - st["ramp_t0"], 2), round(loc.x), round(loc.y),
                                                   round(loc.z), g["actor"][:30], p.get_mode()])
-            if now - st["ramp_t0"] >= RAMP_SECS:
+            if RAMP_FRAMES and gnow - st.get("ramp_shot", -99.0) >= RAMP_FRAMES:
+                st["ramp_shot"] = gnow                         # a frame sequence of the climb (gif)
+                unreal.SystemLibrary.execute_console_command(gw, "HighResShot 960x540")
+                r.setdefault("frame_walls", []).append(round(gnow - st["ramp_t0"], 2))
+            if gnow - st["ramp_t0"] >= RAMP_SECS:
                 r["climb_cm"] = round(r["max_z"] - st["ramp_z0"])
                 r["pass"] = bool(r["climb_cm"] >= 250 and r["below_ground"] == 0 and r["no_ground"] == 0)
                 for k, v in ZERO.items():
