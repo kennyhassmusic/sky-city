@@ -21,6 +21,46 @@ import sys
 import traceback
 
 GAME_MODE = "/Game/SkyCity/Blueprints/BP_SkyCityGameMode.BP_SkyCityGameMode_C"
+# The drive level's own light (v3, after v2's street-level shots): sunlit ground and sidewalks blew out and shaded
+# facades went near-black. Less exposure, a stronger sky fill and local exposure (UE's per-region tone curve:
+# scales < 1 compress the highlight and shadow contrast) keep detail at both ends. GEN_LIGHT=0 keeps the importer's.
+# The importer's sun (pitch -38, yaw -35) lights south and east faces and leaves north and west fronts in shade
+# (lane 2's check); a higher sun (pitch -48) shortens the street shadows and the stronger sky lifts the shaded fronts.
+DRIVE_LIGHT = {"sun_intensity": 7.0, "sun_pitch": -48.0, "sun_yaw": -35.0, "sky_intensity": 5.0, "exposure_bias": -0.2,
+               "local_highlight_contrast": 0.55, "local_shadow_contrast": 0.7}
+
+
+def drive_light(unreal):
+    """Apply DRIVE_LIGHT to the open level's Sun, SkyLight and Grade (the importer's stage)."""
+    sub = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    done = []
+    for actor in sub.get_all_level_actors():
+        label = actor.get_actor_label()
+        if label == "Sun":
+            actor.modify()
+            actor.light_component.set_editor_property("intensity", DRIVE_LIGHT["sun_intensity"])
+            actor.set_actor_rotation(unreal.Rotator(0.0, DRIVE_LIGHT["sun_pitch"], DRIVE_LIGHT["sun_yaw"]), False)
+            done.append(label)
+        elif label == "SkyLight":
+            actor.modify()
+            actor.light_component.set_editor_property("intensity", DRIVE_LIGHT["sky_intensity"])
+            done.append(label)
+        elif label == "Grade":
+            actor.modify()
+            settings = actor.get_editor_property("settings")
+            for name, value in (("auto_exposure_bias", DRIVE_LIGHT["exposure_bias"]),
+                                ("local_exposure_highlight_contrast_scale", DRIVE_LIGHT["local_highlight_contrast"]),
+                                ("local_exposure_shadow_contrast_scale", DRIVE_LIGHT["local_shadow_contrast"])):
+                try:
+                    settings.set_editor_property("override_" + name, True)
+                    settings.set_editor_property(name, value)
+                except Exception as exc:  # noqa: BLE001
+                    print("GENCITY note: post-process %s not set (%s)" % (name, exc))
+            actor.set_editor_property("settings", settings)
+            done.append(label)
+    unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_current_level()
+    print("GENCITY drive light", DRIVE_LIGHT, "on", done)
+    return done
 
 
 def _root():
@@ -57,6 +97,9 @@ def main():
                              "--game-mode", GAME_MODE,
                              "--project", root])
         result = {"import": "ok", "region": region, "level": "/Game/Maps/GenCity_%s" % name}
+        if os.environ.get("GEN_LIGHT", "1") != "0":
+            import unreal
+            result["light"] = drive_light(unreal)
     except BaseException:
         result = {"import": "error", "region": region, "trace": traceback.format_exc()}
     with open(status, "w") as handle:

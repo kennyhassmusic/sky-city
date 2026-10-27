@@ -108,6 +108,16 @@ def garage_ramp(layout, back_m=12.0):
     """A garage's drive ramp (office type, lane 5: "KIT_Awning|collision" plates, Unreal cm [x, y, z, yaw, sx, sy,
     sz]): the lowest plate and the next one up the ramp give the way in. Returns the car's start (back_m before the
     first plate, on the street), its yaw and the ramp's rise per plate, or None when the city has no garage."""
+    for lot in layout.get("lots") or []:
+        e = lot.get("ramp_entry") if lot.get("kind") == "garage" else None
+        if e:
+            # lane 5's entry record: drive in on yaw from at_cm, turn at lane_cm onto ramp_yaw, climb from the plate
+            fp = e["first_plate_cm"]
+            ry = math.radians(e["ramp_yaw"])
+            up = [round(fp[0] + math.cos(ry) * 2000.0, 1), round(fp[1] + math.sin(ry) * 2000.0, 1), fp[2]]
+            return {"lot": lot["id"], "start_ue": [e["at_cm"][0], e["at_cm"][1], 100.0], "yaw": e["yaw"],
+                    "waypoints_ue": [e["lane_cm"], fp, up], "first_plate_ue": fp, "ramp_yaw": e["ramp_yaw"],
+                    "source": "ramp_entry"}
     plates = (layout.get("groups") or {}).get("KIT_Awning|collision") or []
     if len(plates) < 2:
         return None

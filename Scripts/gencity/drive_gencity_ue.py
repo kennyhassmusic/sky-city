@@ -51,7 +51,7 @@ PAD_M = 60.0
 PLAN = json.load(open(os.path.join(ROOT, "Saved", "GenCity", "plan_%s.json" % REGION)))
 OUT = os.path.join(ROOT, "Saved", "GenCity", "drive_%s.json" % TAG)
 SHOTS = os.path.join(ROOT, "Saved", "Screenshots", "MacEditor")
-RAMP_SECS = float(KV.get("ramp_secs", "12"))
+RAMP_SECS = float(KV.get("ramp_secs", "18"))
 RAMP_THROTTLE = float(KV.get("ramp_throttle", "0.45"))
 SHOT_CVARS = ("r.MotionBlurQuality 0", "r.DefaultFeature.MotionBlur 0", "r.AntiAliasingMethod 1")
 ZERO = {"test_throttle": 0.0, "test_brake": 0.0, "test_steer": 0.0, "test_pitch": 0.0, "test_roll": 0.0,
@@ -259,6 +259,17 @@ def tick(dt):
         if st["phase"] == "ramp":
             r = res["ramp"]
             loc = p.get_actor_location()
+            wps = PLAN["ramp"].get("waypoints_ue") or []
+            wi = st.setdefault("ramp_wi", 0)
+            while wi < len(wps) - 1 and math.hypot(wps[wi][0] - loc.x, wps[wi][1] - loc.y) < 250.0:
+                wi += 1
+            st["ramp_wi"] = wi
+            if wps:
+                want = math.degrees(math.atan2(wps[wi][1] - loc.y, wps[wi][0] - loc.x))
+                err = wrap(want - p.get_actor_rotation().yaw)
+                p.set_editor_property("test_steer", max(-1.0, min(1.0, err / 25.0)))
+                # slow on the turn, then climb
+                p.set_editor_property("test_throttle", RAMP_THROTTLE * (0.6 if abs(err) > 25.0 else 1.0))
             g = ground_under(gw, p)
             r["frames"] += 1
             r["max_z"] = max(r["max_z"], round(loc.z))
