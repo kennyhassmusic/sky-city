@@ -90,3 +90,9 @@ node_modules/
 *.blend2
 *.tmp
 *.log
+
+# Generated-city drive levels (Scripts/gencity): regenerated from the building-types generator, never committed
+/Content/GenCity
+/Content/Maps/GenCity_*
+/Content/CityGen
+/Content/LandCover

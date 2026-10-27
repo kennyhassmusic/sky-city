@@ -37,7 +37,7 @@
 		},
 		{
 			"Name": "CitySamplePCG",
-			"Enabled": true
+			"Enabled": false
 		},
 		{
 			"Name": "PCGPrimitives",
