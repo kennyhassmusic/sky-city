@@ -19,7 +19,8 @@ LOGS="$PROJ/Saved/GenCity/logs"; mkdir -p "$LOGS" "$TMPDIR"
 case "$PYHERE$BT" in *" "*) echo "GEN_LINK and the bt path must have no spaces" >&2; exit 2;; esac
 HELD=0
 take_lock() {
-  until mkdir "$LOCK" 2>/dev/null; do [ $((SECONDS % 60)) -lt 2 ] && echo "$(date +%H:%M:%S) lock held by $(cat "$LOCK/owner" 2>/dev/null)"; sleep 2; done
+  NEXT="$HOME/UnrealProjects/_bt_mgmt/UNREAL.next"   # another lane queued first: wait for it to clear
+  until { [ ! -f "$NEXT" ] || grep -q lane8 "$NEXT"; } && mkdir "$LOCK" 2>/dev/null; do [ $((SECONDS % 60)) -lt 2 ] && echo "$(date +%H:%M:%S) lock held by $(cat "$LOCK/owner" 2>/dev/null)"; sleep 2; done
   echo "lane8" > "$LOCK/owner"; HELD=1; echo "$(date +%H:%M:%S) lock taken"
 }
 free_lock() {

@@ -127,7 +127,7 @@ def subjects():
     school = [f for f in F if f["kind"] == "school"]
     if school:
         s = max(school, key=lambda f: f["exposure"])
-        eye, tgt, seen = flag_camera([s], 800.0)
+        eye, tgt, seen = flag_camera([s], 900.0, up_cm=-300.0)
         out.append({"name": "school_flag", "eye": eye, "target": tgt, "seen": seen, "flags": [s["hoist_top_ue"]]})
     # the flag row: the biggest group of flags within 20 m of each other
     best = []
@@ -136,7 +136,7 @@ def subjects():
         if len(grp) > len(best):
             best = grp
     if len(best) > 1:
-        eye, tgt, seen = flag_camera(best, 2200.0, up_cm=-150.0)
+        eye, tgt, seen = flag_camera(best, 2000.0, up_cm=-500.0)
         out.append({"name": "flag_row", "eye": eye, "target": tgt, "seen": seen, "flags": [f["hoist_top_ue"] for f in best]})
     # trees: the plan's suburbs pose, from a little above the street
     for s in PLAN.get("shots", []):
