@@ -44,7 +44,8 @@ st = {"t0": time.time(), "steps": {}, "probe": {}, "errors": []}
 
 def save_status():
     st["secs"] = round(time.time() - st["t0"], 1)
-    keep = {k: v for k, v in st.items() if k not in ("rows", "slab_material", "park_ground")}
+    keep = {k: v for k, v in st.items() if k not in ("rows", "slab_material", "park_ground", "park_mat",
+                                                     "pond_trace_points")}
     with open(STATUS, "w") as h:
         json.dump(keep, h, indent=1, sort_keys=True, default=str)
 
@@ -247,7 +248,7 @@ def material_water():
     rga = mask(mat, na, -780, -300, r=True, g=True)
     rgb_ = mask(mat, nb, -780, -60, r=True, g=True)
     rg = op(mat, unreal.MaterialExpressionAdd, rga, rgb_, -620, -200)
-    rgs = op(mat, unreal.MaterialExpressionMultiply, rg, const(mat, 0.55, -780, 60), -480, -200)
+    rgs = op(mat, unreal.MaterialExpressionMultiply, rg, const(mat, 0.28, -780, 60), -480, -200)
     n3 = op(mat, unreal.MaterialExpressionAppendVector, rgs, const(mat, 1.0, -620, 60), -340, -200)
     nn = E(mat, unreal.MaterialExpressionNormalize, -200, -200)
     C(n3, nn)
@@ -304,8 +305,8 @@ def material_water():
     # Single Layer Water: absorption and scattering per metre (a green-brown lowland river).
     out = E(mat, unreal.MaterialExpressionSingleLayerWaterMaterialOutput, 0, 800)
     wired = []
-    for value, names in (((0.012, 0.022, 0.018), ("ScatteringCoefficients", "Scattering Coefficients")),
-                         ((0.42, 0.13, 0.09), ("AbsorptionCoefficients", "Absorption Coefficients")),
+    for value, names in (((0.035, 0.06, 0.045), ("ScatteringCoefficients", "Scattering Coefficients")),
+                         ((0.32, 0.1, 0.085), ("AbsorptionCoefficients", "Absorption Coefficients")),
                          (0.1, ("PhaseG", "Phase G"))):
         node = const(mat, value, -250, 800 + 80 * len(wired))
         for nm in names:
@@ -372,8 +373,45 @@ def clear():
 def pond_site():
     """Clear the demo pond's site in the park: trees and props within its radius, and the park's ground pieces."""
     cx, cy, r = PLAN["pond"]
-    reach = r * 1.25 + 5.0
-    out = {"instances_removed": 0, "actors_removed": [], "ground": []}
+    reach = r * 1.6 + 6.0
+    out = {"instances_removed": 0, "actors_removed": [], "ground": [], "traced": []}
+    # What covers the pond's site (the park's lawn): line traces down at the centre and around it.
+    world = unreal.EditorLevelLibrary.get_editor_world()
+    import math as _m
+    hidden = set()
+    for k in range(9):
+        ang = 2 * _m.pi * k / 8.0
+        px, py = (cx, cy) if k == 8 else (cx + 0.6 * r * _m.cos(ang), cy + 0.6 * r * _m.sin(ang))
+        for _ in range(4):
+            hit = unreal.SystemLibrary.line_trace_single(world, ue((px, py, 50.0)), ue((px, py, -20.0)),
+                                                         unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, True, [],
+                                                         unreal.DrawDebugTrace.NONE, True)
+            t = hit.to_tuple() if hit is not None else None
+            if not t or not t[0]:
+                break
+            act, comp = t[9], t[10]
+            name = (act.get_actor_label() if act else "?") + "/" + (comp.get_name() if comp else "?")
+            try:
+                o, e, _r = unreal.SystemLibrary.get_component_bounds(comp)
+                size = max(e.x, e.y) * 2 / 100.0
+            except Exception:
+                o = e = None
+                size = -1
+            out["traced"].append({"hit": name, "z": round(t[5].z), "size_m": round(size)})
+            if name in hidden:
+                break
+            if 0 < size < 300.0 or "Lane9" in name:
+                hidden.add(name)
+                mat = comp.get_material(0) if hasattr(comp, "get_material") else None
+                st.setdefault("park_ground", []).append((size, ((o.z + e.z) / 100.0) if o else 0.03, mat))
+                comp.set_editor_property("visible", False)
+                comp.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+            else:
+                break
+    out["hidden_components"] = sorted(hidden)
+    st["pond_trace_points"] = [(cx + 0.7 * r * _m.cos(2 * _m.pi * k / 12.0), cy + 0.7 * r * _m.sin(2 * _m.pi * k / 12.0))
+                               for k in range(12)] + [(cx, cy), (cx + 0.35 * r, cy), (cx - 0.35 * r, cy),
+                                                      (cx, cy + 0.35 * r), (cx, cy - 0.35 * r)]
     for a in eas.get_all_level_actors():
         tags = [str(t) for t in a.get_editor_property("tags")]
         if any(t.startswith("lane9") for t in tags):
@@ -381,11 +419,28 @@ def pond_site():
         for comp in a.get_components_by_class(unreal.InstancedStaticMeshComponent):
             n = comp.get_instance_count()
             kill = []
+            mesh = comp.get_editor_property("static_mesh")
+            mb = mesh.get_bounding_box() if mesh else None
             for i in range(n):
                 tr = comp.get_instance_transform(i, True)
                 x, y = tr.translation.y / 100.0, tr.translation.x / 100.0
                 if (x - cx) ** 2 + (y - cy) ** 2 < reach ** 2:
                     kill.append(i)
+                    continue
+                if mb is None:
+                    continue
+                # A flat ground piece (a lawn slab) whose footprint holds the pond's centre.
+                pts = [tr.transform_location(unreal.Vector(px, py, pz)) for px in (mb.min.x, mb.max.x)
+                       for py in (mb.min.y, mb.max.y) for pz in (mb.min.z, mb.max.z)]
+                xs = [p.y / 100.0 for p in pts]
+                ys = [p.x / 100.0 for p in pts]
+                zs = [p.z / 100.0 for p in pts]
+                if max(zs) - min(zs) < 1.0 and max(zs) < 1.0 and min(xs) <= cx <= max(xs) and min(ys) <= cy <= max(ys):
+                    kill.append(i)
+                    st.setdefault("park_ground", []).append((max(max(xs) - min(xs), max(ys) - min(ys)), max(zs),
+                                                             comp.get_material(0)))
+                    out.setdefault("lawn_instances", []).append([a.get_actor_label(), comp.get_name(), i,
+                                                                 round(max(zs), 3)])
             if kill:
                 comp.remove_instances(kill)
                 out["instances_removed"] += len(kill)
@@ -397,6 +452,8 @@ def pond_site():
             continue
         size = max(x1 - x0, y1 - y0)
         label = a.get_actor_label()
+        if top < 1.0 and not (x0 <= cx <= x1 and y0 <= cy <= y1):
+            continue
         if size > 260.0:
             out["ground"].append({"kept_large": label, "size_m": round(size), "top": round(top, 3)})
             continue
@@ -408,6 +465,39 @@ def pond_site():
         out["actors_removed"].append(label)
         eas.destroy_actor(a)
     return out
+
+
+@step("pond_dig")
+def pond_dig():
+    """Whatever still covers the pond after pond_site: trace down at points inside it and remove the hit instance
+    (the hit's item index) or small actor, until the trace finds nothing or lane 9's own geometry."""
+    world = unreal.EditorLevelLibrary.get_editor_world()
+    removed = []
+    for (px, py) in st.get("pond_trace_points", []):
+        for _ in range(8):
+            hit = unreal.SystemLibrary.line_trace_single(world, ue((px, py, 60.0)), ue((px, py, -0.3)),
+                                                         unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, True, [],
+                                                         unreal.DrawDebugTrace.NONE, True)
+            t = hit.to_tuple() if hit is not None else None
+            if not t or not t[0]:
+                break
+            act, comp, item = t[9], t[10], t[13]
+            label = act.get_actor_label() if act else "?"
+            if label.startswith("L9"):
+                break
+            if isinstance(comp, unreal.InstancedStaticMeshComponent) and item is not None and item >= 0:
+                if "park_mat" not in st:
+                    st["park_mat"] = comp.get_material(0)
+                    st["park_top"] = t[5].z / 100.0
+                comp.remove_instance(item)
+                removed.append([label, comp.get_name(), item, round(t[5].z)])
+            elif isinstance(act, unreal.StaticMeshActor):
+                removed.append([label, "actor", -1, round(t[5].z)])
+                eas.destroy_actor(act)
+            else:
+                removed.append([label, comp.get_name() if comp else "?", "kept", round(t[5].z)])
+                break
+    return removed
 
 
 @step("shared_geometry")
@@ -433,8 +523,10 @@ def shared_geometry():
     place(import_glb(bw, "SM_L9_PondBed"), "L9_PondBed", "lane9_shared", "Shared", bed_mat)
     park = PLAN.get("park")
     pg = sorted(st.get("park_ground") or [], key=lambda t: -t[0])
-    if park and pg:
-        _size, top, mat = pg[0]
+    if park and (pg or st.get("park_mat")):
+        _size, top, mat = pg[0] if pg else (0, 0.15, None)
+        if st.get("park_mat") is not None:
+            mat, top = st["park_mat"], st["park_top"]
         ring = G.with_hole([tuple(p) for p in park["polygon"]], [tuple(p) for p in lake["outline"]])
         pm = G.polygon_mesh(ring, top)
         place(import_glb(pm, "SM_L9_ParkAroundPond"), "L9_ParkAroundPond", "lane9_shared", "Shared", mat)
@@ -486,6 +578,24 @@ def option_a():
     # The river: every 3rd station, carried 120 m past the city's edges.
     rrows = G.extended(river, 120.0, 120.0)[::3]
     surface = river["surface_m"]
+    try:
+        cdo = unreal.get_default_object(unreal.WaterSplineComponent)
+        dd = cdo.get_editor_property("water_spline_defaults")
+        mw = sum(r["w"] for r in rrows) / len(rrows)
+        md = sum(r["d"] for r in rrows) / len(rrows) - (river["level"] - surface)
+        dd.set_editor_property("default_width", mw * 100.0)
+        dd.set_editor_property("default_depth", md * 100.0)
+        cdo.set_editor_property("water_spline_defaults", dd)
+        out["cdo_defaults"] = [mw * 100.0, md * 100.0]
+        tmpl = unreal.get_default_object(unreal.WaterBodyRiver).get_water_spline()
+        if tmpl is not None:
+            td = tmpl.get_editor_property("water_spline_defaults")
+            td.set_editor_property("default_width", mw * 100.0)
+            td.set_editor_property("default_depth", md * 100.0)
+            tmpl.set_editor_property("water_spline_defaults", td)
+            out["template_defaults"] = True
+    except Exception:
+        out["cdo_error"] = traceback.format_exc()[-300:]
     body = eas.spawn_actor_from_class(unreal.WaterBodyRiver, ue((rrows[0]["at"][0], rrows[0]["at"][1], surface)),
                                       unreal.Rotator(0, 0, 0))
     tag(body, "lane9_A", "L9A_River_Longcut", "A_WaterPlugin")
@@ -506,6 +616,10 @@ def option_a():
         out["defaults_error"] = traceback.format_exc()[-400:]
     pts = [ue((r["at"][0], r["at"][1], surface)) for r in rrows]
     spline.set_spline_points(pts, unreal.SplineCoordinateSpace.WORLD, True)
+    try:
+        out["readback_before"] = body.get_water_body_component().get_river_width_at_spline_input_key(0.0)
+    except Exception:
+        pass
     out["river_points"] = spline.get_number_of_spline_points()
     # Per-point width, depth and velocity (the spline's metadata), when Python can reach it.
     meta = None
@@ -531,7 +645,63 @@ def option_a():
                     pass
             if meta:
                 break
+    if meta is None:
+        # UWaterSplineMetadata isn't exported to Python; reach the actor's subobject by path and use reflection.
+        for sub in ("WaterSplineMetadata", "SplineMetadata"):
+            for base in (body.get_path_name(), spline.get_path_name()):
+                try:
+                    o = unreal.find_object(None, base + "." + sub)
+                except Exception:
+                    o = None
+                if o is not None:
+                    meta = o
+                    out["metadata_path"] = base + "." + sub
+                    break
+            if meta:
+                break
     out["metadata"] = meta.get_class().get_name() if meta else None
+    # Per point through lane 9's C++ helper (Source/SkyCity/LaneWaterTools: UWaterSplineMetadata isn't reachable
+    # from Python in 5.8). Width at the waterline (the bank slope puts it inside the bank lines), depth below the
+    # surface, velocity scalar from the generator's speed.
+    if hasattr(unreal, "LaneWaterTools"):
+        ws, ds, vs = [], [], []
+        drop = river["level"] - surface
+        for r in rrows:
+            e0 = G.shore_offset(drop, r["d"], river["bank_slope"]) - 0.4
+            ws.append(float((r["w"] - 2.0 * e0) * 100.0))
+            ds.append(float((r["d"] - drop) * 100.0))
+            vs.append(float(r["v"] / 0.6))
+        out["cpp_points"] = unreal.LaneWaterTools.set_water_body_point_curves(body, ws, ds, vs)
+        out["cpp_width_cm"] = [round(min(ws)), round(max(ws))]
+    else:
+        out["cpp_points"] = "LaneWaterTools not loaded"
+    # Per point through the spline's metadata-by-name API (UE 5.x USplineComponent).
+    comp0 = body.get_water_body_component()
+    tries = []
+    for i, r in enumerate(rrows):
+        vals = {"RiverWidth": r["w"] * 100.0, "Depth": (r["d"] - (river["level"] - surface)) * 100.0,
+                "WaterVelocityScalar": r["v"] / 0.6}
+        for name, val in vals.items():
+            done = False
+            for args in ((float(val), float(i), unreal.Name(name)), (float(i), float(val), unreal.Name(name)),
+                         (unreal.Name(name), float(i), float(val))):
+                try:
+                    spline.set_float_property_at_spline_input_key(*args)
+                    done = True
+                    break
+                except Exception as exc:
+                    if i == 0:
+                        tries.append("%s %s" % (name, str(exc)[:160]))
+            if not done and i == 0:
+                tries.append("%s: no signature worked" % name)
+    out["per_point_tries"] = tries[:6]
+    try:
+        out["readback"] = {"width_cm_0": comp0.get_river_width_at_spline_input_key(0.0),
+                           "width_cm_mid": comp0.get_river_width_at_spline_input_key(float(len(rrows) // 2)),
+                           "depth_cm_0": comp0.get_river_depth_at_spline_input_key(0.0),
+                           "vel_0": comp0.get_water_velocity_at_spline_input_key(0.0)}
+    except Exception:
+        out["readback_error"] = traceback.format_exc()[-300:]
     if meta:
         st["probe"]["metadata"] = probe(meta, ("width", "depth", "veloc", "audio", "curve"))
         try:
@@ -539,6 +709,7 @@ def option_a():
                                      ("water_velocity_scalar", "v", 1.0 / 0.6)):
                 curve = meta.get_editor_property(prop)
                 cpts = list(curve.get_editor_property("points"))
+                out.setdefault("meta_points", {})[prop] = len(cpts)
                 for i, cp in enumerate(cpts):
                     r = rrows[min(i, len(rrows) - 1)]
                     val = r[key] * scale if key != "d" else (r["d"] - (river["level"] - surface)) * 100.0
@@ -613,6 +784,7 @@ def main():
     material_water()
     clear()
     pond_site()
+    pond_dig()
     shared_geometry()
     option_b()
     option_a()

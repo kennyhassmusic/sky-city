@@ -24,6 +24,12 @@ free_lock() {
 trap free_lock EXIT
 take_lock
 T0=$(date +%s)
+if [ "$WHAT" = all ]; then
+  "$UE_CMD" "$HERE/SkyCity.uproject" /Engine/Maps/Entry -unattended -nosplash -abslog="$LOGS/build_$TAG.log" \
+    -ExecutePythonScript="$HERE/Scripts/water/build_water_ue.py" > /dev/null 2>&1
+  echo "$(date +%H:%M:%S) build done in $(( $(date +%s) - T0 )) s"
+  WHAT=shots
+fi
 if [ "$WHAT" = build ]; then
   "$UE_CMD" "$HERE/SkyCity.uproject" /Engine/Maps/Entry -unattended -nosplash -abslog="$LOGS/build_$TAG.log" \
     -ExecutePythonScript="$HERE/Scripts/water/build_water_ue.py" > /dev/null 2>&1 &

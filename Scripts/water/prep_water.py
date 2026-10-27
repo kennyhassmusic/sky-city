@@ -52,7 +52,7 @@ tgt = (s["at"][0] - f[0] * 38.0 - right[0] * 8.0, s["at"][1] - f[1] * 38.0 - rig
 poses["riverbank"] = look(cam, tgt)
 s = station_near_y(760.0)
 poses["aerial"] = look((s["at"][0] + 230.0, 520.0, 170.0), (s["at"][0], 800.0, 0.0))
-poses["lake"] = look((POND[0] + 30.0, POND[1] - 38.0, 4.0), (POND[0] - 4.0, POND[1] + 6.0, -0.5))
+poses["lake"] = look((POND[0] + 22.0, POND[1] - 26.0, 4.5), (POND[0] - 6.0, POND[1] + 8.0, -0.5))
 # The car test: on the east bank, facing west across the river, and dropped over the middle.
 s = station_near_y(1000.0)
 car_bank = (bank[0] + right[0] * 12.0, bank[1] + right[1] * 12.0)

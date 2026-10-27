@@ -319,6 +319,9 @@ def tick(dt):
             for c in CVARS:
                 cmd(c)
             res["counts"] = {"A": len(tagged("lane9_A")), "B": len(tagged("lane9_B"))}
+            # The car's HUD off for the pictures.
+            cmd("ShowHUD")
+            cmd("DisableAllScreenMessages")
             S["q"] = plan_queue()
             S["phase"] = "run"
             write()

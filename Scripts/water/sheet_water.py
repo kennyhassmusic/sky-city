@@ -28,11 +28,12 @@ for key, frames in sorted(res["frames"].items()):
     if len(imgs) < 2:
         continue
     ts = [fr["t"] for fr in frames if fr.get("file")]
-    gap = max(40, int(1000 * (ts[-1] - ts[0]) / max(1, len(ts) - 1)))
+    real = int(1000 * (ts[-1] - ts[0]) / max(1, len(ts) - 1))
+    gap = 125                                          # played ~8x faster than captured (one frame per ~1 s)
     name = "lane9_water_%s_flow.gif" % key           # e.g. lane9_water_A_bridge_flow.gif
     pal = [im.quantize(colors=200, method=Image.Quantize.MEDIANCUT) for im in imgs]
     pal[0].save(os.path.join(OUT, name), save_all=True, append_images=pal[1:], duration=gap, loop=0)
-    made.append("%s (%d frames, %d ms apart)" % (name, len(imgs), gap))
+    made.append("%s (%d frames, captured %d ms apart, played at %d ms)" % (name, len(imgs), real, gap))
 W, H, PADT = 960, 540, 40
 modes = [m for m in ("A", "B") if any((m, p) in shots for p in POSES)]
 sheet = Image.new("RGB", (W * len(modes), PADT + H * len(POSES)), (24, 24, 24))

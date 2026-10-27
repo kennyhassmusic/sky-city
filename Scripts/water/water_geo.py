@@ -85,7 +85,9 @@ class Mesh:
         nrm = self.normals()
         positions = [(p[1], p[2], p[0]) for p in self.p]
         normals = [(n[1], n[2], n[0]) for n in nrm]
-        indices = [i for a, b, c in self.tris for i in (a, c, b)]   # the swizzle mirrors: reverse the winding
+        # Unreal's glTF import keeps plan-CCW (seen from +z) as front-facing for this swizzle (checked in v1: the
+        # reversed winding drew every one-sided mesh back-facing).
+        indices = [i for a, b, c in self.tris for i in (a, b, c)]
         big = len(positions) > 65535
         blobs = [b"".join(struct.pack("<3f", *v) for v in positions),
                  b"".join(struct.pack("<3f", *v) for v in normals),
