@@ -16,6 +16,62 @@ Keep to facts an agent or Kenny can act on: paths, commits, PRs, review states, 
 
 ## Entries
 
+## 10/27/2026, 08:30:19 CT — Reconciled (claude-code) — 2026-10-23-texture-packs-wired
+- State at start: branch `gen/drive-preview` off `main`; host Worship-Al-Pastor-2; no Claude session for /Users/kennyhass/UnrealProjects/SkyCity or its worktrees touched gen/drive-preview — logPath null; write-scope and test-evidence not checked (pass --log)
+- Did: reconciled; 16 files changed; ? turns; $0.00; no PR
+- Found: Warden PASS — 
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: Verifier/Manager reviews; ledger `luca ledger --repo skycity`; session log `n/a`
+
+## 10/27/2026, 08:30:16 CT — Reconciled (claude-code) — 2026-10-23-texture-pack-loader
+- State at start: branch `gen/drive-preview` off `main`; host Worship-Al-Pastor-2; no Claude session for /Users/kennyhass/UnrealProjects/SkyCity or its worktrees touched gen/drive-preview — logPath null; write-scope and test-evidence not checked (pass --log)
+- Did: reconciled; 16 files changed; ? turns; $0.00; no PR
+- Found: Warden PASS — 
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: Verifier/Manager reviews; ledger `luca ledger --repo skycity`; session log `n/a`
+
+## 10/27/2026, 08:30:14 CT — Reconciled (claude-code) — 2026-10-23-road-dressing-stage1
+- State at start: branch `gen/drive-preview` off `main`; host Worship-Al-Pastor-2; no Claude session for /Users/kennyhass/UnrealProjects/SkyCity or its worktrees touched gen/drive-preview — logPath null; write-scope and test-evidence not checked (pass --log)
+- Did: reconciled; 16 files changed; ? turns; $0.00; no PR
+- Found: Warden PASS — 
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: Verifier/Manager reviews; ledger `luca ledger --repo skycity`; session log `n/a`
+
+## 10/27/2026, 08:30:11 CT — Reconciled (claude-code) — 2026-10-23-pr3-per-room-interiors
+- State at start: branch `gen/drive-preview` off `main`; host Worship-Al-Pastor-2; no Claude session for /Users/kennyhass/UnrealProjects/SkyCity or its worktrees touched gen/drive-preview — logPath null; write-scope and test-evidence not checked (pass --log)
+- Did: reconciled; 16 files changed; ? turns; $0.00; no PR
+- Found: Warden PASS — 
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: Verifier/Manager reviews; ledger `luca ledger --repo skycity`; session log `n/a`
+
+## 10/27/2026, 08:30:08 CT — Reconciled (claude-code) — 2026-10-23-job2-pr-stack-order
+- State at start: branch `gen/drive-preview` off `main`; host Worship-Al-Pastor-2; no Claude session for /Users/kennyhass/UnrealProjects/SkyCity or its worktrees touched gen/drive-preview — logPath null; write-scope and test-evidence not checked (pass --log)
+- Did: reconciled; 16 files changed; ? turns; $0.00; no PR
+- Found: Warden PASS — 
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: Verifier/Manager reviews; ledger `luca ledger --repo skycity`; session log `n/a`
+
+## 10/27/2026, 08:30:06 CT — Reconciled (claude-code) — 2026-10-23-citywide-generate
+- State at start: branch `gen/drive-preview` off `main`; host Worship-Al-Pastor-2; no Claude session for /Users/kennyhass/UnrealProjects/SkyCity or its worktrees touched gen/drive-preview — logPath null; write-scope and test-evidence not checked (pass --log)
+- Did: reconciled; 16 files changed; ? turns; $0.00; no PR
+- Found: Warden PASS — 
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: Verifier/Manager reviews; ledger `luca ledger --repo skycity`; session log `n/a`
+
+## 10/27/2026, 08:30:03 CT — Reconciled (claude-code) — 2026-10-23-chicago-gen-map
+- State at start: branch `gen/drive-preview` off `main`; host Worship-Al-Pastor-2; no Claude session for /Users/kennyhass/UnrealProjects/SkyCity or its worktrees touched gen/drive-preview — logPath null; write-scope and test-evidence not checked (pass --log)
+- Did: reconciled; 16 files changed; ? turns; $0.00; no PR
+- Found: Warden PASS — 
+- Asks for Kenny: none
+- SCALE CHECK: no change
+- Next: Verifier/Manager reviews; ledger `luca ledger --repo skycity`; session log `n/a`
+
 ## 2026-10-25 15:30 CDT — cursor cloud agent — City Generator Vision and State committed
 - State at start: branch `main` at `a25704a`. Phase 0 gap 13: the Vision and State docs existed only as Kenny's 2026-10-25 delivery, not in this repo.
 - Did: branch `cursor/city-generator-vision-state-06a4`. Added `docs/CITY_GENERATOR_VISION.md` and `docs/CITY_GENERATOR_STATE.md` byte-for-byte from that delivery. Linked both from the top of `AGENTS.md` and `CLAUDE.md` (Vision = stable contract, State = living gaps; City Shape in building-types is the master spine; this repo's generator becomes the OSM importer and City Shape consumer). Marker: `docs/AGENT_OPS/QUEUE/reconcile/2026-10-25-city-generator-vision-state.md`. No generator, mesher, or `Scripts/city` doc was moved or rewritten. An AI wrote the links and this log; the two source docs are Kenny's text.
