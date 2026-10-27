@@ -48,6 +48,11 @@ if [ "$WHAT" = import ] || [ "$WHAT" = all ]; then
   cat "$HERE/Saved/GenCity/import_status_$REGION.json" || exit 1
   grep -q '"ok"' "$HERE/Saved/GenCity/import_status_$REGION.json" || exit 1
   python3 -I "$HERE/Scripts/gencity/plan_gencity.py" --bt "$BT" --seed "$SEED" || exit 1
+  if [ "${GEN_WIND:-0}" = 1 ]; then
+    # Lane 8's wind (gen/wind + building-types fx/wind): flags, wind source, foliage/awning sway on the level.
+    GEN_BT="$BT" GEN_SEED="$SEED" "$UE_CMD" "$HERE/SkyCity.uproject" "/Game/Maps/GenCity_Seed$SEED" -unattended -nosplash \
+      -abslog="$LOGS/wind_$TAG.log" -ExecutePythonScript="$HERE/Scripts/gencity/wind_gencity_ue.py" > /dev/null 2>&1
+  fi
 fi
 # v3: lane 4's land-cover ground, crops and hero scatter come in with the import (building-types
 # landcover/unreal-ground, import_city_ue.merge_landcover). This older step (hero HISMs + flat field slabs) runs only
