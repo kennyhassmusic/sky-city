@@ -42,7 +42,7 @@ fi
 if [ "$WHAT" = shots ] || [ "$WHAT" = all ]; then
   rm -f "$PROJ/Saved/GenCity/wind_$TAG.json"
   "$UE" "$PROJ/SkyCity.uproject" "/Game/Maps/GenCity_Seed$SEED" -nosplash "$THROTTLE_OFF" -abslog="$LOGS/wind_shots_$TAG.log" \
-    -ExecCmds="py $PYHERE/Scripts/gencity/wind_shots_gencity_ue.py region=$REGION bt=$BT tag=$TAG" > /dev/null 2>&1
+    -ExecCmds="py $PYHERE/Scripts/gencity/wind_shots_gencity_ue.py region=$REGION bt=$BT tag=$TAG settle=${SETTLE:-180}" > /dev/null 2>&1
   python3 -I "$PYHERE/Scripts/gencity/wind_shots_gencity_ue.py" --read "$LOGS/wind_shots_$TAG.log"
   python3 -c "import json;d=json.load(open('$PROJ/Saved/GenCity/wind_$TAG.json'));print({k:d.get(k) for k in ('done','error','perf','cams_found')}, len(d.get('clips',[])),'frames')"
 fi

@@ -139,7 +139,7 @@ def place_cameras(subs):
 
 
 def mpc(gw, name, value):
-    unreal.KismetMaterialLibrary.set_scalar_parameter_value(gw, MPC, name, float(value))
+    unreal.MaterialLibrary.set_scalar_parameter_value(gw, MPC, name, float(value))
 
 
 def finish():
