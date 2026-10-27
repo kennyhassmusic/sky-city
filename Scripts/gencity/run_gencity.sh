@@ -19,14 +19,29 @@ PYHERE="${GEN_LINK:-$HERE}"
 case "$PYHERE" in *" "*) echo "set GEN_LINK to a space-free symlink of $HERE" >&2; exit 2;; esac
 
 take_lock() {
-  until mkdir "$LOCK" 2>/dev/null; do echo "$(date +%H:%M:%S) lock held by $(cat "$LOCK/owner" 2>/dev/null)"; sleep 20; done
-  echo "lane7" > "$LOCK/owner"; echo "$(date +%H:%M:%S) lock taken"
+  until mkdir "$LOCK" 2>/dev/null; do [ $((SECONDS % 60)) -lt 2 ] && echo "$(date +%H:%M:%S) lock held by $(cat "$LOCK/owner" 2>/dev/null)"; sleep 2; done
+  echo "lane7" > "$LOCK/owner"; HELD=1; echo "$(date +%H:%M:%S) lock taken"
 }
-free_lock() { rm -f "$LOCK/owner"; rmdir "$LOCK" 2>/dev/null; echo "$(date +%H:%M:%S) lock freed"; }
+HELD=0
+free_lock() {   # only ever the lock this run took (never another lane's)
+  if [ "$HELD" = 1 ] && [ "$(cat "$LOCK/owner" 2>/dev/null)" = lane7 ]; then
+    rm -f "$LOCK/owner"; rmdir "$LOCK" 2>/dev/null; echo "$(date +%H:%M:%S) lock freed"
+  fi
+}
 trap free_lock EXIT
 
+sync_pack() {
+  # The starter pack's Unreal content (building-types assets/starter-pack, /Game/LandCover), copied in, not committed.
+  PACK="${GEN_PACK:-$BT/Content/LandCover}"
+  if [ -f "$PACK/Materials/MPC_LC_Season.uasset" ] && head -c 4 "$PACK/Materials/MPC_LC_Season.uasset" | xxd | grep -q c183; then
+    rsync -a "$PACK/" "$HERE/Content/LandCover/" && chmod -R u+w "$HERE/Content/LandCover"
+  else
+    echo "no Unreal starter pack at $PACK (LFS not pulled?); keeping $HERE/Content/LandCover as it is"
+  fi
+}
 take_lock
 if [ "$WHAT" = import ] || [ "$WHAT" = all ]; then
+  sync_pack
   rm -f "$HERE/Saved/GenCity/import_status_$REGION.json"
   GEN_BT="$BT" GEN_SEED="$SEED" "$UE_CMD" "$HERE/SkyCity.uproject" /Engine/Maps/Entry -unattended -nosplash \
     -abslog="$LOGS/import_$TAG.log" -ExecutePythonScript="$HERE/Scripts/gencity/import_gencity_ue.py" > /dev/null 2>&1
@@ -35,13 +50,7 @@ if [ "$WHAT" = import ] || [ "$WHAT" = all ]; then
   python3 -I "$HERE/Scripts/gencity/plan_gencity.py" --bt "$BT" --seed "$SEED" || exit 1
 fi
 if [ "$WHAT" = landcover ] || [ "$WHAT" = all ]; then
-  # The starter pack's Unreal content (building-types assets/starter-pack, /Game/LandCover), copied in, not committed.
-  PACK="${GEN_PACK:-$BT/Content/LandCover}"
-  if [ -f "$PACK/Materials/MPC_LC_Season.uasset" ] && head -c 4 "$PACK/Materials/MPC_LC_Season.uasset" | xxd | grep -q c183; then
-    rsync -a "$PACK/" "$HERE/Content/LandCover/" && chmod -R u+w "$HERE/Content/LandCover"
-  else
-    echo "no Unreal starter pack at $PACK (LFS not pulled?); keeping $HERE/Content/LandCover as it is"
-  fi
+  sync_pack
   rm -f "$HERE/Saved/GenCity/landcover_status_$REGION.json"
   GEN_BT="$BT" GEN_SEED="$SEED" "$UE_CMD" "$HERE/SkyCity.uproject" "/Game/Maps/GenCity_Seed$SEED" -unattended -nosplash \
     -abslog="$LOGS/landcover_$TAG.log" -ExecutePythonScript="$HERE/Scripts/gencity/landcover_gencity_ue.py" > /dev/null 2>&1

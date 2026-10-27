@@ -104,6 +104,27 @@ def zone_poses(zoned, fields=()):
     return out
 
 
+def garage_ramp(layout, back_m=12.0):
+    """A garage's drive ramp (office type, lane 5: "KIT_Awning|collision" plates, Unreal cm [x, y, z, yaw, sx, sy,
+    sz]): the lowest plate and the next one up the ramp give the way in. Returns the car's start (back_m before the
+    first plate, on the street), its yaw and the ramp's rise per plate, or None when the city has no garage."""
+    plates = (layout.get("groups") or {}).get("KIT_Awning|collision") or []
+    if len(plates) < 2:
+        return None
+    low = min(plates, key=lambda i: (i[2], i[0], i[1]))
+    up = [i for i in plates if 20.0 < i[2] - low[2] < 120.0]
+    if not up:
+        return None
+    nxt = min(up, key=lambda i: math.hypot(i[0] - low[0], i[1] - low[1]))
+    dx, dy = nxt[0] - low[0], nxt[1] - low[1]
+    d = math.hypot(dx, dy) or 1.0
+    ux, uy = dx / d, dy / d
+    start = [round(low[0] - ux * back_m * 100.0, 1), round(low[1] - uy * back_m * 100.0, 1), 100.0]
+    return {"start_ue": start, "yaw": round(math.degrees(math.atan2(uy, ux)), 2), "first_plate_ue": low[:3],
+            "rise_cm_per_plate": round(nxt[2] - low[2], 1), "run_cm_per_plate": round(d, 1),
+            "plates": len(plates)}
+
+
 def plan(bt_root, region, waypoint_m=60.0):
     saved = os.path.join(bt_root, "Saved", "CityGen")
     spawn = json.load(open(os.path.join(saved, "spawn_%s.json" % region)))
@@ -141,7 +162,12 @@ def plan(bt_root, region, waypoint_m=60.0):
     # up, looking over the city along the street.
     a, b = route["pts"][0], route["pts"][-1]
     shots.append(_pose("aerial", None, a, b, 0.25, {"cam": {"dist_m": 450.0, "yaw": 0.0, "elev": 40.0}}))
-    return {"region": region, "seed": seed, "level": route.get("level"), "bounds": bounds,
+    layout_path = os.path.join(saved, "kit_layout_%s.json" % region)
+    ramp = garage_ramp(json.load(open(layout_path))) if os.path.isfile(layout_path) else None
+    if ramp:
+        shots.append({"name": "garage_ramp", "zone": None, "ue": ramp["start_ue"], "yaw": ramp["yaw"],
+                      "plan": [round(ramp["start_ue"][1] / 100.0, 2), round(ramp["start_ue"][0] / 100.0, 2)]})
+    return {"region": region, "seed": seed, "ramp": ramp, "level": route.get("level"), "bounds": bounds,
             "route": {"start_ue": route["start_ue"], "yaw": route["yaw"], "length_m": route["length_m"],
                       "waypoints_ue": wps, "major": route.get("major")},
             "shots": shots, "bt_root": bt_root}

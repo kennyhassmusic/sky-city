@@ -44,6 +44,10 @@ def main(tag):
              d.get("no_ground"), d.get("outside"), d.get("min_clear_cm")))
     print("modes", d.get("modes"), "surfaces", dict(sorted((d.get("surfaces") or {}).items(), key=lambda kv: -kv[1])[:6]))
     print("frame ms", out.get("frame_ms"))
+    if out.get("ramp"):
+        r = out["ramp"]
+        print("garage ramp: pass=%s climb=%s cm (z %s -> %s) below_ground=%s no_ground=%s"
+              % (r.get("pass"), r.get("climb_cm"), r.get("z0"), r.get("max_z"), r.get("below_ground"), r.get("no_ground")))
     for s in out.get("shots") or []:
         print("shot", s["name"], s.get("mode"), s.get("file"))
     print("clean load", {k: v for k, v in out["clean_load"].items() if not k.startswith("first")})

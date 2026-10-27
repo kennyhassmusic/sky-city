@@ -51,6 +51,9 @@ PAD_M = 60.0
 PLAN = json.load(open(os.path.join(ROOT, "Saved", "GenCity", "plan_%s.json" % REGION)))
 OUT = os.path.join(ROOT, "Saved", "GenCity", "drive_%s.json" % TAG)
 SHOTS = os.path.join(ROOT, "Saved", "Screenshots", "MacEditor")
+RAMP_SECS = float(KV.get("ramp_secs", "12"))
+RAMP_THROTTLE = float(KV.get("ramp_throttle", "0.45"))
+SHOT_CVARS = ("r.MotionBlurQuality 0", "r.DefaultFeature.MotionBlur 0", "r.AntiAliasingMethod 1")
 ZERO = {"test_throttle": 0.0, "test_brake": 0.0, "test_steer": 0.0, "test_pitch": 0.0, "test_roll": 0.0,
         "test_stop": 0.0, "test_jump": False, "test_boost": False, "test_fly": False, "test_slide": False}
 
@@ -232,9 +235,58 @@ def tick(dt):
                 for k, v in ZERO.items():
                     p.set_editor_property(k, v)
                 p.set_editor_property("test_brake", 1.0)
-                st["phase"] = "shot_tp"
-                st["si"] = 0
+                st["phase"] = "ramp_tp" if PLAN.get("ramp") else "shots_go"
                 write()
+            return
+        if st["phase"] == "ramp_tp":
+            r = PLAN["ramp"]
+            p.test_teleport(unreal.Vector(*r["start_ue"]), r["yaw"])
+            st["phase"] = "ramp_wait"
+            st["until"] = now + 3.0
+            return
+        if st["phase"] == "ramp_wait":
+            if now < st["until"]:
+                return
+            loc = p.get_actor_location()
+            res["ramp"] = {"start_ue": [round(loc.x), round(loc.y), round(loc.z)], "z0": round(loc.z), "max_z": round(loc.z),
+                           "below_ground": 0, "no_ground": 0, "frames": 0, "secs": RAMP_SECS}
+            st["ramp_z0"] = loc.z
+            p.set_editor_property("test_brake", 0.0)
+            p.set_editor_property("test_throttle", RAMP_THROTTLE)
+            st["ramp_t0"] = now
+            st["phase"] = "ramp"
+            return
+        if st["phase"] == "ramp":
+            r = res["ramp"]
+            loc = p.get_actor_location()
+            g = ground_under(gw, p)
+            r["frames"] += 1
+            r["max_z"] = max(r["max_z"], round(loc.z))
+            if g is None:
+                r["no_ground"] += 1
+            elif loc.z < g["z"] - 5.0:
+                r["below_ground"] += 1
+            if g is not None and r["frames"] % 10 == 0:
+                r.setdefault("track", []).append([round(now - st["ramp_t0"], 2), round(loc.x), round(loc.y),
+                                                  round(loc.z), g["actor"][:30], p.get_mode()])
+            if now - st["ramp_t0"] >= RAMP_SECS:
+                r["climb_cm"] = round(r["max_z"] - st["ramp_z0"])
+                r["pass"] = bool(r["climb_cm"] >= 250 and r["below_ground"] == 0 and r["no_ground"] == 0)
+                for k, v in ZERO.items():
+                    p.set_editor_property(k, v)
+                p.set_editor_property("test_brake", 1.0)
+                # the ramp shot, from the chase camera, then the zone shots
+                st["phase"] = "shots_go"
+                write()
+            return
+        if st["phase"] == "shots_go":
+            st["phase"] = "shot_tp"
+            st["si"] = 0
+            # Shots: no motion blur and no temporal AA history. After a teleport the camera cuts, and TAA/TSR
+            # blend the car with the previous view: it read as a ghosted, see-through car in v1.
+            for cmd in SHOT_CVARS:
+                unreal.SystemLibrary.execute_console_command(gw, cmd)
+            write()
             return
         shots = PLAN["shots"]
         if st["si"] >= len(shots):
@@ -247,6 +299,7 @@ def tick(dt):
             for k, v in ZERO.items():
                 p.set_editor_property(k, v)
             p.set_editor_property("test_brake", 1.0)
+            p.set_editor_property("test_stop", 1.0)           # parked: the shot is of a standing car
             p.test_teleport(unreal.Vector(s["ue"][0], s["ue"][1], 100.0), s["yaw"])
             cam = s.get("cam")
             if cam:
@@ -265,7 +318,7 @@ def tick(dt):
             unreal.SystemLibrary.execute_console_command(gw, "HighResShot %s" % RES)
             loc = p.get_actor_location()
             g = ground_under(gw, p)
-            res["shots"].append({"name": s["name"], "zone": s.get("zone"), "car_ue": [round(loc.x), round(loc.y), round(loc.z)],
+            res["shots"].append({"name": s["name"], "zone": s.get("zone"), "mph": round(p.get_speed_mph(), 1), "car_ue": [round(loc.x), round(loc.y), round(loc.z)],
                                  "ground": g, "mode": p.get_mode(), "wall": round(now - st["t0"], 1)})
             st["phase"] = "shot_file"
             st["until"] = now + 15.0
