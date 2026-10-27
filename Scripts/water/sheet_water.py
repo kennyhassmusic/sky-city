@@ -11,7 +11,7 @@ OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.expanduser("~/Dropbox/Sky Ci
 res = json.load(open(os.path.join(ROOT, "Saved", "Water", "shots_%s.json" % TAG)))
 os.makedirs(OUT, exist_ok=True)
 NAMES = {"A": "A: Unreal Water plugin (Epic default materials)", "B": "B: our own water (code-made textures)"}
-POSES = ["bridge", "riverbank", "aerial", "lake"]
+POSES = ["bridge", "riverbank", "aerial"]   # the demo-pond shot is not valid yet (park lawn still covers it)
 font = ImageFont.load_default()
 try:
     font = ImageFont.load_default(size=22)
@@ -20,6 +20,8 @@ except TypeError:
 made = []
 shots = {(s["mode"], s["pose"]): s["file"] for s in res["shots"] if s.get("file")}
 for (mode, pose), f in sorted(shots.items()):
+    if pose not in POSES:
+        continue
     name = "lane9_water_%s_%s.jpg" % (mode, pose) if mode != "none" else "lane9_water_none_%s.jpg" % pose
     Image.open(f).convert("RGB").save(os.path.join(OUT, name), quality=90)
     made.append(name)
