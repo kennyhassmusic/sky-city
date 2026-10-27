@@ -62,6 +62,7 @@ OUT = os.path.join(ROOT, "Saved", "GenCity", "wind_%s.json" % TAG)
 SHOTS = os.path.join(ROOT, "Saved", "Screenshots", "MacEditor")
 MPC = unreal.EditorAssetLibrary.load_asset("/Game/CityGen/Wind/MPC_Wind")
 SHOT_CVARS = ("r.MotionBlurQuality 0", "r.DefaultFeature.MotionBlur 0", "r.AntiAliasingMethod 1", "r.ProfileGPU.ShowUI 0")
+CLIP_CMDS = ("ShowHUD",)      # the car's HUD off for the clips (a toggle: once, after perf)
 
 ues = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
 les = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
@@ -85,16 +86,39 @@ def look(eye, target):
     return unreal.Rotator(roll=0.0, pitch=pitch, yaw=yaw)
 
 
-def flag_camera(flags, dist_cm, back_cm=0.0, up_cm=-120.0):
-    """A camera beside a flag (or the middle of a group of flags), across the wind, looking at the flown flags."""
+def _clear(world, a, b):
+    r = unreal.SystemLibrary.line_trace_single(world, unreal.Vector(*a), unreal.Vector(*b),
+                                               unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, True, [],
+                                               unreal.DrawDebugTrace.NONE, True)
+    return r is None or not r.to_tuple()[0]
+
+
+def flag_camera(flags, dist_cm, up_cm=-120.0):
+    """A camera with a clear view of the flag(s): 18 directions round them at dist_cm, scored for seeing every
+    flag's middle (line traces against the level's collision), then for looking ~45 degrees off the wind and off
+    the flags' still direction (the waves read in silhouette, the still flag isn't edge-on)."""
+    world = ues.get_editor_world()
     wx, wy = WIND["prevailing"]["toward_ue"]
-    cx = sum(f["hoist_top_ue"][0] for f in flags) / len(flags)
-    cy = sum(f["hoist_top_ue"][1] for f in flags) / len(flags)
-    cz = sum(f["hoist_top_ue"][2] for f in flags) / len(flags)
-    tgt = [cx + wx * 90.0, cy + wy * 90.0, cz - 60.0]
-    side = (-wy, wx)
-    eye = [tgt[0] + side[0] * dist_cm - wx * back_cm, tgt[1] + side[1] * dist_cm - wy * back_cm, cz + up_cm]
-    return eye, tgt
+    mids = []
+    for f in flags:
+        x, y, z = f["hoist_top_ue"]
+        mids.append([x + wx * 90.0, y + wy * 90.0, z - 55.0])
+    cx = sum(m[0] for m in mids) / len(mids)
+    cy = sum(m[1] for m in mids) / len(mids)
+    cz = sum(m[2] for m in mids) / len(mids)
+    fy = math.radians(flags[0]["yaw"])
+    best = None
+    for i in range(18):
+        a = 2.0 * math.pi * i / 18.0
+        dx, dy = math.cos(a), math.sin(a)
+        eye = [cx + dx * dist_cm, cy + dy * dist_cm, cz + up_cm]
+        seen = sum(1 for m in mids if _clear(world, eye, m))
+        ground = not _clear(world, eye, [eye[0], eye[1], eye[2] - 30.0])  # not inside a wall's top
+        score = seen * 10.0 - abs(abs(dx * wx + dy * wy) - 0.6) * 4.0 - abs(abs(dx * math.cos(fy) + dy * math.sin(fy)) - 0.6) * 2.0
+        score -= 5.0 if ground else 0.0
+        if best is None or score > best[0]:
+            best = (score, eye, seen)
+    return best[1], [cx, cy, cz], best[2]
 
 
 def subjects():
@@ -103,8 +127,8 @@ def subjects():
     school = [f for f in F if f["kind"] == "school"]
     if school:
         s = max(school, key=lambda f: f["exposure"])
-        eye, tgt = flag_camera([s], 750.0)
-        out.append({"name": "school_flag", "eye": eye, "target": tgt, "flags": [s["hoist_top_ue"]]})
+        eye, tgt, seen = flag_camera([s], 800.0)
+        out.append({"name": "school_flag", "eye": eye, "target": tgt, "seen": seen, "flags": [s["hoist_top_ue"]]})
     # the flag row: the biggest group of flags within 20 m of each other
     best = []
     for f in F:
@@ -112,8 +136,8 @@ def subjects():
         if len(grp) > len(best):
             best = grp
     if len(best) > 1:
-        eye, tgt = flag_camera(best, 1700.0, back_cm=300.0, up_cm=-250.0)
-        out.append({"name": "flag_row", "eye": eye, "target": tgt, "flags": [f["hoist_top_ue"] for f in best]})
+        eye, tgt, seen = flag_camera(best, 2200.0, up_cm=-150.0)
+        out.append({"name": "flag_row", "eye": eye, "target": tgt, "seen": seen, "flags": [f["hoist_top_ue"] for f in best]})
     # trees: the plan's suburbs pose, from a little above the street
     for s in PLAN.get("shots", []):
         if s.get("zone") in ("suburbs", "residential") or s["name"].startswith("suburb"):
@@ -223,6 +247,8 @@ def tick(dt):
                 st["steps"] = frame_steps()
                 st["si"] = 0
                 mpc(gw, "TimeScale", 0.0)
+                for c in CLIP_CMDS:
+                    unreal.SystemLibrary.execute_console_command(gw, c)
                 write()
                 return
             state = st["perf"][0]
