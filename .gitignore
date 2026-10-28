@@ -96,3 +96,6 @@ node_modules/
 /Content/Maps/GenCity_*
 /Content/CityGen
 /Content/LandCover
+
+# User asset packs: the converted meshes are rebuilt from the drive (Scripts/userpack/build_game_pack.sh), never committed
+/Content/UserPack
