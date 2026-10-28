@@ -1955,8 +1955,15 @@ void ASkysterCar::ScanWater()
 	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 	{
 		if (!It->ActorHasTag(TEXT("citywater")) && !It->ActorHasTag(TEXT("SkyWater"))) continue;
-		const FBox B = It->GetComponentsBoundingBox(true);
-		if (B.IsValid) WaterBoxes.Add(B);
+		// the tag is on the channel's ground cut and riverbed too: the surfaces are the flat ones with no collision
+		TArray<UPrimitiveComponent*> Prims;
+		It->GetComponents<UPrimitiveComponent>(Prims);
+		for (const UPrimitiveComponent* C : Prims)
+		{
+			if (!C || C->GetCollisionEnabled() != ECollisionEnabled::NoCollision) continue;
+			const FBox B = C->Bounds.GetBox();
+			if (B.IsValid && B.Max.Z - B.Min.Z < 10.0) WaterBoxes.Add(B);
+		}
 	}
 }
 

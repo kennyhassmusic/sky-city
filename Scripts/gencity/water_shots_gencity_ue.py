@@ -137,6 +137,10 @@ def plan_queue():
                 q.append(("wait", 2.0))
                 for i in range(FRAMES):
                     q.append(("frame", (mode, name, i)))
+            if KV.get("bridge", "0") == "1":
+                q.append(("car_bridge", "across"))
+                q.append(("car_bridge", "parapet"))
+                q.append(("park", None))
             if CAR:
                 q.append(("car_bank", mode))
                 q.append(("car_drop", mode))
@@ -238,6 +242,48 @@ def do(item, now, dt):
             p.set_editor_property(k, v)
         p.set_editor_property("test_brake", 1.0)
         del S["cb"]
+        write()
+        return True
+    if kind == "car_bridge":
+        # the drive plan's river_bridge pose (Saved/GenCity/plan_<region>.json): "across" starts 40 m back and
+        # drives over the deck; "parapet" starts on the deck's middle turned 90 degrees and drives into the side
+        p = S["p"]
+        if "cbr" not in S:
+            dp = json.load(open(os.path.join(ROOT, "Saved", "GenCity", "plan_%s.json" % KV.get("region", "seed7_city"))))
+            pose = next(x for x in dp["shots"] if x["name"] == "river_bridge")
+            yaw = pose["yaw"] + (90.0 if arg == "parapet" else 0.0)
+            back = 4000.0 if arg == "across" else 0.0
+            r = math.radians(pose["yaw"])
+            at = unreal.Vector(pose["ue"][0] - math.cos(r) * back, pose["ue"][1] - math.sin(r) * back, 150.0)
+            S["cbr"] = {"t0": now, "track": []}
+            for k, v in ZERO.items():
+                p.set_editor_property(k, v)
+            p.test_teleport(at, yaw)
+            p.set_editor_property("test_cam_dist", 10.0)
+            p.set_editor_property("test_cam_yaw", 25.0)
+            p.set_editor_property("test_cam_elev", 12.0)
+            S["pc"].set_view_target_with_blend(p, 0.0)
+            return False
+        t = now - S["cbr"]["t0"]
+        if t > 1.0:
+            p.set_editor_property("test_throttle", 0.5 if arg == "across" else 0.6)
+        if int(t * 4) != S["cbr"].get("last"):
+            S["cbr"]["last"] = int(t * 4)
+            loc = p.get_actor_location()
+            S["cbr"]["track"].append([round(t, 2), round(loc.x), round(loc.y), round(loc.z), ground_under(p),
+                                      p.get_mode(), round(p.get_speed_mph(), 1), bool(p.is_in_water())])
+        if t > 3.0 and "shot" not in S["cbr"]:
+            S["cbr"]["shot"] = True
+            S["before_cbr"] = files()
+            cmd("HighResShot 1920x1080")
+        if t < (9.0 if arg == "across" else 6.0):
+            return False
+        new = sorted(files() - S.get("before_cbr", set()))
+        res["car"]["bridge_%s" % arg] = {"track": S["cbr"]["track"], "shot": os.path.join(SHOTS, new[-1]) if new else None}
+        for k, v in ZERO.items():
+            p.set_editor_property(k, v)
+        p.set_editor_property("test_brake", 1.0)
+        del S["cbr"]
         write()
         return True
     if kind == "car_drop":

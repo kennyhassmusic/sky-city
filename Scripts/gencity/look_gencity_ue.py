@@ -81,9 +81,42 @@ def prop_cams():
     return out
 
 
+def light_check():
+    """Count the sky/light actors in the level: one of each is right (Entry.umap leftovers would double them)."""
+    eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    out = {}
+    for a in eas.get_all_level_actors():
+        c = a.get_class().get_name()
+        if c in ("DirectionalLight", "SkyLight", "SkyAtmosphere", "ExponentialHeightFog", "PostProcessVolume",
+                 "VolumetricCloud", "PlayerStart"):
+            out.setdefault(c, []).append(a.get_actor_label())
+    return out
+
+
+def mark_cams():
+    """A close street shot of the road markings: low, near a signal mast (a marked intersection) by downtown."""
+    d = json.load(open(os.path.join(BT, "Saved", "CityGen", "props_%s.json" % REGION)))
+    dt = next(s for s in PLAN["shots"] if s["name"] == "downtown")["ue"]
+    rows = d["groups"].get("KIT_SS_SignalMastL|prop") or []
+    if not rows:
+        return []
+    r = min(rows, key=lambda r: (r[0] - dt[0]) ** 2 + (r[1] - dt[1]) ** 2)
+    out = []
+    for name, back, h, pitch in (("marks_close", 900.0, 160.0, -14.0), ("marks_far", 6000.0, 300.0, -3.0)):
+        yaw = math.radians(r[3] + 135.0)
+        loc = unreal.Vector(r[0] + math.cos(yaw) * back, r[1] + math.sin(yaw) * back, r[2] + h)
+        rot = unreal.MathLibrary.find_look_at_rotation(loc, unreal.Vector(r[0], r[1], r[2]))
+        out.append((name, loc, unreal.Rotator(0.0, pitch, rot.yaw)))
+    return out
+
+
 def plan_queue():
     q = []
-    for name, loc, rot in street_cams():
+    res["lights"] = light_check()
+    if KV.get("marks", "0") == "1":
+        for name, loc, rot in mark_cams():
+            q += [("cam", (loc, rot)), ("wait", 4.0), ("shot", name)]
+    for name, loc, rot in (street_cams() if KV.get("street", "1") == "1" else []):
         q += [("cam", (loc, rot)), ("wait", 5.0), ("shot", "before_" + name if RELIGHT else name)]
     if RELIGHT:
         q += [("relight", None), ("wait", 6.0)]
