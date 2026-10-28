@@ -81,6 +81,15 @@ void ASkysterHUD::DrawHUD()
 		Right - BarW, Bottom + 4.f * S, Tiny, bBoostOK ? Dim : Faint);
 	if (Car->FuelMult > 1) Text(FString::Printf(TEXT("fuel x%d"), (int32)Car->FuelMult), Right, Bottom + 4.f * S, Tiny, Gold, true);
 
+	// --- in the water (provisional: floats and slows) ---
+	if (Car->bInWater)
+	{
+		const FString Hint = TEXT("In the water: press R to get back on the road");
+		const float Hs = 1.3f * S, Hw = TextW(Hint, Hs);
+		DrawRect(Back, Canvas->ClipX * 0.5f - Hw * 0.5f - 18.f * S, Canvas->ClipY * 0.70f - 10.f * S, Hw + 36.f * S, 48.f * S);
+		Text(Hint, Canvas->ClipX * 0.5f, Canvas->ClipY * 0.70f, Hs, Ink, false, true);
+	}
+
 	// --- bottom left: hull, jump pips, 0-60 ---
 	const float L0 = 56.f * S;
 	const double Hp = Car->Health;

@@ -71,6 +71,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Skyster")
 	bool IsBoosting() const { return bBoosting; }
 
+	/** In a river or lake (gen-city water, actors tagged "citywater" or "SkyWater"): the body is under the surface.
+	 *  Provisional (Kenny hasn't picked float vs respawn): the car floats near the surface and slows to a crawl. */
+	UFUNCTION(BlueprintPure, Category = "Skyster")
+	bool IsInWater() const { return bInWater; }
+	/** The water surface the car is in (Unreal cm), valid while IsInWater(). */
+	UFUNCTION(BlueprintPure, Category = "Skyster")
+	float GetWaterSurfaceZ() const { return (float)(WaterZ * 100.0); }
+
 	/** Ground handling, live-editable (Skyster's tuning panel). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skyster")
 	FSkyHandling Handling;
@@ -280,6 +288,13 @@ private:
 	void Collide(double H, const FVector& PrevPos);
 	void TransitionTo(const FVector& N, UPrimitiveComponent* Comp, ESurface Kind, const FVector& HitPoint);
 	void ResolveSupport(double H);
+	// water (provisional: floats and slows)
+	void ScanWater();
+	bool WaterSurfaceAt(const FVector& SimPos, double& OutZ) const;
+	void WaterForces(double H);
+	TArray<FBox> WaterBoxes;          // UE cm: the bounds of each flat water surface (its top is the surface)
+	bool bInWater = false;
+	double WaterZ = 0;                // sim m
 	void LandOn(double Vn, double Align);
 	void CrashLand(double Vn, double Align);
 	void Tumble(double K);

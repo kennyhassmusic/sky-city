@@ -43,6 +43,17 @@ namespace SkyP
 	constexpr double BOOST_GROUND = 991.667 * RL_K / 100;  // 38.7 m/s^2
 	constexpr double BOOST_AIR = 991.667 * RL_K / 100;
 	constexpr double AIR_THROTTLE = 66.667 * RL_K / 100;   // 2.6 m/s^2
+	// water (provisional: floats and slows; Kenny hasn't picked float vs respawn)
+	constexpr double WATER_WET = 0.35;         // m of the body under the surface before the water takes hold
+	constexpr double WATER_DRAFT = 0.75;       // m: the float line, the car's underside this far under the surface
+	constexpr double WATER_MAX_DEPTH = 8.0;    // m: deeper than this under a surface isn't that water
+	constexpr double WATER_CRAWL = 3.0;        // m/s: above this the drag is strong...
+	constexpr double WATER_DRAG_FAST = 3.0;    // 1/s
+	constexpr double WATER_DRAG = 1.5;         // 1/s ...and below it, enough that paddling (throttle) tops out near 2 m/s
+	constexpr double WATER_K = 6.0;            // 1/s^2 buoyancy spring to the float line
+	constexpr double WATER_C = 4.0;            // 1/s its damping
+	constexpr double WATER_LEVEL = 2.5;        // 1/s levelling to wheels-down on the water
+	constexpr double WATER_SPIN = 3.0;         // 1/s spin damping
 	constexpr double AIR_BRAKE = 40;                       // m/s^2 off the horizontal travel, LT in the air
 	constexpr double BOOST_RATE = 33.3;                    // %/s: a full tank is 3 s
 	constexpr double SPAWN_BOOST = 33;                     // RL: a third of a tank after every spawn
@@ -307,6 +318,7 @@ void ASkysterCar::BeginPlay()
 	}
 	SpawnPosUE = GetActorLocation();
 	SpawnYawDeg = GetActorRotation().Yaw;
+	ScanWater();
 	// the car's materials load at play, not with the class: anything loaded during editor start-up becomes permanent and
 	// can't be rebuilt by Scripts/unreal/fx_ue.py (DefaultGame.ini cooks these folders for the packaged game)
 	auto Load = [](TObjectPtr<UMaterialInterface>& M, const TCHAR* Path) { if (!M) M = LoadObject<UMaterialInterface>(nullptr, Path); };
@@ -1018,6 +1030,7 @@ FString ASkysterCar::GetMode() const
 	if (!bAlive) return TEXT("WRECKED");
 	if (bCharging) return TEXT("CHARGING");
 	if (bFlying) return TEXT("FLIGHT");
+	if (bInWater) return TEXT("WATER");
 	if (bHovering) return TEXT("HOVER");
 	if (bAirBraking) return TEXT("AIR BRAKE");
 	if (bLanding) return TEXT("LANDING");
@@ -1261,6 +1274,7 @@ void ASkysterCar::Step(double H, FDriverInput& S)
 	Pos += Vel * H;
 	Collide(H, Prev);
 	ResolveSupport(H);
+	if (WaterBoxes.Num()) WaterForces(H);
 	if (bBoosting) BoostTank = FMath::Max(0.0, BoostTank - BOOST_RATE * (Health < 30 ? 1.5 : 1.0) * H / FuelMult);
 }
 
@@ -1887,7 +1901,9 @@ void ASkysterCar::ResolveSupport(double H)
 		// a crash only takes control away for a moment; after that you can steer and jump out of it
 		if (bTumbling && (TumbleT += H) > 0.6) bTumbling = false;
 		// airborne: land when a surface is under the wheels and the car is facing it
-		if (bFound && Out.Dist < 0.35 && FVector::DotProduct(Vel, Out.N) <= 0.6)
+		// in deep water the car floats: it only lands where the bed comes up to its float line (the banks)
+		const bool bFloatOver = bInWater && Out.P.Z < WaterZ - SkyP::WATER_DRAFT - 0.3;
+		if (bFound && !bFloatOver && Out.Dist < 0.35 && FVector::DotProduct(Vel, Out.N) <= 0.6)
 		{
 			const double Align = FVector::DotProduct(Up, Out.N);
 			const double Vn = -FVector::DotProduct(Vel, Out.N);
@@ -1924,6 +1940,81 @@ void ASkysterCar::ResolveSupport(double H)
 			if (StuckT > 0.8) RightSelf();
 		}
 		else StuckT = 0;
+	}
+}
+
+// --- water (provisional: floats and slows) ----------------------------------------------------------
+// The generated city's water surfaces (building-types water_ue.py: L9_River_*, L9_Lake_*, tag "citywater") are flat and
+// have no collision, so the car drives through them onto the riverbed. Here: once the body is under the surface, strong
+// drag slows it to a crawl and a buoyancy spring holds it at a float line near the surface; R puts it back on the road.
+
+void ASkysterCar::ScanWater()
+{
+	WaterBoxes.Reset();
+	if (!GetWorld()) return;
+	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+	{
+		if (!It->ActorHasTag(TEXT("citywater")) && !It->ActorHasTag(TEXT("SkyWater"))) continue;
+		const FBox B = It->GetComponentsBoundingBox(true);
+		if (B.IsValid) WaterBoxes.Add(B);
+	}
+}
+
+bool ASkysterCar::WaterSurfaceAt(const FVector& SimPos, double& OutZ) const
+{
+	// A water surface sits below the street (the channel is cut into the ground), so anywhere inside its box and
+	// under its top is in the water: the banks, bridges and streets around it are all above it.
+	const FVector P = ToUE(SimPos);
+	bool bAny = false;
+	for (const FBox& B : WaterBoxes)
+	{
+		if (P.X < B.Min.X || P.X > B.Max.X || P.Y < B.Min.Y || P.Y > B.Max.Y) continue;
+		const double Z = B.Max.Z / 100.0;
+		if (SimPos.Z > Z || SimPos.Z < Z - SkyP::WATER_MAX_DEPTH) continue;
+		if (!bAny || Z < OutZ) OutZ = Z;
+		bAny = true;
+	}
+	return bAny;
+}
+
+void ASkysterCar::WaterForces(double H)
+{
+	using namespace SkyP;
+	double Wz = 0;
+	const bool bWet = bAlive && WaterSurfaceAt(Pos, Wz) && Pos.Z < Wz - WATER_WET;
+	bInWater = bWet;
+	if (!bWet) return;
+	WaterZ = Wz;
+	// strong drag: the car bleeds speed fast above a crawl and a little below it (the throttle still paddles it along)
+	const FVector Hv(Vel.X, Vel.Y, 0);
+	const double Hs = Hv.Size();
+	if (Hs > 1e-3)
+	{
+		double NewS = Hs * FMath::Exp(-WATER_DRAG * H);
+		if (NewS > WATER_CRAWL) NewS = WATER_CRAWL + (NewS - WATER_CRAWL) * FMath::Exp(-WATER_DRAG_FAST * H);
+		Vel.X *= NewS / Hs;
+		Vel.Y *= NewS / Hs;
+	}
+	const double Float = Wz - WATER_DRAFT;
+	if (bGrounded && Pos.Z < Float - 0.3)
+	{
+		// the bed is deeper than the float line: the water lifts the car off it
+		LeaveSurface();
+		Jump.T = 99;
+		Jump.bCanDouble = false;
+		Jump.bFree = false;
+		Jump.AirT = 0;
+		Jump.Takeoff = Pos;
+		Vel.Z = FMath::Max(Vel.Z, 0.5);
+	}
+	if (!bGrounded)
+	{
+		// buoyancy: cancels gravity (Fly applies it) and springs the car to the float line, well damped
+		Vel.Z += (G + WATER_K * (Float - Pos.Z) - WATER_C * Vel.Z) * H;
+		// level out on the water and stop spinning
+		Q = (RotTo(Up, UPV, 1.0 - FMath::Exp(-WATER_LEVEL * H)) * Q).GetNormalized();
+		W *= FMath::Exp(-WATER_SPIN * H);
+		UpdateAxes();
 	}
 }
 

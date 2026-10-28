@@ -38,6 +38,8 @@ POSES = [p for p in KV.get("poses", "bridge+riverbank+aerial+lake").replace(",",
 SEQS = [p for p in KV.get("seqs", "bridge+riverbank").replace(",", "+").split("+") if p and p != "none"]
 CAR = KV.get("car", "1") == "1"
 TIMING = KV.get("timing", "1") == "1"
+BANK_SECS = float(KV.get("bank_secs", "7.5"))      # the car-off-the-bank test's length (s)
+BANK_SHOT = float(KV.get("bank_shot", "3.5"))      # when in it the picture is taken (s)
 PARK = (1350.0, 150.0)          # where the car waits during the pictures (plan m), away from the river
 
 ues = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
@@ -222,12 +224,13 @@ def do(item, now, dt):
             S["cb"]["last"] = int(t * 4)
             loc = p.get_actor_location()
             S["cb"]["track"].append([round(t, 2), round(loc.y / 100.0, 1), round(loc.x / 100.0, 1), round(loc.z),
-                                     ground_under(p), p.get_mode(), round(p.get_speed_mph(), 1)])
-        if t > 3.5 and "mid_shot" not in S["cb"]:
+                                     ground_under(p), p.get_mode(), round(p.get_speed_mph(), 1)]
+                                    + ([bool(p.is_in_water()), round(p.get_water_surface_z())] if hasattr(p, "is_in_water") else []))
+        if t > BANK_SHOT and "mid_shot" not in S["cb"]:
             S["cb"]["mid_shot"] = True
             S["before_cb"] = files()
             cmd("HighResShot 1280x720")
-        if t < 7.5:
+        if t < BANK_SECS:
             return False
         new = sorted(files() - S.get("before_cb", set()))
         res["car"]["%s_bank" % arg] = {"track": S["cb"]["track"], "shot": os.path.join(SHOTS, new[-1]) if new else None}
