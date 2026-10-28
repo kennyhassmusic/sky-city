@@ -23,6 +23,13 @@ the river (and around lakes), builds the riverbed and banks and the water surfac
 `run_water_gencity.sh <bt> <seed> <tag> look <v1|bright>` retunes the instances without a re-import;
 `... shots` takes the water poses (Saved/Water/plan.json). The plan adds a `river_bridge` shot.
 
+Shoreline (lane F6, building-types `fx/shoreline`): the pipeline's kit stage writes `shoreline_<region>.json` and the
+shore textures (`Saved/CityGen/shoreline/textures`); the import then cuts the ground slab back to the city edge and
+draws the beach terrain (`M_Shore_Sand`), the sea (water B's `MI_L9_Water`, foam from UV1), the wrack line, the
+car parks at the edge stubs and the dune grass / scrub / pebble / shell HISMs under `/Game/GenCity/<Name>/Shore`.
+`GEN_SHORE=0` keeps the old flat slab. Missing textures: `python3 -I Scripts/city/shoreline_textures.py
+Saved/CityGen/shoreline/textures` in the building-types checkout.
+
 Every editor run takes the shared Unreal lock (`~/UnrealProjects/_bt_mgmt/UNREAL.lock`). Generated content is not
 committed (`.gitignore`). No City Sample content goes into the level: the generator's content lives under
 `/Game/GenCity`, `/Game/CityGen` and `/Game/LandCover`, and this branch switches the CitySamplePCG plugin off.
