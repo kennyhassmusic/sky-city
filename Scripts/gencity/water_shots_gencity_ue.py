@@ -327,7 +327,8 @@ def tick(dt):
                 cmd(c)
             res["counts"] = {"A": len(tagged("lane9_A")), "B": len(tagged("lane9_B"))}
             # The car's HUD off for the pictures.
-            cmd("ShowHUD")
+            if KV.get("hud", "0") != "1":      # hud=1 keeps the car's HUD (the in-the-water hint) in the car shots
+                cmd("ShowHUD")
             cmd("DisableAllScreenMessages")
             S["q"] = plan_queue()
             S["phase"] = "run"
