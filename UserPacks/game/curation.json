@@ -1,0 +1,497 @@
+{
+ "pack": "game",
+ "date": "2026-10-28",
+ "method": "All 1,342 Scenario previews looked at on contact sheets (23 sheets of 60); 21 shortlisted and rendered in Blender at real scale under a sun at street eye height; kept only what reads real at street scale. NVIDIA: catalogue thumbnails for 59 yard and dock candidates. Every kept asset converted (convert_blender.py) and checked again from its front (+X) and a 3/4 street view (qa_render.py).",
+ "hunyuan_check": "The parquet's model field lists no Hunyuan or Tencent model and no row's metadata mentions either; the README says the 393 Hunyuan examples are published separately, so none are on this drive.",
+ "licences": {
+  "scenario": "CC-BY 4.0 on every row (license column), credit 'Scenario'; all assets AI-generated.",
+  "nvidia": "CC-BY 4.0 (README front matter), credit NVIDIA."
+ },
+ "budget": {
+  "per_asset": "LOD0 <= 40k tris for vehicles and forklifts (80k for the e-bike), <= 20k people, <= 12k pallet loads, <= 8k small props; textures <= 2048 except the forklifts' 4096x2048 atlas; 3-4 LODs by reduction in Unreal; cull 100-300 m",
+  "pack": "budget.instances 2500 (seed 7 places about 800)"
+ },
+ "kept": [
+  {
+   "asset": "EBike",
+   "slot": "street.bike_parked",
+   "source": "3d-collection",
+   "source_path": "assets/scenario_asset_u35vcY44mBmSGNaxAnjf67VD/output.glb",
+   "source_tris": 1906630,
+   "tris_lod0": 79999,
+   "texture_px": 1024,
+   "materials": 1,
+   "size_m": [
+    1.851,
+    0.65,
+    1.101
+   ],
+   "glb_bytes": 8228776,
+   "why": "Scenario #1138 (trellis-2). Realistic e-MTB; kept at 80k tris because the first 37k decimation turned the spokes into noise."
+  },
+  {
+   "asset": "Forklift_C01_Blue",
+   "slot": "dock.forklift",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/SM_Forklift_C01_Blue_01/SM_Forklift_C01_Blue_01.usd",
+   "source_tris": 829456,
+   "tris_lod0": 39999,
+   "texture_px": 4096,
+   "materials": 4,
+   "size_m": [
+    3.733,
+    1.359,
+    2.175
+   ],
+   "glb_bytes": 28518760,
+   "why": "NVIDIA SM_Forklift_C01_Blue_01: rough-terrain counterbalance forklift, fits an outdoor yard. 829k source tris, 8 UDIM tiles packed into one 4096x2048 atlas."
+  },
+  {
+   "asset": "Forklift_C01_Red",
+   "slot": "dock.forklift",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/SM_Forklift_C01_Red_01/SM_Forklift_C01_Red_01.usd",
+   "source_tris": 829456,
+   "tris_lod0": 39999,
+   "texture_px": 4096,
+   "materials": 3,
+   "size_m": [
+    3.733,
+    1.359,
+    2.175
+   ],
+   "glb_bytes": 28517108,
+   "why": "NVIDIA SM_Forklift_C01_Red_01: colour variant."
+  },
+  {
+   "asset": "IBCTank_A02",
+   "slot": "yard.drum",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/SM_IBCTank_A02_01/SM_IBCTank_A02_01.usd",
+   "source_tris": 112623,
+   "tris_lod0": 8000,
+   "texture_px": 1024,
+   "materials": 5,
+   "size_m": [
+    1.047,
+    1.253,
+    1.203
+   ],
+   "glb_bytes": 9620812,
+   "why": "NVIDIA SM_IBCTank_A02_01: 1000 l IBC tote, the commonest yard container."
+  },
+  {
+   "asset": "OffroadSUV_A",
+   "slot": "vehicle.parked.suv",
+   "source": "3d-collection",
+   "source_path": "assets/scenario_asset_AXM18qzFnbRcKpKdoZsCZ85y/output.glb",
+   "source_tris": 1977950,
+   "tris_lod0": 40000,
+   "texture_px": 2048,
+   "materials": 1,
+   "size_m": [
+    4.3,
+    1.888,
+    2.052
+   ],
+   "glb_bytes": 10913112,
+   "why": "Scenario #196 (hitem-sparc-3d-2, image-to-3D). Tan 2-door off-roader with roof rack and snorkel; reads as a real parked vehicle at street distance. Depth was 40% too wide from the single picture: dims fixed to 4.30 x 1.88 x 2.05 m."
+  },
+  {
+   "asset": "OffroadSUV_B",
+   "slot": "vehicle.parked.suv",
+   "source": "3d-collection",
+   "source_path": "assets/scenario_asset_yDcD8diFQzffCwnHSsJVoPRV/output.glb",
+   "source_tris": 994852,
+   "tris_lod0": 39999,
+   "texture_px": 2048,
+   "materials": 1,
+   "size_m": [
+    4.303,
+    1.88,
+    1.997
+   ],
+   "glb_bytes": 12160888,
+   "why": "Scenario #1224 (hitem-sparc-3d-2-1). Same class, different rack and wheels; second variant so the swap isn't one repeated car."
+  },
+  {
+   "asset": "PalletLoad_Boxes",
+   "slot": "dock.pallet_load",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/Cardbox_B2/Cardbox_B2.usd",
+   "source_tris": 3936,
+   "tris_lod0": 7999,
+   "texture_px": 1024,
+   "materials": 3,
+   "size_m": [
+    1.02,
+    1.2,
+    1.683
+   ],
+   "glb_bytes": 8537352,
+   "why": "NVIDIA block pallet with Cardbox_B2 cartons, two layers and a top box."
+  },
+  {
+   "asset": "PalletStack_10",
+   "slot": "dock.pallet_stack",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+   "source_tris": 3376,
+   "tris_lod0": 11999,
+   "texture_px": 1024,
+   "materials": 2,
+   "size_m": [
+    1.094,
+    1.278,
+    1.2
+   ],
+   "glb_bytes": 5974596,
+   "why": "NVIDIA SM_BlockPallet_A01 stacked 10 high."
+  },
+  {
+   "asset": "PalletStack_6",
+   "slot": "dock.pallet_stack",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+   "source_tris": 3376,
+   "tris_lod0": 9000,
+   "texture_px": 1024,
+   "materials": 2,
+   "size_m": [
+    1.053,
+    1.258,
+    0.72
+   ],
+   "glb_bytes": 5738264,
+   "why": "NVIDIA SM_BlockPallet_A01 stacked 6 high (built from the single pallet; the pack's assembly USDs load at the wrong scale with no materials)."
+  },
+  {
+   "asset": "PalletTruck_A01",
+   "slot": "dock.pallet_jack",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/SM_HeavyDutyPalletTruck_A01_01/SM_HeavyDutyPalletTruck_A01_01.usd",
+   "source_tris": 204218,
+   "tris_lod0": 5999,
+   "texture_px": 1024,
+   "materials": 2,
+   "size_m": [
+    1.601,
+    0.68,
+    1.202
+   ],
+   "glb_bytes": 3558660,
+   "why": "NVIDIA SM_HeavyDutyPalletTruck_A01_01: hand pallet jack at the dock door."
+  },
+  {
+   "asset": "PersonHoodie",
+   "slot": "person.idle",
+   "source": "3d-collection",
+   "source_path": "assets/scenario_asset_U2KQ686opM4MA4YiuxrvK1Zh/output.glb",
+   "source_tris": 47034,
+   "tris_lod0": 20000,
+   "texture_px": 1024,
+   "materials": 1,
+   "size_m": [
+    0.372,
+    0.639,
+    1.78
+   ],
+   "glb_bytes": 858400,
+   "why": "Scenario #588 (csm image-to-3D). Man in a green hoodie and jeans, hands in pockets: a natural idle pose, photo-like texture. The only person in the collection that is neither T-posed, cartoon, armoured nor costumed."
+  },
+  {
+   "asset": "Pickup1950",
+   "slot": "vehicle.parked.pickup",
+   "source": "3d-collection",
+   "source_path": "assets/ce679cb83f448b83/b0017be18600cc99.glb",
+   "source_tris": 471040,
+   "tris_lod0": 40000,
+   "texture_px": 512,
+   "materials": 14,
+   "size_m": [
+    4.9,
+    1.95,
+    1.901
+   ],
+   "glb_bytes": 2045520,
+   "why": "Scenario #1288 (gpt-6-astra, modelled in Blender). Clean 1950s pickup, real proportions after dims fix (4.9 x 1.95 x 1.9 m); a classic truck reads plausible in a small Texas town. Slight CG cleanliness."
+  },
+  {
+   "asset": "PlywoodCrate_B01",
+   "slot": "dock.pallet_load",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/SM_PlywoodCrate_B01_01/SM_PlywoodCrate_B01_01.usd",
+   "source_tris": 25110,
+   "tris_lod0": 4000,
+   "texture_px": 1024,
+   "materials": 1,
+   "size_m": [
+    1.001,
+    1.007,
+    1.016
+   ],
+   "glb_bytes": 5144488,
+   "why": "NVIDIA SM_PlywoodCrate_B01_01: export crate."
+  },
+  {
+   "asset": "SteelDrum_A01",
+   "slot": "yard.drum",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/SM_SteelDrum_A01_01/SM_SteelDrum_A01_01.usd",
+   "source_tris": 49867,
+   "tris_lod0": 2999,
+   "texture_px": 1024,
+   "materials": 4,
+   "size_m": [
+    0.646,
+    0.659,
+    0.868
+   ],
+   "glb_bytes": 7278224,
+   "why": "NVIDIA SM_SteelDrum_A01_01: 55 gal steel drum."
+  },
+  {
+   "asset": "SteelDrum_A02",
+   "slot": "yard.drum",
+   "source": "PhysicalAI-SimReady-Warehouse-01",
+   "source_path": "general/SM_SteelDrum_A02_01/SM_SteelDrum_A02_01.usd",
+   "source_tris": 41501,
+   "tris_lod0": 3000,
+   "texture_px": 1024,
+   "materials": 4,
+   "size_m": [
+    0.494,
+    0.484,
+    0.737
+   ],
+   "glb_bytes": 7277852,
+   "why": "NVIDIA SM_SteelDrum_A02_01: shorter drum."
+  }
+ ],
+ "rejected": [
+  {
+   "ids": [
+    131,
+    456,
+    554,
+    648,
+    667
+   ],
+   "what": "sports and race cars",
+   "why": "supercars and race cars, not parked street cars; several copy real brands' shapes"
+  },
+  {
+   "ids": [
+    64,
+    637,
+    675,
+    685,
+    759,
+    838,
+    889,
+    1049
+   ],
+   "what": "1960s roadster replicas",
+   "why": "pink/red toy-like finish; a single classic racer repeated would read as a car show"
+  },
+  {
+   "ids": [
+    228,
+    1014,
+    594
+   ],
+   "what": "lifted mud off-roaders",
+   "why": "mud-caked, light bars, oversized tyres: real but extreme for town parking; 196 and 1224 kept instead"
+  },
+  {
+   "ids": [
+    343
+   ],
+   "what": "off-roader",
+   "why": "near duplicate of 196"
+  },
+  {
+   "ids": [
+    79,
+    141,
+    204,
+    304,
+    809,
+    1009,
+    1018,
+    1063,
+    929
+   ],
+   "what": "military Land Rover / Humvee-type trucks",
+   "why": "military or expedition rigs; wrong for town streets; 929 armed"
+  },
+  {
+   "ids": [
+    659
+   ],
+   "what": "compact orange off-roader",
+   "why": "3.6 m long: too short for the generator's SUV collision box (4.62 m), would leave a 0.5 m invisible bumper at each end"
+  },
+  {
+   "ids": [
+    1283,
+    1326,
+    1340,
+    1341
+   ],
+   "what": "other 1950s pickups",
+   "why": "toy-like proportions or extra crane; 1288 is the cleanest"
+  },
+  {
+   "ids": [
+    492,
+    605,
+    1141,
+    1182,
+    1156,
+    104,
+    167,
+    172,
+    1180
+   ],
+   "what": "food trucks, buses and buggies",
+   "why": "cartoon or toy styling"
+  },
+  {
+   "ids": [
+    212,
+    497
+   ],
+   "what": "scooter, motorcycle with sidecar",
+   "why": "212 untextured; 497 pale vintage, off-style for parked dressing"
+  },
+  {
+   "ids": [
+    1271
+   ],
+   "what": "mini excavator",
+   "why": "toy-like proportions and colours"
+  },
+  {
+   "ids": [
+    401,
+    907,
+    909,
+    621
+   ],
+   "what": "T-posed people",
+   "why": "T-pose (arms out) can't stand idle on a sidewalk; 401 is also barefoot"
+  },
+  {
+   "ids": [
+    736,
+    803,
+    887,
+    1217
+   ],
+   "what": "tactical/SWAT figures",
+   "why": "armed tactical gear; wrong for a civilian street"
+  },
+  {
+   "ids": [
+    312,
+    575
+   ],
+   "what": "steampunk adventurer",
+   "why": "costume"
+  },
+  {
+   "ids": [
+    46,
+    408,
+    526,
+    624,
+    821,
+    843,
+    129,
+    137,
+    183,
+    563,
+    727,
+    964,
+    974,
+    1022,
+    1080
+   ],
+   "what": "cartoon kids and shopkeepers",
+   "why": "stylised cartoon proportions"
+  },
+  {
+   "ids": [
+    385,
+    465,
+    551,
+    848,
+    922,
+    1189,
+    1238
+   ],
+   "what": "grey figure groups",
+   "why": "untextured posing mannequins"
+  },
+  {
+   "ids": [
+    38,
+    77,
+    642,
+    681,
+    694,
+    729,
+    1104,
+    1144
+   ],
+   "what": "wooden barrels",
+   "why": "real-looking (77, 1144) but no fitting slot: US yards use steel drums and IBCs, taken from NVIDIA instead; 681 is a splat"
+  },
+  {
+   "ids": [
+    777
+   ],
+   "what": "red phone box",
+   "why": "British, not a US town"
+  },
+  {
+   "ids": [
+    817,
+    870,
+    1027,
+    1124,
+    1302,
+    1323,
+    1324,
+    1325,
+    1,
+    87,
+    152,
+    524,
+    552,
+    768,
+    842,
+    876,
+    917,
+    1028,
+    1255
+   ],
+   "what": "trees and palms",
+   "why": "low-poly or stylised; none reads as a real street tree"
+  },
+  {
+   "ids": [
+    322
+   ],
+   "what": "gas cylinder",
+   "why": "sci-fi styling"
+  },
+  {
+   "note": "No candidate at all in the collection for: sedans, vans, box trucks, trailers, buses, dumpsters, newspaper boxes, planters, mailboxes, signs, utility poles, storefront decor, rooftop units, construction items. Those slots keep the generator's own meshes (sedan, dumpster, RTU) or stay empty (truck)."
+  },
+  {
+   "note": "NVIDIA items not taken: indoor racks, ladders, office bins, cleaning gear, wheeled carts (no curbside anchor yet), safety barriers and wet-floor signs (no construction anchor yet), self-dumping hoppers (would read wrong in place of a dumpster)."
+  }
+ ]
+}

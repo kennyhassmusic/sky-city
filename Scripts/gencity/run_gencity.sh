@@ -5,6 +5,7 @@
 # editor runs and frees it after; waits while UNREAL.next names another lane. The generator run (pipeline.py --seed N)
 # happens before this, in the building-types worktree. The import builds water B (our own river and lake water, the
 # channel cut into the ground; GEN_WATER=flat for the older flat surface, GEN_WATER_LOOK=v1|bright).
+# GEN_PACK=game puts the game's user asset pack on (UserPacks/game; needs a building-types worktree with user_pack.py).
 set -u
 BT="$1"; SEED="$2"; TAG="$3"; WHAT="${4:-all}"
 HERE="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -37,9 +38,19 @@ free_lock() {   # only ever the lock this run took (never another lane's)
 }
 trap free_lock EXIT
 
+# GEN_PACK=game (any name without a slash): the user asset pack UserPacks/<name>/userpack.json goes on for the import
+# (building-types fx/user-pack, BT_USER_PACK; its meshes import into Content/UserPack, gitignored). A GEN_PACK that is a
+# path keeps its older meaning, the starter pack's folder (now also GEN_STARTER).
+USER_PACK=""
+case "${GEN_PACK:-}" in
+  "") ;;
+  */*) GEN_STARTER="${GEN_STARTER:-$GEN_PACK}" ;;
+  *) USER_PACK="$HERE/UserPacks/$GEN_PACK/userpack.json"
+     [ -f "$USER_PACK" ] || { echo "no user pack manifest at $USER_PACK" >&2; exit 2; } ;;
+esac
 sync_pack() {
   # The starter pack's Unreal content (building-types assets/starter-pack, /Game/LandCover), copied in, not committed.
-  PACK="${GEN_PACK:-$BT/Content/LandCover}"
+  PACK="${GEN_STARTER:-$BT/Content/LandCover}"
   if [ -f "$PACK/Materials/MPC_LC_Season.uasset" ] && head -c 4 "$PACK/Materials/MPC_LC_Season.uasset" | xxd | grep -q c183; then
     rsync -a "$PACK/" "$HERE/Content/LandCover/" && chmod -R u+w "$HERE/Content/LandCover"
   else
@@ -50,7 +61,7 @@ take_lock
 if [ "$WHAT" = import ] || [ "$WHAT" = all ]; then
   sync_pack
   rm -f "$HERE/Saved/GenCity/import_status_$REGION.json"
-  GEN_BT="$BT" GEN_SEED="$SEED" GEN_WATER="${GEN_WATER:-b}" "$UE_CMD" "$HERE/SkyCity.uproject" /Engine/Maps/Entry -unattended -nosplash \
+  BT_USER_PACK="$USER_PACK" GEN_BT="$BT" GEN_SEED="$SEED" GEN_WATER="${GEN_WATER:-b}" "$UE_CMD" "$HERE/SkyCity.uproject" /Engine/Maps/Entry -unattended -nosplash \
     -abslog="$LOGS/import_$TAG.log" -ExecutePythonScript="$HERE/Scripts/gencity/import_gencity_ue.py" > /dev/null 2>&1
   cat "$HERE/Saved/GenCity/import_status_$REGION.json" || exit 1
   grep -q '"ok"' "$HERE/Saved/GenCity/import_status_$REGION.json" || exit 1

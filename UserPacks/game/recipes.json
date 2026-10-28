@@ -1,0 +1,410 @@
+{
+ "pack": "game",
+ "about": "How Scripts/userpack/build_game_pack.sh rebuilds the game pack's GLBs from the drive. One row per kept asset; curation.json says why each was kept and what was rejected. Sizes are real metres (x = length along the asset's front, y = across, z = height); yaw_deg turns the source so its front faces +X.",
+ "defaults": {
+  "tris": 20000,
+  "tex": 1024
+ },
+ "licences": {
+  "nvidia-simready-cc-by-4.0": {
+   "id": "CC-BY-4.0",
+   "credit": "NVIDIA Physical AI SimReady Warehouse 01 (v1.1.0), NVIDIA Corporation, CC-BY 4.0",
+   "url": "https://huggingface.co/datasets/nvidia/PhysicalAI-SimReady-Warehouse-01"
+  },
+  "scenario-cc-by-4.0": {
+   "id": "CC-BY-4.0",
+   "credit": "Scenario 3D Collection, Scenario, CC-BY 4.0 (AI-generated)",
+   "url": "https://huggingface.co/datasets/scenario-labs/3d-collection"
+  }
+ },
+ "sources": {
+  "nvidia": {
+   "name": "PhysicalAI-SimReady-Warehouse-01",
+   "root": "${USERPACK_DRIVE}/3D Assets/PhysicalAI-SimReady-Warehouse-01/Props",
+   "licence": "nvidia-simready-cc-by-4.0"
+  },
+  "scenario": {
+   "name": "3d-collection",
+   "root": "${USERPACK_DRIVE}/3D Assets/3d-collection",
+   "licence": "scenario-cc-by-4.0"
+  }
+ },
+ "assets": {
+  "Forklift_C01_Blue": {
+   "slot": "dock.forklift",
+   "source": "nvidia",
+   "path": "general/SM_Forklift_C01_Blue_01/SM_Forklift_C01_Blue_01.usd",
+   "yaw_deg": 90,
+   "tris": 40000,
+   "tex": 4096
+  },
+  "Forklift_C01_Red": {
+   "slot": "dock.forklift",
+   "source": "nvidia",
+   "path": "general/SM_Forklift_C01_Red_01/SM_Forklift_C01_Red_01.usd",
+   "yaw_deg": 90,
+   "tris": 40000,
+   "tex": 4096
+  },
+  "PalletTruck_A01": {
+   "slot": "dock.pallet_jack",
+   "source": "nvidia",
+   "path": "general/SM_HeavyDutyPalletTruck_A01_01/SM_HeavyDutyPalletTruck_A01_01.usd",
+   "tris": 6000,
+   "tex": 1024,
+   "yaw_deg": 90
+  },
+  "IBCTank_A02": {
+   "slot": "yard.drum",
+   "source": "nvidia",
+   "path": "general/SM_IBCTank_A02_01/SM_IBCTank_A02_01.usd",
+   "tris": 8000,
+   "tex": 1024
+  },
+  "SteelDrum_A01": {
+   "slot": "yard.drum",
+   "source": "nvidia",
+   "path": "general/SM_SteelDrum_A01_01/SM_SteelDrum_A01_01.usd",
+   "tris": 3000,
+   "tex": 1024
+  },
+  "SteelDrum_A02": {
+   "slot": "yard.drum",
+   "source": "nvidia",
+   "path": "general/SM_SteelDrum_A02_01/SM_SteelDrum_A02_01.usd",
+   "tris": 3000,
+   "tex": 1024
+  },
+  "OffroadSUV_A": {
+   "slot": "vehicle.parked.suv",
+   "source": "scenario",
+   "path": "assets/scenario_asset_AXM18qzFnbRcKpKdoZsCZ85y/output.glb",
+   "yaw_deg": 180,
+   "tris": 40000,
+   "tex": 2048,
+   "dims": [
+    4.3,
+    1.88,
+    2.05
+   ]
+  },
+  "OffroadSUV_B": {
+   "slot": "vehicle.parked.suv",
+   "source": "scenario",
+   "path": "assets/scenario_asset_yDcD8diFQzffCwnHSsJVoPRV/output.glb",
+   "yaw_deg": 180,
+   "tris": 40000,
+   "tex": 2048,
+   "dims": [
+    4.3,
+    1.88,
+    2.0
+   ]
+  },
+  "Pickup1950": {
+   "slot": "vehicle.parked.pickup",
+   "source": "scenario",
+   "path": "assets/ce679cb83f448b83/b0017be18600cc99.glb",
+   "yaw_deg": 90,
+   "tris": 40000,
+   "tex": 1024,
+   "dims": [
+    4.9,
+    1.95,
+    1.9
+   ]
+  },
+  "PersonHoodie": {
+   "slot": "person.idle",
+   "source": "scenario",
+   "path": "assets/scenario_asset_U2KQ686opM4MA4YiuxrvK1Zh/output.glb",
+   "yaw_deg": 90,
+   "size": {
+    "axis": "z",
+    "m": 1.78
+   },
+   "tris": 20000,
+   "tex": 1024
+  },
+  "EBike": {
+   "slot": "street.bike_parked",
+   "source": "scenario",
+   "path": "assets/scenario_asset_u35vcY44mBmSGNaxAnjf67VD/output.glb",
+   "yaw_deg": 0,
+   "tris": 80000,
+   "tex": 1024,
+   "dims": [
+    1.85,
+    0.65,
+    1.1
+   ]
+  },
+  "PalletStack_6": {
+   "slot": "dock.pallet_stack",
+   "source": "nvidia",
+   "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+   "compose": [
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.018,
+      0.019,
+      0.0
+     ],
+     "yaw": -0.07
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      -0.014,
+      -0.03,
+      0.12
+     ],
+     "yaw": 0.81
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      -0.002,
+      0.016,
+      0.24
+     ],
+     "yaw": -0.63
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.016,
+      -0.014,
+      0.36
+     ],
+     "yaw": 1.51
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.014,
+      -0.005,
+      0.48
+     ],
+     "yaw": 0.19
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.011,
+      -0.018,
+      0.6
+     ],
+     "yaw": 0.27
+    }
+   ],
+   "tris": 9000,
+   "tex": 1024
+  },
+  "PalletStack_10": {
+   "slot": "dock.pallet_stack",
+   "source": "nvidia",
+   "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+   "compose": [
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.004,
+      -0.004,
+      0.0
+     ],
+     "yaw": 0.39
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      -0.018,
+      0.019,
+      0.12
+     ],
+     "yaw": 1.62
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.009,
+      -0.02,
+      0.24
+     ],
+     "yaw": 0.1
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      -0.01,
+      -0.015,
+      0.36
+     ],
+     "yaw": 2.26
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.03,
+      -0.027,
+      0.48
+     ],
+     "yaw": 1.8
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.006,
+      -0.007,
+      0.6
+     ],
+     "yaw": -1.08
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.01,
+      -0.003,
+      0.72
+     ],
+     "yaw": 0.93
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.01,
+      -0.022,
+      0.84
+     ],
+     "yaw": 1.34
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0.029,
+      0.028,
+      0.96
+     ],
+     "yaw": 0.57
+    },
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      -0.027,
+      -0.03,
+      1.08
+     ],
+     "yaw": -1.83
+    }
+   ],
+   "tris": 12000,
+   "tex": 1024
+  },
+  "PalletLoad_Boxes": {
+   "slot": "dock.pallet_load",
+   "source": "nvidia",
+   "path": "general/Cardbox_B2/Cardbox_B2.usd",
+   "compose": [
+    {
+     "path": "general/SM_BlockPallet_A01_WoodNewA_01/SM_BlockPallet_A01_WoodNewA_01.usd",
+     "at": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "path": "general/Cardbox_B2/Cardbox_B2.usd",
+     "at": [
+      -0.255,
+      -0.27,
+      0.12
+     ],
+     "yaw": 0
+    },
+    {
+     "path": "general/Cardbox_B2/Cardbox_B2.usd",
+     "at": [
+      -0.255,
+      0.27,
+      0.12
+     ],
+     "yaw": 90
+    },
+    {
+     "path": "general/Cardbox_B2/Cardbox_B2.usd",
+     "at": [
+      0.255,
+      -0.27,
+      0.12
+     ],
+     "yaw": 90
+    },
+    {
+     "path": "general/Cardbox_B2/Cardbox_B2.usd",
+     "at": [
+      0.255,
+      0.27,
+      0.12
+     ],
+     "yaw": 0
+    },
+    {
+     "path": "general/Cardbox_B2/Cardbox_B2.usd",
+     "at": [
+      -0.255,
+      -0.27,
+      0.641
+     ],
+     "yaw": 0
+    },
+    {
+     "path": "general/Cardbox_B2/Cardbox_B2.usd",
+     "at": [
+      -0.255,
+      0.27,
+      0.641
+     ],
+     "yaw": 90
+    },
+    {
+     "path": "general/Cardbox_B2/Cardbox_B2.usd",
+     "at": [
+      0.255,
+      -0.27,
+      0.641
+     ],
+     "yaw": 90
+    },
+    {
+     "path": "general/Cardbox_B2/Cardbox_B2.usd",
+     "at": [
+      0.255,
+      0.27,
+      0.641
+     ],
+     "yaw": 0
+    },
+    {
+     "path": "general/Cardbox_B2/Cardbox_B2.usd",
+     "at": [
+      0.0,
+      0.0,
+      1.162
+     ],
+     "yaw": 12
+    }
+   ],
+   "tris": 8000,
+   "tex": 1024
+  },
+  "PlywoodCrate_B01": {
+   "slot": "dock.pallet_load",
+   "source": "nvidia",
+   "path": "general/SM_PlywoodCrate_B01_01/SM_PlywoodCrate_B01_01.usd",
+   "tris": 4000,
+   "tex": 1024
+  }
+ }
+}

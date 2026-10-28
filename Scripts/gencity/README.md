@@ -27,3 +27,13 @@ Every editor run takes the shared Unreal lock (`~/UnrealProjects/_bt_mgmt/UNREAL
 committed (`.gitignore`). No City Sample content goes into the level: the generator's content lives under
 `/Game/GenCity`, `/Game/CityGen` and `/Game/LandCover`, and this branch switches the CitySamplePCG plugin off.
 The Skyster (ASkysterCar, `/Game/Vehicles/Roadster`) is Kenny's design (LICENSE-ASSETS.md section 4) and is used as is.
+
+## The game's user asset pack (`gen/game-pack`)
+
+`GEN_PACK=game` puts the game's own asset pack on for the import: `UserPacks/game/userpack.json` (building-types
+manifest `bt.userpack/1`, docs/USER_ASSET_PACKS.md there) maps generator slots to converted NVIDIA SimReady and
+Scenario 3D Collection meshes (parked SUVs and pickups, forklifts, pallets, drums, people, bikes). It needs a
+building-types worktree with `user_pack.py` (`fx/user-pack`). The GLBs are rebuilt from the external drive by
+`Scripts/userpack/build_game_pack.sh` (recipes in `UserPacks/game/recipes.json`, choices and rejections in
+`curation.json`, credits in `CREDITS.md`) and import into `Content/UserPack` (gitignored). Third-party and AI art
+stays in this game project only, never in building-types.
