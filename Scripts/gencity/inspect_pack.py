@@ -14,8 +14,21 @@ def main(src, out, extras):
     runs = [json.load(open(src))] + [json.load(open(e)) for e in extras]
     manifest = {"source": [src] + extras, "frames": [], "anomalies": [], "routes": {}}
     counters = {}
+    plan = {}
+    pp = os.path.join(os.path.dirname(src), "inspect_%s.json" % runs[0].get("region", "seed7_city"))
+    if os.path.isfile(pp):
+        plan = {r["name"]: r for r in json.load(open(pp)).get("routes", [])}
     for run in runs:
-        manifest["anomalies"] += run.get("anomalies", [])
+        for a in run.get("anomalies", []):
+            # the driver brakes hard from 35 to 15 mph where a turn starts (the plan's slow zones): a speed drop that
+            # starts there is the driver, not a hit
+            slow = (plan.get(a.get("route")) or {}).get("slow") or []
+            if a.get("kind") == "sudden_stop" and any(s0 - 5 <= a.get("dist_m", -1) <= s1 + 5 for s0, s1 in slow):
+                a["cause"] = "driver braking into a planned turn (slow zone), not a collision"
+                a["real"] = False
+            else:
+                a["real"] = True
+            manifest["anomalies"].append(a)
         manifest["routes"].update(run.get("routes", {}))
         for f in run.get("frames", []):
             if not f.get("png") or not os.path.isfile(f["png"]):
@@ -35,7 +48,8 @@ def main(src, out, extras):
     manifest["total_frames"] = sum(counters.values())
     with open(os.path.join(out, "manifest.json"), "w") as h:
         json.dump(manifest, h, indent=1)
-    print("frames", manifest["total_frames"], counters, "anomalies", len(manifest["anomalies"]))
+    print("frames", manifest["total_frames"], counters, "anomalies", len(manifest["anomalies"]),
+          "real", sum(1 for a in manifest["anomalies"] if a.get("real")))
 
 
 if __name__ == "__main__":
