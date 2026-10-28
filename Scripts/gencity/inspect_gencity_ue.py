@@ -10,10 +10,16 @@ doesn't move between the frames and the physics checks pause.
 Physics checks while driving (game time): stuck (< 2 mph for 3 s with throttle on; then the car is put 30 m on),
 below ground, sudden stop (-12 mph within 0.4 s), airborne (not DRIVE/SLIDE for > 0.6 s), in the water, off the
 route (> 12 m; put back). Each with the car's location, the actors within 8 m and what a trace straight ahead hits.
+A put-back (teleport_to) holds the car still in game time: throttle and steer zeroed, full brake and the stop button,
+velocity zeroed; pure pursuit steers for STEER_IN_S before the brake comes off (inspect_plan_gencity.teleport_reset /
+hold_phase). The chase camera is the car's fixed test camera, kept under the signal heads (<= 4.5 m) and tucked in low
+near a signal mast (inspect_plan_gencity.chase_cam, routes[].masts_ue). Pedestrian cameras stand where the plan puts
+them (caps[].cams: on the sidewalk corner, each leg's half width + 2 m out).
 Writes Saved/GenCity/inspect_<tag>.json (frames: route, kind, png, camera UE location and yaw, car, edge, ...).
 inspect_pack.py turns that into AssetBuilds/inspect_v8/<route>/NNNN_<kind>.jpg + manifest.json.
 """
 import builtins
+import importlib
 import json
 import math
 import os
@@ -24,6 +30,11 @@ import traceback
 import unreal
 
 ROOT = unreal.Paths.convert_relative_path_to_full(unreal.Paths.project_dir()).rstrip("/")
+_HERE = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.path.join(ROOT, "Scripts", "gencity")
+if _HERE not in sys.path:
+    sys.path.insert(0, _HERE)
+import inspect_plan_gencity as IP  # noqa: E402  (plain-Python helpers: hold logic, chase camera)
+importlib.reload(IP)               # the editor's interpreter persists between runs
 KV = dict(a.split("=", 1) for a in sys.argv[1:] if "=" in a)
 REGION = KV.get("region", "seed7_city")
 TAG = KV.get("tag", "inspect")
@@ -123,13 +134,37 @@ def anomaly(kind, extra=None):
 
 
 def teleport_to(pi):
+    """Put the car on the path at point pi and hold it still (game time): no stale throttle/steer, full brake and stop,
+    velocity zeroed; drive() keeps the hold on until S["hold_until"], steers before it lets the brake off."""
     R = S["route"]
     pts = R["path"]
     pi = min(pi, len(pts) - 2)
     a, b = pts[pi], pts[min(pi + 2, len(pts) - 1)]
     yaw = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
-    S["p"].test_teleport(unreal.Vector(a[0], a[1], 150.0), yaw)
+    p = S["p"]
+    IP.hold_controls(p)                    # before the move, so nothing is applied on the way
+    p.test_teleport(unreal.Vector(a[0], a[1], 150.0), yaw)
+    S["hold_until"] = IP.teleport_reset(p, gtime(), unreal.Vector(0.0, 0.0, 0.0))
+    S["quiet_until"] = S["hold_until"] + IP.STEER_IN_S + 1.0
     S["pi"] = pi
+    S["slow_t"] = None
+    S["air_t"] = None
+    S["hist"] = []
+
+
+def set_chase_cam(loc, yaw):
+    """The car's fixed chase camera for where it is now (it eases there at the car's camera rate, so set it every
+    tick while driving: the frozen capture frame shows what the camera had settled to)."""
+    R = S["route"]
+    dist, elev, h, tucked = IP.chase_cam([loc.x, loc.y], yaw, R.get("masts_ue") or [],
+                                         float(KV.get("chase_dist", IP.CHASE_DIST_M)),
+                                         float(KV.get("chase_elev", IP.CHASE_ELEV_DEG)))
+    p = S["p"]
+    if S.get("chase") is None or abs(S["chase"]["dist_m"] - dist) > 0.01 or abs(S["chase"]["elev"] - elev) > 0.01:
+        p.set_editor_property("test_cam_dist", dist)
+        p.set_editor_property("test_cam_yaw", 0.0)
+        p.set_editor_property("test_cam_elev", elev)
+    S["chase"] = {"dist_m": round(dist, 2), "elev": round(elev, 2), "height_m": round(h, 2), "tucked": tucked}
 
 
 # --- route driving -------------------------------------------------------------------------------------
@@ -140,11 +175,12 @@ def start_route(i):
     p = S["p"]
     for k, v in ZERO.items():
         p.set_editor_property(k, v)
-    p.set_editor_property("test_cam_dist", 0.0)
+    S["chase"] = None
     S["pc"].set_view_target_with_blend(p, 0.0)
     p.test_teleport(unreal.Vector(R["start_ue"][0], R["start_ue"][1], 150.0), R["start_yaw"])
+    set_chase_cam(p.get_actor_location(), R["start_yaw"])
     S["rt0"] = None
-    S["hold_until"] = time.time() + 2.5
+    S["hold_until"] = IP.teleport_reset(p, gtime(), unreal.Vector(0.0, 0.0, 0.0), 2.5)
     S["hist"] = []
     S["air_t"] = None
     S["slow_t"] = None
@@ -158,14 +194,15 @@ def drive(now):
     p = S["p"]
     R = S["route"]
     pts = R["path"]
-    if now < S["hold_until"]:
+    ph = IP.hold_phase(gtime(), S["hold_until"])
+    if ph == "hold":
+        IP.hold_controls(p)                # every tick: nothing stale gets through while the car is held
         return
     if S["rt0"] is None:
         S["rt0"] = gtime()
-        p.set_editor_property("test_brake", 0.0)
-        p.set_editor_property("test_stop", 0.0)
     loc = p.get_actor_location()
     rot = p.get_actor_rotation()
+    set_chase_cam(loc, rot.yaw)
     # progress: the nearest path point in a window ahead
     best, bi = 1e18, S["pi"]
     for j in range(S["pi"], min(len(pts), S["pi"] + 30)):
@@ -196,6 +233,12 @@ def drive(now):
     want = math.degrees(math.atan2(pts[tj][1] - loc.y, pts[tj][0] - loc.x))
     err = wrap(want - rot.yaw)
     p.set_editor_property("test_steer", max(-1.0, min(1.0, err / 25.0)))
+    if ph == "steer":                      # pure pursuit is steering; the brake comes off next
+        p.set_editor_property("test_throttle", 0.0)
+        p.set_editor_property("test_brake", 1.0)
+        p.set_editor_property("test_stop", 1.0)
+        return
+    p.set_editor_property("test_stop", 0.0)
     target = SLOW_MPH if any(a <= dist <= b for a, b in R["slow"]) else MPH
     if abs(err) > 35:
         target = min(target, SLOW_MPH)
@@ -249,15 +292,14 @@ def checks(now, loc, mph, off_m):
         S["slow_t"] = S["slow_t"] if S["slow_t"] is not None else gt
         if gt - S["slow_t"] > 3.0:
             anomaly("stuck", {"for_s": round(gt - S["slow_t"], 1), "recovered": "teleported 30 m on"})
-            S["slow_t"] = None
-            teleport_to(S["pi"] + 8)
-            S["hold_until"] = now + 1.5
+            teleport_to(S["pi"] + 8)       # holds the car (game time) with the controls zeroed and the brake on
+            return
     else:
         S["slow_t"] = None
     if off_m > 12.0 and rate_ok("off_route", gt, 5.0):
         anomaly("off_route", {"off_m": round(off_m, 1), "recovered": "put back on the route"})
         teleport_to(S["pi"] + 2)
-        S["hold_until"] = now + 1.5
+        return
     if gt > S["route"]["length_m"] / 5.0 + 40.0:
         anomaly("route_timeout")
         finish_route()
@@ -287,12 +329,21 @@ def begin_capture(due):
     items = []
     for c in due:
         if c["kind"] == "chase":
-            items.append({"kind": "chase", "view": "car"})
+            items.append({"kind": "chase", "view": "car", "chase_cam": dict(S.get("chase") or {})})
         elif c["kind"] == "fwd":
             r = math.radians(yaw)
             at = unreal.Vector(loc.x + math.cos(r) * 140.0, loc.y + math.sin(r) * 140.0, loc.z + 120.0)
             items.append({"kind": "fwd", "view": "cam", "loc": at, "rot": unreal.Rotator(0.0, -2.0, yaw)})
-        elif c["kind"] == "ped":
+        elif c["kind"] == "ped" and c.get("cams"):
+            # the plan's sidewalk corners: each leg's half width + 2 m behind the curb, clear of every leg
+            for k, pc in enumerate(c["cams"]):
+                x, y = pc["at_ue"]
+                g = trace(unreal.Vector(x, y, loc.z + 500), unreal.Vector(x, y, loc.z - 1000), [p])
+                gz = g["z"] if g else loc.z
+                at = unreal.Vector(x, y, gz + IP.PED_EYE_M * 100.0)
+                items.append({"kind": "ped%d" % k, "view": "cam", "loc": at, "rot": unreal.Rotator(0.0, -1.0, pc["yaw"]),
+                              "node": c["node"], "leg": pc["leg"]})
+        elif c["kind"] == "ped":           # an older plan without caps[].cams
             cx, cy = c["at_ue"]
             g = trace(unreal.Vector(cx, cy, loc.z + 500), unreal.Vector(cx, cy, loc.z - 1000), [p])
             gz = g["z"] if g else loc.z
@@ -321,7 +372,7 @@ def capture(now):
         unreal.GameplayStatics.set_global_time_dilation(gw(), 1.0)
         S["phase"] = "drive"
         S["hist"] = []                     # the frozen frames read as a speed drop: start the checks afresh
-        S["quiet_until"] = gtime() + 0.6
+        S["quiet_until"] = max(S.get("quiet_until", 0.0), gtime() + 0.6)
         write()
         return
     it = S["cap"][0]
