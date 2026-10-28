@@ -37,3 +37,29 @@ building-types worktree with `user_pack.py` (`fx/user-pack`). The GLBs are rebui
 `Scripts/userpack/build_game_pack.sh` (recipes in `UserPacks/game/recipes.json`, choices and rejections in
 `curation.json`, credits in `CREDITS.md`) and import into `Content/UserPack` (gitignored). Third-party and AI art
 stays in this game project only, never in building-types.
+
+## Visual check after every import (`gen/visual-check`, Lane V)
+
+Fixed cameras, golden images and level rules, so a bad import fails before Kenny looks. Kenny reviews only the
+`report.html` of a run that **passed** (golden | new | difference per camera, rule results).
+
+| File | What |
+|---|---|
+| `visual_cams.json` (made by `visual_cams_make.py`) | 26 seed-7 + 5 seed-17 cameras (curved bend, downtown corner, skewed junction, empty lot, driveway, STOP approach, bridge deck/side, beach eye/dunes/car park/air, county ditch, farm belt, garage ramp, 4 aerials...), render settings (1280x720, FOV 80, wind frozen, fixed post-process), per-camera tolerances, level rules |
+| `visual_capture_ue.py` | in the editor (under UNREAL.lock): level dump with vegetation positions, then one HighResShot per camera into the run folder; refuses when `_bt_mgmt/DISK_LOW` exists or the disk has < 15 GB |
+| `visual_check.py` | offline: `check` (pictures vs goldens + rules, report, exit code), `approve` (Kenny's OK -> goldens, who/when recorded), `rules` (any level dump) |
+| `run_visual_check.sh` | capture + check in one go |
+| `test_visual_check.py` | synthetic cases + today's two misses (plants on roads; sand unchanged) |
+
+After each import of seed N (the build lane holds the lock already):
+
+```bash
+VISUAL_LOCK=held GEN_BT=<bt worktree> GEN_PACK=game \
+  Scripts/gencity/run_visual_check.sh 7 v11 'beach_*' 'tag:shore'     # what this import meant to change
+#   ... or: Scripts/gencity/run_visual_check.sh 7 v11 none            # nothing visual meant to change
+# exit 0 PASS -> send Kenny report.html; 1 FAIL -> fix first; 3 NEEDS_APPROVAL -> first run, no goldens yet
+python3 -I Scripts/gencity/visual_check.py approve --run <run dir> --by Kenny   # only after Kenny's OK
+```
+
+Runs go to `AssetBuilds/visual_runs/<tag>_seed<N>_<time>/`, goldens to `AssetBuilds/visual_goldens/seed<N>/`
+(older goldens kept under `history/`). Never on the internal disk.

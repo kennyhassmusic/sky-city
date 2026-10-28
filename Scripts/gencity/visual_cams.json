@@ -1,0 +1,772 @@
+{
+ "version": 1,
+ "about": "Lane V fixed-camera golden-image check. UE centimetres, yaw/pitch degrees (UE: yaw 0 = +X = plan north). Edit cameras here; re-approve goldens after moving one.",
+ "levels": {
+  "7": "/Game/Maps/GenCity_Seed7",
+  "17": "/Game/Maps/GenCity_Seed17"
+ },
+ "render": {
+  "res": "1280x720",
+  "fov": 80.0,
+  "settle_s": 45,
+  "per_shot_wait_s": 4.0,
+  "repeat_for_noise": false,
+  "console": [
+   "r.MotionBlurQuality 0",
+   "r.AntiAliasingMethod 1",
+   "r.DepthOfFieldQuality 0"
+  ],
+  "watch_assets": [
+   "M_Shore_Sand",
+   "MI_Shore_Sea",
+   "MI_KitRoad_asphalt",
+   "MI_L9_Water",
+   "M_L9_Water"
+  ],
+  "freeze_wind": {
+   "mpc": "/Game/CityGen/Wind/MPC_Wind",
+   "TimeScale": 0.0,
+   "TimeOffset": 0.0
+  },
+  "exposure": {
+   "mode": "auto_fast",
+   "ev100": null,
+   "bias": 0.0,
+   "note": "auto_fast: histogram AE converging in <1 s with a fixed bias; set mode lock + ev100 to pin it"
+  }
+ },
+ "thresholds": {
+  "ssim_tol": 0.03,
+  "frac_tol": 0.015,
+  "pix_delta": 0.1,
+  "color_tol": 0.02,
+  "work_width": 640,
+  "noise_mult": 3.0,
+  "blank_mean": 0.03,
+  "blank_std": 0.01
+ },
+ "rules": [
+  {
+   "id": "veg_on_hard",
+   "kind": "veg_on_hard",
+   "max": 0,
+   "why": "Kenny 2026-10-28: ~4,000 plants on roads and sidewalks (v9 side files 3,981 on hard surface)"
+  },
+  {
+   "id": "road_tiles",
+   "kind": "count_min",
+   "key": "labels.F8_Road",
+   "min": 1
+  },
+  {
+   "id": "road_asphalt",
+   "kind": "material_on",
+   "actor": "F8_Road",
+   "material": "MI_KitRoad_asphalt"
+  },
+  {
+   "id": "curbs",
+   "kind": "count_min",
+   "key": "labels.F7_curb",
+   "min": 1
+  },
+  {
+   "id": "walks",
+   "kind": "count_min",
+   "key": "labels.F7_walk",
+   "min": 1
+  },
+  {
+   "id": "parkway",
+   "kind": "count_min",
+   "key": "labels.F7_parkway",
+   "min": 1
+  },
+  {
+   "id": "ada_warning",
+   "kind": "count_min",
+   "key": "labels.F7_warning",
+   "min": 1
+  },
+  {
+   "id": "ditch_slabs",
+   "kind": "count_min",
+   "key": "meshes.KIT_SS_SlabWedge",
+   "min": 1,
+   "seeds": [
+    7
+   ]
+  },
+  {
+   "id": "ground_cut",
+   "kind": "count_min",
+   "key": "labels.L9_GroundCut",
+   "min": 1
+  },
+  {
+   "id": "wear_decals",
+   "kind": "count_min",
+   "key": "meshes.KIT_DecalFloor",
+   "min": 1
+  },
+  {
+   "id": "paint_bars",
+   "kind": "count_min",
+   "key": "meshes.KIT_SS_PaintBar",
+   "min": 1
+  },
+  {
+   "id": "vacant_fences",
+   "kind": "count_min",
+   "key": "meshes.KIT_FS_Post*",
+   "min": 1
+  },
+  {
+   "id": "crack_weeds",
+   "kind": "count_min",
+   "key": "meshes.SM_VEG_CrackWeed*",
+   "min": 1
+  },
+  {
+   "id": "shore_terrain",
+   "kind": "count_min",
+   "key": "labels.Shore_Terrain",
+   "min": 1,
+   "seeds": [
+    7
+   ]
+  },
+  {
+   "id": "shore_sand_material",
+   "kind": "material_on",
+   "actor": "Shore_Terrain",
+   "material": "M_Shore_Sand",
+   "seeds": [
+    7
+   ]
+  },
+  {
+   "id": "shore_sea",
+   "kind": "count_min",
+   "key": "labels.Shore_Sea",
+   "min": 1,
+   "seeds": [
+    7
+   ]
+  },
+  {
+   "id": "dune_grass",
+   "kind": "count_min",
+   "key": "meshes.SM_VEG_DuneGrass*",
+   "min": 1,
+   "seeds": [
+    7
+   ]
+  },
+  {
+   "id": "pebbles_shells",
+   "kind": "count_min_each",
+   "keys": [
+    "meshes.SM_Shore_Pebble",
+    "meshes.SM_Shore_Shell"
+   ],
+   "min": 1,
+   "seeds": [
+    7
+   ]
+  },
+  {
+   "id": "bridges",
+   "kind": "count_min",
+   "key": "tags.BX_Bridge",
+   "min": 1
+  },
+  {
+   "id": "river",
+   "kind": "count_min",
+   "key": "labels.L9_River*",
+   "min": 1
+  },
+  {
+   "id": "wind_flags",
+   "kind": "count_min",
+   "key": "labels.Wind_Flags",
+   "min": 1
+  },
+  {
+   "id": "wind_mpc",
+   "kind": "truthy",
+   "key": "mpc_wind"
+  },
+  {
+   "id": "signal_masts",
+   "kind": "count_min",
+   "key": "meshes.KIT_SS_SignalMast*",
+   "min": 1
+  },
+  {
+   "id": "street_props",
+   "kind": "count_min_each",
+   "keys": [
+    "meshes.KIT_SS_Hydrant",
+    "meshes.KIT_SS_StopSign",
+    "meshes.KIT_SS_CarSedan",
+    "meshes.KIT_SS_StreetLight",
+    "meshes.KIT_SS_Bench"
+   ],
+   "min": 1
+  },
+  {
+   "id": "crops",
+   "kind": "count_min",
+   "key": "meshes.SM_CROP_*",
+   "min": 1
+  },
+  {
+   "id": "kit_walls",
+   "kind": "count_min",
+   "key": "meshes.KIT_Wall",
+   "min": 1
+  },
+  {
+   "id": "game_pack",
+   "kind": "count_min",
+   "key": "meshes.SM_UP_*",
+   "min": 1,
+   "seeds": [
+    7
+   ],
+   "optional_flag": "pack"
+  },
+  {
+   "id": "lights",
+   "kind": "count_eq_golden",
+   "key": "classes.DirectionalLight",
+   "why": "one Sun + ShadeFill; a second sun or a lost fill changes every shot"
+  },
+  {
+   "id": "no_big_drop",
+   "kind": "no_big_drop",
+   "max_drop": 0.5,
+   "why": "any tracked mesh/label count falling by more than half against the golden level dump"
+  }
+ ],
+ "cameras": [
+  {
+   "name": "curved_bend",
+   "seed": 7,
+   "loc_ue": [
+    15863.0,
+    82395.9,
+    120
+   ],
+   "yaw": 28.1,
+   "pitch": -3.0,
+   "source": "revisit_in_v10_last.json (lane P v10 pairs/beach shots)",
+   "tags": [
+    "roads",
+    "curb"
+   ]
+  },
+  {
+   "name": "downtown_corner",
+   "seed": 7,
+   "loc_ue": [
+    68100,
+    71100,
+    170
+   ],
+   "yaw": 45.0,
+   "pitch": -4.0,
+   "source": "revisit_in_v10_last.json (lane P v10 pairs/beach shots)",
+   "tags": [
+    "downtown",
+    "curb",
+    "paint"
+   ]
+  },
+  {
+   "name": "empty_lot",
+   "seed": 7,
+   "loc_ue": [
+    54048.7,
+    40005.9,
+    170
+   ],
+   "yaw": -88.3,
+   "pitch": -6.0,
+   "source": "revisit_in_v10_last.json (lane P v10 pairs/beach shots) parcel p_a90dca4b_b0101",
+   "tags": [
+    "vacant",
+    "veg"
+   ]
+  },
+  {
+   "name": "driveway",
+   "seed": 7,
+   "loc_ue": [
+    37775.0,
+    58348.2,
+    170
+   ],
+   "yaw": -170.4,
+   "pitch": -6.0,
+   "source": "revisit_in_v10_last.json (lane P v10 pairs/beach shots) parcel p_72729686_a0204",
+   "tags": [
+    "suburbs",
+    "curb"
+   ]
+  },
+  {
+   "name": "veg_spot",
+   "seed": 7,
+   "loc_ue": [
+    68388.7,
+    124416.5,
+    170
+   ],
+   "yaw": 45.0,
+   "pitch": -12.0,
+   "source": "revisit_in_v10_last.json (lane P v10 pairs/beach shots) (Kenny's plants-in-road spot)",
+   "tags": [
+    "veg",
+    "roads"
+   ],
+   "ssim_tol": 0.05,
+   "frac_tol": 0.03
+  },
+  {
+   "name": "stop_approach",
+   "seed": 7,
+   "loc_ue": [
+    44002.1,
+    104376.4,
+    130
+   ],
+   "yaw": 0.6,
+   "pitch": -3.0,
+   "source": "inspect_v9 stop_corners suburbs/0011_fwd (edge r_loc_005), 12 m before the corner",
+   "tags": [
+    "signs",
+    "paint"
+   ]
+  },
+  {
+   "name": "skewed_junction_eye",
+   "seed": 7,
+   "loc_ue": [
+    121250.0,
+    123800.0,
+    150
+   ],
+   "yaw": 90.0,
+   "pitch": -4.0,
+   "source": "placed_city node n_plat_55ab26ab1_x1_1_1_b (most skewed 4-way, IN_UNREAL_CHECKLIST_v10 note), on the west local leg",
+   "tags": [
+    "roads",
+    "paint",
+    "curb"
+   ]
+  },
+  {
+   "name": "skewed_junction_air",
+   "seed": 7,
+   "loc_ue": [
+    118650.0,
+    126180.0,
+    3500
+   ],
+   "yaw": 0.0,
+   "pitch": -55.0,
+   "source": "same node, 35 m up, 25 m south, looking north",
+   "tags": [
+    "roads",
+    "paint",
+    "curb",
+    "aerial"
+   ]
+  },
+  {
+   "name": "bridge_deck",
+   "seed": 7,
+   "loc_ue": [
+    26800.0,
+    34500.0,
+    150
+   ],
+   "yaw": 90.0,
+   "pitch": -3.0,
+   "source": "bridges_seed7 br_r_art_027 (deck plan y 270, x 361-423), 16 m before the west abutment",
+   "tags": [
+    "bridge",
+    "paint"
+   ]
+  },
+  {
+   "name": "bridge_side",
+   "seed": 7,
+   "loc_ue": [
+    65000.0,
+    38000.0,
+    250
+   ],
+   "yaw": 0.0,
+   "pitch": -2.0,
+   "source": "bridges_seed7 br_r_art_034 from the south bank (girders, piers, parapets, water)",
+   "tags": [
+    "bridge",
+    "water"
+   ],
+   "ssim_tol": 0.05,
+   "frac_tol": 0.03
+  },
+  {
+   "name": "civic_river_bridge",
+   "seed": 7,
+   "loc_ue": [
+    90170,
+    41052,
+    120
+   ],
+   "yaw": -90.0,
+   "pitch": -3.0,
+   "source": "inspect_v9 civic_river/0081_fwd (bridge r_col_061)",
+   "tags": [
+    "bridge",
+    "water"
+   ]
+  },
+  {
+   "name": "beach_eye",
+   "seed": 7,
+   "loc_ue": [
+    -9500,
+    33000,
+    120.0
+   ],
+   "yaw": 168.7,
+   "pitch": -3.0,
+   "source": "revisit_in_v10_last.json (lane P v10 pairs/beach shots)",
+   "tags": [
+    "beach",
+    "shore"
+   ],
+   "roi": [
+    0.0,
+    0.45,
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "name": "beach_dunes",
+   "seed": 7,
+   "loc_ue": [
+    -4500,
+    42000,
+    380.0
+   ],
+   "yaw": 98.5,
+   "pitch": -6.0,
+   "source": "revisit_in_v10_last.json (lane P v10 pairs/beach shots)",
+   "tags": [
+    "beach",
+    "shore",
+    "veg"
+   ],
+   "ssim_tol": 0.05,
+   "frac_tol": 0.03
+  },
+  {
+   "name": "beach_carpark",
+   "seed": 7,
+   "loc_ue": [
+    800,
+    31800,
+    300.0
+   ],
+   "yaw": -154.7,
+   "pitch": -12.0,
+   "source": "revisit_in_v10_last.json (lane P v10 pairs/beach shots)",
+   "tags": [
+    "beach",
+    "shore",
+    "parking"
+   ]
+  },
+  {
+   "name": "beach_air",
+   "seed": 7,
+   "loc_ue": [
+    -42000,
+    70000,
+    14000
+   ],
+   "yaw": 0.0,
+   "pitch": -28.0,
+   "source": "revisit_in_v10_last.json (lane P v10 pairs/beach shots)",
+   "tags": [
+    "beach",
+    "shore",
+    "aerial",
+    "water"
+   ]
+  },
+  {
+   "name": "county_ditch",
+   "seed": 7,
+   "loc_ue": [
+    125000.0,
+    30200.0,
+    150
+   ],
+   "yaw": 0.0,
+   "pitch": -4.0,
+   "source": "ditches_seed7 strips on r_art_006 (both sides, plan x 288-312, y 1203-1500), looking north",
+   "tags": [
+    "county",
+    "ditch"
+   ]
+  },
+  {
+   "name": "farm_belt",
+   "seed": 7,
+   "loc_ue": [
+    21750.0,
+    129200.0,
+    170
+   ],
+   "yaw": 90.0,
+   "pitch": -3.0,
+   "source": "plan_seed7_city shot 'farmland' (corn field f_11c2596b_a0102_01)",
+   "tags": [
+    "farm",
+    "veg",
+    "county"
+   ],
+   "ssim_tol": 0.05,
+   "frac_tol": 0.03
+  },
+  {
+   "name": "downtown_street",
+   "seed": 7,
+   "loc_ue": [
+    48000.0,
+    85650.0,
+    170
+   ],
+   "yaw": 90.0,
+   "pitch": -3.0,
+   "source": "plan_seed7_city shot 'downtown' (r_col_044)",
+   "tags": [
+    "downtown"
+   ]
+  },
+  {
+   "name": "suburbs_street",
+   "seed": 7,
+   "loc_ue": [
+    140925.0,
+    122650.0,
+    170
+   ],
+   "yaw": 180.0,
+   "pitch": -3.0,
+   "source": "plan_seed7_city shot 'suburbs'",
+   "tags": [
+    "suburbs",
+    "veg"
+   ]
+  },
+  {
+   "name": "industrial_street",
+   "seed": 7,
+   "loc_ue": [
+    111000.0,
+    57300.0,
+    170
+   ],
+   "yaw": 90.0,
+   "pitch": -3.0,
+   "source": "plan_seed7_city shot 'industrial'",
+   "tags": [
+    "industrial",
+    "pack"
+   ]
+  },
+  {
+   "name": "civic_street",
+   "seed": 7,
+   "loc_ue": [
+    103642.3,
+    92664.7,
+    170
+   ],
+   "yaw": 2.6,
+   "pitch": -3.0,
+   "source": "plan_seed7_city shot 'civic'",
+   "tags": [
+    "civic"
+   ]
+  },
+  {
+   "name": "crosswalk_ramp",
+   "seed": 7,
+   "loc_ue": [
+    20000.0,
+    28500.0,
+    170
+   ],
+   "yaw": 109.5,
+   "pitch": -12.0,
+   "source": "props_seed7 crosswalk at n_ix_x02 (ends plan (292,194.7)-(308,194.7)), pedestrian on the corner",
+   "tags": [
+    "curb",
+    "paint",
+    "ada"
+   ]
+  },
+  {
+   "name": "aerial_city",
+   "seed": 7,
+   "loc_ue": [
+    3028,
+    72000,
+    28925
+   ],
+   "yaw": 0.0,
+   "pitch": -40.0,
+   "source": "plan_seed7_city shot 'aerial' (450 m, 40 deg)",
+   "tags": [
+    "aerial"
+   ]
+  },
+  {
+   "name": "aerial_downtown",
+   "seed": 7,
+   "loc_ue": [
+    39000,
+    72000,
+    30000
+   ],
+   "yaw": 0.0,
+   "pitch": -45.0,
+   "source": "over the Core district (plan 457-982, 427-952)",
+   "tags": [
+    "aerial",
+    "downtown"
+   ]
+  },
+  {
+   "name": "aerial_north_farms",
+   "seed": 7,
+   "loc_ue": [
+    100000,
+    75000,
+    35000
+   ],
+   "yaw": 0.0,
+   "pitch": -45.0,
+   "source": "over North Fields, looking north",
+   "tags": [
+    "aerial",
+    "farm"
+   ]
+  },
+  {
+   "name": "aerial_river",
+   "seed": 7,
+   "loc_ue": [
+    75000,
+    80000,
+    35000
+   ],
+   "yaw": -90.0,
+   "pitch": -40.0,
+   "source": "over the river Longcut from the east, looking west",
+   "tags": [
+    "aerial",
+    "water",
+    "bridge"
+   ]
+  },
+  {
+   "name": "s17_garage_entry",
+   "seed": 17,
+   "loc_ue": [
+    101950,
+    65480,
+    300
+   ],
+   "yaw": 180.0,
+   "pitch": -10.0,
+   "source": "plan_seed17_city ramp start_ue 101350,65480 (lot g_p_30d1a2fd_a0100_lot0), 6 m behind",
+   "tags": [
+    "garage"
+   ]
+  },
+  {
+   "name": "s17_garage_ramp",
+   "seed": 17,
+   "loc_ue": [
+    98930,
+    65900,
+    200
+   ],
+   "yaw": 90.0,
+   "pitch": 4.0,
+   "source": "plan_seed17_city ramp first plate 98930,66080, looking up the ramp",
+   "tags": [
+    "garage"
+   ]
+  },
+  {
+   "name": "s17_downtown",
+   "seed": 17,
+   "loc_ue": [
+    69100.0,
+    89170.0,
+    170
+   ],
+   "yaw": 90.0,
+   "pitch": -3.0,
+   "source": "plan_seed17_city shot 'downtown'",
+   "tags": [
+    "downtown"
+   ]
+  },
+  {
+   "name": "s17_farmland",
+   "seed": 17,
+   "loc_ue": [
+    80000.0,
+    132190.0,
+    170
+   ],
+   "yaw": 90.0,
+   "pitch": -3.0,
+   "source": "plan_seed17_city shot 'farmland'",
+   "tags": [
+    "farm",
+    "veg"
+   ],
+   "ssim_tol": 0.05,
+   "frac_tol": 0.03
+  },
+  {
+   "name": "s17_aerial",
+   "seed": 17,
+   "loc_ue": [
+    3028,
+    31400,
+    28925
+   ],
+   "yaw": 0.0,
+   "pitch": -40.0,
+   "source": "plan_seed17_city shot 'aerial'",
+   "tags": [
+    "aerial"
+   ]
+  }
+ ]
+}
