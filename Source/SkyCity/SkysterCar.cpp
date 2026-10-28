@@ -2015,6 +2015,9 @@ void ASkysterCar::WaterForces(double H)
 		Q = (RotTo(Up, UPV, 1.0 - FMath::Exp(-WATER_LEVEL * H)) * Q).GetNormalized();
 		W *= FMath::Exp(-WATER_SPIN * H);
 		UpdateAxes();
+		// floating isn't air time: no big-air, hang-time or spin credit from bobbing in the river
+		Jump.AirT = 0;
+		Cb.R = Cb.P = Cb.Y = 0;
 	}
 }
 

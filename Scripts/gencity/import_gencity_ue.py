@@ -28,8 +28,13 @@ GAME_MODE = "/Game/SkyCity/Blueprints/BP_SkyCityGameMode.BP_SkyCityGameMode_C"
 # scales < 1 compress the highlight and shadow contrast) keep detail at both ends. GEN_LIGHT=0 keeps the importer's.
 # The importer's sun (pitch -38, yaw -35) lights south and east faces and leaves north and west fronts in shade
 # (lane 2's check); a higher sun (pitch -48) shortens the street shadows and the stronger sky lifts the shaded fronts.
-DRIVE_LIGHT = {"sun_intensity": 7.0, "sun_pitch": -48.0, "sun_yaw": -35.0, "sky_intensity": 5.0, "exposure_bias": -0.2,
-               "local_highlight_contrast": 0.55, "local_shadow_contrast": 0.7}
+# v7 (lane P, 2026-10-27 evening): north and west fronts still read too dark. No dynamic GI here (Lumen is too much for
+# the M1 Max frame budget), so the indirect fill is faked: a stronger sky light, and "ShadeFill", a weak shadowless
+# directional light from the opposite side of the sun, nearly level (pitch -10), so it lands on the north- and
+# west-facing walls and hardly on the ground (the sunlit sidewalks don't get brighter). No atmosphere sun disk.
+DRIVE_LIGHT = {"sun_intensity": 7.0, "sun_pitch": -48.0, "sun_yaw": -35.0, "sky_intensity": 6.0, "exposure_bias": -0.2,
+               "local_highlight_contrast": 0.55, "local_shadow_contrast": 0.7,
+               "fill_intensity": 1.6, "fill_pitch": -10.0, "fill_specular": 0.25}
 
 
 def drive_light(unreal):
@@ -60,6 +65,25 @@ def drive_light(unreal):
                     print("GENCITY note: post-process %s not set (%s)" % (name, exc))
             actor.set_editor_property("settings", settings)
             done.append(label)
+    fill = next((a for a in sub.get_all_level_actors() if a.get_actor_label() == "ShadeFill"), None)
+    if DRIVE_LIGHT.get("fill_intensity", 0) > 0:
+        if fill is None:
+            fill = sub.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 3000), unreal.Rotator(0, 0, 0))
+            fill.set_actor_label("ShadeFill")
+        fill.modify()
+        lc = fill.light_component
+        lc.set_mobility(unreal.ComponentMobility.MOVABLE)
+        for name, value in (("intensity", DRIVE_LIGHT["fill_intensity"]), ("cast_shadows", False),
+                            ("atmosphere_sun_light", False), ("specular_scale", DRIVE_LIGHT["fill_specular"]),
+                            ("cast_volumetric_shadow", False), ("volumetric_scattering_intensity", 0.0)):
+            try:
+                lc.set_editor_property(name, value)
+            except Exception as exc:  # noqa: BLE001
+                print("GENCITY note: fill %s not set (%s)" % (name, exc))
+        fill.set_actor_rotation(unreal.Rotator(0.0, DRIVE_LIGHT["fill_pitch"], DRIVE_LIGHT["sun_yaw"] + 180.0), False)
+        done.append("ShadeFill")
+    elif fill is not None:
+        sub.destroy_actor(fill)
     unreal.get_editor_subsystem(unreal.LevelEditorSubsystem).save_current_level()
     print("GENCITY drive light", DRIVE_LIGHT, "on", done)
     return done
@@ -114,4 +138,15 @@ def main():
         handle.write("\n")
 
 
-main()
+if os.environ.get("GEN_LIGHT_ONLY") == "1":
+    # re-light the open level only (the level on the command line), e.g. after a DRIVE_LIGHT change
+    import unreal
+    _st = os.path.join(_root(), "Saved", "GenCity", "light_status.json")
+    try:
+        _r = {"light": drive_light(unreal), "values": DRIVE_LIGHT}
+    except BaseException:
+        _r = {"light": "error", "trace": traceback.format_exc()}
+    with open(_st, "w") as _h:
+        json.dump(_r, _h, indent=1, sort_keys=True)
+else:
+    main()
