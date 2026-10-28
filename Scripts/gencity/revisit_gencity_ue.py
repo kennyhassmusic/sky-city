@@ -154,11 +154,37 @@ def spots():
                 base = math.atan2(-tdir[1], -tdir[0]) + math.radians(ang)       # from the sign toward the camera
                 cam = unreal.Vector(s["loc"][0] + math.cos(base) * 600, s["loc"][1] + math.sin(base) * 600,
                                     s["loc"][2] + 170)
+                # out of any wall or pole: probe from 1.2 m off the sign toward the camera (the sign's own pole
+                # would stop a probe from its centre), pull in short of the first hit, skip if nothing is clear
+                o = unreal.Vector(s["loc"][0] + math.cos(base) * 120, s["loc"][1] + math.sin(base) * 120,
+                                  s["loc"][2] + 170)
+                cam, moved = clear_cam(o, cam)
+                if cam is None:
+                    res["log"].append("skip %s s%d %s: no clear spot" % (sp["v8_file"], k, view))
+                    continue
                 look = unreal.MathLibrary.find_look_at_rotation(cam, unreal.Vector(s["loc"][0], s["loc"][1],
                                                                                    s["loc"][2] + 200))
                 name = "stop_%s_s%d_%s" % (os.path.basename(sp["v8_file"]).split(".")[0], k, view)
                 q.append(("shot", {"name": name, "cam": cam, "rot": look, "spot": sp["v8_file"], "sign": s["loc"]}))
     return q
+
+
+def clear_cam(origin, at):
+    """(unreal.Vector or None, moved m): at, pulled out of any pole or wall between origin and it (the editor
+    world; inspect_plan_gencity.clear_camera)."""
+    sys.path.insert(0, os.path.join(ROOT, "Scripts", "gencity"))
+    import inspect_plan_gencity as IP
+    try:
+        r = unreal.SystemLibrary.sphere_trace_single(ues.get_editor_world(), origin, at, IP.CAM_PROBE_M * 100.0,
+                                                     unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, True, [],
+                                                     unreal.DrawDebugTrace.NONE, True)
+        t = r.to_tuple() if r is not None else None
+        hit = float(t[3]) / 100.0 if t and t[0] and not t[1] else None
+    except Exception as exc:  # noqa: BLE001
+        res["log"].append("probe failed: %s" % exc)
+        hit = None
+    spot, moved = IP.clear_camera((origin.x, origin.y, origin.z), (at.x, at.y, at.z), hit)
+    return (unreal.Vector(*spot) if spot else None), moved
 
 
 def poses():

@@ -102,6 +102,29 @@ def trace(a, b, ignore):
             "comp": (comp.get_name() if comp else "")[:48], "item": t[11] if len(t) > 11 else None}
 
 
+def probe_m(a, b, ignore, world=None):
+    """Distance (m) from a to the first blocking hit of a CAM_PROBE_M sphere swept to b, or None (clear, or the
+    sweep starts inside something, when the origin is no good to judge from)."""
+    try:
+        r = unreal.SystemLibrary.sphere_trace_single(world or gw(), a, b, IP.CAM_PROBE_M * 100.0,
+                                                     unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, True, ignore,
+                                                     unreal.DrawDebugTrace.NONE, True)
+    except Exception:  # noqa: BLE001  (an engine without sphere traces: a line trace)
+        r = unreal.SystemLibrary.line_trace_single(world or gw(), a, b, unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, True,
+                                                   ignore, unreal.DrawDebugTrace.NONE, True)
+    t = r.to_tuple() if r is not None else None
+    if not t or not t[0] or t[1]:
+        return None
+    return float(t[3]) / 100.0
+
+
+def clear_cam(origin, at, ignore, world=None):
+    """(unreal.Vector or None, moved m): the camera at, pulled out of any pole or wall between origin and it."""
+    hit = probe_m(origin, at, ignore, world)
+    spot, moved = IP.clear_camera((origin.x, origin.y, origin.z), (at.x, at.y, at.z), hit)
+    return (unreal.Vector(*spot) if spot else None), moved
+
+
 def near_actors(loc, radius=800.0):
     try:
         r = unreal.SystemLibrary.sphere_overlap_actors(gw(), loc, radius,
@@ -341,8 +364,13 @@ def begin_capture(due):
                 g = trace(unreal.Vector(x, y, loc.z + 500), unreal.Vector(x, y, loc.z - 1000), [p])
                 gz = g["z"] if g else loc.z
                 at = unreal.Vector(x, y, gz + IP.PED_EYE_M * 100.0)
+                # out of any signal pole, bollard or wall: probe from the junction's centre at eye height
+                nx, ny = c["at_ue"]
+                at, moved = clear_cam(unreal.Vector(nx, ny, gz + IP.PED_EYE_M * 100.0), at, [p])
+                if at is None:
+                    continue                 # nowhere clear on this corner: no view rather than one inside a pole
                 items.append({"kind": "ped%d" % k, "view": "cam", "loc": at, "rot": unreal.Rotator(0.0, -1.0, pc["yaw"]),
-                              "node": c["node"], "leg": pc["leg"]})
+                              "node": c["node"], "leg": pc["leg"], "cam_moved_m": moved})
         elif c["kind"] == "ped":           # an older plan without caps[].cams
             cx, cy = c["at_ue"]
             g = trace(unreal.Vector(cx, cy, loc.z + 500), unreal.Vector(cx, cy, loc.z - 1000), [p])

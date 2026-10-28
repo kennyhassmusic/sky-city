@@ -314,5 +314,29 @@ class TestTeleportHold(unittest.TestCase):
         self.assertEqual(p.props["test_brake"], 1.0)
 
 
+class CameraClearance(unittest.TestCase):
+    """v9 review: ped and STOP-corner cameras ended up inside poles and walls; the UE scripts probe from open air
+    and pull the camera in front of the first hit (clear_camera), or skip the view."""
+
+    def test_clear_line_keeps_the_camera(self):
+        spot, moved = P.clear_camera((0, 0, 170), (800, 0, 170), None)
+        self.assertEqual(spot, (800, 0, 170))
+        self.assertEqual(moved, 0.0)
+        spot, moved = P.clear_camera((0, 0, 170), (800, 0, 170), 9.0)      # the hit lies past the camera
+        self.assertEqual(spot, (800, 0, 170))
+
+    def test_pole_between_pulls_the_camera_in_front_of_it(self):
+        spot, moved = P.clear_camera((0, 0, 170), (800, 600, 170), 7.0)    # 10 m line, a pole at 7 m
+        self.assertAlmostEqual(math.hypot(spot[0], spot[1]) / 100.0, 7.0 - P.CAM_CLEAR_M, 6)
+        self.assertAlmostEqual(spot[1] / spot[0], 0.75, 6)                 # on the same line
+        self.assertEqual(spot[2], 170)
+        self.assertAlmostEqual(moved, 3.0 + P.CAM_CLEAR_M, 6)
+
+    def test_too_close_is_skipped(self):
+        spot, moved = P.clear_camera((0, 0, 170), (600, 0, 170), P.CAM_MIN_M)
+        self.assertIsNone(spot)
+        self.assertGreater(moved, 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()

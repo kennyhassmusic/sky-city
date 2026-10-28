@@ -41,6 +41,13 @@ FILLET_MIN_DEG = 4.0            # straighter than this: no fillet
 ARC_STEP_DEG = 15.0             # one fillet point per this much turn
 PED_CURB_M = 2.0                # pedestrian camera: this far behind the curb
 PED_EYE_M = 1.7
+# Camera clearance (v9 review: ped and STOP-corner cameras inside signal poles, bollards and walls). The UE scripts
+# sweep a CAM_PROBE_M sphere from an open-air point (the junction's centre at eye height; the sign's face side) to
+# the camera; on a hit the camera comes forward to CAM_CLEAR_M short of it (clear_camera), and a view left closer
+# than CAM_MIN_M to that point is skipped rather than shot from inside something.
+CAM_PROBE_M = 0.25
+CAM_CLEAR_M = 0.4
+CAM_MIN_M = 2.0
 MAST_NEAR_M = 40.0              # signal masts within this of the route go to the UE script
 # chase camera (inspect_gencity_ue.py drives the car's fixed test camera with these)
 CHASE_DIST_M = 9.0
@@ -428,6 +435,21 @@ def ped_cams(node, nodes, edges, adj, max_legs=4):
         out.append({"leg": lid, "plan_deg": round(math.degrees(math.remainder(lh, 2 * math.pi)), 1),
                     "at_plan": [round(p[0], 2), round(p[1], 2)], "at_ue": ue(p[0], p[1]), "yaw": round(yaw, 2)})
     return out
+
+
+def clear_camera(origin, cam, hit_m, clear_m=CAM_CLEAR_M, min_m=CAM_MIN_M):
+    """Where a camera may stand on the line from an open-air origin to its planned spot cam ((x, y, z) UE cm each),
+    given hit_m, the distance (m) along that line to the first blocking hit (None: clear). -> (spot, moved_m), or
+    (None, moved_m) when the clear part of the line is shorter than min_m (skip the view)."""
+    d = [cam[k] - origin[k] for k in range(3)]
+    length = math.sqrt(sum(c * c for c in d)) / 100.0
+    if hit_m is None or hit_m >= length or length <= 0.0:
+        return tuple(cam), 0.0
+    keep = hit_m - clear_m
+    if keep < min_m:
+        return None, round(length - max(keep, 0.0), 2)
+    f = keep / length
+    return tuple(origin[k] + d[k] * f for k in range(3)), round(length - keep, 2)
 
 
 def chase_cam(car_ue, yaw_deg, masts_ue, dist=CHASE_DIST_M, elev=CHASE_ELEV_DEG):
